@@ -2,5 +2,5 @@
 This is the repository that hosts my final Bachelor project.
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/31454029/99286542-4a50fa80-2839-11eb-8a87-57a315a68c15.jpg" alt="Sublime's custom image"/>
+  <img src="https://user-images.githubusercontent.com/31454029/99291717-876cbb00-2840-11eb-8c6e-c8789edfc44d.jpg" alt="Sublime's custom image" width=450px/>
 </p>
