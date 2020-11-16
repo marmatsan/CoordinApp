@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">CoordinApp</string>
+    <string name="Test_String">Test_String</string>
+    <string name="Interactividad">Interactividad</string>
+    <string name="Perfil">Perfil</string>
+    <string name="Inicio">Inicio</string>
+    <string name="Archivos">Archivos</string>
+    <string name="Grupos_Chat">Grupos/Chat</string>
+</resources>

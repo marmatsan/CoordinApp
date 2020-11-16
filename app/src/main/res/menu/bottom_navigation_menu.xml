@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_poll"
+        android:icon="@drawable/ic_baseline_poll_24"
+        android:title="@string/Interactividad"
+        android:enabled="true" />
+    <item
+        android:id="@+id/nav_chat"
+        android:icon="@drawable/ic_baseline_chat_24"
+        android:title="@string/Grupos_Chat"
+        android:enabled="true" />
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/Inicio"
+        android:enabled="true" />
+
+    <item
+        android:id="@+id/nav_drive"
+        android:icon="@drawable/ic_baseline_filter_drama_24"
+        android:title="@string/Archivos"
+        android:enabled="true" />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="@string/Perfil"
+        android:enabled="true" />
+</menu>
