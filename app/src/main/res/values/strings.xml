@@ -6,4 +6,11 @@
     <string name="Inicio">Inicio</string>
     <string name="Archivos">Archivos</string>
     <string name="Grupos_Chat">Grupos/Chat</string>
+    <string name="no_groups_created">Parece que no tienes ningún grupo creado</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="placeholder_files">Archivos</string>
+    <string name="placeholder_home">Inicio</string>
+    <string name="placeholder_interactivity">Interactividad</string>
+    <string name="placeholder_profile">Perfil</string>
 </resources>
