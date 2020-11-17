@@ -13,4 +13,8 @@
     <string name="placeholder_home">Inicio</string>
     <string name="placeholder_interactivity">Interactividad</string>
     <string name="placeholder_profile">Perfil</string>
+    <string name="group_name">Nombre del grupo</string>
+    <string name="participants">Participantes</string>
+    <string name="badges">Insignias</string>
+    <string name="desc">Placeholder Image</string>
 </resources>
