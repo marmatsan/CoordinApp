@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp;
+package com.elcazadordebaterias.coordinapp.utils;
 
 import android.widget.ExpandableListView;
 

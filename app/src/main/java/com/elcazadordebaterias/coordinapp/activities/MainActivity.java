@@ -1,15 +1,17 @@
-package com.elcazadordebaterias.coordinapp;
+package com.elcazadordebaterias.coordinapp.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 
+import com.elcazadordebaterias.coordinapp.fragments.FilesFragment;
+import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment;
+import com.elcazadordebaterias.coordinapp.fragments.HomeFragment;
+import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment;
+import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment;
+import com.elcazadordebaterias.coordinapp.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 

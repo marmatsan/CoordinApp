@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp;
+package com.elcazadordebaterias.coordinapp.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
+import com.elcazadordebaterias.coordinapp.utils.CardviewItem;
+import com.elcazadordebaterias.coordinapp.R;
+import com.elcazadordebaterias.coordinapp.adapters.CardviewAdapter;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp;
+package com.elcazadordebaterias.coordinapp.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,9 @@ import android.widget.ExpandableListView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.elcazadordebaterias.coordinapp.utils.CardviewItem;
+import com.elcazadordebaterias.coordinapp.R;
 
 import java.util.ArrayList;
 
