@@ -23,4 +23,9 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <!-- Custom toolbar -->
+    <style name="Theme.Coordinapp.NoActionBar" parent="@style/Theme.CoordinApp">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

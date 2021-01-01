@@ -2,30 +2,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_interactivity"
+        android:enabled="true"
         android:icon="@drawable/ic_baseline_poll_24"
-        android:title="@string/Interactividad"
-        android:enabled="true" />
+        android:title="@string/Interactividad" />
     <item
         android:id="@+id/nav_groups"
+        android:enabled="true"
         android:icon="@drawable/ic_baseline_chat_24"
-        android:title="@string/Grupos_Chat"
-        android:enabled="true" />
+        android:title="@string/Grupos_Chat" />
 
     <item
         android:id="@+id/nav_home"
+        android:enabled="true"
         android:icon="@drawable/ic_baseline_home_24"
-        android:title="@string/Inicio"
-        android:enabled="true" />
+        android:title="@string/Inicio" />
 
     <item
         android:id="@+id/nav_files"
+        android:enabled="true"
         android:icon="@drawable/ic_baseline_filter_drama_24"
-        android:title="@string/Archivos"
-        android:enabled="true" />
+        android:title="@string/Archivos" />
 
     <item
         android:id="@+id/nav_profile"
+        android:enabled="true"
         android:icon="@drawable/ic_baseline_person_24"
-        android:title="@string/Perfil"
-        android:enabled="true" />
+        android:title="@string/Perfil" />
 </menu>
