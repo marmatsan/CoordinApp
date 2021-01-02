@@ -49,7 +49,7 @@ public class GroupsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
-        mAddGroup = rootView.findViewById(R.id.fragment_groups_button_addgroup);
+        mAddGroup = rootView.findViewById(R.id.addgroup);
         mAddGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
