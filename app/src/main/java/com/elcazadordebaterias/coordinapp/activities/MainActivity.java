@@ -9,9 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.elcazadordebaterias.coordinapp.fragments.FilesFragment;
 import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment;
@@ -24,9 +22,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawer;
+    private ListPopupWindow listPopupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.setSelectedItemId(R.id.nav_groups); // TODO: Cambiar a nav_home al finalizar desarrollo de Grupos (para que el primer fragment qye se abra al iniciar la aplicación sea home)
+
+        //Listpopupwindow
+        listPopupWindow = new ListPopupWindow(this);
+        listPopupWindow.setWidth(600); //TODO: Change to something better (button.getWidth(), after the app has focus)
 
         // Top App Bar management
         Toolbar toolbar = findViewById(R.id.topAppBar);
@@ -51,10 +55,16 @@ public class MainActivity extends AppCompatActivity {
 
         //Popup Menu
         Button button = (Button) findViewById(R.id.popupButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                showListPopupWindow(v);
-            }
+        listPopupWindow.setAnchorView(button);
+
+        List<String> sampleData = new ArrayList<String>();
+        sampleData.add("Matemáticas");
+        ListPopupWindowAdapter listPopupWindowAdapter = new ListPopupWindowAdapter(this, sampleData);
+        listPopupWindow.setAdapter(listPopupWindowAdapter);
+        listPopupWindow.setModal(true); //TODO: Better approach?
+
+        button.setOnClickListener(v -> {
+            listPopupWindow.show(); // TODO: Build the listPopupMenu, then show it
         });
     }
 
@@ -62,16 +72,18 @@ public class MainActivity extends AppCompatActivity {
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
         Fragment selectedFragment = null;
 
-        if (item.getItemId() == R.id.nav_interactivity){
+        if (item.getItemId() == R.id.nav_interactivity) {
             selectedFragment = new InteractivityFragment();
-        }else if (item.getItemId() == R.id.nav_groups){
+        } else if (item.getItemId() == R.id.nav_groups) {
             selectedFragment = new GroupsFragment();
-        }else if (item.getItemId() == R.id.nav_home){
+        } else if (item.getItemId() == R.id.nav_home) {
             selectedFragment = new HomeFragment();
-        }else if (item.getItemId() == R.id.nav_files){
+        } else if (item.getItemId() == R.id.nav_files) {
             selectedFragment = new FilesFragment();
-        }else if (item.getItemId() == R.id.nav_profile){
+        } else if (item.getItemId() == R.id.nav_profile) {
             selectedFragment = new ProfileFragment();
+        } else {
+            selectedFragment = new HomeFragment();
         }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
@@ -79,24 +91,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     };
 
-    private void showListPopupWindow(View anchorView) {
-        final ListPopupWindow listPopupWindow = new ListPopupWindow(this);
-        listPopupWindow.setWidth(600); //TODO: Change to something better
-        List<String> sampleData = new ArrayList<>();
-        sampleData.add("Matemáticas");
-        sampleData.add("Lengua");
-
-        listPopupWindow.setAnchorView(anchorView);
-        ListPopupWindowAdapter listPopupWindowAdapter = new ListPopupWindowAdapter(this, sampleData);
-        listPopupWindow.setAdapter(listPopupWindowAdapter);
-        listPopupWindow.show();
-    }
-
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)){
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else{
+        } else {
             super.onBackPressed();
         }
     }

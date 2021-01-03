@@ -27,21 +27,6 @@ public class ListPopupWindowAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
-        return mDataSource.size();
-    }
-
-    @Override
-    public String getItem(int position) {
-        return mDataSource.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if(convertView == null){
@@ -65,8 +50,19 @@ public class ListPopupWindowAdapter extends BaseAdapter {
         private TextView subject_name;
     }
 
-    // interface to return callback to activity
-    public interface OnClickDeleteButtonListener{
-        void onClickDeleteButton(int position);
+    @Override
+    public int getCount() {
+        return mDataSource.size();
     }
+
+    @Override
+    public String getItem(int position) {
+        return mDataSource.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
 }
