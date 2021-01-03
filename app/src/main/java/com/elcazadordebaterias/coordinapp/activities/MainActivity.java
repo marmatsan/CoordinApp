@@ -19,7 +19,7 @@ import com.elcazadordebaterias.coordinapp.fragments.HomeFragment;
 import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment;
 import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment;
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.ListPopupWindowAdapter;
+import com.elcazadordebaterias.coordinapp.adapters.ListPopupWindowAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -81,22 +81,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void showListPopupWindow(View anchorView) {
         final ListPopupWindow listPopupWindow = new ListPopupWindow(this);
-        listPopupWindow.setWidth(600);
+        listPopupWindow.setWidth(600); //TODO: Change to something better
         List<String> sampleData = new ArrayList<>();
-        sampleData.add("A");
-        sampleData.add("B");
-        sampleData.add("CCCCCCCCCCCCCC");
-        sampleData.add("D");
-        sampleData.add("EEEEEEEEE");
+        sampleData.add("Matemáticas");
+        sampleData.add("Lengua");
 
         listPopupWindow.setAnchorView(anchorView);
-        ListPopupWindowAdapter listPopupWindowAdapter = new ListPopupWindowAdapter(this, sampleData, new ListPopupWindowAdapter.OnClickDeleteButtonListener() {
-            @Override
-            public void onClickDeleteButton(int position) {
-                Toast.makeText(MainActivity.this, "Click delete " + position, Toast.LENGTH_SHORT).show();
-                listPopupWindow.dismiss();
-            }
-        });
+        ListPopupWindowAdapter listPopupWindowAdapter = new ListPopupWindowAdapter(this, sampleData);
         listPopupWindow.setAdapter(listPopupWindowAdapter);
         listPopupWindow.show();
     }

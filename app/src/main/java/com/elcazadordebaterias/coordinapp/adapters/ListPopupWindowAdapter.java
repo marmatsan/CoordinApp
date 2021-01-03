@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.utils;
+package com.elcazadordebaterias.coordinapp.adapters;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,15 +17,13 @@ import java.util.List;
 
 public class ListPopupWindowAdapter extends BaseAdapter {
     private Activity mActivity;
-    private List<String> mDataSource = new ArrayList<>();
+    private List<String> mDataSource;
     private LayoutInflater layoutInflater;
-    private OnClickDeleteButtonListener clickDeleteButtonListener;
 
-    public ListPopupWindowAdapter(Activity activity, List<String> dataSource, @NonNull OnClickDeleteButtonListener clickDeleteButtonListener){
+    public ListPopupWindowAdapter(Activity activity, List<String> dataSource){
         this.mActivity = activity;
         this.mDataSource = dataSource;
         layoutInflater = mActivity.getLayoutInflater();
-        this.clickDeleteButtonListener = clickDeleteButtonListener;
     }
 
     @Override
@@ -47,28 +46,23 @@ public class ListPopupWindowAdapter extends BaseAdapter {
         ViewHolder holder;
         if(convertView == null){
             holder = new ViewHolder();
-            convertView = layoutInflater.inflate(R.layout.item_list_popup_window, null);
-            holder.tvTitle = (TextView) convertView.findViewById(R.id.text_title);
-            holder.btnDelete = (Button) convertView.findViewById(R.id.button_delete);
+            convertView = layoutInflater.inflate(R.layout.list_popup_window_item, null);
+            holder.subject_icon = (ImageView) convertView.findViewById(R.id.subject_icon);
+            holder.subject_name = (TextView) convertView.findViewById(R.id.subject_name);
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
 
         // bind data
-        holder.tvTitle.setText(getItem(position));
-        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickDeleteButtonListener.onClickDeleteButton(position);
-            }
-        });
+        holder.subject_icon.setImageResource(R.drawable.ic_baseline_calculate_24);
+        holder.subject_name.setText(getItem(position));
         return convertView;
     }
 
     public class ViewHolder{
-        private TextView tvTitle;
-        private Button btnDelete;
+        private ImageView subject_icon;
+        private TextView subject_name;
     }
 
     // interface to return callback to activity
