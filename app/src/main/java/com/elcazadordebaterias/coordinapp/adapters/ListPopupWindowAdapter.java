@@ -40,7 +40,7 @@ public class ListPopupWindowAdapter extends BaseAdapter {
         }
 
         // bind data
-        holder.subject_icon.setImageResource(R.drawable.ic_baseline_calculate_24);
+        holder.subject_icon.setImageResource(R.drawable.ic_baseline_maths_24);
         holder.subject_name.setText(getItem(position));
         return convertView;
     }
