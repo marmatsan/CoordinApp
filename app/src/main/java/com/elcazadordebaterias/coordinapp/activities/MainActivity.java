@@ -18,16 +18,17 @@ import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment;
 import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.ListPopupWindowAdapter;
+
+import com.elcazadordebaterias.coordinapp.utils.SubjectItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private ListPopupWindow listPopupWindow;
-
+    private ArrayList<SubjectItem> mSubjectList;
+    private ListPopupWindowAdapter mListPopupWindowAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +38,6 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.setSelectedItemId(R.id.nav_groups); // TODO: Cambiar a nav_home al finalizar desarrollo de Grupos (para que el primer fragment qye se abra al iniciar la aplicación sea home)
-
-        //Listpopupwindow
-        listPopupWindow = new ListPopupWindow(this);
-        listPopupWindow.setWidth(600); //TODO: Change to something better (button.getWidth(), after the app has focus)
 
         // Top App Bar management
         Toolbar toolbar = findViewById(R.id.topAppBar);
@@ -53,14 +50,19 @@ public class MainActivity extends AppCompatActivity {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        //Popup Menu
+        //ListPopupWindow (subject list)
+        mSubjectList = new ArrayList<SubjectItem>();
+        mSubjectList.add(new SubjectItem(R.drawable.ic_baseline_maths_24, "Matemáticas"));
+        mSubjectList.add(new SubjectItem(R.drawable.ic_baseline_literature_24, "Lengua"));
+
+        mListPopupWindowAdapter = new ListPopupWindowAdapter(this, mSubjectList);
+
+        listPopupWindow = new ListPopupWindow(this);
+        listPopupWindow.setWidth(600); //TODO: Change to something better (button.getWidth(), after the app has focus)
+
         Button button = (Button) findViewById(R.id.popupButton);
         listPopupWindow.setAnchorView(button);
-
-        List<String> sampleData = new ArrayList<String>();
-        sampleData.add("Matemáticas");
-        ListPopupWindowAdapter listPopupWindowAdapter = new ListPopupWindowAdapter(this, sampleData);
-        listPopupWindow.setAdapter(listPopupWindowAdapter);
+        listPopupWindow.setAdapter(mListPopupWindowAdapter);
         listPopupWindow.setModal(true); //TODO: Better approach?
 
         button.setOnClickListener(v -> {
