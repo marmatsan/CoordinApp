@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:elevation="4dp"
-    app:navigationIcon="@drawable/ic_baseline_menu_24"
     app:title="@string/app_name">
 
     <com.google.android.material.button.MaterialButton
