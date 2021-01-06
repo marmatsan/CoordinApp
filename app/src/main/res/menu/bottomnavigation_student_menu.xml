@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_interactivity"
+        android:id="@+id/nav_student_interactivity"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_poll_24"
         android:title="@string/Interactividad" />
     <item
-        android:id="@+id/nav_groups"
+        android:id="@+id/nav_student_groups"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_chat_24"
         android:title="@string/Grupos_Chat" />
 
     <item
-        android:id="@+id/nav_home"
+        android:id="@+id/nav_student_home"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_home_24"
         android:title="@string/Inicio" />
 
     <item
-        android:id="@+id/nav_files"
+        android:id="@+id/nav_student_files"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_filter_drama_24"
         android:title="@string/Archivos" />
 
     <item
-        android:id="@+id/nav_profile"
+        android:id="@+id/nav_student_profile"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_person_24"
         android:title="@string/Perfil" />

@@ -18,7 +18,16 @@
     <string name="desc">Placeholder Image</string>
     <string name="asignaturas">Asignaturas</string>
     <string name="placeholder">Placeholder</string>
-    
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_subjects">action_subjects</string>
+    <string name="action_settings">action_settings</string>
+    <string name="title_activity_main__teacher">MainActivity_Teacher</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
+    <string name="administraci_n">Administración</string>
 </resources>
