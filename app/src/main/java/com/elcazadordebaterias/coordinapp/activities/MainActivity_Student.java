@@ -46,11 +46,11 @@ public class MainActivity_Student extends AppCompatActivity {
         // Bottom navigation management
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-        bottomNavigationView.setSelectedItemId(R.id.nav_student_home); // TODO: Cambiar a nav_home al finalizar desarrollo de Grupos (para que el primer fragment que se abra al iniciar la aplicación sea home)
+        bottomNavigationView.setSelectedItemId(R.id.nav_student_home);
 
         // Top App Bar management
         Toolbar toolbar = findViewById(R.id.topAppBar);
-        setSupportActionBar(toolbar); // TODO: No sale ning
+        setSupportActionBar(toolbar);
 
         //ListPopupWindow (subject list)
         mSubjectList = new ArrayList<SubjectItem>();
@@ -67,7 +67,7 @@ public class MainActivity_Student extends AppCompatActivity {
         listPopupWindow.setModal(true); //TODO: Better approach?
 
         /*
-         * TODO: Listpopupwindow to choose what type of application we want to show (student:user or teacher:admin). Remove later
+         * TODO: 06-01-2021 Listpopupwindow to choose what type of application we want to show (student:user or teacher:admin). Remove later
          */
         chooseUserType = new ArrayList<SubjectItem>();
         chooseUserType.add(new SubjectItem(R.drawable.ic_baseline_person_24, "Alumno"));
@@ -86,7 +86,7 @@ public class MainActivity_Student extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SubjectItem chosenItem = (SubjectItem) parent.getItemAtPosition(position);
-                if (chosenItem!= null && chosenItem.getSubjectName().equals("Profesor")){
+                if (chosenItem != null && chosenItem.getSubjectName().equals("Profesor")) {
                     Intent intent = new Intent(view.getContext(), MainActivity_Teacher.class);
                     startActivity(intent); // TODO: 06-01-2021 Return to student app from teacher app
                 }

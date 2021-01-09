@@ -10,7 +10,7 @@
     <include
         android:id="@+id/topAppBar"
         layout="@layout/topappbar"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_container_teacher"
+        app:layout_constraintBottom_toTopOf="@id/fragment_container_teacher"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,7 +22,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topAppBar" />
+        app:layout_constraintTop_toBottomOf="@id/topAppBar" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_view"
@@ -33,7 +33,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_container_teacher"
+        app:layout_constraintTop_toBottomOf="@id/fragment_container_teacher"
         app:menu="@menu/bottomnavigation_teacher_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
