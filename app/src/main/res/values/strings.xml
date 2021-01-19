@@ -30,4 +30,15 @@
     -->
     <string name="hello_world">Hello Square World!</string>
     <string name="administraci_n">Administración</string>
+    <string name="coordinapp">CoordinApp</string>
+    <string name="inicio_de_sesi_n">Inicio de sesión</string>
+    <string name="e_mail">E-Mail</string>
+    <string name="contrase_a">Contraseña</string>
+    <string name="iniciar_sesi_n">Iniciar sesión</string>
+    <string name="crear_una_cuenta"><u>Crear una cuenta</u></string>
+    <string name="nombre_completo">Nombre completo</string>
+    <string name="repetir_contrase_a">Repetir contraseña</string>
+    <string name="registrase_como_administrador">Registrase como administrador</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="iniciar_sesi_n_underline"><u>Iniciar sesión</u></string>
 </resources>

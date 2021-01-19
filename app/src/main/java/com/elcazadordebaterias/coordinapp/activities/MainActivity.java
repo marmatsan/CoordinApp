@@ -28,15 +28,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
-public class MainActivity_Student extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     private ListPopupWindow listPopupWindow;
     private ArrayList<SubjectItem> mSubjectList;
     private ListPopupWindowAdapter mListPopupWindowAdapter;
-
-    //TODO: 06-01-2021 This is just for developement (remove later). We choose what type of application we want to show (student:user or teacher:admin)
-    private ListPopupWindow listPopupWindowUserType;
-    private ArrayList<SubjectItem> chooseUserType;
-    private ListPopupWindowAdapter chooseUserTypeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,32 +61,6 @@ public class MainActivity_Student extends AppCompatActivity {
         listPopupWindow.setAdapter(mListPopupWindowAdapter);
         listPopupWindow.setModal(true); //TODO: Better approach?
 
-        /*
-         * TODO: 06-01-2021 Listpopupwindow to choose what type of application we want to show (student:user or teacher:admin). Remove later
-         */
-        chooseUserType = new ArrayList<SubjectItem>();
-        chooseUserType.add(new SubjectItem(R.drawable.ic_baseline_person_24, "Alumno"));
-        chooseUserType.add(new SubjectItem(R.drawable.ic_baseline_account_box_24, "Profesor"));
-
-        chooseUserTypeAdapter = new ListPopupWindowAdapter(this, chooseUserType);
-
-        listPopupWindowUserType = new ListPopupWindow(this);
-        listPopupWindowUserType.setWidth(600);
-
-        listPopupWindowUserType.setAnchorView(findViewById(R.id.action_settings));
-        listPopupWindowUserType.setAdapter(chooseUserTypeAdapter);
-        listPopupWindowUserType.setModal(true);
-
-        listPopupWindowUserType.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SubjectItem chosenItem = (SubjectItem) parent.getItemAtPosition(position);
-                if (chosenItem != null && chosenItem.getSubjectName().equals("Profesor")) {
-                    Intent intent = new Intent(view.getContext(), MainActivity_Teacher.class);
-                    startActivity(intent); // TODO: 06-01-2021 Return to student app from teacher app
-                }
-            }
-        });
     }
 
     // Menu
@@ -106,8 +75,6 @@ public class MainActivity_Student extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_subjects) {
             listPopupWindow.show(); // TODO: Build the listPopupMenu, then show it
-        } else if (item.getItemId() == R.id.action_settings) {
-            listPopupWindowUserType.show();
         } else {
             return super.onOptionsItemSelected(item);
         }
@@ -116,7 +83,7 @@ public class MainActivity_Student extends AppCompatActivity {
 
     // Static interface to create the fragment associated with the pressed item on the BottomNavigationView
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
-        Fragment selectedFragment = null;
+        Fragment selectedFragment;
 
         if (item.getItemId() == R.id.nav_student_interactivity) {
             selectedFragment = new InteractivityFragment();
