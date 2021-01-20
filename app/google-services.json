@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "680500275546",
+    "project_id": "coordinapp-86f14",
+    "storage_bucket": "coordinapp-86f14.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680500275546:android:b54fdfcf48965b74d76b63",
+        "android_client_info": {
+          "package_name": "com.elcazadordebaterias.coordinapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "680500275546-btorlc37mc4ld6shdvd89ca65210ote3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeb1vxkuYNLS0vVTWhhjTW8lGkOlOS3uc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "680500275546-btorlc37mc4ld6shdvd89ca65210ote3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
