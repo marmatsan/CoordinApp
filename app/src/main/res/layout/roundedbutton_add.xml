@@ -16,4 +16,4 @@
     app:iconSize="30dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.CoordinApp.Button.CircleAdd" />
+    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.CoordinApp.Button.RoundedButton" />

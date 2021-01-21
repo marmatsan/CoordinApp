@@ -19,12 +19,11 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
-public class GroupsFragment extends Fragment {
+public class GroupsFragment_Student extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
 
     private Context mContext;
     private MaterialButton mAddGroup;
@@ -39,7 +38,7 @@ public class GroupsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_groups, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_groups_student, container, false);
 
         mRecyclerView = rootView.findViewById(R.id.fragment_groups_recyclerview);
         mRecyclerView.setHasFixedSize(true);

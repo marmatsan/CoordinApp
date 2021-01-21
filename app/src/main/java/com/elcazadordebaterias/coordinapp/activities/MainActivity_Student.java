@@ -11,11 +11,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.elcazadordebaterias.coordinapp.fragments.FilesFragment;
-import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment;
-import com.elcazadordebaterias.coordinapp.fragments.HomeFragment;
-import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment;
-import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment;
+import com.elcazadordebaterias.coordinapp.fragments.FilesFragment_Student;
+import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_Student;
+import com.elcazadordebaterias.coordinapp.fragments.HomeFragment_Student;
+import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment_Student;
+import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment_Student;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.ListPopupWindowAdapter;
 
@@ -24,7 +24,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity_Student extends AppCompatActivity {
     private ListPopupWindow listPopupWindow;
     private ArrayList<SubjectItem> mSubjectList;
     private ListPopupWindowAdapter mListPopupWindowAdapter;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_student);
 
         // Bottom navigation management
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view_student);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.setSelectedItemId(R.id.nav_student_home);
 
@@ -81,18 +81,20 @@ public class MainActivity extends AppCompatActivity {
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
         Fragment selectedFragment;
 
-        if (item.getItemId() == R.id.nav_student_interactivity) {
-            selectedFragment = new InteractivityFragment();
-        } else if (item.getItemId() == R.id.nav_student_groups) {
-            selectedFragment = new GroupsFragment();
-        } else if (item.getItemId() == R.id.nav_student_home) {
-            selectedFragment = new HomeFragment();
-        } else if (item.getItemId() == R.id.nav_student_files) {
-            selectedFragment = new FilesFragment();
-        } else if (item.getItemId() == R.id.nav_student_profile) {
-            selectedFragment = new ProfileFragment();
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.nav_student_interactivity) {
+            selectedFragment = new InteractivityFragment_Student();
+        } else if (itemId == R.id.nav_student_groups) {
+            selectedFragment = new GroupsFragment_Student();
+        } else if (itemId == R.id.nav_student_home) {
+            selectedFragment = new HomeFragment_Student();
+        } else if (itemId == R.id.nav_student_files) {
+            selectedFragment = new FilesFragment_Student();
+        } else if (itemId == R.id.nav_student_profile) {
+            selectedFragment = new ProfileFragment_Student();
         } else {
-            selectedFragment = new HomeFragment();
+            selectedFragment = new HomeFragment_Student();
         }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_student, selectedFragment).commit();

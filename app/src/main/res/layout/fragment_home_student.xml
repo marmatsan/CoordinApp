@@ -6,25 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_groups_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="4dp" />
-
     <TextView
-        android:id="@+id/fragment_groups_textview_placeholder"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_groups_created"
+        android:text="@string/placeholder_home"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        layout="@layout/button_add"
-        android:id="@+id/addgroup"
+        layout="@layout/roundedbutton_add"
+        android:id="@+id/addsubject"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

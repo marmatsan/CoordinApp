@@ -18,7 +18,7 @@
     </style>
 
     <!-- Button Theme Style -->
-    <style name="ShapeAppearanceOverlay.CoordinApp.Button.CircleAdd" parent="">
+    <style name="ShapeAppearanceOverlay.CoordinApp.Button.RoundedButton" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>

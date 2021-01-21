@@ -2,12 +2,12 @@ package com.elcazadordebaterias.coordinapp.utils;
 
 public class EmailValidation {
 
-    public static boolean isValidEmail(CharSequence target) {
+    public static boolean isInvalidEmail(CharSequence target) {
         if (target == null) {
-            return false;
+            return true;
         } else {
-            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+            return !android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
         }
     }
-    
+
 }

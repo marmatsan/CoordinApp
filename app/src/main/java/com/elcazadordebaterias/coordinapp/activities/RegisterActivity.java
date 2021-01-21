@@ -25,13 +25,14 @@ public class RegisterActivity extends AppCompatActivity {
     TextInputEditText userFullname, userEmail, userPassword, userRepPassword;
     MaterialButton register;
     SwitchMaterial userIsAdmin;
+
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.register);
+        setContentView(R.layout.activity_register);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -50,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if(fieldsOk()){
                     addUser();
                 }else{
-                    Toast.makeText(getApplicationContext(), "Por favor, rellene todos los campos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Por favor, revise todos los campos", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -66,9 +67,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         if(fullName.isEmpty()){
             return false;
-        }else if(email.isEmpty() || !EmailValidation.isValidEmail(email)){
+        }else if(email.isEmpty() || EmailValidation.isInvalidEmail(email)){
             return false;
-        }else return !password.isEmpty() && !repeatpassword.isEmpty() && password.equals(repeatpassword);
+        }else return !password.isEmpty() && !repeatpassword.isEmpty() && password.equals(repeatpassword) && password.length() >= 6;
 
     }
 
@@ -84,6 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
                 userInfo.put("UserEmail", userEmail.getText().toString());
 
                 boolean isAdmin = userIsAdmin.isChecked();
+
                 if(isAdmin) {
                     userInfo.put("isAdmin", "1");
                 }else{

@@ -42,4 +42,9 @@
     <string name="registrarse">Registrarse</string>
     <string name="iniciar_sesi_n_underline"><u>Iniciar sesión</u></string>
     <string name="registro">Registro</string>
+    <string name="rellena_estos_campos_si_eres_alumno">Rellena estos campos si eres alumno</string>
+    <string name="nombre_y_apellidos_del_profesor_a">Nombre y apellidos del profesor/a</string>
+    <string name="curso_en_el_que_se_imparte_la_asignatura">Curso en el que se imparte la asignatura</string>
+    <string name="nombre_completo_del_profesor">Nombre completo del profesor</string>
+    <string name="nombre_completo_del_la_profesor_a">Nombre completo del/la profesor/a</string>
 </resources>
