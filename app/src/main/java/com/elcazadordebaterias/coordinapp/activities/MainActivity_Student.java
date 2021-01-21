@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.elcazadordebaterias.coordinapp.fragments.FilesFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_Student;
@@ -19,20 +20,33 @@ import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment_Student;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.ListPopupWindowAdapter;
 
+import com.elcazadordebaterias.coordinapp.utils.RequestSubjectCreationDialog;
 import com.elcazadordebaterias.coordinapp.utils.SubjectItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class MainActivity_Student extends AppCompatActivity {
+public class MainActivity_Student extends AppCompatActivity implements RequestSubjectCreationDialog.RequestSubjectCreationDialogListener {
     private ListPopupWindow listPopupWindow;
     private ArrayList<SubjectItem> mSubjectList;
     private ListPopupWindowAdapter mListPopupWindowAdapter;
+
+    FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_student);
+
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
 
         // Bottom navigation management
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view_student);
@@ -101,4 +115,21 @@ public class MainActivity_Student extends AppCompatActivity {
 
         return true;
     };
+
+    @Override
+    public void submitRequest(String teachername, String coursenumber) {
+
+        Map<String, Object> requestInfo = new HashMap<>();
+        requestInfo.put("TeacherFullName", teachername);
+        requestInfo.put("CourseNumber", coursenumber);
+
+        FirebaseUser user = fAuth.getCurrentUser();
+        DocumentReference df = fStore.collection("Requests").document(user.getUid());
+
+        df.set(requestInfo).addOnFailureListener(e -> {
+            Toast.makeText(getApplicationContext(), "Error al procesar la solicitud", Toast.LENGTH_SHORT).show();
+        });
+
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.utils;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +17,19 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class RequestSubjectCreationDialog extends DialogFragment {
 
-    TextInputEditText teacherFullName, courseNumber;
+    private TextInputEditText teacherFullName, courseNumber;
+    private RequestSubjectCreationDialogListener listener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        try {
+            listener = (RequestSubjectCreationDialogListener) context;
+        } catch (ClassCastException  e) {
+            throw new ClassCastException(context.toString() + " must implement RequestSubjectCreationDialogListener");
+        }
+    }
 
     @NonNull
     @Override
@@ -30,7 +43,9 @@ public class RequestSubjectCreationDialog extends DialogFragment {
                 .setTitle("Solicitud para crear una asignatura").setNegativeButton("Cancelar", (dialogInterface, i) -> {
 
                 }).setPositiveButton("Solicitar", (dialogInterface, i) -> {
-
+                    String teachername = teacherFullName.getText().toString();
+                    String coursenumber = courseNumber.getText().toString();
+                    listener.submitRequest(teachername, coursenumber);
                 });
 
         teacherFullName = view.findViewById(R.id.creatsubject_teachername_text);
@@ -38,4 +53,9 @@ public class RequestSubjectCreationDialog extends DialogFragment {
 
         return builder.create();
     }
+
+    public interface RequestSubjectCreationDialogListener {
+        void submitRequest(String teachername, String coursenumber);
+    }
+
 }
