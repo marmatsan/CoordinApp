@@ -50,14 +50,11 @@ public class RegisterActivity extends AppCompatActivity {
         userIsAdmin = findViewById(R.id.register_isadmin);
 
         register = findViewById(R.id.register_button);
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(fieldsOk()){
-                    addUser();
-                }else{
-                    Toast.makeText(getApplicationContext(), "Por favor, revise todos los campos", Toast.LENGTH_SHORT).show();
-                }
+        register.setOnClickListener(view -> {
+            if(fieldsOk()){
+                addUser();
+            }else{
+                Toast.makeText(getApplicationContext(), "Por favor, revise todos los campos", Toast.LENGTH_SHORT).show();
             }
         });
 
