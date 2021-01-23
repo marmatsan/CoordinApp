@@ -140,7 +140,7 @@ public class RequestSubjectCreationDialog extends DialogFragment {
                     teachersNames.add(document.getData().get("FullName").toString());
                 }
             } // TODO: 23-01-2021 Not checking if the task fails
-            teachersNameAdapter.notifyDataSetChanged();
+            teachersNameAdapter.notifyDataSetChanged(); // TODO: 23-01-2021 Since the get() method is asynchronous, first get the data, then build the view, then show it
         });
 
         builder.setView(view)

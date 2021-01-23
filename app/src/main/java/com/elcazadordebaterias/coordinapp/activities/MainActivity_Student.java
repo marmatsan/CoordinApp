@@ -1,6 +1,5 @@
 package com.elcazadordebaterias.coordinapp.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ListPopupWindow;
 
@@ -8,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,19 +23,18 @@ import com.elcazadordebaterias.coordinapp.adapters.ListPopupWindowAdapter;
 
 import com.elcazadordebaterias.coordinapp.utils.RequestSubjectCreationDialog;
 import com.elcazadordebaterias.coordinapp.utils.SubjectItem;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.model.Document;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The main activity for the student.
@@ -127,29 +126,30 @@ public class MainActivity_Student extends AppCompatActivity implements RequestSu
     };
 
     @Override
-    public void submitRequest(String teachername, String coursenumber) {
+    public void submitRequest(String teacherName, String courseNumber) {
 
         FirebaseUser user = fAuth.getCurrentUser();
 
         Map<String, Object> requestInfo = new HashMap<>();
-        requestInfo.put("TeacherFullName", teachername);
-        requestInfo.put("CourseNumber", coursenumber);
+        requestInfo.put("TeacherFullName", teacherName);
+        requestInfo.put("CourseNumber", courseNumber);
 
         DocumentReference docRef = fStore.collection("Students").document(user.getUid());
 
-        docRef.get().addOnCompleteListener(task -> { // TODO: Does not work
+        docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
                     requestInfo.put("StudentName", document.getData().get("FullName").toString());
                 }
+
+                // This can´t be used outside because the get() method is asynchronous!
+                DocumentReference df = fStore.collection("Requests").document(user.getUid());
+
+                df.set(requestInfo).addOnFailureListener(e -> {
+                    Toast.makeText(getApplicationContext(), "Error al procesar la solicitud", Toast.LENGTH_SHORT).show();
+                });
             }
-        });
-
-        DocumentReference df = fStore.collection("Requests").document(user.getUid());
-
-        df.set(requestInfo).addOnFailureListener(e -> {
-            Toast.makeText(getApplicationContext(), "Error al procesar la solicitud", Toast.LENGTH_SHORT).show();
         });
 
     }
