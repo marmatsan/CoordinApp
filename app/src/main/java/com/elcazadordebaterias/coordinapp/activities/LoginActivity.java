@@ -6,19 +6,28 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.EmailValidation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.BaseProgressIndicator;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
+    LinearProgressIndicator logIndicator;
     TextInputEditText userEmail, userPassword;
     MaterialButton login;
 
@@ -37,6 +46,9 @@ public class LoginActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
+        logIndicator = findViewById(R.id.linearProgressIndicatorLogin);
+        logIndicator.setVisibility(View.GONE);
+
         // Texts that contain the user email and user password required for login.
         userEmail = findViewById(R.id.login_user_email_text);
         userPassword = findViewById(R.id.login_user_password_text);
@@ -45,6 +57,8 @@ public class LoginActivity extends AppCompatActivity {
         login = findViewById(R.id.login_button);
         login.setOnClickListener(view -> {
             if (fieldsOk()) {
+                logIndicator.setVisibility(View.VISIBLE);
+
                 fAuth.signInWithEmailAndPassword(userEmail.getText().toString(), userPassword.getText().toString()).addOnSuccessListener(authResult -> {
                     Toast.makeText(getApplicationContext(), "Inicio de sesión correcto", Toast.LENGTH_SHORT).show();
                     checkUserAccessLevel(authResult.getUser().getUid());
@@ -86,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Check the access level of the user. The user is redirected to their corresponding
-     * activity based on if they are administrators (isAdmin = 1) or normal users (isAdmin = 0).
+     * activity based on which database belongs.
      * It uses an instance of FirebaseFirestore to check the permissions of the user identified with
      * the uid parameter.
      *
@@ -94,17 +108,22 @@ public class LoginActivity extends AppCompatActivity {
      *
      */
     private void checkUserAccessLevel(String uid) {
-        DocumentReference df = fStore.collection("Users").document(uid);
 
-        df.get().addOnSuccessListener(documentSnapshot -> {
-            Log.d("TAG", "onSuccess" + documentSnapshot.getData());
+        DocumentReference df = fStore.collection("Teachers").document(uid);
 
-            if (documentSnapshot.getString("isAdmin").equals("0")) {
-                startActivity(new Intent(getApplicationContext(), MainActivity_Student.class));
+        df.get().addOnCompleteListener(task -> { // TODO: 23-01-2021 Chech the robustness of this
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity_Teacher.class));
+                    finish();
+                } else {
+                    startActivity(new Intent(getApplicationContext(), MainActivity_Student.class));
+                    finish();
+                }
             } else {
-                startActivity(new Intent(getApplicationContext(), MainActivity_Teacher.class));
+                Toast.makeText(getApplicationContext(), "Error comprobando los permisos", Toast.LENGTH_SHORT).show();
             }
-
         });
     }
 

@@ -1,5 +1,6 @@
 package com.elcazadordebaterias.coordinapp.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ListPopupWindow;
 
@@ -22,11 +23,15 @@ import com.elcazadordebaterias.coordinapp.adapters.ListPopupWindowAdapter;
 
 import com.elcazadordebaterias.coordinapp.utils.RequestSubjectCreationDialog;
 import com.elcazadordebaterias.coordinapp.utils.SubjectItem;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.model.Document;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +39,7 @@ import java.util.Map;
 
 /**
  * The main activity for the student.
+ *
  * @author Martín Mateos Sánchez
  */
 public class MainActivity_Student extends AppCompatActivity implements RequestSubjectCreationDialog.RequestSubjectCreationDialogListener {
@@ -123,11 +129,23 @@ public class MainActivity_Student extends AppCompatActivity implements RequestSu
     @Override
     public void submitRequest(String teachername, String coursenumber) {
 
+        FirebaseUser user = fAuth.getCurrentUser();
+
         Map<String, Object> requestInfo = new HashMap<>();
         requestInfo.put("TeacherFullName", teachername);
         requestInfo.put("CourseNumber", coursenumber);
 
-        FirebaseUser user = fAuth.getCurrentUser();
+        DocumentReference docRef = fStore.collection("Students").document(user.getUid());
+
+        docRef.get().addOnCompleteListener(task -> { // TODO: Does not work
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    requestInfo.put("StudentName", document.getData().get("FullName").toString());
+                }
+            }
+        });
+
         DocumentReference df = fStore.collection("Requests").document(user.getUid());
 
         df.set(requestInfo).addOnFailureListener(e -> {

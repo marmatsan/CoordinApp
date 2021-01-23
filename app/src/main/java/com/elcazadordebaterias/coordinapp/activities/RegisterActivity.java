@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.EmailValidation;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    LinearProgressIndicator logIndicator;
     TextInputEditText userFullname, userEmail, userPassword, userRepPassword;
     MaterialButton register;
     SwitchMaterial userIsAdmin;
@@ -49,9 +51,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         userIsAdmin = findViewById(R.id.register_isadmin);
 
+        logIndicator = findViewById(R.id.linearProgressIndicatoRegister);
+        logIndicator.setVisibility(View.GONE);
+
         register = findViewById(R.id.register_button);
         register.setOnClickListener(view -> {
             if(fieldsOk()){
+                logIndicator.setVisibility(View.VISIBLE);
                 addUser();
             }else{
                 Toast.makeText(getApplicationContext(), "Por favor, revise todos los campos", Toast.LENGTH_SHORT).show();
@@ -99,18 +105,18 @@ public class RegisterActivity extends AppCompatActivity {
 
                 FirebaseUser user = fAuth.getCurrentUser();
                 Toast.makeText(getApplicationContext(), "Cuenta creada con éxito", Toast.LENGTH_SHORT).show();
-                DocumentReference df = fStore.collection("Users").document(user.getUid());
 
-                Map<String, Object> userInfo = new HashMap<>();
+                Map<String, Object> userInfo = new HashMap<String, Object>();
                 userInfo.put("FullName", userFullname.getText().toString());
                 userInfo.put("UserEmail", userEmail.getText().toString());
 
+                DocumentReference df;
                 boolean isAdmin = userIsAdmin.isChecked();
 
                 if(isAdmin) {
-                    userInfo.put("isAdmin", "1");
+                    df = fStore.collection("Teachers").document(user.getUid());
                 }else{
-                    userInfo.put("isAdmin", "0");
+                    df = fStore.collection("Students").document(user.getUid());
                 }
 
                 df.set(userInfo).addOnFailureListener(e -> {
