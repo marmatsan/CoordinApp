@@ -15,6 +15,13 @@ import androidx.fragment.app.DialogFragment;
 import com.elcazadordebaterias.coordinapp.R;
 import com.google.android.material.textfield.TextInputEditText;
 
+/**
+ * Class to create the pop-up dialog to request a new subject creation. The student
+ * has to input the teacher fullname and the course number, and submit the request. This
+ * request is opened from the home fragment of the student.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class RequestSubjectCreationDialog extends DialogFragment {
 
     private TextInputEditText teacherFullName, courseNumber;

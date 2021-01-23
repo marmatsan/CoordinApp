@@ -32,6 +32,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The main activity for the student.
+ * @author Martín Mateos Sánchez
+ */
 public class MainActivity_Student extends AppCompatActivity implements RequestSubjectCreationDialog.RequestSubjectCreationDialogListener {
     private ListPopupWindow listPopupWindow;
     private ArrayList<SubjectItem> mSubjectList;

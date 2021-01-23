@@ -17,6 +17,12 @@ import java.util.ArrayList;
 
 import com.elcazadordebaterias.coordinapp.R;
 
+/**
+ * Adapter to handle the list of subjects that the student has. Currently it only shows the
+ * icon of the subject and the name of the subject by clicking on the folder icon at the topappbar.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class ListPopupWindowAdapter extends ArrayAdapter<SubjectItem> {
 
     public ListPopupWindowAdapter(Context context, ArrayList<SubjectItem> subjectList) {

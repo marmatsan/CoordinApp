@@ -14,6 +14,10 @@ import com.elcazadordebaterias.coordinapp.activities.LoginActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * The fragment representing the Administration Tab of the teacher.
+ * @author Martín Mateos Sánchez
+ */
 public class AdministrationFragment_Teacher extends Fragment {
 
     private MaterialButton logout;

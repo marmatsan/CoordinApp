@@ -13,18 +13,16 @@ import com.elcazadordebaterias.coordinapp.R;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter to handle the cardviews that represent the folder of chats with the classmates
+ * and with the teachers. When clicked, if there only exists one chat between classmates, the chat
+ * will be opened right away, and if there is also a chat with the teacher, it will open another view
+ * to choose thet chat we want to open (to be implemented).
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class CardviewAdapter extends RecyclerView.Adapter<CardviewAdapter.CardviewHolder> {
     private ArrayList<CardviewItem> mCardviewList;
-
-    public static class CardviewHolder extends RecyclerView.ViewHolder{
-        public ExpandableListView mExpandableListView;
-
-        public CardviewHolder(View view){
-            super(view);
-            mExpandableListView = view.findViewById(R.id.item_cardview_expandablelistview);
-        }
-
-    }
 
     public CardviewAdapter(ArrayList<CardviewItem> cardviewList) {
         mCardviewList = cardviewList;
@@ -38,13 +36,21 @@ public class CardviewAdapter extends RecyclerView.Adapter<CardviewAdapter.Cardvi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CardviewHolder holder, int position) {
-
-    }
+    public void onBindViewHolder(@NonNull CardviewHolder holder, int position) { }
 
     @Override
     public int getItemCount() {
         return mCardviewList.size();
+    }
+
+    public static class CardviewHolder extends RecyclerView.ViewHolder{
+        public ExpandableListView mExpandableListView;
+
+        public CardviewHolder(View view){
+            super(view);
+            mExpandableListView = view.findViewById(R.id.item_cardview_expandablelistview);
+        }
+
     }
 
 }

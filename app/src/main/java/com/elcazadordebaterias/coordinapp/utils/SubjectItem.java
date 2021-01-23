@@ -1,12 +1,12 @@
 package com.elcazadordebaterias.coordinapp.utils;
 
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-
-import java.util.Objects;
-
+/**
+ * Class that represent a subject. Its properties are the icon of the subject (int) and
+ * the name of the subject (string). It is used by the ListPopupWindowAdapter, which recieves
+ * an arraylist of SubjectItem objects to be displayed.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class SubjectItem {
 
     private int subjectIcon;

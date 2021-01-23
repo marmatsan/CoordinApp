@@ -9,6 +9,10 @@ import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 
+/**
+ * The fragment representing the Interactivity Tab of the teacher.
+ * @author Martín Mateos Sánchez
+ */
 public class InteractivityFragment_Teacher extends Fragment {
 
     @Override

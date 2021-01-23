@@ -9,6 +9,10 @@ import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 
+/**
+ * The fragment representing the Files Tab of the teacher.
+ * @author Martín Mateos Sánchez
+ */
 public class FilesFragment_Teacher extends Fragment {
 
     @Override

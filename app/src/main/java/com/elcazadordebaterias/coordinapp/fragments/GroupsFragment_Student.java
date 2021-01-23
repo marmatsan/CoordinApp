@@ -19,6 +19,10 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
+/**
+ * The fragment representing the Groups/Chat Tab of the student.
+ * @author Martín Mateos Sánchez
+ */
 public class GroupsFragment_Student extends Fragment {
 
     private RecyclerView mRecyclerView;

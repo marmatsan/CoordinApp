@@ -19,6 +19,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The fragment representing the Home Tab of the student.
+ * @author Martín Mateos Sánchez
+ */
 public class HomeFragment_Student extends Fragment {
 
     MaterialButton addSubject;

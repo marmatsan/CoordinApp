@@ -13,6 +13,10 @@ import com.elcazadordebaterias.coordinapp.activities.LoginActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * The fragment representing the Profile Tab of the student.
+ * @author Martín Mateos Sánchez
+ */
 public class ProfileFragment_Student extends Fragment {
 
     MaterialButton logout;
@@ -30,6 +34,7 @@ public class ProfileFragment_Student extends Fragment {
         logout.setOnClickListener(view -> {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(getContext(), LoginActivity.class));
+            getActivity().finish();
         });
 
         return rootView;

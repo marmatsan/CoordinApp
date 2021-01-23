@@ -19,6 +19,10 @@ import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment_Student;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 
+/**
+ * The main activity for the teacher.
+ * @author Martín Mateos Sánchez
+ */
 public class MainActivity_Teacher extends AppCompatActivity {
 
     @Override

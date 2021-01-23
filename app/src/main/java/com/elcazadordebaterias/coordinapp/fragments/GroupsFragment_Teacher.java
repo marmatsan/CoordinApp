@@ -18,6 +18,10 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
+/**
+ * The fragment representing the Groups/Chat Tab of the teacher.
+ * @author Martín Mateos Sánchez
+ */
 public class GroupsFragment_Teacher extends Fragment {
 
     @Override

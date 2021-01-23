@@ -12,6 +12,7 @@
 
         <activity
             android:name=".activities.LoginActivity"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.Coordinapp.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,12 +23,15 @@
 
         <activity
             android:name=".activities.RegisterActivity"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.Coordinapp.NoActionBar"/>
         <activity
             android:name=".activities.MainActivity_Student"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.Coordinapp.NoActionBar" />
         <activity
             android:name=".activities.MainActivity_Teacher"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.Coordinapp.NoActionBar" />
 
         <meta-data
