@@ -47,5 +47,12 @@
     <string name="curso_en_el_que_se_imparte_la_asignatura">Curso en el que se imparte la asignatura</string>
     <string name="nombre_completo_del_profesor">Nombre completo del profesor</string>
     <string name="nombre_completo_del_la_profesor_a">Nombre completo del/la profesor/a</string>
+    <string name="cursos">Cursos</string>
+    <string name="fechas">Fechas</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="courses">Courses</string>
+    <string name="dates">Dates</string>
 
 </resources>

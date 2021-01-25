@@ -28,7 +28,7 @@ public class ProfileFragment_Student extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_administration_teacher, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_profile_student, container, false);
 
         logout = rootView.findViewById(R.id.logout_button);
         logout.setOnClickListener(view -> {

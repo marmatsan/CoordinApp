@@ -9,7 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CoordinApp">
-
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.CoordinApp.NoActionBar"></activity>
         <activity
             android:name=".activities.LoginActivity"
             android:launchMode="singleTop"
@@ -20,11 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.RegisterActivity"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.Coordinapp.NoActionBar"/>
+            android:theme="@style/Theme.Coordinapp.NoActionBar" />
         <activity
             android:name=".activities.MainActivity_Student"
             android:launchMode="singleTop"
