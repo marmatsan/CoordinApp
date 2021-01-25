@@ -54,5 +54,11 @@
     <string name="tab_text_2">Tab 2</string>
     <string name="courses">Courses</string>
     <string name="dates">Dates</string>
+    <string name="peticiones_pendientes">Peticiones pendientes</string>
+    <string name="name_of_the_student">Name of the student</string>
+    <string name="requested_course">Requested course</string>
+    <string name="grupos_disponibles">Grupos disponibles</string>
+    <string name="grupos">Grupos</string>
+    <string name="letra_del_curso">Letra del curso</string>
 
 </resources>

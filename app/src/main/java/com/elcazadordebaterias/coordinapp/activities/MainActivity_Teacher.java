@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment_Teache
 import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment_Student;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * The main activity for the teacher.
@@ -25,10 +27,15 @@ import com.google.android.material.button.MaterialButton;
  */
 public class MainActivity_Teacher extends AppCompatActivity {
 
+    FirebaseAuth fAuth;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("TEACHER", "oncreateteacher");
         setContentView(R.layout.activity_main_teacher);
+
+        fAuth = FirebaseAuth.getInstance();
 
         // Bottom navigation management
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view_teacher);

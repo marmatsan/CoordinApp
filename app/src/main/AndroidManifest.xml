@@ -10,10 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoordinApp">
         <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/Theme.CoordinApp.NoActionBar"></activity>
-        <activity
             android:name=".activities.LoginActivity"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Coordinapp.NoActionBar">

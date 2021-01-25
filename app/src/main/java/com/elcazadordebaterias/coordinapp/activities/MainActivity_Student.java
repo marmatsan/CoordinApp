@@ -126,13 +126,14 @@ public class MainActivity_Student extends AppCompatActivity implements RequestSu
     };
 
     @Override
-    public void submitRequest(String teacherName, String courseNumber) {
+    public void submitRequest(String teachername, String coursenumber, String coursenumberletter) {
 
         FirebaseUser user = fAuth.getCurrentUser();
 
         Map<String, Object> requestInfo = new HashMap<>();
-        requestInfo.put("TeacherFullName", teacherName);
-        requestInfo.put("CourseNumber", courseNumber);
+        requestInfo.put("TeacherFullName", teachername);
+        requestInfo.put("CourseNumber", coursenumber);
+        requestInfo.put("CourseNumberLetter", coursenumberletter);
 
         DocumentReference docRef = fStore.collection("Students").document(user.getUid());
 

@@ -20,6 +20,7 @@ import com.elcazadordebaterias.coordinapp.R;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -40,11 +41,11 @@ public class RequestSubjectCreationDialog extends DialogFragment {
 
     private Spinner teachersNamesList, coursesNamesList;
     private RequestSubjectCreationDialogListener listener;
+    private TextInputEditText coursenumberinput;
 
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
-    String studentname;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -143,6 +144,9 @@ public class RequestSubjectCreationDialog extends DialogFragment {
             teachersNameAdapter.notifyDataSetChanged(); // TODO: 23-01-2021 Since the get() method is asynchronous, first get the data, then build the view, then show it
         });
 
+        // Course number input
+        coursenumberinput = view.findViewById(R.id.coursenumber); // TODO: 26-01-2021 Improve this (check that the uses enters only one letter)
+
         builder.setView(view)
                 .setTitle("Solicitud para crear una asignatura").setNegativeButton("Cancelar", (dialogInterface, i) -> {
             // Just closes the dialog
@@ -150,8 +154,9 @@ public class RequestSubjectCreationDialog extends DialogFragment {
 
             String teachername = teachersNamesList.getSelectedItem().toString();
             String coursenumber = coursesNamesList.getSelectedItem().toString();
+            String coursenumberletter = coursenumberinput.getText().toString();
 
-            listener.submitRequest(teachername, coursenumber);
+            listener.submitRequest(teachername, coursenumber, coursenumberletter);
 
         });
 
@@ -159,7 +164,7 @@ public class RequestSubjectCreationDialog extends DialogFragment {
     }
 
     public interface RequestSubjectCreationDialogListener {
-        void submitRequest(String teachername, String coursenumber);
+        void submitRequest(String teachername, String coursenumber, String coursenumberletter);
     }
 
 }

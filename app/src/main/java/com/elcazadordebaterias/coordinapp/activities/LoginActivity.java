@@ -14,6 +14,7 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.EmailValidation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.BaseProgressIndicator;
@@ -72,12 +73,14 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * If the user has not signed out, it is sent to its corresponging activity depending of the type of user it is
+     */
     @Override
-    protected void onStart() {
+    protected void onStart() { // TODO: 25-01-2021 Do not transition to the loginactivity (or hide the layout) if a user is signed out
         super.onStart();
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            startActivity(new Intent(getApplicationContext(), MainActivity_Student.class));
-            finish();
+        if (fAuth.getCurrentUser() != null) {
+            checkUserAccessLevel(fAuth.getCurrentUser().getUid());
         }
     }
 
