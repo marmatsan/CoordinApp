@@ -19,7 +19,6 @@ import androidx.fragment.app.DialogFragment;
 import com.elcazadordebaterias.coordinapp.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -64,7 +63,9 @@ public class RequestSubjectCreationDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.requestsubjectcreation, null);
 
-        // Teacher names spinner
+        /*
+         * Teacher names spinner
+         */
         teachersNamesList = view.findViewById(R.id.teacherfullname_spinner);
 
         ArrayList<String> teachersNames = new ArrayList<String>();
@@ -93,7 +94,20 @@ public class RequestSubjectCreationDialog extends DialogFragment {
         teachersNamesList.setAdapter(teachersNameAdapter);
         teachersNamesList.setSelection(0);
 
-        // Courses names spinner
+        // Populate the spinner with names
+
+        fStore.collection("Teachers").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    teachersNames.add(document.getData().get("FullName").toString());
+                }
+            } // TODO: 23-01-2021 Not checking if the task fails
+            teachersNameAdapter.notifyDataSetChanged(); // TODO: 23-01-2021 Since the get() method is asynchronous, first get the data, then build the view, then show it
+        });
+
+        /*
+         * Courses names spinner
+         */
         coursesNamesList = view.findViewById(R.id.coursenumber_spinner);
 
         ArrayList<String> coursesNames = new ArrayList<String>();
@@ -128,17 +142,6 @@ public class RequestSubjectCreationDialog extends DialogFragment {
         coursesNamesList.setAdapter(coursesAdapter);
         coursesNamesList.setSelection(0);
 
-        CollectionReference teachersNamesCollection = fStore.collection("Teachers");
-
-        teachersNamesCollection.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    teachersNames.add(document.getData().get("FullName").toString());
-                }
-            } // TODO: 23-01-2021 Not checking if the task fails
-            teachersNameAdapter.notifyDataSetChanged(); // TODO: 23-01-2021 Since the get() method is asynchronous, first get the data, then build the view, then show it
-        });
-
         // Course number input
         coursenumberinput = view.findViewById(R.id.coursenumber); // TODO: 26-01-2021 Improve this (check that the uses enters only one letter)
 
@@ -151,7 +154,22 @@ public class RequestSubjectCreationDialog extends DialogFragment {
             String coursenumber = coursesNamesList.getSelectedItem().toString();
             String coursenumberletter = coursenumberinput.getText().toString();
 
-            listener.submitRequest(teachername, coursenumber, coursenumberletter);
+            // Search for the id of the teacher given its name
+            fStore.collection("Teachers").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String teacherId = null;
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        String retievedteachername = document.getData().get("FullName").toString();
+                        if(retievedteachername.equals(teachername)){
+                            teacherId = document.getId();
+                            break;
+                        }
+                    }
+
+                    listener.submitRequest(teacherId, coursenumber, coursenumberletter);
+
+                } // TODO: 23-01-2021 Not checking if the task fails
+            });
 
         });
 
@@ -160,7 +178,7 @@ public class RequestSubjectCreationDialog extends DialogFragment {
 
     // Interface implemented by MainActivity_Student class
     public interface RequestSubjectCreationDialogListener {
-        void submitRequest(String teachername, String coursenumber, String coursenumberletter);
+        void submitRequest(String teacherId, String coursenumber, String coursenumberletter);
     }
 
 }

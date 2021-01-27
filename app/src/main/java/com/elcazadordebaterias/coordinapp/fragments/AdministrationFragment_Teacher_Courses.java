@@ -13,6 +13,7 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.PetitionsAdapter;
 import com.elcazadordebaterias.coordinapp.utils.CardItemRequest;
 import com.elcazadordebaterias.coordinapp.utils.FirebaseRequestInfo;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -20,7 +21,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The fragment representing the Courses Tab inside the Administration Tab of the teacher.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class AdministrationFragment_Teacher_Courses extends Fragment {
+
+    FirebaseAuth fAuth;
 
     RecyclerView petitionscontainer;
     RecyclerView.Adapter adapter;
@@ -29,6 +37,7 @@ public class AdministrationFragment_Teacher_Courses extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -57,8 +66,10 @@ public class AdministrationFragment_Teacher_Courses extends Fragment {
                         for (Map.Entry<String, Object> entry : firebaseRequests.entrySet()) {
                             FirebaseRequestInfo info = (FirebaseRequestInfo) entry.getValue();
 
-                            CardItemRequest newRequest = new CardItemRequest(info.getStudentName(), info.getCourseNumber() + " " + info.getCourseNumberLetter());
-                            requestList.add(newRequest);
+                            if (fAuth.getCurrentUser().getUid().equals(info.getTeacherId())) {
+                                CardItemRequest newRequest = new CardItemRequest(info.getStudentName(), info.getCourseNumber() + " " + info.getCourseNumberLetter());
+                                requestList.add(newRequest);
+                            }
                         }
                         adapter.notifyDataSetChanged();
                     } // TODO: 26-01-2021 Check if task fails

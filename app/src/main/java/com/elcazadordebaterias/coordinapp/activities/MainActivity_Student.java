@@ -1,26 +1,23 @@
 package com.elcazadordebaterias.coordinapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ListPopupWindow;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ListPopupWindow;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+
+import com.elcazadordebaterias.coordinapp.R;
+import com.elcazadordebaterias.coordinapp.adapters.ListPopupWindowAdapter;
 import com.elcazadordebaterias.coordinapp.fragments.FilesFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.HomeFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment_Student;
-import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.ListPopupWindowAdapter;
-
 import com.elcazadordebaterias.coordinapp.utils.RequestSubjectCreationDialog;
 import com.elcazadordebaterias.coordinapp.utils.SubjectItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -29,12 +26,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The main activity for the student.
@@ -126,12 +121,12 @@ public class MainActivity_Student extends AppCompatActivity implements RequestSu
     };
 
     @Override
-    public void submitRequest(String teachername, String coursenumber, String coursenumberletter) {
+    public void submitRequest(String teacherId, String coursenumber, String coursenumberletter) {
 
         FirebaseUser user = fAuth.getCurrentUser();
 
         Map<String, Object> requestInfo = new HashMap<>();
-        requestInfo.put("TeacherFullName", teachername);
+        requestInfo.put("TeacherId", teacherId);
         requestInfo.put("CourseNumber", coursenumber);
         requestInfo.put("CourseNumberLetter", coursenumberletter);
 
