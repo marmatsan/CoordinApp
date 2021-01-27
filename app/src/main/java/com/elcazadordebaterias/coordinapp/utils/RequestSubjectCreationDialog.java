@@ -17,14 +17,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -163,6 +158,7 @@ public class RequestSubjectCreationDialog extends DialogFragment {
         return builder.create();
     }
 
+    // Interface implemented by MainActivity_Student class
     public interface RequestSubjectCreationDialogListener {
         void submitRequest(String teachername, String coursenumber, String coursenumberletter);
     }

@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/pink"
+    app:cardElevation="1dp"
     app:cardCornerRadius="0dp"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp"
@@ -17,62 +19,51 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/cancel_request"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:insetLeft="0dp"
-            android:insetTop="0dp"
-            android:insetRight="0dp"
-            android:insetBottom="0dp"
+            android:text="@string/denegar"
             app:icon="@drawable/ic_baseline_cancel_24"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/requestedcourse" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/accept_request"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:insetLeft="0dp"
-            android:insetTop="0dp"
-            android:insetRight="0dp"
-            android:insetBottom="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/aceptar"
             app:icon="@drawable/ic_baseline_check_box_24"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/cancel_request"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/cancel_request"
+            app:layout_constraintTop_toBottomOf="@+id/requestedcourse" />
 
         <TextView
             android:id="@+id/studentname"
-            android:layout_width="0dp"
+            android:layout_width="283dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="1dp"
             android:text="@string/name_of_the_student"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/requestedcourse"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/accept_request"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/requestedcourse"
-            android:layout_width="0dp"
+            android:layout_width="283dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="9dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:text="@string/requested_course"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/studentname"
-            app:layout_constraintStart_toStartOf="@+id/studentname"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/studentname" />
 
 

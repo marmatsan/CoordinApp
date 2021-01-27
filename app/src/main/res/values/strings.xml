@@ -60,5 +60,7 @@
     <string name="grupos_disponibles">Grupos disponibles</string>
     <string name="grupos">Grupos</string>
     <string name="letra_del_curso">Letra del curso</string>
+    <string name="denegar">Denegar</string>
+    <string name="aceptar">Aceptar</string>
 
 </resources>
