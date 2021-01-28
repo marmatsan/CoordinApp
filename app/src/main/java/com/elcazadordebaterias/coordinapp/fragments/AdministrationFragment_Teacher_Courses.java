@@ -55,6 +55,7 @@ public class AdministrationFragment_Teacher_Courses extends Fragment {
         adapter = new PetitionsAdapter(requestList);
         petitionscontainer.setAdapter(adapter);
 
+        // Get all the requests information and add them to the pending petitions (managed by the arraylist 'requestList' and its adapter 'adapter')
         fStore.collection("Requests")
                 .get()
                 .addOnCompleteListener(task -> {

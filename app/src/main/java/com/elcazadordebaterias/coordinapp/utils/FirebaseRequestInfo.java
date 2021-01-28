@@ -13,8 +13,9 @@ public class FirebaseRequestInfo {
     private String CourseNumberLetter;
     private String StudentName;
     private String TeacherId;
+    private String StudentId;
 
-    public FirebaseRequestInfo(){
+    public FirebaseRequestInfo() {
 
     }
 
@@ -32,6 +33,10 @@ public class FirebaseRequestInfo {
 
     public String getTeacherId() {
         return TeacherId;
+    }
+
+    public String getStudentId() {
+        return StudentId;
     }
 
 }

@@ -129,6 +129,7 @@ public class MainActivity_Student extends AppCompatActivity implements RequestSu
         requestInfo.put("TeacherId", teacherId);
         requestInfo.put("CourseNumber", coursenumber);
         requestInfo.put("CourseNumberLetter", coursenumberletter);
+        requestInfo.put("StudentId", user.getUid());
 
         DocumentReference docRef = fStore.collection("Students").document(user.getUid());
 
