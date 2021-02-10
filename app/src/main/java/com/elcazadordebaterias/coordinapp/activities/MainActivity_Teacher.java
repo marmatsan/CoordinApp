@@ -1,7 +1,6 @@
 package com.elcazadordebaterias.coordinapp.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,17 +8,10 @@ import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.AdministrationFragment_Teacher;
-import com.elcazadordebaterias.coordinapp.fragments.FilesFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.FilesFragment_Teacher;
-import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_Teacher;
-import com.elcazadordebaterias.coordinapp.fragments.HomeFragment_Student;
-import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment_Teacher;
-import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment_Student;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * The main activity for the teacher.
@@ -27,27 +19,46 @@ import com.google.firebase.auth.FirebaseAuth;
  */
 public class MainActivity_Teacher extends AppCompatActivity {
 
-    FirebaseAuth fAuth;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("TEACHER", "oncreateteacher");
         setContentView(R.layout.activity_main_teacher);
-
-        fAuth = FirebaseAuth.getInstance();
 
         // Bottom navigation management
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view_teacher);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-        bottomNavigationView.setSelectedItemId(R.id.nav_student_home);
+        bottomNavigationView.setSelectedItemId(R.id.nav_teacher_administration);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     // Static interface to create the fragment associated with the pressed item on the BottomNavigationView
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
         Fragment selectedFragment;
-
         int itemId = item.getItemId();
 
         if (itemId == R.id.nav_teacher_interactivity) {

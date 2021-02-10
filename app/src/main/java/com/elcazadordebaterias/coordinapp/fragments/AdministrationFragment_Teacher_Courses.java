@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.PetitionsAdapter;
-import com.elcazadordebaterias.coordinapp.utils.CardItemRequest;
-import com.elcazadordebaterias.coordinapp.utils.FirebaseRequestInfo;
+import com.elcazadordebaterias.coordinapp.adapters.SubjectCardAdapter;
+import com.elcazadordebaterias.coordinapp.utils.StudentCardItem;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,52 +29,59 @@ import java.util.Map;
 public class AdministrationFragment_Teacher_Courses extends Fragment {
 
     FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
 
-    RecyclerView petitionscontainer;
-    RecyclerView.Adapter adapter;
-    RecyclerView.LayoutManager layoutManager;
+    private RecyclerView subjectsRecyclerview;
+    private RecyclerView.Adapter subjectsAdapter;
+    private RecyclerView.LayoutManager subjectsLayoutManager;
+
+    ArrayList<StudentCardItem> studentList;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+
+        studentList = new ArrayList<StudentCardItem>();
+        subjectsAdapter = new SubjectCardAdapter(studentList);
+
+        fStore.collection("CoursesOrganization").document("3ºESO B")
+                .get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects");
+                    Map<String, Object> subjectInfo = data.get(0);
+                    ArrayList<String> studentsIds = (ArrayList<String>) subjectInfo.get("Students");
+
+                    fStore.collection("Students")
+                            .get()
+                            .addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document1 : task1.getResult()) {
+                                        if (studentsIds.contains(document1.getId())) {
+                                            StudentCardItem student = new StudentCardItem(document1.getData().get("FullName").toString(), document1.getData().get("UserEmail").toString());
+                                            Log.d("TEST", student.getStudentName());
+                                            studentList.add(student);
+                                        }
+                                    }
+                                    subjectsAdapter.notifyDataSetChanged();
+                                }
+                            });
+                }
+            }
+        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_administration_teacher_courses, container, false);
-
-        petitionscontainer = v.findViewById(R.id.petitionscontainer);
-        layoutManager = new LinearLayoutManager(getContext());
-        petitionscontainer.setLayoutManager(layoutManager);
-
-        Map<String, Object> firebaseRequests = new HashMap<String, Object>();
-        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-        ArrayList<CardItemRequest> requestList = new ArrayList<CardItemRequest>();
-
-        adapter = new PetitionsAdapter(requestList);
-        petitionscontainer.setAdapter(adapter);
-
-        // Get all the requests information and add them to the pending petitions (managed by the arraylist 'requestList' and its adapter 'adapter')
-        fStore.collection("Requests")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            firebaseRequests.put(document.getId(), document.toObject(FirebaseRequestInfo.class));
-                        }
-
-                        for (Map.Entry<String, Object> entry : firebaseRequests.entrySet()) {
-                            FirebaseRequestInfo info = (FirebaseRequestInfo) entry.getValue();
-
-                            if (fAuth.getCurrentUser().getUid().equals(info.getTeacherId())) {
-                                CardItemRequest newRequest = new CardItemRequest(info.getStudentName(), info.getCourseNumber() + " " + info.getCourseNumberLetter());
-                                requestList.add(newRequest);
-                            }
-                        }
-                        adapter.notifyDataSetChanged();
-                    } // TODO: 26-01-2021 Check if task fails
-                });
+        View v = inflater.inflate(R.layout.utils_subjectcard, container, false); //TODO: Change to R.layout.fragment_administration_teacher_courses
+        subjectsRecyclerview = v.findViewById(R.id.recyclerView_Groups);
+        subjectsLayoutManager = new LinearLayoutManager(getContext());
+        subjectsRecyclerview.setLayoutManager(subjectsLayoutManager);
+        subjectsRecyclerview.setAdapter(subjectsAdapter);
 
         return v;
     }

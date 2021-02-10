@@ -62,5 +62,8 @@
     <string name="letra_del_curso">Letra del curso</string>
     <string name="denegar">Denegar</string>
     <string name="aceptar">Aceptar</string>
+    <string name="name_of_the_course">Name of the course</string>
+    <string name="name_of_the_subject">Name of the subject</string>
+    <string name="email_of_the_student">Email of the student</string>
 
 </resources>

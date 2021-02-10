@@ -7,11 +7,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.EmailValidation;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,7 +26,6 @@ public class RegisterActivity extends AppCompatActivity {
     LinearProgressIndicator logIndicator;
     TextInputEditText userFullname, userEmail, userPassword, userRepPassword;
     MaterialButton register;
-    SwitchMaterial userIsAdmin;
 
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
@@ -48,8 +47,6 @@ public class RegisterActivity extends AppCompatActivity {
         userEmail = findViewById(R.id.register_user_email_text);
         userPassword = findViewById(R.id.register_user_password_text);
         userRepPassword = findViewById(R.id.register_user_repeatpassword_text);
-
-        userIsAdmin = findViewById(R.id.register_isadmin);
 
         logIndicator = findViewById(R.id.linearProgressIndicatoRegister);
         logIndicator.setVisibility(View.GONE);
@@ -110,14 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
                 userInfo.put("FullName", userFullname.getText().toString());
                 userInfo.put("UserEmail", userEmail.getText().toString());
 
-                DocumentReference df;
-                boolean isAdmin = userIsAdmin.isChecked();
-
-                if(isAdmin) {
-                    df = fStore.collection("Teachers").document(user.getUid());
-                }else{
-                    df = fStore.collection("Students").document(user.getUid());
-                }
+                DocumentReference df = fStore.collection("Students").document(user.getUid());
 
                 df.set(userInfo).addOnFailureListener(e -> {
                     Toast.makeText(getApplicationContext(), "Error al añadir el nuevo usuario", Toast.LENGTH_SHORT).show();

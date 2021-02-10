@@ -18,12 +18,9 @@ import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.HomeFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment_Student;
-import com.elcazadordebaterias.coordinapp.utils.RequestSubjectCreationDialog;
 import com.elcazadordebaterias.coordinapp.utils.SubjectItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -36,7 +33,7 @@ import java.util.Map;
  *
  * @author Martín Mateos Sánchez
  */
-public class MainActivity_Student extends AppCompatActivity implements RequestSubjectCreationDialog.RequestSubjectCreationDialogListener {
+public class MainActivity_Student extends AppCompatActivity {
     private ListPopupWindow listPopupWindow;
     private ArrayList<SubjectItem> mSubjectList;
     private ListPopupWindowAdapter mListPopupWindowAdapter;
@@ -74,6 +71,25 @@ public class MainActivity_Student extends AppCompatActivity implements RequestSu
         listPopupWindow.setAnchorView(findViewById(R.id.action_subjects));
         listPopupWindow.setAdapter(mListPopupWindowAdapter);
         listPopupWindow.setModal(true); //TODO: Better approach?
+
+        // Get data of groups to send to activity
+        Map<String, Object> groupsData = new HashMap<String, Object>();
+
+        fStore.collection("CoursesOrganization")
+                .document("StudentsOrganization")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            groupsData.put("StudentsOrganization", document.getData());
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error obteniendo los datos de los grupos", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error obteniendo los datos de los grupos", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
@@ -119,36 +135,5 @@ public class MainActivity_Student extends AppCompatActivity implements RequestSu
 
         return true;
     };
-
-    @Override
-    public void submitRequest(String teacherId, String coursenumber, String coursenumberletter) {
-
-        FirebaseUser user = fAuth.getCurrentUser();
-
-        Map<String, Object> requestInfo = new HashMap<>();
-        requestInfo.put("TeacherId", teacherId);
-        requestInfo.put("CourseNumber", coursenumber);
-        requestInfo.put("CourseNumberLetter", coursenumberletter);
-        requestInfo.put("StudentId", user.getUid());
-
-        DocumentReference docRef = fStore.collection("Students").document(user.getUid());
-
-        docRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    requestInfo.put("StudentName", document.getData().get("FullName").toString());
-                }
-
-                // This can´t be used outside because the get() method is asynchronous!
-                DocumentReference df = fStore.collection("Requests").document(user.getUid());
-
-                df.set(requestInfo).addOnFailureListener(e -> {
-                    Toast.makeText(getApplicationContext(), "Error al procesar la solicitud", Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
-
-    }
 
 }
