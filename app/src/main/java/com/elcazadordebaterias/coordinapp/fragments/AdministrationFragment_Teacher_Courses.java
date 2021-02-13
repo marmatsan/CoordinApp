@@ -84,6 +84,7 @@ public class AdministrationFragment_Teacher_Courses extends Fragment {
         ParentRecyclerViewItem.setAdapter(parentParentItemAdapter);
         ParentRecyclerViewItem.setLayoutManager(layoutManager);
 
+
         return v;
     }
 
@@ -145,9 +146,7 @@ public class AdministrationFragment_Teacher_Courses extends Fragment {
     private List<ParentParentItem> ParentParentItemList(){
         List<ParentParentItem> itemList = new ArrayList<>();
         itemList.add(new ParentParentItem("Grupo 1",ParentItemList1()));
-        itemList.add(new ParentParentItem("Grupo 2", ParentItemList2()));
-        itemList.add(new ParentParentItem("Grupo 3", ParentItemList3()));
-        itemList.add(new ParentParentItem("Grupo 4", ParentItemList4()));
+        itemList.add(new ParentParentItem("Grupo 2",ParentItemList1()));
         return itemList;
 
     }

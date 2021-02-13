@@ -1,5 +1,7 @@
 package com.elcazadordebaterias.coordinapp.adapters;
 
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +21,14 @@ import java.util.List;
 public class ParentItemAdapter extends RecyclerView.Adapter<ParentItemAdapter.ParentViewHolder> {
 
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+    private SparseBooleanArray expandState = new SparseBooleanArray();
     private List<ParentItem> itemList;
 
     public ParentItemAdapter(List<ParentItem> itemList) {
         this.itemList = itemList;
+        for (int i = 0; i < itemList.size(); i++) {
+            expandState.append(i, false);
+        }
     }
 
     @NonNull
@@ -49,12 +55,30 @@ public class ParentItemAdapter extends RecyclerView.Adapter<ParentItemAdapter.Pa
         parentViewHolder.ChildRecyclerView.setLayoutManager(layoutManager);
         parentViewHolder.ChildRecyclerView.setAdapter(childItemAdapter);
         parentViewHolder.ChildRecyclerView.setRecycledViewPool(viewPool);
+
+        //check if view is expanded
+        final boolean isExpanded = expandState.get(position);
+        parentViewHolder.expandableView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+
+        parentViewHolder.arrowBtn.setOnClickListener(view -> {
+            onClickButton(parentViewHolder.expandableView,  position);
+        });
     }
 
     @Override
     public int getItemCount() {
-
         return itemList.size();
+    }
+
+    private void onClickButton(final ConstraintLayout expandableLayout, final  int i) {
+
+        if (expandableLayout.getVisibility() == View.VISIBLE){
+            expandableLayout.setVisibility(View.GONE);
+            expandState.put(i, false);
+        }else{
+            expandableLayout.setVisibility(View.VISIBLE);
+            expandState.put(i, true);
+        }
     }
 
     static class ParentViewHolder extends RecyclerView.ViewHolder {
@@ -71,17 +95,6 @@ public class ParentItemAdapter extends RecyclerView.Adapter<ParentItemAdapter.Pa
             ChildRecyclerView = itemView.findViewById(R.id.child_recyclerview);
             expandableView = itemView.findViewById(R.id.constraintLayout_subjectExpandableView);
             arrowBtn = itemView.findViewById(R.id.subject_expandableButton);
-
-            arrowBtn.setOnClickListener(view -> {
-                if (expandableView.getVisibility() == View.GONE) {
-                    expandableView.setVisibility(View.VISIBLE);
-                    arrowBtn.setBackgroundResource(R.drawable.ic_baseline_arrow_upward_24);
-                } else {
-                    expandableView.setVisibility(View.GONE);
-                    arrowBtn.setBackgroundResource(R.drawable.ic_baseline_arrow_downward_24);
-                }
-            });
-
         }
     }
 }

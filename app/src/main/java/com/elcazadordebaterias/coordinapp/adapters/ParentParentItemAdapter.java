@@ -1,10 +1,13 @@
 package com.elcazadordebaterias.coordinapp.adapters;
 
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,10 +23,14 @@ import java.util.List;
 public class ParentParentItemAdapter extends RecyclerView.Adapter<ParentParentItemAdapter.ParentParentViewHolder> {
 
     private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+    private SparseBooleanArray expandState = new SparseBooleanArray();
     private List<ParentParentItem> itemList;
 
     public ParentParentItemAdapter(List<ParentParentItem> itemList) {
         this.itemList = itemList;
+        for (int i = 0; i < itemList.size(); i++) {
+            expandState.append(i, false);
+        }
     }
 
     @NonNull
@@ -37,6 +44,7 @@ public class ParentParentItemAdapter extends RecyclerView.Adapter<ParentParentIt
 
     @Override
     public void onBindViewHolder(@NonNull ParentParentViewHolder parentParentViewHolder, int position) {
+
         ParentParentItem parentParentItem = itemList.get(position);
 
         parentParentViewHolder.groupName.setText(parentParentItem.getParentParentItemTitle());
@@ -48,12 +56,35 @@ public class ParentParentItemAdapter extends RecyclerView.Adapter<ParentParentIt
         parentParentViewHolder.recyclerView_Groups.setLayoutManager(layoutManager);
         parentParentViewHolder.recyclerView_Groups.setAdapter(parentItemAdapter);
         parentParentViewHolder.recyclerView_Groups.setRecycledViewPool(viewPool);
+
+        //check if view is expanded
+        final boolean isExpanded = expandState.get(position);
+        parentParentViewHolder.constraintLayout_groupsExpandableView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+
+        parentParentViewHolder.groups_expandableButton.setOnClickListener(view -> {
+            onClickButton(parentParentViewHolder.constraintLayout_groupsExpandableView,  position);
+        });
+
     }
 
     @Override
     public int getItemCount() {
         return itemList.size();
     }
+
+    private void onClickButton(final ConstraintLayout expandableLayout, final  int i) {
+
+        //Simply set View to Gone if not expanded
+        //Not necessary but I put simple rotation on button layout
+        if (expandableLayout.getVisibility() == View.VISIBLE){
+            expandableLayout.setVisibility(View.GONE);
+            expandState.put(i, false);
+        }else{
+            expandableLayout.setVisibility(View.VISIBLE);
+            expandState.put(i, true);
+        }
+    }
+
 
     static class ParentParentViewHolder extends RecyclerView.ViewHolder {
 
@@ -69,16 +100,6 @@ public class ParentParentItemAdapter extends RecyclerView.Adapter<ParentParentIt
             recyclerView_Groups = itemView.findViewById(R.id.recyclerView_Groups);
             constraintLayout_groupsExpandableView = itemView.findViewById(R.id.constraintLayout_groupsExpandableView);
             groups_expandableButton = itemView.findViewById(R.id.groups_expandableButton);
-
-            groups_expandableButton.setOnClickListener(view -> {
-                if (constraintLayout_groupsExpandableView.getVisibility() == View.GONE) {
-                    constraintLayout_groupsExpandableView.setVisibility(View.VISIBLE);
-                    groups_expandableButton.setBackgroundResource(R.drawable.ic_baseline_arrow_upward_24);
-                } else {
-                    constraintLayout_groupsExpandableView.setVisibility(View.GONE);
-                    groups_expandableButton.setBackgroundResource(R.drawable.ic_baseline_arrow_downward_24);
-                }
-            });
 
         }
     }
