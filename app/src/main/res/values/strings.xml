@@ -65,5 +65,8 @@
     <string name="name_of_the_course">Name of the course</string>
     <string name="name_of_the_subject">Name of the subject</string>
     <string name="email_of_the_student">Email of the student</string>
+    <string name="name_of_the_group">Name of the group</string>
+    <string name="expandir">Expandir</string>
+    <string name="colapsar">Colapsar</string>
 
 </resources>
