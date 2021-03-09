@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.ParentParentItem;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
@@ -62,7 +63,15 @@ public class ParentParentItemAdapter extends RecyclerView.Adapter<ParentParentIt
         parentParentViewHolder.constraintLayout_groupsExpandableView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
 
         parentParentViewHolder.groups_expandableButton.setOnClickListener(view -> {
-            onClickButton(parentParentViewHolder.constraintLayout_groupsExpandableView,  position);
+            if (parentParentViewHolder.constraintLayout_groupsExpandableView.getVisibility() == View.VISIBLE){
+                parentParentViewHolder.constraintLayout_groupsExpandableView.setVisibility(View.GONE);
+                parentParentViewHolder.groups_expandableButton.setText(R.string.expandir);
+                expandState.put(position, false);
+            }else{
+                parentParentViewHolder.constraintLayout_groupsExpandableView.setVisibility(View.VISIBLE);
+                parentParentViewHolder.groups_expandableButton.setText(R.string.colapsar);
+                expandState.put(position, true);
+            }
         });
 
     }
@@ -72,26 +81,13 @@ public class ParentParentItemAdapter extends RecyclerView.Adapter<ParentParentIt
         return itemList.size();
     }
 
-    private void onClickButton(final ConstraintLayout expandableLayout, final  int i) {
-
-        //Simply set View to Gone if not expanded
-        //Not necessary but I put simple rotation on button layout
-        if (expandableLayout.getVisibility() == View.VISIBLE){
-            expandableLayout.setVisibility(View.GONE);
-            expandState.put(i, false);
-        }else{
-            expandableLayout.setVisibility(View.VISIBLE);
-            expandState.put(i, true);
-        }
-    }
-
 
     static class ParentParentViewHolder extends RecyclerView.ViewHolder {
 
         TextView groupName;
         RecyclerView recyclerView_Groups;
         ConstraintLayout constraintLayout_groupsExpandableView;
-        Button groups_expandableButton;
+        MaterialButton groups_expandableButton;
 
         ParentParentViewHolder(final View itemView) {
             super(itemView);
