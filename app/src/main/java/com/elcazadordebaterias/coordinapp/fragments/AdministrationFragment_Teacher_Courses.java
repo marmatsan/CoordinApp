@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,15 @@ import com.elcazadordebaterias.coordinapp.adapters.ParentParentItemAdapter;
 import com.elcazadordebaterias.coordinapp.utils.ChildItem;
 import com.elcazadordebaterias.coordinapp.utils.ParentItem;
 import com.elcazadordebaterias.coordinapp.utils.ParentParentItem;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The fragment representing the Courses Tab inside the Administration Tab of the teacher.
@@ -33,42 +38,9 @@ public class AdministrationFragment_Teacher_Courses extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
-
-        /*
-
-        studentList = new ArrayList<StudentCardItem>();
-        subjectsAdapter = new SubjectCardAdapter(studentList);
-
-        fStore.collection("CoursesOrganization").document("3ºESO B")
-                .get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects");
-                    Map<String, Object> subjectInfo = data.get(0);
-                    ArrayList<String> studentsIds = (ArrayList<String>) subjectInfo.get("Students");
-
-                    fStore.collection("Students")
-                            .get()
-                            .addOnCompleteListener(task1 -> {
-                                if (task1.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document1 : task1.getResult()) {
-                                        if (studentsIds.contains(document1.getId())) {
-                                            StudentCardItem student = new StudentCardItem(document1.getData().get("FullName").toString(), document1.getData().get("UserEmail").toString());
-                                            Log.d("TEST", student.getStudentName());
-                                            studentList.add(student);
-                                        }
-                                    }
-                                    subjectsAdapter.notifyDataSetChanged();
-                                }
-                            });
-                }
-            }
-        });
-         */
-
     }
 
     @Override
@@ -79,76 +51,51 @@ public class AdministrationFragment_Teacher_Courses extends Fragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-        ParentParentItemAdapter parentParentItemAdapter = new ParentParentItemAdapter(ParentParentItemList());
+        List<ParentParentItem> itemList = new ArrayList<>();
+
+        ParentParentItemAdapter parentParentItemAdapter = new ParentParentItemAdapter(itemList);
 
         ParentRecyclerViewItem.setAdapter(parentParentItemAdapter);
         ParentRecyclerViewItem.setLayoutManager(layoutManager);
 
+        // Create list
+        fStore.collection("CoursesOrganization").document("3ºESO B").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+
+                    ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects"); // Array of the subjects. Contains all the subjects from the current course
+                    Map<String, Object> subjectInfo = data.get(0); // Current subject
+
+                    if (subjectInfo.get("TeacherId").equals(fAuth.getCurrentUser().getUid())){ // Check if the teacher is teaching the subject
+
+                        ArrayList<String> studentsIds = (ArrayList<String>) subjectInfo.get("Students");
+                        List<ChildItem> ChildItemList = new ArrayList<>(); // List with the information of the students
+                        List<ParentItem> ParentItemList = new ArrayList<>();  // List with the information of the subjects
+
+                        fStore.collection("Students").get().addOnCompleteListener(task1 -> { // Search for student info to build the student list
+                                    if (task1.isSuccessful()) {
+
+                                        for (QueryDocumentSnapshot document1 : task1.getResult()) { // Create the list of the students
+                                            if (studentsIds.contains(document1.getId())) {
+                                                ChildItemList.add(new ChildItem(document1.getData().get("FullName").toString(),  document1.getData().get("UserEmail").toString()));
+                                            }
+                                        }
+
+                                        ParentItemList.add(new ParentItem((String) subjectInfo.get("SubjectName"), ChildItemList));
+                                        itemList.add(new ParentParentItem(document.getId(), ParentItemList));
+
+                                        parentParentItemAdapter.notifyDataSetChanged();
+
+                                    }
+                                });
+
+                    }
+                }
+            }
+        });
 
         return v;
-    }
-
-    private List<ParentItem> ParentItemList1() {
-        List<ParentItem> itemList = new ArrayList<>();
-
-        itemList.add(new ParentItem("Asignatura 1", ChildItemList()));
-        itemList.add(new ParentItem("Asignatura 2", ChildItemList()));
-        itemList.add(new ParentItem("Asignatura 3", ChildItemList()));
-        itemList.add(new ParentItem("Asignatura 4", ChildItemList()));
-
-        return itemList;
-    }
-
-    private List<ParentItem> ParentItemList2() {
-        List<ParentItem> itemList = new ArrayList<>();
-
-        itemList.add(new ParentItem("Asignatura 5", ChildItemList()));
-        itemList.add(new ParentItem("Asignatura 6", ChildItemList()));
-        itemList.add(new ParentItem("Asignatura 7", ChildItemList()));
-        itemList.add(new ParentItem("Asignatura 8", ChildItemList()));
-
-        return itemList;
-    }
-
-    private List<ParentItem> ParentItemList3() {
-        List<ParentItem> itemList = new ArrayList<>();
-
-        itemList.add(new ParentItem("Asignatura 9", ChildItemList()));
-        itemList.add(new ParentItem("Asignatura 10", ChildItemList()));
-        itemList.add(new ParentItem("Asignatura 11", ChildItemList()));
-        itemList.add(new ParentItem("Asignatura 12", ChildItemList()));
-
-        return itemList;
-    }
-
-    private List<ParentItem> ParentItemList4() {
-        List<ParentItem> itemList = new ArrayList<>();
-
-        itemList.add(new ParentItem("Asignatura 13", ChildItemList()));
-        itemList.add(new ParentItem("Asignatura 14", ChildItemList()));
-        itemList.add(new ParentItem("Asignatura 15", ChildItemList()));
-        itemList.add(new ParentItem("Asignatura 16", ChildItemList()));
-
-        return itemList;
-    }
-
-    private List<ChildItem> ChildItemList() {
-        List<ChildItem> ChildItemList = new ArrayList<>();
-
-        ChildItemList.add(new ChildItem("Estudiante 1", "Email1@gmail.com"));
-        ChildItemList.add(new ChildItem("Estudiante 2", "Email2@gmail.com"));
-        ChildItemList.add(new ChildItem("Estudiante 3", "Email3@gmail.com"));
-        ChildItemList.add(new ChildItem("Estudiante 4", "Email4@gmail.com"));
-
-        return ChildItemList;
-    }
-
-    private List<ParentParentItem> ParentParentItemList(){
-        List<ParentParentItem> itemList = new ArrayList<>();
-        itemList.add(new ParentParentItem("Grupo 1",ParentItemList1()));
-        itemList.add(new ParentParentItem("Grupo 2",ParentItemList1()));
-        return itemList;
-
     }
 
 }
