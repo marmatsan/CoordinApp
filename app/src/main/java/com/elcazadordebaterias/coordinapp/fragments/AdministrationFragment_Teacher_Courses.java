@@ -65,32 +65,33 @@ public class AdministrationFragment_Teacher_Courses extends Fragment {
                 if (document.exists()) {
 
                     ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects"); // Array of the subjects. Contains all the subjects from the current course
-                    Map<String, Object> subjectInfo = data.get(0); // Current subject
+                    List<ParentItem> ParentItemList = new ArrayList<>();  // List with the information of the subjects
 
-                    if (subjectInfo.get("TeacherId").equals(fAuth.getCurrentUser().getUid())){ // Check if the teacher is teaching the subject
+                    for (int i = 0; i < data.size(); i++) { // Iterate over all the subjects in the current course
+                        Map<String, Object> subjectInfo = data.get(i); // Current subject
 
                         ArrayList<String> studentsIds = (ArrayList<String>) subjectInfo.get("Students");
                         List<ChildItem> ChildItemList = new ArrayList<>(); // List with the information of the students
-                        List<ParentItem> ParentItemList = new ArrayList<>();  // List with the information of the subjects
 
-                        fStore.collection("Students").get().addOnCompleteListener(task1 -> { // Search for student info to build the student list
-                                    if (task1.isSuccessful()) {
+                        if (subjectInfo.get("TeacherId").equals(fAuth.getCurrentUser().getUid())) { // Check if the teacher is teaching the subject
 
-                                        for (QueryDocumentSnapshot document1 : task1.getResult()) { // Create the list of the students
-                                            if (studentsIds.contains(document1.getId())) {
-                                                ChildItemList.add(new ChildItem(document1.getData().get("FullName").toString(),  document1.getData().get("UserEmail").toString()));
-                                            }
+                            fStore.collection("Students").get().addOnCompleteListener(task1 -> { // Search for student info to build the student list
+                                if (task1.isSuccessful()) {
+
+                                    for (QueryDocumentSnapshot document1 : task1.getResult()) { // Create the list of the students
+                                        if (studentsIds.contains(document1.getId())) {
+                                            ChildItemList.add(new ChildItem(document1.getData().get("FullName").toString(), document1.getData().get("UserEmail").toString()));
                                         }
-
-                                        ParentItemList.add(new ParentItem((String) subjectInfo.get("SubjectName"), ChildItemList));
-                                        itemList.add(new ParentParentItem(document.getId(), ParentItemList));
-
-                                        parentParentItemAdapter.notifyDataSetChanged();
-
                                     }
-                                });
 
+                                    ParentItemList.add(new ParentItem((String) subjectInfo.get("SubjectName"), ChildItemList));
+                                    parentParentItemAdapter.notifyDataSetChanged();
+                                }
+                            });
+
+                        }
                     }
+                    itemList.add(new ParentParentItem(document.getId(), ParentItemList));
                 }
             }
         });

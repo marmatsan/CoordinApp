@@ -72,25 +72,6 @@ public class MainActivity_Student extends AppCompatActivity {
         listPopupWindow.setAdapter(mListPopupWindowAdapter);
         listPopupWindow.setModal(true); //TODO: Better approach?
 
-        // Get data of groups to send to activity
-        Map<String, Object> groupsData = new HashMap<String, Object>();
-
-        fStore.collection("CoursesOrganization")
-                .document("StudentsOrganization")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            groupsData.put("StudentsOrganization", document.getData());
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Error obteniendo los datos de los grupos", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Error obteniendo los datos de los grupos", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
     }
 
     // Menu
