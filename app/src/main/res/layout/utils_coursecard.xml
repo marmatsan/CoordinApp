@@ -17,7 +17,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/groupName"
+            android:id="@+id/courseName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -29,29 +29,29 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/groups_expandableButton"
+            android:id="@+id/expandSubjectsList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:text="@string/expandir"
-            app:layout_constraintBottom_toTopOf="@+id/constraintLayout_groupsExpandableView"
+            app:layout_constraintBottom_toTopOf="@id/expandableView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/groupName" />
+            app:layout_constraintTop_toBottomOf="@id/courseName" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout_groupsExpandableView"
+            android:id="@+id/expandableView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/groups_expandableButton">
+            app:layout_constraintTop_toBottomOf="@id/expandSubjectsList">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_Groups"
+                android:id="@+id/subjectsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -9,8 +9,8 @@
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="@color/pink"
-    app:cardCornerRadius="0dp"
+    app:cardBackgroundColor="#6ab7ff"
+    app:cardCornerRadius="4dp"
     app:cardElevation="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,44 +18,41 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/parent_item_title"
+            android:id="@+id/coursesubject_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
             android:text="@string/name_of_the_subject"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/constraintLayout_subjectExpandableView"
-            app:layout_constraintEnd_toStartOf="@+id/subject_expandableButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/subject_expandableButton"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/ic_baseline_arrow_downward_24"
-            app:layout_constraintBottom_toBottomOf="@+id/parent_item_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/parent_item_title" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/coursesubject_expandparticipantslistbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/expandir"
+            app:layout_constraintBottom_toTopOf="@+id/coursesubject_expandableview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/coursesubject_name" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout_subjectExpandableView"
+            android:id="@+id/coursesubject_expandableview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/subject_expandableButton">
+            app:layout_constraintTop_toBottomOf="@id/coursesubject_expandparticipantslistbutton">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/child_recyclerview"
+                android:id="@+id/coursesubject_participantsrecyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"

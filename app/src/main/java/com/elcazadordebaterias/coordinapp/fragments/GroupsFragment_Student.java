@@ -15,6 +15,7 @@ import android.widget.ExpandableListView;
 import com.elcazadordebaterias.coordinapp.utils.CardviewItem;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.CardviewAdapter;
+import com.elcazadordebaterias.coordinapp.utils.CreateGroupDialog;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
@@ -56,7 +57,8 @@ public class GroupsFragment_Student extends Fragment {
         mAddGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                insertItem();
+                CreateGroupDialog dialog = new CreateGroupDialog();
+                dialog.show(getFragmentManager(), "dialog"); //TODO: Start creating the dialog to build the groups
             }
         });
 

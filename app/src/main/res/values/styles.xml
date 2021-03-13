@@ -28,4 +28,9 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="RoundedImage">
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

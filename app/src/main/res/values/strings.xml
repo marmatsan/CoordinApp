@@ -69,5 +69,6 @@
     <string name="expandir">Expandir</string>
     <string name="colapsar">Colapsar</string>
     <string name="mis_grupos">Mis grupos</string>
+    <string name="parece_que_no_tienes_ning_n_chat_creado_puedes_crear_un_chat_pulsando_el_bot_n">Parece que no tienes ningún chat creado. Puedes crear un chat pulsando el botón +</string>
 
 </resources>
