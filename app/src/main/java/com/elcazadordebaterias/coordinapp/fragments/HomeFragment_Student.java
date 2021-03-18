@@ -14,6 +14,7 @@ import com.elcazadordebaterias.coordinapp.adapters.CourseCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.CourseCard;
 import com.elcazadordebaterias.coordinapp.utils.CourseParticipant;
 import com.elcazadordebaterias.coordinapp.utils.CourseSubject;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,6 +32,8 @@ public class HomeFragment_Student extends Fragment {
 
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
+    CircularProgressIndicator loadingIndicator;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,10 @@ public class HomeFragment_Student extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home_student, container, false);
 
-        RecyclerView ParentRecyclerViewItem = v.findViewById(R.id.recyclerview_courses);
+        loadingIndicator = v.findViewById(R.id.loadingIndicator);
+        loadingIndicator.setVisibility(View.VISIBLE);
+
+        RecyclerView coursesRecyclerView = v.findViewById(R.id.recyclerview_courses);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
@@ -52,8 +58,8 @@ public class HomeFragment_Student extends Fragment {
 
         CourseCardAdapter courseCardAdapter = new CourseCardAdapter(itemList);
 
-        ParentRecyclerViewItem.setAdapter(courseCardAdapter);
-        ParentRecyclerViewItem.setLayoutManager(layoutManager);
+        coursesRecyclerView.setAdapter(courseCardAdapter);
+        coursesRecyclerView.setLayoutManager(layoutManager);
 
         // Create list
         fStore.collection("CoursesOrganization").document("3ºESO B").get().addOnCompleteListener(task -> {
@@ -97,7 +103,9 @@ public class HomeFragment_Student extends Fragment {
 
                         }
                     }
-                    itemList.add(new CourseCard(document.getId(), courseSubjectList));
+                        itemList.add(new CourseCard(document.getId(), courseSubjectList));
+                    loadingIndicator.setVisibility(View.GONE);
+                    coursesRecyclerView.setVisibility(View.VISIBLE);
                 }
             }
         });
