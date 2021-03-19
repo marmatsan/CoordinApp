@@ -31,8 +31,14 @@ public class GroupsFragment_Student extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private Context mContext;
-    private MaterialButton mAddGroup;
+    private MaterialButton mGroupCreationRequest;
     ArrayList<CardviewItem> cardViewItemList = new ArrayList<>();
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +51,7 @@ public class GroupsFragment_Student extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_groups_student, container, false);
 
-        mRecyclerView = rootView.findViewById(R.id.fragment_groups_recyclerview);
+        mRecyclerView = rootView.findViewById(R.id.groupsRecyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mContext);
         mAdapter = new CardviewAdapter(cardViewItemList);
@@ -53,13 +59,10 @@ public class GroupsFragment_Student extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
-        mAddGroup = rootView.findViewById(R.id.addgroup);
-        mAddGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CreateGroupDialog dialog = new CreateGroupDialog();
-                dialog.show(getFragmentManager(), "dialog"); //TODO: Start creating the dialog to build the groups
-            }
+        mGroupCreationRequest = rootView.findViewById(R.id.groupCreationRequest);
+        mGroupCreationRequest.setOnClickListener(view -> {
+            CreateGroupDialog dialog = new CreateGroupDialog();
+            dialog.show(getFragmentManager(), "dialog");
         });
 
         return rootView;
@@ -68,12 +71,6 @@ public class GroupsFragment_Student extends Fragment {
     public void insertItem(){
         cardViewItemList.add(new CardviewItem(new ExpandableListView(mContext)));
         mAdapter.notifyItemInserted(cardViewItemList.size() - 1);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
     }
 
 }

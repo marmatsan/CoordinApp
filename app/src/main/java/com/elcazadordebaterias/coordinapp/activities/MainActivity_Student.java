@@ -18,6 +18,7 @@ import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.HomeFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment_Student;
+import com.elcazadordebaterias.coordinapp.utils.CreateGroupDialog;
 import com.elcazadordebaterias.coordinapp.utils.SubjectItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,7 +34,7 @@ import java.util.Map;
  *
  * @author Martín Mateos Sánchez
  */
-public class MainActivity_Student extends AppCompatActivity {
+public class MainActivity_Student extends AppCompatActivity implements CreateGroupDialog.CreateGroupDialogListener {
     private ListPopupWindow listPopupWindow;
     private ArrayList<SubjectItem> mSubjectList;
     private ListPopupWindowAdapter mListPopupWindowAdapter;
@@ -116,5 +117,10 @@ public class MainActivity_Student extends AppCompatActivity {
 
         return true;
     };
+
+    @Override
+    public void submitRequest(String course, String subject, String[] participants) {
+
+    }
 
 }

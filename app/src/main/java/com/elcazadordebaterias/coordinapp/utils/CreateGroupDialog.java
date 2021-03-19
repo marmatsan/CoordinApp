@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -36,14 +37,13 @@ import java.util.ArrayList;
  */
 
 public class CreateGroupDialog extends DialogFragment {
-    /*
-    private Spinner teachersNamesList, coursesNamesList;
-    private RequestSubjectCreationDialogListener listener;
+    private Spinner courseList, subjectList;
+    private ListView participantsList;
+
+    private CreateGroupDialogListener listener;
 
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
-
-    String studentname;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -53,9 +53,9 @@ public class CreateGroupDialog extends DialogFragment {
         fStore = FirebaseFirestore.getInstance();
 
         try {
-            listener = (RequestSubjectCreationDialogListener) context;
+            listener = (CreateGroupDialogListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement RequestSubjectCreationDialogListener");
+            throw new ClassCastException(context.toString() + " must implement CreateGroupDialogListener");
         }
     }
 
@@ -65,50 +65,50 @@ public class CreateGroupDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.requestsubjectcreation, null);
+        View view = inflater.inflate(R.layout.utils_creategroupdialog, null);
 
-        // Teacher names spinner
-        teachersNamesList = view.findViewById(R.id.teacherfullname_spinner);
-
-        ArrayList<String> teachersNames = new ArrayList<String>();
-        teachersNames.add("Nombre del/la profesor/a");
-
-        ArrayAdapter<String> teachersNameAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, teachersNames) {
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0;
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0) {
-                    tv.setTextColor(Color.GRAY);
-                } else {
-                    tv.setTextColor(Color.BLACK);
-                }
-                return view;
-            }
-
-        };
-        teachersNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        teachersNamesList.setAdapter(teachersNameAdapter);
-        teachersNamesList.setSelection(0);
-
-        // Courses names spinner
-        coursesNamesList = view.findViewById(R.id.coursenumber_spinner);
+        // Group list spinner
+        courseList = view.findViewById(R.id.courseNameSpinner);
 
         ArrayList<String> coursesNames = new ArrayList<String>();
-        coursesNames.add("Selecciona un curso");
-        coursesNames.add("1º ESO");
-        coursesNames.add("2º ESO");
-        coursesNames.add("3º ESO");
-        coursesNames.add("4º ESO");
-        coursesNames.add("1º Bachillerato");
-        coursesNames.add("2º Bachillerato");
+        coursesNames.add("Selecciona el curso");
 
-        ArrayAdapter<String> coursesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, coursesNames) {
+        ArrayAdapter<String> courseListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, coursesNames) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    tv.setTextColor(Color.GRAY);
+                } else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        courseListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        courseList.setAdapter(courseListAdapter);
+        courseList.setSelection(0);
+
+        // Subject list spinner
+        subjectList = view.findViewById(R.id.subjectNameSpinner);
+
+        ArrayList<String> selectedList = null;
+
+        ArrayList<String> emptyList = new ArrayList<String>();
+        emptyList.add("Primero tienes que seleccionar un curso");
+
+        ArrayList<String> subjectNames = new ArrayList<String>();
+        subjectNames.add("Selecciona una asignatura");
+
+        selectedList = emptyList;
+
+        ArrayAdapter<String> subjectListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, selectedList) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
@@ -127,38 +127,41 @@ public class CreateGroupDialog extends DialogFragment {
             }
 
         };
-        coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        coursesNamesList.setAdapter(coursesAdapter);
-        coursesNamesList.setSelection(0);
+        subjectListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        subjectList.setAdapter(subjectListAdapter);
+        subjectList.setSelection(0);
 
-        CollectionReference teachersNamesCollection = fStore.collection("Teachers");
+        CollectionReference coursesCollection = fStore.collection("CoursesOrganization");
 
-        teachersNamesCollection.get().addOnCompleteListener(task -> {
+        coursesCollection.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    teachersNames.add(document.getData().get("FullName").toString());
+                    coursesNames.add(document.getId());
                 }
-            } // TODO: 23-01-2021 Not checking if the task fails
-            teachersNameAdapter.notifyDataSetChanged();
+            }
+            courseListAdapter.notifyDataSetChanged();
         });
 
-        builder.setView(view)
-                .setTitle("Solicitud para crear una asignatura").setNegativeButton("Cancelar", (dialogInterface, i) -> {
-            // Just closes the dialog
-        }).setPositiveButton("Solicitar", (dialogInterface, i) -> {
 
-            String teachername = teachersNamesList.getSelectedItem().toString();
-            String coursenumber = coursesNamesList.getSelectedItem().toString();
+        builder.setView(view).setTitle("Solicitud para crear un grupo")
+                .setNegativeButton("Cancelar", (dialogInterface, i) -> {
+                    // Just closes the dialog
+        })
+                .setPositiveButton("Solicitar", (dialogInterface, i) -> {
 
-            listener.submitRequest(teachername, coursenumber);
+                    String course = null;
+                    String subject = null;
+                    String[] participants = null;
+
+                    listener.submitRequest(course, subject, participants);
 
         });
 
         return builder.create();
     }
 
-    public interface RequestSubjectCreationDialogListener {
-        void submitRequest(String teachername, String coursenumber);
+    public interface CreateGroupDialogListener {
+        void submitRequest(String course, String subject, String[] participants);
     }
-*/
+
 }
