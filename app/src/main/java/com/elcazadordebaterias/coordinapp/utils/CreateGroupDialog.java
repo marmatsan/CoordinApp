@@ -19,12 +19,9 @@ import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.elcazadordebaterias.coordinapp.adapters.MyAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -37,8 +34,7 @@ import java.util.ArrayList;
  */
 
 public class CreateGroupDialog extends DialogFragment {
-    private Spinner courseList, subjectList;
-    private ListView participantsList;
+    private Spinner courseList, subjectList, participantsList;
 
     private CreateGroupDialogListener listener;
 
@@ -98,17 +94,10 @@ public class CreateGroupDialog extends DialogFragment {
         // Subject list spinner
         subjectList = view.findViewById(R.id.subjectNameSpinner);
 
-        ArrayList<String> selectedList = null;
-
-        ArrayList<String> emptyList = new ArrayList<String>();
-        emptyList.add("Primero tienes que seleccionar un curso");
-
         ArrayList<String> subjectNames = new ArrayList<String>();
         subjectNames.add("Selecciona una asignatura");
 
-        selectedList = emptyList;
-
-        ArrayAdapter<String> subjectListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, selectedList) {
+        ArrayAdapter<String> subjectListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subjectNames) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
@@ -140,7 +129,28 @@ public class CreateGroupDialog extends DialogFragment {
                 }
             }
             courseListAdapter.notifyDataSetChanged();
+            /*
+            if(coursesNames.size() > 2){
+
+            }
+             */
         });
+
+        // Participants List Spinner
+
+        participantsList = view.findViewById(R.id.participantsSpinner);
+
+        final String[] select_planets = {"AAAAAAA", "BBBBBBBB", "CCCCCCCCCC","DDDDDDDD", "EEEEEEEEE", "FFFFFFFFFF","GGGGGGGGG", "HHHHHHHH", "IIIIIIIII","JJJJJJJJJ", "KKKKKKKKK", "LLLLLLLLL","MMMMMMMM", "NNNNNNNNN", "OOOOOOOOO","PPPPPPPPPPP", "QQQQQQQQQQQQQQQ", "RRRRRRRRRR","SSSSSSSSSS", "TTTTTTTTTTT", "UUUUUUUUUU","VVVVVVVVVV", "WWWWWWWWWWW", "XXXXXXXXXXXX"};
+        ArrayList<CreateGroupDialogSpinnerItem> categoryModelArrayList = new ArrayList<>();
+
+        for (String s : select_planets) {
+            CreateGroupDialogSpinnerItem categoryModel = new CreateGroupDialogSpinnerItem(s, false);
+            categoryModelArrayList.add(categoryModel);
+        }
+
+        MyAdapter myAdapter = new MyAdapter(getContext(), categoryModelArrayList);
+        participantsList.setAdapter(myAdapter);
+
 
 
         builder.setView(view).setTitle("Solicitud para crear un grupo")
