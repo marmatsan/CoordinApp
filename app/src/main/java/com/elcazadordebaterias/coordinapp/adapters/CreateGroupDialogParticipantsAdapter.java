@@ -3,6 +3,7 @@ package com.elcazadordebaterias.coordinapp.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -23,11 +24,11 @@ import com.elcazadordebaterias.coordinapp.utils.CreateGroupDialogSpinnerItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyAdapter extends ArrayAdapter<CreateGroupDialogSpinnerItem> {
+public class CreateGroupDialogParticipantsAdapter extends ArrayAdapter<CreateGroupDialogSpinnerItem> {
 
     private final ArrayList<CreateGroupDialogSpinnerItem> participantsList;
 
-    public MyAdapter(Context context, ArrayList<CreateGroupDialogSpinnerItem> participantsList) {
+    public CreateGroupDialogParticipantsAdapter(Context context, ArrayList<CreateGroupDialogSpinnerItem> participantsList) {
         super(context, 0, participantsList);
         this.participantsList = participantsList;
     }
@@ -57,7 +58,12 @@ public class MyAdapter extends ArrayAdapter<CreateGroupDialogSpinnerItem> {
 
             viewHolder.mCheckBox.setOnClickListener(checkBox -> {
                 CreateGroupDialogSpinnerItem element = (CreateGroupDialogSpinnerItem) viewHolder.mCheckBox.getTag();
-                element.setSelected(!element.isSelected());
+                if(!element.getParticipantName().contains("Profesor:")){
+                    element.setSelected(!element.isSelected());
+                }else{
+                    Toast.makeText(getContext(), "El profesor debe de estar siempre incluido", Toast.LENGTH_LONG).show();
+                    viewHolder.mCheckBox.setChecked(true);
+                }
             });
 
             view.setTag(viewHolder);

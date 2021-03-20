@@ -7,10 +7,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,13 +20,16 @@ import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 
-import com.elcazadordebaterias.coordinapp.adapters.MyAdapter;
+import com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class to create the pop-up dialog to create a new chat group
@@ -34,7 +38,7 @@ import java.util.ArrayList;
  */
 
 public class CreateGroupDialog extends DialogFragment {
-    private Spinner courseList, subjectList, participantsList;
+    private Spinner courseListSpinner, subjectListSpinner, participantsListSpinner;
 
     private CreateGroupDialogListener listener;
 
@@ -63,12 +67,29 @@ public class CreateGroupDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.utils_creategroupdialog, null);
 
-        // Group list spinner
-        courseList = view.findViewById(R.id.courseNameSpinner);
+        // All the spinners
+        courseListSpinner = view.findViewById(R.id.courseNameSpinner);
+        subjectListSpinner = view.findViewById(R.id.subjectNameSpinner);
+        participantsListSpinner = view.findViewById(R.id.participantsSpinner);
+
+
+        /* All the arraylists that we are going to need for populating the spinners.
+         * 1. ArrayList<String> coursesNames: The name of the courses
+         * 2. ArrayList<String> subjectNames: The name of the subjects of the selected course
+         * 3. ArrayList<CreateGroupDialogSpinnerItem> participantsList: The participants of the selected subject in the selected course
+         */
 
         ArrayList<String> coursesNames = new ArrayList<String>();
-        coursesNames.add("Selecciona el curso");
+        ArrayList<String> subjectNames = new ArrayList<String>();
+        ArrayList<CreateGroupDialogSpinnerItem> participantsList = new ArrayList<>();
 
+        /* All the adapters that we are going to need for the spinners.
+         * 1. ArrayAdapter<String> courseListAdapter: The adapter of courseListSpinner
+         * 2. ArrayAdapter<String> subjectListAdapter: The adapter of subjectListSpinner
+         * 3. CreateGroupDialogParticipantsAdapter participantsListAdapter: The adapter of participantsListSpinner
+         */
+
+        // Group adapter
         ArrayAdapter<String> courseListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, coursesNames) {
             @Override
             public boolean isEnabled(int position) {
@@ -87,16 +108,25 @@ public class CreateGroupDialog extends DialogFragment {
                 return view;
             }
         };
+
         courseListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        courseList.setAdapter(courseListAdapter);
-        courseList.setSelection(0);
+        courseListSpinner.setAdapter(courseListAdapter);
+        courseListSpinner.setSelection(0);
 
-        // Subject list spinner
-        subjectList = view.findViewById(R.id.subjectNameSpinner);
+        // Group list spinner
+        coursesNames.add("Selecciona el curso");
+        courseListAdapter.notifyDataSetChanged();
 
-        ArrayList<String> subjectNames = new ArrayList<String>();
-        subjectNames.add("Selecciona una asignatura");
+        fStore.collection("CoursesOrganization").get().addOnCompleteListener(task -> { // Get group names
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    coursesNames.add(document.getId());
+                }
+            }
+            courseListAdapter.notifyDataSetChanged();
+        });
 
+        // Subjects adapter
         ArrayAdapter<String> subjectListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subjectNames) {
             @Override
             public boolean isEnabled(int position) {
@@ -116,42 +146,103 @@ public class CreateGroupDialog extends DialogFragment {
             }
 
         };
+
         subjectListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        subjectList.setAdapter(subjectListAdapter);
-        subjectList.setSelection(0);
+        subjectListSpinner.setAdapter(subjectListAdapter);
+        subjectListSpinner.setSelection(0);
 
-        CollectionReference coursesCollection = fStore.collection("CoursesOrganization");
+        subjectNames.add("Selecciona la asignatura");
+        subjectListAdapter.notifyDataSetChanged();
 
-        coursesCollection.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    coursesNames.add(document.getId());
-                }
+        // Participants adapter
+        CreateGroupDialogParticipantsAdapter participantsListAdapter = new CreateGroupDialogParticipantsAdapter(getContext(), participantsList);
+        participantsListSpinner.setAdapter(participantsListAdapter);
+
+        // Listeners when we select the items
+
+        // Course spinner listener
+        courseListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                subjectNames.clear();
+                subjectNames.add("Selecciona la asignatura");
+
+                String selectedCourseName = parent.getItemAtPosition(position).toString();
+
+                fStore.collection("CoursesOrganization").document(selectedCourseName).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects"); // Array of the subjects. Contains all the subjects from the current course
+                            List<CourseSubject> courseSubjectList = new ArrayList<>();  // List with the information of the subjects
+
+                            for (int i = 0; i < data.size(); i++) { // Iterate over all the subjects in the current course
+                                Map<String, Object> subjectInfo = data.get(i); // Current subject information (the list with the students, the name of the subject and the teacher id)
+                                subjectNames.add(subjectInfo.get("SubjectName").toString());
+                            }
+                            subjectListAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
             }
-            courseListAdapter.notifyDataSetChanged();
-            /*
-            if(coursesNames.size() > 2){
 
-            }
-             */
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
-        // Participants List Spinner
+        // Subject spinner listener
+        subjectListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                participantsList.clear();
+                String selectedSubjectName = parent.getItemAtPosition(position).toString();
 
-        participantsList = view.findViewById(R.id.participantsSpinner);
+                fStore.collection("CoursesOrganization").document(courseListSpinner.getSelectedItem().toString()).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects"); // Array of the subjects. Contains all the subjects from the current course
 
-        final String[] select_planets = {"AAAAAAA", "BBBBBBBB", "CCCCCCCCCC","DDDDDDDD", "EEEEEEEEE", "FFFFFFFFFF","GGGGGGGGG", "HHHHHHHH", "IIIIIIIII","JJJJJJJJJ", "KKKKKKKKK", "LLLLLLLLL","MMMMMMMM", "NNNNNNNNN", "OOOOOOOOO","PPPPPPPPPPP", "QQQQQQQQQQQQQQQ", "RRRRRRRRRR","SSSSSSSSSS", "TTTTTTTTTTT", "UUUUUUUUUU","VVVVVVVVVV", "WWWWWWWWWWW", "XXXXXXXXXXXX"};
-        ArrayList<CreateGroupDialogSpinnerItem> categoryModelArrayList = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) { // Iterate over all the subjects in the current course
+                                Map<String, Object> subjectInfo = data.get(i); // Current subject information (the list with the students, the name of the subject and the teacher id)
 
-        for (String s : select_planets) {
-            CreateGroupDialogSpinnerItem categoryModel = new CreateGroupDialogSpinnerItem(s, false);
-            categoryModelArrayList.add(categoryModel);
-        }
+                                if(subjectInfo.get("SubjectName").toString().equals(selectedSubjectName)){
 
-        MyAdapter myAdapter = new MyAdapter(getContext(), categoryModelArrayList);
-        participantsList.setAdapter(myAdapter);
+                                    ArrayList<String> studentsIds = (ArrayList<String>) subjectInfo.get("Students");
 
+                                    fStore.collection("Students").get().addOnCompleteListener(task1 -> { // Search for student info to build the student list
+                                        if (task1.isSuccessful()) {
+                                            // Add the teacher to be displayed
+                                            fStore.collection("Teachers").document((String) subjectInfo.get("TeacherId")).get().addOnCompleteListener(task2 -> {
+                                                if (task2.isSuccessful()) {
 
+                                                    DocumentSnapshot document2 = task2.getResult();
+
+                                                    participantsList.add(new CreateGroupDialogSpinnerItem("Profesor: " + document2.getData().get("FullName").toString(),true , true));
+
+                                                    for (QueryDocumentSnapshot document1 : task1.getResult()) { // Create the list of the students
+                                                        if (studentsIds.contains(document1.getId()) && !document1.getId().equals(fAuth.getCurrentUser().getUid())) { // The current user is not shown in the list
+                                                            participantsList.add(new CreateGroupDialogSpinnerItem(document1.getData().get("FullName").toString(), false, false));
+                                                        }
+                                                    }
+
+                                                }
+                                            });
+                                        }
+                                    });
+                                    break;
+                                }
+
+                            }
+                            participantsListAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
 
         builder.setView(view).setTitle("Solicitud para crear un grupo")
                 .setNegativeButton("Cancelar", (dialogInterface, i) -> {
@@ -159,9 +250,9 @@ public class CreateGroupDialog extends DialogFragment {
         })
                 .setPositiveButton("Solicitar", (dialogInterface, i) -> {
 
-                    String course = null;
-                    String subject = null;
-                    String[] participants = null;
+                    String course = courseListSpinner.getSelectedItem().toString();
+                    String subject = subjectListSpinner.getSelectedItem().toString();
+                    ArrayList<CreateGroupDialogSpinnerItem> participants = participantsList;
 
                     listener.submitRequest(course, subject, participants);
 
@@ -171,7 +262,7 @@ public class CreateGroupDialog extends DialogFragment {
     }
 
     public interface CreateGroupDialogListener {
-        void submitRequest(String course, String subject, String[] participants);
+        void submitRequest(String course, String subject, ArrayList<CreateGroupDialogSpinnerItem> participants);
     }
 
 }

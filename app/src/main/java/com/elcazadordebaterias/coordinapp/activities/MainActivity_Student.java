@@ -19,6 +19,7 @@ import com.elcazadordebaterias.coordinapp.fragments.HomeFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment_Student;
 import com.elcazadordebaterias.coordinapp.utils.CreateGroupDialog;
+import com.elcazadordebaterias.coordinapp.utils.CreateGroupDialogSpinnerItem;
 import com.elcazadordebaterias.coordinapp.utils.SubjectItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -119,8 +120,8 @@ public class MainActivity_Student extends AppCompatActivity implements CreateGro
     };
 
     @Override
-    public void submitRequest(String course, String subject, String[] participants) {
-
+    public void submitRequest(String course, String subject, ArrayList<CreateGroupDialogSpinnerItem> participants) {
+        Toast.makeText(this, course + ", " + subject, Toast.LENGTH_SHORT).show();
     }
 
 }
