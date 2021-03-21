@@ -57,6 +57,7 @@ public class CreateGroupDialog extends DialogFragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement CreateGroupDialogListener");
         }
+
     }
 
     @NonNull
@@ -90,32 +91,13 @@ public class CreateGroupDialog extends DialogFragment {
          */
 
         // Group adapter
-        ArrayAdapter<String> courseListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, coursesNames) {
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0;
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0) {
-                    tv.setTextColor(Color.GRAY);
-                } else {
-                    tv.setTextColor(Color.BLACK);
-                }
-                return view;
-            }
-        };
+        ArrayAdapter<String> courseListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, coursesNames);
 
         courseListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         courseListSpinner.setAdapter(courseListAdapter);
         courseListSpinner.setSelection(0);
 
         // Group list spinner
-        coursesNames.add("Selecciona el curso");
-        courseListAdapter.notifyDataSetChanged();
 
         fStore.collection("CoursesOrganization").get().addOnCompleteListener(task -> { // Get group names
             if (task.isSuccessful()) {
@@ -127,32 +109,11 @@ public class CreateGroupDialog extends DialogFragment {
         });
 
         // Subjects adapter
-        ArrayAdapter<String> subjectListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subjectNames) {
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0;
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0) {
-                    tv.setTextColor(Color.GRAY);
-                } else {
-                    tv.setTextColor(Color.BLACK);
-                }
-                return view;
-            }
-
-        };
+        ArrayAdapter<String> subjectListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subjectNames);
 
         subjectListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         subjectListSpinner.setAdapter(subjectListAdapter);
         subjectListSpinner.setSelection(0);
-
-        subjectNames.add("Selecciona la asignatura");
-        subjectListAdapter.notifyDataSetChanged();
 
         // Participants adapter
         CreateGroupDialogParticipantsAdapter participantsListAdapter = new CreateGroupDialogParticipantsAdapter(getContext(), participantsList);
@@ -165,7 +126,6 @@ public class CreateGroupDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 subjectNames.clear();
-                subjectNames.add("Selecciona la asignatura");
 
                 String selectedCourseName = parent.getItemAtPosition(position).toString();
 
@@ -225,16 +185,14 @@ public class CreateGroupDialog extends DialogFragment {
                                                             participantsList.add(new CreateGroupDialogSpinnerItem(document1.getData().get("FullName").toString(), false, false));
                                                         }
                                                     }
-
+                                                    participantsListAdapter.notifyDataSetChanged();
                                                 }
                                             });
                                         }
                                     });
                                     break;
                                 }
-
                             }
-                            participantsListAdapter.notifyDataSetChanged();
                         }
                     }
                 });
@@ -252,9 +210,15 @@ public class CreateGroupDialog extends DialogFragment {
 
                     String course = courseListSpinner.getSelectedItem().toString();
                     String subject = subjectListSpinner.getSelectedItem().toString();
-                    ArrayList<CreateGroupDialogSpinnerItem> participants = participantsList;
+                    ArrayList<CreateGroupDialogSpinnerItem> selectedParticipants = new ArrayList<CreateGroupDialogSpinnerItem>();
 
-                    listener.submitRequest(course, subject, participants);
+                    for(CreateGroupDialogSpinnerItem item : participantsList){
+                        if(item.isSelected()){
+                            selectedParticipants.add(item);
+                        }
+                    }
+
+                    listener.submitRequest(course, subject, selectedParticipants);
 
         });
 

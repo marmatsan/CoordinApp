@@ -120,8 +120,8 @@ public class MainActivity_Student extends AppCompatActivity implements CreateGro
     };
 
     @Override
-    public void submitRequest(String course, String subject, ArrayList<CreateGroupDialogSpinnerItem> participants) {
-        Toast.makeText(this, course + ", " + subject, Toast.LENGTH_SHORT).show();
+    public void submitRequest(String course, String subject, ArrayList<CreateGroupDialogSpinnerItem> selectedParticipants) {
+        
     }
 
 }

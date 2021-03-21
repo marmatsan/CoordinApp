@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,9 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.CourseCardAdapter;
+import com.elcazadordebaterias.coordinapp.adapters.PetitionGroupCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.CourseCard;
 import com.elcazadordebaterias.coordinapp.utils.CourseParticipant;
 import com.elcazadordebaterias.coordinapp.utils.CourseSubject;
+import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCard;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -50,16 +54,28 @@ public class HomeFragment_Student extends Fragment {
         loadingIndicator = v.findViewById(R.id.loadingIndicator);
         loadingIndicator.setVisibility(View.VISIBLE);
 
+        // Recyclerviews in student home
         RecyclerView coursesRecyclerView = v.findViewById(R.id.recyclerview_courses);
+        RecyclerView groupsPetitionsRecyclerView = v.findViewById(R.id.recyclerview_petitions);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager coursesLayoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager petitionsLayoutManager = new LinearLayoutManager(getContext());
 
-        List<CourseCard> itemList = new ArrayList<>();
+        ArrayList<CourseCard> itemList = new ArrayList<CourseCard>();
+        ArrayList<PetitionGroupCard> petitions = new ArrayList<PetitionGroupCard>();
+        ListView list = null;
+
+        petitions.add(new PetitionGroupCard("Usuario", "Curso - Asignatura", list));
 
         CourseCardAdapter courseCardAdapter = new CourseCardAdapter(itemList);
+        PetitionGroupCardAdapter petitionsAdapter = new PetitionGroupCardAdapter(petitions);
 
         coursesRecyclerView.setAdapter(courseCardAdapter);
-        coursesRecyclerView.setLayoutManager(layoutManager);
+        coursesRecyclerView.setLayoutManager(coursesLayoutManager);
+
+        groupsPetitionsRecyclerView.setAdapter(petitionsAdapter);
+        groupsPetitionsRecyclerView.setLayoutManager(petitionsLayoutManager);
+        
 
         // Create list
         fStore.collection("CoursesOrganization").document("3ºESO B").get().addOnCompleteListener(task -> {
