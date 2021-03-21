@@ -1,5 +1,6 @@
 package com.elcazadordebaterias.coordinapp.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +18,11 @@ import java.util.ArrayList;
 public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroupCardAdapter.PetitionGroupCardViewHolder> {
 
     private ArrayList<PetitionGroupCard> petitionsList;
+    private Context mContext;
 
-    public PetitionGroupCardAdapter(ArrayList<PetitionGroupCard> petitionsList){
+    public PetitionGroupCardAdapter(ArrayList<PetitionGroupCard> petitionsList, Context context){
         this.petitionsList = petitionsList;
+        this.mContext = context;
     }
 
     @NonNull
@@ -36,7 +39,10 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
 
         holder.requesterName.setText(petitionCard.getRequesterName());
         holder.courseName.setText(petitionCard.getCourseSubject());
-        holder.participantsList = petitionCard.getParticipantsList();
+
+        PetitionGroupCardParticipantsListAdapter participantsAdapter = new PetitionGroupCardParticipantsListAdapter(mContext, petitionCard.getParticipantsList());
+
+        holder.participantsList.setAdapter(participantsAdapter);
 
     }
 
@@ -56,6 +62,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
             requesterName = itemView.findViewById(R.id.requesterName);
             courseName = itemView.findViewById(R.id.courseName);
             participantsList = itemView.findViewById(R.id.participantsList);
+
         }
     }
 

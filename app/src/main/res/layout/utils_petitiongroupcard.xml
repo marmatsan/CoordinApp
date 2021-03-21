@@ -48,11 +48,25 @@
         <ListView
             android:id="@+id/participantsList"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="150dp"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:divider="@null"
+            app:layout_constraintBottom_toTopOf="@+id/view3"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+        <View
+            android:id="@+id/view3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/participantsList" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/acceptRequest"
@@ -64,7 +78,7 @@
             android:text="@string/aceptar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/participantsList" />
+            app:layout_constraintTop_toBottomOf="@+id/view3" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/denyRequest"

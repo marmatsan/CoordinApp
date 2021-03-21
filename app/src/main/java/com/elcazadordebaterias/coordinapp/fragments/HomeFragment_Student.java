@@ -63,12 +63,16 @@ public class HomeFragment_Student extends Fragment {
 
         ArrayList<CourseCard> itemList = new ArrayList<CourseCard>();
         ArrayList<PetitionGroupCard> petitions = new ArrayList<PetitionGroupCard>();
-        ListView list = null;
+        ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
 
-        petitions.add(new PetitionGroupCard("Usuario", "Curso - Asignatura", list));
+        for (int i = 0; i < 50; i++) {
+            participants.add(new GroupParticipant("Participante " + i, R.drawable.petition_accepted));
+        }
+
+        petitions.add(new PetitionGroupCard("Usuario", "Curso - Asignatura", participants));
 
         CourseCardAdapter courseCardAdapter = new CourseCardAdapter(itemList);
-        PetitionGroupCardAdapter petitionsAdapter = new PetitionGroupCardAdapter(petitions);
+        PetitionGroupCardAdapter petitionsAdapter = new PetitionGroupCardAdapter(petitions, getContext());
 
         coursesRecyclerView.setAdapter(courseCardAdapter);
         coursesRecyclerView.setLayoutManager(coursesLayoutManager);
@@ -77,7 +81,7 @@ public class HomeFragment_Student extends Fragment {
         groupsPetitionsRecyclerView.setLayoutManager(petitionsLayoutManager);
         
 
-        // Create list
+        // Create the list of the groups a student is in
         fStore.collection("CoursesOrganization").document("3ºESO B").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();

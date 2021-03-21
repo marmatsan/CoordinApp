@@ -1,14 +1,14 @@
 package com.elcazadordebaterias.coordinapp.utils;
 
-import android.widget.ListView;
+import java.util.ArrayList;
 
 public class PetitionGroupCard {
 
     private String requesterName;
     private String courseSubject;
-    private ListView participantsList;
+    private ArrayList<GroupParticipant> participantsList;
 
-    public PetitionGroupCard(String requesterName, String courseSubject, ListView participantsList){
+    public PetitionGroupCard(String requesterName, String courseSubject, ArrayList<GroupParticipant> participantsList){
         this.requesterName = requesterName;
         this.courseSubject = courseSubject;
         this.participantsList = participantsList;
@@ -30,11 +30,11 @@ public class PetitionGroupCard {
         this.courseSubject = courseSubject;
     }
 
-    public ListView getParticipantsList() {
+    public ArrayList<GroupParticipant> getParticipantsList() {
         return participantsList;
     }
 
-    public void setParticipantsList(ListView participantsList) {
+    public void setParticipantsList(ArrayList<GroupParticipant> participantsList) {
         this.participantsList = participantsList;
     }
 }
