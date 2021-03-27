@@ -84,5 +84,6 @@
     <string name="rechazar">Rechazar</string>
     <string name="name_of_the_course_name_of_the_subject">Name of the course - Name of the subject</string>
     <string name="participant_name">Participant name</string>
+    <string name="ver_participantes">Ver participantes</string>
 
 </resources>

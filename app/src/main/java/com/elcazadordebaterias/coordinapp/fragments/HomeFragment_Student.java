@@ -54,29 +54,29 @@ public class HomeFragment_Student extends Fragment {
         loadingIndicator = v.findViewById(R.id.loadingIndicator);
         loadingIndicator.setVisibility(View.VISIBLE);
 
-        // Recyclerviews in student home
+        // Recyclerview 1 - Enrolled courses
         RecyclerView coursesRecyclerView = v.findViewById(R.id.recyclerview_courses);
-        RecyclerView groupsPetitionsRecyclerView = v.findViewById(R.id.recyclerview_petitions);
-
-        LinearLayoutManager coursesLayoutManager = new LinearLayoutManager(getContext());
-        LinearLayoutManager petitionsLayoutManager = new LinearLayoutManager(getContext());
-
         ArrayList<CourseCard> itemList = new ArrayList<CourseCard>();
-        ArrayList<PetitionGroupCard> petitions = new ArrayList<PetitionGroupCard>();
-        ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
-
-        for (int i = 0; i < 50; i++) {
-            participants.add(new GroupParticipant("Participante " + i, R.drawable.petition_accepted));
-        }
-
-        petitions.add(new PetitionGroupCard("Usuario", "Curso - Asignatura", participants));
-
         CourseCardAdapter courseCardAdapter = new CourseCardAdapter(itemList);
-        PetitionGroupCardAdapter petitionsAdapter = new PetitionGroupCardAdapter(petitions, getContext());
+        LinearLayoutManager coursesLayoutManager = new LinearLayoutManager(getContext());
 
         coursesRecyclerView.setAdapter(courseCardAdapter);
         coursesRecyclerView.setLayoutManager(coursesLayoutManager);
 
+        // Recyclerview 2 - Petitions
+        RecyclerView groupsPetitionsRecyclerView = v.findViewById(R.id.recyclerview_petitions);
+        LinearLayoutManager petitionsLayoutManager = new LinearLayoutManager(getContext());
+        ArrayList<PetitionGroupCard> petitions = new ArrayList<PetitionGroupCard>();
+
+        for (int i = 0; i < 1; i++) {
+            ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
+            for (int j = 0; j < 10; j++) {
+                participants.add(new GroupParticipant("Participante " + i, R.drawable.petition_accepted));
+            }
+            petitions.add(new PetitionGroupCard("Usuario", "Curso - Asignatura", participants));
+        }
+
+        PetitionGroupCardAdapter petitionsAdapter = new PetitionGroupCardAdapter(petitions, getContext());
         groupsPetitionsRecyclerView.setAdapter(petitionsAdapter);
         groupsPetitionsRecyclerView.setLayoutManager(petitionsLayoutManager);
         
@@ -123,7 +123,7 @@ public class HomeFragment_Student extends Fragment {
 
                         }
                     }
-                        itemList.add(new CourseCard(document.getId(), courseSubjectList));
+                    itemList.add(new CourseCard(document.getId(), courseSubjectList));
                     loadingIndicator.setVisibility(View.GONE);
                     coursesRecyclerView.setVisibility(View.VISIBLE);
                 }
