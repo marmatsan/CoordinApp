@@ -58,7 +58,7 @@ public class CreateGroupDialogParticipantsAdapter extends ArrayAdapter<CreateGro
 
             viewHolder.mCheckBox.setOnClickListener(checkBox -> {
                 CreateGroupDialogSpinnerItem element = (CreateGroupDialogSpinnerItem) viewHolder.mCheckBox.getTag();
-                if(!element.getParticipantName().contains("Profesor:")){
+                if(!element.isTeacher()){
                     element.setSelected(!element.isSelected());
                 }else{
                     Toast.makeText(getContext(), "El profesor debe de estar siempre incluido", Toast.LENGTH_LONG).show();

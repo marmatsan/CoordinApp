@@ -178,11 +178,11 @@ public class CreateGroupDialog extends DialogFragment {
 
                                                     DocumentSnapshot document2 = task2.getResult();
 
-                                                    participantsList.add(new CreateGroupDialogSpinnerItem("Profesor: " + document2.getData().get("FullName").toString(),true , true));
+                                                    participantsList.add(new CreateGroupDialogSpinnerItem(document2.getData().get("FullName").toString(), document2.getId(),true , true));
 
                                                     for (QueryDocumentSnapshot document1 : task1.getResult()) { // Create the list of the students
                                                         if (studentsIds.contains(document1.getId()) && !document1.getId().equals(fAuth.getCurrentUser().getUid())) { // The current user is not shown in the list
-                                                            participantsList.add(new CreateGroupDialogSpinnerItem(document1.getData().get("FullName").toString(), false, false));
+                                                            participantsList.add(new CreateGroupDialogSpinnerItem(document1.getData().get("FullName").toString(), document1.getId(), false, false));
                                                         }
                                                     }
                                                     participantsListAdapter.notifyDataSetChanged();
