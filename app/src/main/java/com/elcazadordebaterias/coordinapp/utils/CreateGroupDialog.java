@@ -51,22 +51,26 @@ public class CreateGroupDialog extends DialogFragment {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
+    Context context;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
-
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        context = getActivity();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.utils_creategroupdialog, null);
+
 
         // All the spinners
         courseListSpinner = view.findViewById(R.id.courseNameSpinner);
@@ -231,7 +235,9 @@ public class CreateGroupDialog extends DialogFragment {
                                 PetitionList data = document.toObject(PetitionList.class);
                                 ArrayList<PetitionRequest> userDatabasePetitionsList = data.getPetitionList(); // Get the petitions list of the database
 
-                                for(PetitionRequest request : userDatabasePetitionsList){
+                                boolean isTheSamePetition = false;
+
+                                for(PetitionRequest request : userDatabasePetitionsList){ // Iterate over all the petitions that the user has made
                                     ArrayList<PetitionUser> usersInDatabasePetition = request.getPetitionUsersList();
                                     ArrayList<PetitionUser> usersInCurrentPetition = currentPetition.getPetitionUsersList();
 
@@ -246,22 +252,22 @@ public class CreateGroupDialog extends DialogFragment {
                                         usersInCurrentPetitionIds.add(user.getUserId());
                                     }
 
-                                    if(usersInDatabasePetitionIds.size() != usersInCurrentPetitionIds.size()){
-                                        Log.d("DEBUGGIN", ""+ "Not the same petition");
-                                    }else{
-
+                                    // Check if the participants of the current petition are the same as the petition that is being checked in the database
+                                    if(usersInDatabasePetitionIds.size() == usersInCurrentPetitionIds.size()){
                                         Collections.sort(usersInDatabasePetitionIds);
                                         Collections.sort(usersInCurrentPetitionIds);
 
                                         if(usersInDatabasePetitionIds.equals(usersInCurrentPetitionIds)){
-                                            Log.d("DEBUGGIN", ""+ "Equals");
-                                        }else{
-                                            Log.d("DEBUGGIN", ""+ "Not equals");
+                                            Toast.makeText(context.getApplicationContext(), "Ya has hecho una petición igual a esta", Toast.LENGTH_SHORT).show();
+                                            isTheSamePetition = true;
                                         }
-
                                     }
                                 }
 
+                                if(!isTheSamePetition){
+                                    data.getPetitionList().add(currentPetition);
+                                    fStore.collection("Petitions").document(fAuth.getUid()).set(data);
+                                }
 
                             }else{
                                 PetitionList petitionList = new PetitionList();

@@ -1,9 +1,6 @@
 package com.elcazadordebaterias.coordinapp.utils;
 
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class PetitionRequest {
 
