@@ -35,7 +35,7 @@ import java.util.Map;
  *
  * @author Martín Mateos Sánchez
  */
-public class MainActivity_Student extends AppCompatActivity implements CreateGroupDialog.CreateGroupDialogListener {
+public class MainActivity_Student extends AppCompatActivity {
     private ListPopupWindow listPopupWindow;
     private ArrayList<SubjectItem> mSubjectList;
     private ListPopupWindowAdapter mListPopupWindowAdapter;
@@ -118,10 +118,5 @@ public class MainActivity_Student extends AppCompatActivity implements CreateGro
 
         return true;
     };
-
-    @Override
-    public void submitRequest(String course, String subject, ArrayList<CreateGroupDialogSpinnerItem> selectedParticipants) {
-        
-    }
 
 }

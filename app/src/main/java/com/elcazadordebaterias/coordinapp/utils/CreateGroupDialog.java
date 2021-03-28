@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,10 @@ import androidx.fragment.app.DialogFragment;
 import com.elcazadordebaterias.coordinapp.R;
 
 import com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,6 +33,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,8 +48,6 @@ import java.util.Map;
 public class CreateGroupDialog extends DialogFragment {
     private Spinner courseListSpinner, subjectListSpinner, participantsListSpinner;
 
-    private CreateGroupDialogListener listener;
-
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
@@ -51,12 +57,6 @@ public class CreateGroupDialog extends DialogFragment {
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
-
-        try {
-            listener = (CreateGroupDialogListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement CreateGroupDialogListener");
-        }
 
     }
 
@@ -210,23 +210,72 @@ public class CreateGroupDialog extends DialogFragment {
 
                     String course = courseListSpinner.getSelectedItem().toString();
                     String subject = subjectListSpinner.getSelectedItem().toString();
-                    ArrayList<CreateGroupDialogSpinnerItem> selectedParticipants = new ArrayList<CreateGroupDialogSpinnerItem>();
+
+                    ArrayList<PetitionUser> petitionUsersList = new ArrayList<PetitionUser>();
 
                     for(CreateGroupDialogSpinnerItem item : participantsList){
                         if(item.isSelected()){
-                            selectedParticipants.add(item);
+
+                            petitionUsersList.add(new PetitionUser(item.getParticipantId(), 0));
                         }
                     }
 
-                    listener.submitRequest(course, subject, selectedParticipants);
+                    PetitionRequest currentPetition = new PetitionRequest(course, subject, petitionUsersList);
 
-        });
+                    // Get the petitions list
+                    fStore.collection("Petitions").document(fAuth.getUid()).get().addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+
+                                PetitionList data = document.toObject(PetitionList.class);
+                                ArrayList<PetitionRequest> userDatabasePetitionsList = data.getPetitionList(); // Get the petitions list of the database
+
+                                for(PetitionRequest request : userDatabasePetitionsList){
+                                    ArrayList<PetitionUser> usersInDatabasePetition = request.getPetitionUsersList();
+                                    ArrayList<PetitionUser> usersInCurrentPetition = currentPetition.getPetitionUsersList();
+
+                                    ArrayList<String> usersInDatabasePetitionIds = new ArrayList<String>();
+                                    ArrayList<String> usersInCurrentPetitionIds = new ArrayList<String>();
+
+                                    for (PetitionUser user : usersInDatabasePetition){
+                                        usersInDatabasePetitionIds.add(user.getUserId());
+                                    }
+
+                                    for (PetitionUser user : usersInCurrentPetition){
+                                        usersInCurrentPetitionIds.add(user.getUserId());
+                                    }
+
+                                    if(usersInDatabasePetitionIds.size() != usersInCurrentPetitionIds.size()){
+                                        Log.d("DEBUGGIN", ""+ "Not the same petition");
+                                    }else{
+
+                                        Collections.sort(usersInDatabasePetitionIds);
+                                        Collections.sort(usersInCurrentPetitionIds);
+
+                                        if(usersInDatabasePetitionIds.equals(usersInCurrentPetitionIds)){
+                                            Log.d("DEBUGGIN", ""+ "Equals");
+                                        }else{
+                                            Log.d("DEBUGGIN", ""+ "Not equals");
+                                        }
+
+                                    }
+                                }
+
+
+                            }else{
+                                PetitionList petitionList = new PetitionList();
+                                ArrayList<PetitionRequest> requests = new ArrayList<PetitionRequest>();
+                                requests.add(currentPetition);
+                                petitionList.setPetitionsList(requests);
+
+                                fStore.collection("Petitions").document(fAuth.getUid()).set(petitionList);
+                            }
+                        }
+                    });
+                });
 
         return builder.create();
-    }
-
-    public interface CreateGroupDialogListener {
-        void submitRequest(String course, String subject, ArrayList<CreateGroupDialogSpinnerItem> participants);
     }
 
 }
