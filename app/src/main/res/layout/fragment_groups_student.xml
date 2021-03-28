@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/parece_que_no_tienes_ning_n_chat_creado_puedes_crear_un_chat_pulsando_el_bot_n"
+        android:text="@string/pulsa_el_bot_n_para_enviar_una_solicitud_de_creaci_n_de_grupo"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
