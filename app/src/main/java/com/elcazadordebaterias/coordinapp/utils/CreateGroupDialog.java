@@ -2,17 +2,12 @@ package com.elcazadordebaterias.coordinapp.utils;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,19 +18,13 @@ import com.elcazadordebaterias.coordinapp.R;
 
 import com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -176,8 +165,7 @@ public class CreateGroupDialog extends DialogFragment {
 
                                     fStore.collection("Students").get().addOnCompleteListener(task1 -> { // Search for student info to build the student list
                                         if (task1.isSuccessful()) {
-                                            // Add the teacher to be displayed
-                                            fStore.collection("Teachers").document((String) subjectInfo.get("TeacherId")).get().addOnCompleteListener(task2 -> {
+                                            fStore.collection("Teachers").document((String) subjectInfo.get("TeacherId")).get().addOnCompleteListener(task2 -> { // Add the teacher to be displayed
                                                 if (task2.isSuccessful()) {
 
                                                     DocumentSnapshot document2 = task2.getResult();
@@ -214,68 +202,28 @@ public class CreateGroupDialog extends DialogFragment {
 
                     String course = courseListSpinner.getSelectedItem().toString();
                     String subject = subjectListSpinner.getSelectedItem().toString();
+                    String requesterId = fAuth.getUid();
 
                     ArrayList<PetitionUser> petitionUsersList = new ArrayList<PetitionUser>();
+                    ArrayList<String> petitionUsersIds = new ArrayList<String>();
 
                     for(CreateGroupDialogSpinnerItem item : participantsList){
                         if(item.isSelected()){
-
-                            petitionUsersList.add(new PetitionUser(item.getParticipantId(), 0));
+                            String participantId = item.getParticipantId();
+                            petitionUsersList.add(new PetitionUser(participantId, item.getParticipantName(), item.isTeacher(),0));
+                            petitionUsersIds.add(participantId);
                         }
                     }
 
-                    PetitionRequest currentPetition = new PetitionRequest(course, subject, petitionUsersList);
-
-                    // Get the petitions list
-                    fStore.collection("Petitions").document(fAuth.getUid()).get().addOnCompleteListener(task -> {
-                        if(task.isSuccessful()){
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-
-                                PetitionList data = document.toObject(PetitionList.class);
-                                ArrayList<PetitionRequest> userDatabasePetitionsList = data.getPetitionList(); // Get the petitions list of the database
-
-                                boolean isTheSamePetition = false;
-
-                                for(PetitionRequest request : userDatabasePetitionsList){ // Iterate over all the petitions that the user has made
-                                    ArrayList<PetitionUser> usersInDatabasePetition = request.getPetitionUsersList();
-                                    ArrayList<PetitionUser> usersInCurrentPetition = currentPetition.getPetitionUsersList();
-
-                                    ArrayList<String> usersInDatabasePetitionIds = new ArrayList<String>();
-                                    ArrayList<String> usersInCurrentPetitionIds = new ArrayList<String>();
-
-                                    for (PetitionUser user : usersInDatabasePetition){
-                                        usersInDatabasePetitionIds.add(user.getUserId());
-                                    }
-
-                                    for (PetitionUser user : usersInCurrentPetition){
-                                        usersInCurrentPetitionIds.add(user.getUserId());
-                                    }
-
-                                    // Check if the participants of the current petition are the same as the petition that is being checked in the database
-                                    if(usersInDatabasePetitionIds.size() == usersInCurrentPetitionIds.size()){
-                                        Collections.sort(usersInDatabasePetitionIds);
-                                        Collections.sort(usersInCurrentPetitionIds);
-
-                                        if(usersInDatabasePetitionIds.equals(usersInCurrentPetitionIds)){
-                                            Toast.makeText(context.getApplicationContext(), "Ya has hecho una petición igual a esta", Toast.LENGTH_SHORT).show();
-                                            isTheSamePetition = true;
-                                        }
-                                    }
+                    fStore.collection("Students").document(requesterId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    PetitionRequest currentPetition = new PetitionRequest(course, subject, requesterId,(String) document.getData().get("FullName"), petitionUsersIds, petitionUsersList);
+                                    fStore.collection("Students").document(requesterId).collection("Petitions").add(currentPetition);
                                 }
-
-                                if(!isTheSamePetition){
-                                    data.getPetitionList().add(currentPetition);
-                                    fStore.collection("Petitions").document(fAuth.getUid()).set(data);
-                                }
-
-                            }else{
-                                PetitionList petitionList = new PetitionList();
-                                ArrayList<PetitionRequest> requests = new ArrayList<PetitionRequest>();
-                                requests.add(currentPetition);
-                                petitionList.setPetitionsList(requests);
-
-                                fStore.collection("Petitions").document(fAuth.getUid()).set(petitionList);
                             }
                         }
                     });

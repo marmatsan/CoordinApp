@@ -2,35 +2,36 @@ package com.elcazadordebaterias.coordinapp.utils;
 
 
 public class CreateGroupDialogSpinnerItem {
-    private boolean mIsTeacher;
-    private String mParticipantName;
-    private boolean mSelected;
-    private String mParticipantId;
+    private String participantName;
+    private String participantId;
+    private boolean isSelected;
+    private boolean isTeacher;
 
-    public CreateGroupDialogSpinnerItem(String participantName, String participantId, boolean selected, boolean isTeacher){
-        this.mParticipantId = participantId;
-        this.mParticipantName = participantName;
-        this.mSelected = selected;
-        this.mIsTeacher = isTeacher;
+    public CreateGroupDialogSpinnerItem(String participantName, String participantId, boolean isSelected, boolean isTeacher){
+        this.participantName = participantName;
+        this.participantId = participantId;
+        this.isSelected = isSelected;
+        this.isTeacher = isTeacher;
     }
 
     public String getParticipantName() {
-        return mParticipantName;
+        return participantName;
     }
 
     public String getParticipantId(){
-        return mParticipantId;
-    }
-
-    public boolean isTeacher(){
-        return mIsTeacher;
+        return participantId;
     }
 
     public boolean isSelected() {
-        return mSelected;
+        return isSelected;
+    }
+
+    public boolean isTeacher(){
+        return isTeacher;
     }
 
     public void setSelected(boolean selected) {
-        this.mSelected = selected;
+        this.isSelected = selected;
     }
+
 }

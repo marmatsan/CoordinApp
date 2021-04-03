@@ -61,7 +61,6 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         holder.acceptRequest.setOnClickListener(v -> {
             String currentUserId = fAuth.getUid();
 
-
         });
 
         holder.displayParticipantsList.setOnClickListener(v -> {
@@ -81,7 +80,16 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
             ImageView petitionStatusImage = view.findViewById(R.id.petitionStatusImage);
 
             participantName.setText(currentParticipant.getParticipantName());
-            petitionStatusImage.setImageResource(currentParticipant.getPetitionStatusImage());
+
+            int petitionImage = currentParticipant.getPetitionStatusImage();
+
+            if(petitionImage == 0){
+                petitionStatusImage.setImageResource(R.drawable.petition_pending);
+            }else if(petitionImage == 1){
+                petitionStatusImage.setImageResource(R.drawable.petition_accepted);
+            }else {
+                petitionStatusImage.setImageResource(R.drawable.petition_rejected);
+            }
 
             holder.participantsList.addView(view);
         }

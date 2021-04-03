@@ -20,10 +20,10 @@ import com.elcazadordebaterias.coordinapp.utils.CourseParticipant;
 import com.elcazadordebaterias.coordinapp.utils.CourseSubject;
 import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCard;
-import com.elcazadordebaterias.coordinapp.utils.PetitionList;
 import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
@@ -88,7 +88,6 @@ public class HomeFragment_Student extends Fragment {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-
                     ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects"); // Array of the subjects. Contains all the subjects from the current course
                     List<CourseSubject> courseSubjectList = new ArrayList<>();  // List with the information of the subjects
 
@@ -132,108 +131,23 @@ public class HomeFragment_Student extends Fragment {
             }
         });
 
-        // Create the list of the current unaccepted petitions
-        fStore.collection("Petitions").get().addOnCompleteListener(task -> {
+
+        fStore.collectionGroup("Petitions").whereArrayContains("petitionUsersIds", fAuth.getUid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) { // Iterate over all students (each document) who have made a petition.
-                    PetitionList data = document.toObject(PetitionList.class);
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    PetitionRequest currentPetition = document.toObject(PetitionRequest.class);
+                    ArrayList<GroupParticipant> participantsList = new ArrayList<GroupParticipant>();
 
-                    String requesterId = document.getId();
-
-                    ArrayList<PetitionRequest> requestsList = data.getPetitionList();
-
-                    for (PetitionRequest request : requestsList) { // Iterate over all the petitions the current student has made.
-                        ArrayList<PetitionUser> participants = request.getPetitionUsersList();
-
-                        ArrayList<String> participantsIds = new ArrayList<String>(); // All the IDs of the participants, including teachers and students.
-                        for (PetitionUser user : participants) {
-                            participantsIds.add(user.getUserId());
-                        }
-
-                        if (participantsIds.contains(fAuth.getUid())) { // The request is for the current user. Make the petition card.
-                            fStore.collection("Students").document(requesterId).get().addOnCompleteListener(getRequesterNameTask -> { // Get the name of the requester.
-                                if (getRequesterNameTask.isSuccessful()) {
-                                    DocumentSnapshot document12 = getRequesterNameTask.getResult();
-                                    if (document12.exists()) {
-
-                                        ArrayList<GroupParticipant> cardParticipants = new ArrayList<GroupParticipant>();
-                                        String requesterName;
-                                        requesterName = (String) document12.getData().get("FullName");
-
-                                        for (int i = 0; i < participantsIds.size(); i++) { // Search for the name of the teacher, then the students.
-                                            int position = i;
-                                            fStore.collection("Teachers").document(participantsIds.get(i)).get().addOnCompleteListener(task12 -> { // Search for the name of the teacher.
-                                                if (task12.isSuccessful()) {
-                                                    DocumentSnapshot document1 = task12.getResult();
-                                                    if (document1.exists()) {
-                                                        String teacherName = (String) document1.getData().get("FullName");
-
-                                                        int petitionStatus = 0;
-                                                        int petitionStatusImage = R.drawable.petition_pending;
-
-                                                        for (int j = 0; j < participants.size(); j++) {// Get the status of the teacher petition.
-                                                            PetitionUser currentUser = participants.get(j);
-                                                            if (currentUser.getUserId().equals(participantsIds.get(position))) {
-                                                                petitionStatus = currentUser.getPetitionStatus();
-                                                            }
-                                                        }
-
-
-                                                        if (petitionStatus == 0) {
-                                                            petitionStatusImage = R.drawable.petition_pending;
-                                                        } else if (petitionStatus == 1) {
-                                                            petitionStatusImage = R.drawable.petition_accepted;
-                                                        } else {
-                                                            petitionStatusImage = R.drawable.petition_rejected;
-                                                        }
-
-                                                        cardParticipants.add(new GroupParticipant(teacherName, petitionStatusImage));
-
-                                                        fStore.collection("Students").get().addOnCompleteListener(task13 -> {
-                                                            if (task13.isSuccessful()) {
-                                                                for (QueryDocumentSnapshot document22 : task13.getResult()) {
-                                                                    for (int j = 0; j < participantsIds.size(); j++) {
-                                                                        if (document22.getId().equals(participantsIds.get(j))) {
-
-                                                                            // Get the status of the student petition
-                                                                            int petitionStudentStatus = 0;
-                                                                            int petitionStatusStudentImage = R.drawable.petition_pending;
-
-                                                                            for (int k = 0; k < participants.size(); k++) {// Get the status of the teacher petition.
-                                                                                PetitionUser currentUser = participants.get(k);
-                                                                                if (currentUser.getUserId().equals(participantsIds.get(j))) {
-                                                                                    petitionStudentStatus = currentUser.getPetitionStatus();
-                                                                                }
-                                                                            }
-
-                                                                            if (petitionStudentStatus == 0) {
-                                                                                petitionStatusStudentImage = R.drawable.petition_pending;
-                                                                            } else if (petitionStudentStatus == 1) {
-                                                                                petitionStatusStudentImage = R.drawable.petition_accepted;
-                                                                            } else {
-                                                                                petitionStatusStudentImage = R.drawable.petition_rejected;
-                                                                            }
-
-                                                                            cardParticipants.add(new GroupParticipant((String) document22.getData().get("FullName"), petitionStatusStudentImage));
-                                                                        }
-                                                                    }
-                                                                }
-                                                                petitions.add(new PetitionGroupCard(requesterName, request.getCourse() + " / " + request.getSubject(), cardParticipants));
-                                                                petitionsAdapter.notifyDataSetChanged();
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                            });
-                        }
+                    for(PetitionUser currentUser : currentPetition.getPetitionUsersList()){
+                        participantsList.add(new GroupParticipant(currentUser.getUserFullName(), currentUser.getPetitionStatus()));
                     }
+
+                    petitions.add(new PetitionGroupCard(currentPetition.getRequesterName(), currentPetition.getCourse() + " / " + currentPetition.getSubject(), participantsList));
                 }
+                petitionsAdapter.notifyDataSetChanged();
             }
         });
+
 
         return v;
     }

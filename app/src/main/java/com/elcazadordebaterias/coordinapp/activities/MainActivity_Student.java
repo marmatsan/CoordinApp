@@ -12,8 +12,10 @@ import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.HomeFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment_Student;
 import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment_Student;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
@@ -41,6 +43,11 @@ public class MainActivity_Student extends AppCompatActivity {
 
         // Top App Bar management
         Toolbar toolbar = findViewById(R.id.topAppBar);
+
+        fStore.collection("Students").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> { // TODO: Maybe setting the title in asynchronous way may lead to error
+            toolbar.setTitle((String) documentSnapshot.getData().get("FullName"));
+        });
+
         setSupportActionBar(toolbar);
     }
 
