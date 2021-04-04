@@ -16,16 +16,8 @@ public class CourseCard {
         return mCourseName;
     }
 
-    public void setCourseName(String courseName) {
-        mCourseName = courseName;
-    }
-
     public List<CourseSubject> getSubjectList() {
         return mSubjectList;
-    }
-
-    public void setSubjectList(List<CourseSubject> subjectList) {
-        this.mSubjectList = subjectList;
     }
 
 }

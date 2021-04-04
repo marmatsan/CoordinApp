@@ -14,16 +14,8 @@ public class GroupParticipant {
         return participantName;
     }
 
-    public void setParticipantName(String participantName) {
-        this.participantName = participantName;
-    }
-
     public int getPetitionStatusImage() {
         return petitionStatusImage;
-    }
-
-    public void setPetitionStatusImage(int petitionStatusImage) {
-        this.petitionStatusImage = petitionStatusImage;
     }
 
 }

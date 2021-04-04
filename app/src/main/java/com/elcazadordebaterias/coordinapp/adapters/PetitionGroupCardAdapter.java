@@ -16,10 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCard;
+import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
+import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -59,8 +62,32 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         holder.participantsList.setVisibility(View.GONE);
 
         holder.acceptRequest.setOnClickListener(v -> {
-            String currentUserId = fAuth.getUid();
 
+            fStore.collection("Petitions").document(petitionCard.getPetitionId()).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+
+                        String currentUserId = fAuth.getUid();
+
+                        PetitionRequest currentPetition = document.toObject(PetitionRequest.class);
+
+                        ArrayList<PetitionUser> petitionUsers = currentPetition.getPetitionUsersList();
+                        ArrayList<PetitionUser> updatedPetitionUsers = new ArrayList<PetitionUser>();
+
+                        for(PetitionUser user : petitionUsers){
+                            if(!user.getUserId().equals(currentUserId)){
+                                updatedPetitionUsers.add(user);
+                            }else{
+                                updatedPetitionUsers.add(new PetitionUser(user.getUserId(), user.getUserFullName(), user.getUserAsTeacher(), 1));
+                            }
+                        }
+
+                        PetitionRequest updatedPetition = new PetitionRequest(currentPetition.getCourse(), currentPetition.getSubject(), currentPetition.getRequesterId(), currentPetition.getRequesterName(), currentPetition.getPetitionUsersIds(), updatedPetitionUsers);
+                        fStore.collection("Petitions").document(petitionCard.getPetitionId()).set(updatedPetition);
+                    }
+                }
+            });
         });
 
         holder.displayParticipantsList.setOnClickListener(v -> {

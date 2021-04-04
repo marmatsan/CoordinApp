@@ -14,16 +14,9 @@ public class CourseParticipant {
         return mParticipantName;
     }
 
-    public void setParticipantName(String participantName) {
-        mParticipantName = participantName;
-    }
-
     public String getParticipantEmail() {
         return mParticipantEmail;
     }
 
-    public void setParticipantEmail(String participantEmail) {
-        mParticipantEmail = participantEmail;
-    }
 }
 

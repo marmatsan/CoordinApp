@@ -4,18 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.elcazadordebaterias.coordinapp.utils.CardviewItem;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.CreateGroupDialog;
 import com.google.android.material.button.MaterialButton;
-
-import java.util.ArrayList;
 
 /**
  * The fragment representing the Groups/Chat Tab of the student.
@@ -23,18 +19,11 @@ import java.util.ArrayList;
  */
 public class GroupsFragment_Student extends Fragment {
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-
-    private Context mContext;
     private MaterialButton mGroupCreationRequest;
-    ArrayList<CardviewItem> cardViewItemList = new ArrayList<>();
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mContext = context;
     }
 
     @Override

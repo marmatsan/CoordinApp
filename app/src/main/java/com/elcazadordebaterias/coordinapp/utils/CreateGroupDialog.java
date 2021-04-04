@@ -215,15 +215,12 @@ public class CreateGroupDialog extends DialogFragment {
                         }
                     }
 
-                    fStore.collection("Students").document(requesterId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    PetitionRequest currentPetition = new PetitionRequest(course, subject, requesterId,(String) document.getData().get("FullName"), petitionUsersIds, petitionUsersList);
-                                    fStore.collection("Students").document(requesterId).collection("Petitions").add(currentPetition);
-                                }
+                    fStore.collection("Students").document(requesterId).get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                PetitionRequest currentPetition = new PetitionRequest(course, subject, requesterId,(String) document.getData().get("FullName"), petitionUsersIds, petitionUsersList);
+                                fStore.collection("Petitions").add(currentPetition);
                             }
                         }
                     });

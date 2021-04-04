@@ -132,7 +132,7 @@ public class HomeFragment_Student extends Fragment {
         });
 
 
-        fStore.collectionGroup("Petitions").whereArrayContains("petitionUsersIds", fAuth.getUid()).get().addOnCompleteListener(task -> {
+        fStore.collection("Petitions").whereArrayContains("petitionUsersIds", fAuth.getUid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     PetitionRequest currentPetition = document.toObject(PetitionRequest.class);
@@ -141,8 +141,7 @@ public class HomeFragment_Student extends Fragment {
                     for(PetitionUser currentUser : currentPetition.getPetitionUsersList()){
                         participantsList.add(new GroupParticipant(currentUser.getUserFullName(), currentUser.getPetitionStatus()));
                     }
-
-                    petitions.add(new PetitionGroupCard(currentPetition.getRequesterName(), currentPetition.getCourse() + " / " + currentPetition.getSubject(), participantsList));
+                    petitions.add(new PetitionGroupCard(document.getId(), currentPetition.getRequesterName(), currentPetition.getCourse() + " / " + currentPetition.getSubject(), participantsList));
                 }
                 petitionsAdapter.notifyDataSetChanged();
             }

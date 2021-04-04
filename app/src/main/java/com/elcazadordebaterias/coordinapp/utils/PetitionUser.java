@@ -4,17 +4,17 @@ public class PetitionUser {
 
     private String userId;
     private String userFullName;
-    private boolean isTeacher;
+    private boolean userAsTeacher;
     private int petitionStatus;
 
     public PetitionUser(){
 
     }
 
-    public PetitionUser(String userId, String userFullName, boolean isTeacher ,int petitionStatus){
+    public PetitionUser(String userId, String userFullName, boolean userAsTeacher ,int petitionStatus){
         this.userId = userId;
         this.userFullName = userFullName;
-        this.isTeacher = isTeacher;
+        this.userAsTeacher = userAsTeacher;
         this.petitionStatus = petitionStatus;
     }
 
@@ -26,8 +26,8 @@ public class PetitionUser {
         return userFullName;
     }
 
-    public boolean isTeacher() {
-        return isTeacher;
+    public boolean getUserAsTeacher() {
+        return userAsTeacher;
     }
 
     public int getPetitionStatus() {
