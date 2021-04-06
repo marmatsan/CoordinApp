@@ -33,4 +33,8 @@ public class PetitionUser {
     public int getPetitionStatus() {
         return petitionStatus;
     }
+
+    public void setPetitionStatus(int petitionStatus){
+        this.petitionStatus = petitionStatus;
+    }
 }

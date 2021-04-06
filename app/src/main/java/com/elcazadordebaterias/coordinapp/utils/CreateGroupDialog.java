@@ -29,7 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class to create the pop-up dialog to create a new chat group
+ * Class to create the pop-up dialog to create a new chat group. The requester selects a course, a
+ * subject, and then selects the participants to make the group.
  *
  * @author Martín Mateos Sánchez
  */
@@ -127,12 +128,12 @@ public class CreateGroupDialog extends DialogFragment {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects"); // Array of the subjects. Contains all the subjects from the current course
-                            List<CourseSubject> courseSubjectList = new ArrayList<>();  // List with the information of the subjects
 
                             for (int i = 0; i < data.size(); i++) { // Iterate over all the subjects in the current course
                                 Map<String, Object> subjectInfo = data.get(i); // Current subject information (the list with the students, the name of the subject and the teacher id)
                                 subjectNames.add(subjectInfo.get("SubjectName").toString());
                             }
+
                             subjectListAdapter.notifyDataSetChanged();
                         }
                     }

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,14 +17,14 @@ import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCard;
 import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
+
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -59,32 +58,70 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
 
         holder.requesterName.setText(petitionCard.getRequesterName());
         holder.courseName.setText(petitionCard.getCourseSubject());
-        holder.participantsList.setVisibility(View.GONE);
 
         holder.acceptRequest.setOnClickListener(v -> {
-
             fStore.collection("Petitions").document(petitionCard.getPetitionId()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
 
-                        String currentUserId = fAuth.getUid();
+                        PetitionRequest updatedRequest = updatePetitionStatus(document, 1);
 
-                        PetitionRequest currentPetition = document.toObject(PetitionRequest.class);
+                        fStore.collection("Petitions").document(petitionCard.getPetitionId()).set(updatedRequest).addOnSuccessListener(aVoid -> {
+                            fStore.collection("Petitions").document(petitionCard.getPetitionId()).get().addOnCompleteListener(task1 -> { // Redo the petition
+                                if (task1.isSuccessful()) {
+                                    DocumentSnapshot document1 = task1.getResult();
+                                    if (document1.exists()) {
+                                        petitionsList.remove(position);
 
-                        ArrayList<PetitionUser> petitionUsers = currentPetition.getPetitionUsersList();
-                        ArrayList<PetitionUser> updatedPetitionUsers = new ArrayList<PetitionUser>();
+                                        PetitionRequest currentPetition = document1.toObject(PetitionRequest.class);
 
-                        for(PetitionUser user : petitionUsers){
-                            if(!user.getUserId().equals(currentUserId)){
-                                updatedPetitionUsers.add(user);
-                            }else{
-                                updatedPetitionUsers.add(new PetitionUser(user.getUserId(), user.getUserFullName(), user.getUserAsTeacher(), 1));
-                            }
-                        }
+                                        ArrayList<GroupParticipant> participantsList = new ArrayList<GroupParticipant>();
 
-                        PetitionRequest updatedPetition = new PetitionRequest(currentPetition.getCourse(), currentPetition.getSubject(), currentPetition.getRequesterId(), currentPetition.getRequesterName(), currentPetition.getPetitionUsersIds(), updatedPetitionUsers);
-                        fStore.collection("Petitions").document(petitionCard.getPetitionId()).set(updatedPetition);
+                                        for(PetitionUser currentUser : currentPetition.getPetitionUsersList()){
+                                            participantsList.add(new GroupParticipant(currentUser.getUserFullName(), currentUser.getPetitionStatus()));
+                                        }
+
+                                        petitionsList.add(position, new PetitionGroupCard(document.getId(), currentPetition.getRequesterName(), currentPetition.getCourse() + " / " + currentPetition.getSubject(), participantsList));
+                                        notifyItemChanged(position);
+                                    }
+                                }
+                            });
+                        });
+                    }
+                }
+            });
+        });
+
+        holder.denyRequest.setOnClickListener(v -> {
+            fStore.collection("Petitions").document(petitionCard.getPetitionId()).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+
+                        PetitionRequest updatedRequest = updatePetitionStatus(document, 2);
+
+                        fStore.collection("Petitions").document(petitionCard.getPetitionId()).set(updatedRequest).addOnSuccessListener(aVoid -> {
+                            fStore.collection("Petitions").document(petitionCard.getPetitionId()).get().addOnCompleteListener(task1 -> { // Redo the petition
+                                if (task1.isSuccessful()) {
+                                    DocumentSnapshot document1 = task1.getResult();
+                                    if (document1.exists()) {
+                                        petitionsList.remove(position);
+
+                                        PetitionRequest currentPetition = document1.toObject(PetitionRequest.class);
+
+                                        ArrayList<GroupParticipant> participantsList = new ArrayList<GroupParticipant>();
+
+                                        for(PetitionUser currentUser : currentPetition.getPetitionUsersList()){
+                                            participantsList.add(new GroupParticipant(currentUser.getUserFullName(), currentUser.getPetitionStatus()));
+                                        }
+
+                                        petitionsList.add(position, new PetitionGroupCard(document.getId(), currentPetition.getRequesterName(), currentPetition.getCourse() + " / " + currentPetition.getSubject(), participantsList));
+                                        notifyItemChanged(position);
+                                    }
+                                }
+                            });
+                        });
                     }
                 }
             });
@@ -99,6 +136,8 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         });
 
         // Add all the participants to the card
+        holder.participantsList.removeAllViews();
+
         for (int i = 0; i < petitionCard.getParticipantsList().size(); i++) {
             GroupParticipant currentParticipant = petitionCard.getParticipantsList().get(i);
             View view = LayoutInflater.from(mContext).inflate(R.layout.utils_groupparticipant, null);
@@ -137,13 +176,26 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         return petitionsList.size();
     }
 
+    public PetitionRequest updatePetitionStatus(DocumentSnapshot document, int newStatus){
+        PetitionRequest updatePetition = document.toObject(PetitionRequest.class);
+
+        ArrayList<PetitionUser> petitionUsers = updatePetition.getPetitionUsersList();
+
+        for(PetitionUser user : petitionUsers){
+            if(user.getUserId().equals(fAuth.getUid())){
+                user.setPetitionStatus(newStatus);
+            }
+        }
+        return updatePetition;
+    }
+
     static class PetitionGroupCardViewHolder extends RecyclerView.ViewHolder {
         TextView requesterName;
         TextView courseName;
-        MaterialButton displayParticipantsList;
         MaterialButton acceptRequest;
         MaterialButton denyRequest;
         LinearLayout participantsList;
+        MaterialButton displayParticipantsList;
 
         PetitionGroupCardViewHolder(View itemView) {
             super(itemView);
@@ -152,9 +204,8 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
             courseName = itemView.findViewById(R.id.courseName);
             acceptRequest = itemView.findViewById(R.id.acceptRequest);
             denyRequest = itemView.findViewById(R.id.denyRequest);
-            displayParticipantsList = itemView.findViewById(R.id.displayParticipantsList);
             participantsList = itemView.findViewById(R.id.participantsList);
-
+            displayParticipantsList = itemView.findViewById(R.id.displayParticipantsList);
         }
     }
 }
