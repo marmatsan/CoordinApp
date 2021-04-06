@@ -66,28 +66,8 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                     if (document.exists()) {
 
                         PetitionRequest updatedRequest = updatePetitionStatus(document, 1);
+                        updatePetition(petitionCard, updatedRequest, position, document);
 
-                        fStore.collection("Petitions").document(petitionCard.getPetitionId()).set(updatedRequest).addOnSuccessListener(aVoid -> {
-                            fStore.collection("Petitions").document(petitionCard.getPetitionId()).get().addOnCompleteListener(task1 -> { // Redo the petition
-                                if (task1.isSuccessful()) {
-                                    DocumentSnapshot document1 = task1.getResult();
-                                    if (document1.exists()) {
-                                        petitionsList.remove(position);
-
-                                        PetitionRequest currentPetition = document1.toObject(PetitionRequest.class);
-
-                                        ArrayList<GroupParticipant> participantsList = new ArrayList<GroupParticipant>();
-
-                                        for(PetitionUser currentUser : currentPetition.getPetitionUsersList()){
-                                            participantsList.add(new GroupParticipant(currentUser.getUserFullName(), currentUser.getPetitionStatus()));
-                                        }
-
-                                        petitionsList.add(position, new PetitionGroupCard(document.getId(), currentPetition.getRequesterName(), currentPetition.getCourse() + " / " + currentPetition.getSubject(), participantsList));
-                                        notifyItemChanged(position);
-                                    }
-                                }
-                            });
-                        });
                     }
                 }
             });
@@ -100,28 +80,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                     if (document.exists()) {
 
                         PetitionRequest updatedRequest = updatePetitionStatus(document, 2);
-
-                        fStore.collection("Petitions").document(petitionCard.getPetitionId()).set(updatedRequest).addOnSuccessListener(aVoid -> {
-                            fStore.collection("Petitions").document(petitionCard.getPetitionId()).get().addOnCompleteListener(task1 -> { // Redo the petition
-                                if (task1.isSuccessful()) {
-                                    DocumentSnapshot document1 = task1.getResult();
-                                    if (document1.exists()) {
-                                        petitionsList.remove(position);
-
-                                        PetitionRequest currentPetition = document1.toObject(PetitionRequest.class);
-
-                                        ArrayList<GroupParticipant> participantsList = new ArrayList<GroupParticipant>();
-
-                                        for(PetitionUser currentUser : currentPetition.getPetitionUsersList()){
-                                            participantsList.add(new GroupParticipant(currentUser.getUserFullName(), currentUser.getPetitionStatus()));
-                                        }
-
-                                        petitionsList.add(position, new PetitionGroupCard(document.getId(), currentPetition.getRequesterName(), currentPetition.getCourse() + " / " + currentPetition.getSubject(), participantsList));
-                                        notifyItemChanged(position);
-                                    }
-                                }
-                            });
-                        });
+                        updatePetition(petitionCard, updatedRequest, position, document);
                     }
                 }
             });
@@ -187,6 +146,30 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
             }
         }
         return updatePetition;
+    }
+
+    private void updatePetition(PetitionGroupCard petitionCard, PetitionRequest updatedRequest, int position, DocumentSnapshot document){
+        fStore.collection("Petitions").document(petitionCard.getPetitionId()).set(updatedRequest).addOnSuccessListener(aVoid -> {
+            fStore.collection("Petitions").document(petitionCard.getPetitionId()).get().addOnCompleteListener(task1 -> { // Redo the petition
+                if (task1.isSuccessful()) {
+                    DocumentSnapshot document1 = task1.getResult();
+                    if (document1.exists()) {
+                        petitionsList.remove(position);
+
+                        PetitionRequest currentPetition = document1.toObject(PetitionRequest.class);
+
+                        ArrayList<GroupParticipant> participantsList = new ArrayList<GroupParticipant>();
+
+                        for(PetitionUser currentUser : currentPetition.getPetitionUsersList()){
+                            participantsList.add(new GroupParticipant(currentUser.getUserFullName(), currentUser.getPetitionStatus()));
+                        }
+
+                        petitionsList.add(position, new PetitionGroupCard(document.getId(), currentPetition.getRequesterName(), currentPetition.getCourse() + " / " + currentPetition.getSubject(), participantsList));
+                        notifyItemChanged(position);
+                    }
+                }
+            });
+        });
     }
 
     static class PetitionGroupCardViewHolder extends RecyclerView.ViewHolder {

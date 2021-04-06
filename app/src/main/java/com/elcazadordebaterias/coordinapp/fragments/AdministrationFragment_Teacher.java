@@ -19,6 +19,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * The fragment representing the Administration Tab of the teacher.
@@ -26,6 +27,9 @@ import com.google.firebase.auth.FirebaseAuth;
  * @author Martín Mateos Sánchez
  */
 public class AdministrationFragment_Teacher extends Fragment {
+
+    FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
 
     AdministrationOptionsAdapter optionsAdapter;
 
@@ -64,11 +68,15 @@ public class AdministrationFragment_Teacher extends Fragment {
         new TabLayoutMediator(tablayout, viewpager, (tab, position) -> {
             switch (position){
                 case 0:
-                    tab.setText("Cursos");
+                    //tab.setText("Cursos");
                     tab.setIcon(R.drawable.ic_baseline_folder_24);
                     break;
                 case 1:
-                    tab.setText("Fechas");
+                    //tab.setText("Peticiones");
+                    tab.setIcon(R.drawable.ic_baseline_notifications_none_24);
+                    break;
+                case 2:
+                    //tab.setText("Fechas");
                     tab.setIcon(R.drawable.ic_baseline_calendar_today_24);
                     break;
             }
