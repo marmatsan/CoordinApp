@@ -67,7 +67,6 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
 
                         PetitionRequest updatedRequest = updatePetitionStatus(document, 1);
                         updatePetition(petitionCard, updatedRequest, position, document);
-
                     }
                 }
             });

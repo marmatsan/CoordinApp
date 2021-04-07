@@ -86,5 +86,8 @@
     <string name="participant_name">Participant name</string>
     <string name="ver_participantes">Ver participantes</string>
     <string name="pulsa_el_bot_n_para_enviar_una_solicitud_de_creaci_n_de_grupo">Pulsa el botón + para enviar una solicitud de creación de grupo</string>
+    <string name="peticiones">Peticiones</string>
+    <string name="chats_grupales">Chats grupales</string>
+    <string name="chats_con_el_profesor">Chats con el profesor</string>
 
 </resources>

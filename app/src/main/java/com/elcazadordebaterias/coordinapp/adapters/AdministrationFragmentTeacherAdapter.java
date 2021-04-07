@@ -13,8 +13,8 @@ import com.elcazadordebaterias.coordinapp.fragments.AdministrationFragment_Teach
  *
  * @author Martín Mateos Sánchez
  */
-public class AdministrationOptionsAdapter extends FragmentStateAdapter {
-    public AdministrationOptionsAdapter(Fragment fragment) {
+public class AdministrationFragmentTeacherAdapter extends FragmentStateAdapter {
+    public AdministrationFragmentTeacherAdapter(Fragment fragment) {
         super(fragment);
     }
 
