@@ -89,5 +89,8 @@
     <string name="peticiones">Peticiones</string>
     <string name="chats_grupales">Chats grupales</string>
     <string name="chats_con_el_profesor">Chats con el profesor</string>
+    <string name="coursename">CourseName</string>
+    <string name="participantes">Participantes</string>
+    <string name="subjectname">SubjectName</string>
 
 </resources>
