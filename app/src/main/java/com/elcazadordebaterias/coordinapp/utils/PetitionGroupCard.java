@@ -15,9 +15,9 @@ public class PetitionGroupCard {
     private String petitionId; // The id of the document of this card in FireStore
     private String requesterName;
     private String courseSubject;
-    private ArrayList<GroupParticipant> participantsList;
+    private ArrayList<PetitionGroupCardParticipant> participantsList;
 
-    public PetitionGroupCard(String petitionId, String requesterName, String courseSubject, ArrayList<GroupParticipant> participantsList){
+    public PetitionGroupCard(String petitionId, String requesterName, String courseSubject, ArrayList<PetitionGroupCardParticipant> participantsList){
         this.petitionId = petitionId;
         this.requesterName = requesterName;
         this.courseSubject = courseSubject;
@@ -36,11 +36,11 @@ public class PetitionGroupCard {
         return courseSubject;
     }
 
-    public ArrayList<GroupParticipant> getParticipantsList() {
+    public ArrayList<PetitionGroupCardParticipant> getParticipantsList() {
         return participantsList;
     }
 
-    public void setParticipantsList(ArrayList<GroupParticipant> participantsList) {
+    public void setParticipantsList(ArrayList<PetitionGroupCardParticipant> participantsList) {
         this.participantsList = participantsList;
     }
 }

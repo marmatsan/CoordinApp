@@ -1,7 +1,6 @@
 package com.elcazadordebaterias.coordinapp.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCardParticipant;
 import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCard;
 import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -104,7 +99,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         holder.participantsList.removeAllViews();
 
         for (int i = 0; i < petitionCard.getParticipantsList().size(); i++) {
-            GroupParticipant currentParticipant = petitionCard.getParticipantsList().get(i);
+            PetitionGroupCardParticipant currentParticipant = petitionCard.getParticipantsList().get(i);
             View view = LayoutInflater.from(mContext).inflate(R.layout.utils_groupparticipant, null);
 
             TextView participantName = view.findViewById(R.id.participantName);
@@ -146,13 +141,13 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         PetitionRequest currentPetition = document.toObject(PetitionRequest.class);
 
         ArrayList<PetitionUser> petitionUsers = currentPetition.getPetitionUsersList();
-        ArrayList<GroupParticipant> participantsList = new ArrayList<GroupParticipant>();
+        ArrayList<PetitionGroupCardParticipant> participantsList = new ArrayList<PetitionGroupCardParticipant>();
 
         for(PetitionUser user : petitionUsers){
             if(user.getUserId().equals(fAuth.getUid())){
                 user.setPetitionStatus(newStatus);
             }
-            participantsList.add(new GroupParticipant(user.getUserFullName(), user.getPetitionStatus()));
+            participantsList.add(new PetitionGroupCardParticipant(user.getUserFullName(), user.getPetitionStatus()));
         }
 
         petitionCard.setParticipantsList(participantsList);

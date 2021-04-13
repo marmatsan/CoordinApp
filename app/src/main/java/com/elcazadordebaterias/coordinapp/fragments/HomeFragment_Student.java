@@ -15,7 +15,7 @@ import com.elcazadordebaterias.coordinapp.adapters.PetitionGroupCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.CourseCard;
 import com.elcazadordebaterias.coordinapp.utils.CourseParticipant;
 import com.elcazadordebaterias.coordinapp.utils.CourseSubject;
-import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCardParticipant;
 import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCard;
 import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
@@ -129,10 +129,10 @@ public class HomeFragment_Student extends Fragment {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     PetitionRequest currentPetition = document.toObject(PetitionRequest.class);
-                    ArrayList<GroupParticipant> participantsList = new ArrayList<GroupParticipant>();
+                    ArrayList<PetitionGroupCardParticipant> participantsList = new ArrayList<PetitionGroupCardParticipant>();
 
                     for(PetitionUser currentUser : currentPetition.getPetitionUsersList()){
-                        participantsList.add(new GroupParticipant(currentUser.getUserFullName(), currentUser.getPetitionStatus()));
+                        participantsList.add(new PetitionGroupCardParticipant(currentUser.getUserFullName(), currentUser.getPetitionStatus()));
                     }
 
                     petitions.add(new PetitionGroupCard(document.getId(), currentPetition.getRequesterName(), currentPetition.getCourse() + " / " + currentPetition.getSubject(), participantsList));

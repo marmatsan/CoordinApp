@@ -11,6 +11,7 @@ public class Group {
     private String subjectName;
 
     private ArrayList<String> participantsIds;
+    private ArrayList<GroupParticipant>
 
     public Group(){
 
