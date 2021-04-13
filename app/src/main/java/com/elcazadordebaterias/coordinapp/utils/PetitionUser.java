@@ -11,7 +11,7 @@ public class PetitionUser {
 
     }
 
-    public PetitionUser(String userId, String userFullName, boolean userAsTeacher ,int petitionStatus){
+    public PetitionUser(String userId, String userFullName, boolean userAsTeacher, int petitionStatus){
         this.userId = userId;
         this.userFullName = userFullName;
         this.userAsTeacher = userAsTeacher;

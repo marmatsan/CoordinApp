@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
+import com.elcazadordebaterias.coordinapp.utils.Group;
+import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCardParticipant;
 import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCard;
 import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
@@ -88,6 +90,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
             });
         });
 
+
         holder.displayParticipantsList.setOnClickListener(v -> {
             if(holder.participantsList.getVisibility() == View.GONE){
                 holder.participantsList.setVisibility(View.VISIBLE);
@@ -158,7 +161,15 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
 
     private void createNewGroup(PetitionRequest currentPetition){
 
+        ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
 
+        for(PetitionUser user : currentPetition.getPetitionUsersList()){
+            participants.add(new GroupParticipant(user.getUserFullName(), user.getUserAsTeacher(), user.getUserId()));
+        }
+
+        Group group = new Group(fAuth.getUid(), currentPetition.getCourse(), currentPetition.getSubject(), currentPetition.getPetitionUsersIds(), participants);
+
+        fStore.collection("Groups").add(group);
 
     }
 
