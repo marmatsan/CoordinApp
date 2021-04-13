@@ -64,13 +64,14 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
 
                         for (PetitionUser user : currentPetition.getPetitionUsersList()){
                             if(user.getUserId().equals(fAuth.getUid()) && user.getUserAsTeacher()){ // A teacher has accepted the petition
-                                createNewGroup();
+                                createNewGroup(currentPetition);
                                 break;
                             }else if (user.getUserId().equals(fAuth.getUid())){ // An student has accepted the petition
                                 updatePetition(document,petitionCard, position, 1);
                                 break;
                             }
                         }
+
                     }
                 }
             });
@@ -155,7 +156,9 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         fStore.collection("Petitions").document(document.getId()).update("petitionUsersList", petitionUsers).addOnSuccessListener(aVoid -> notifyItemChanged(position));
     }
 
-    private void createNewGroup(){
+    private void createNewGroup(PetitionRequest currentPetition){
+
+
 
     }
 

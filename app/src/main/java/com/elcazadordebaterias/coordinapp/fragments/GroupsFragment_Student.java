@@ -50,8 +50,7 @@ public class GroupsFragment_Student extends Fragment {
 
         mGroupCreationRequest = rootView.findViewById(R.id.groupCreationRequest);
         mGroupCreationRequest.setOnClickListener(view -> {
-            CreateGroupDialog dialog = new CreateGroupDialog();
-            dialog.show(getFragmentManager(), "dialog");
+
         });
 
         return rootView;

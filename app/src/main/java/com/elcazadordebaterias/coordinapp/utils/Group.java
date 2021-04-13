@@ -2,31 +2,31 @@ package com.elcazadordebaterias.coordinapp.utils;
 
 import java.util.ArrayList;
 
+/**
+ * Class that represents the data of the group an user is in FireStore.
+ *
+ * @author Martín Mateos Sánchez
+ */
+
 public class Group {
 
-    private String groupId; // The id of the group document in FireStore
     private String coordinatorId; // The id of the teacher that accepted the group
-
     private String groupName;
     private String subjectName;
 
     private ArrayList<String> participantsIds;
-    private ArrayList<GroupParticipant>
+    private ArrayList<GroupParticipant> participants;
 
     public Group(){
 
     }
 
-    public Group(String groupId, String coordinatorId, String groupName, String subjectName, ArrayList<String> participantsIds){
-        this.groupId = groupId;
+    public Group(String coordinatorId, String groupName, String subjectName, ArrayList<String> participantsIds, ArrayList<GroupParticipant> participants){
         this.coordinatorId = coordinatorId;
         this.groupName = groupName;
         this.subjectName = subjectName;
         this.participantsIds = participantsIds;
-    }
-
-    public String getGroupId() {
-        return groupId;
+        this.participants = participants;
     }
 
     public String getCoordinatorId() {
@@ -43,5 +43,9 @@ public class Group {
 
     public ArrayList<String> getParticipantsIds() {
         return participantsIds;
+    }
+
+    public ArrayList<GroupParticipant> getParticipants() {
+        return participants;
     }
 }
