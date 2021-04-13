@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +20,18 @@ import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCard;
 import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroupCardAdapter.PetitionGroupCardViewHolder> {
 
@@ -66,10 +73,10 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
 
                         for (PetitionUser user : currentPetition.getPetitionUsersList()){
                             if(user.getUserId().equals(fAuth.getUid()) && user.getUserAsTeacher()){ // A teacher has accepted the petition
-                                createNewGroup(currentPetition);
+                                createNewGroup(currentPetition, petitionCard);
                                 break;
                             }else if (user.getUserId().equals(fAuth.getUid())){ // An student has accepted the petition
-                                updatePetition(document,petitionCard, position, 1);
+                                updatePetition(document, petitionCard, position, 1);
                                 break;
                             }
                         }
@@ -159,7 +166,8 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         fStore.collection("Petitions").document(document.getId()).update("petitionUsersList", petitionUsers).addOnSuccessListener(aVoid -> notifyItemChanged(position));
     }
 
-    private void createNewGroup(PetitionRequest currentPetition){
+    // Creates the new group and deletes the petition that has been accepted
+    private void createNewGroup(PetitionRequest currentPetition, PetitionGroupCard petitionCard){
 
         ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
 
@@ -169,7 +177,25 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
 
         Group group = new Group(fAuth.getUid(), currentPetition.getCourse(), currentPetition.getSubject(), currentPetition.getPetitionUsersIds(), participants);
 
-        fStore.collection("Groups").add(group);
+        fStore.collection("Groups").add(group).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                HashMap<String, Object> setAvailable = new HashMap<String, Object>();
+                setAvailable.put("Available", 1);
+
+                WriteBatch batch = fStore.batch();
+                String [] chatNames = {"GroupalChat", "SingleChat"};
+
+                for(String chatName : chatNames){
+                    DocumentReference newChatRoom = documentReference.collection("ChatRooms").document(chatName);
+                    batch.update(newChatRoom, setAvailable);
+                }
+
+                batch.commit().addOnCompleteListener(task -> {
+                    fStore.collection("Petitions").document(petitionCard.getPetitionId()).delete();
+                });
+            }
+        });
 
     }
 
