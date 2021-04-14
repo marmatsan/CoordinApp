@@ -24,7 +24,7 @@ public class GroupParticipant {
         this.participantFullName = participantFullName;
     }
 
-    public boolean isParticipantAsTeacher() {
+    public boolean getParticipantAsTeacher() {
         return participantAsTeacher;
     }
 

@@ -25,6 +25,8 @@ public class GroupalCardAdapter extends RecyclerView.Adapter<GroupalCardAdapter.
     ArrayList<GroupalCard> groupsList;
     Context context;
 
+    private OnItemClickListener listener;
+
     public GroupalCardAdapter(ArrayList<GroupalCard> groupsList, Context context){
         this.groupsList = groupsList;
         this.context = context;
@@ -34,7 +36,7 @@ public class GroupalCardAdapter extends RecyclerView.Adapter<GroupalCardAdapter.
     @Override
     public GroupalCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_groupalcard, parent, false);
-        return new GroupalCardViewHolder(view);
+        return new GroupalCardViewHolder(view, listener);
     }
 
     @Override
@@ -71,18 +73,36 @@ public class GroupalCardAdapter extends RecyclerView.Adapter<GroupalCardAdapter.
         return groupsList.size();
     }
 
+    public interface OnItemClickListener{
+        void onItemClicked(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
+    }
+
     static class GroupalCardViewHolder extends RecyclerView.ViewHolder{
         ImageView subjectImage;
         TextView courseName;
         TextView subjectName;
         MaterialButton showParticipants;
 
-        GroupalCardViewHolder(View view){
+        GroupalCardViewHolder(View view, OnItemClickListener listener){
             super(view);
+
             subjectImage = view.findViewById(R.id.subjectImage);
             courseName = view.findViewById(R.id.courseName);
             subjectName = view.findViewById(R.id.subjectName);
             showParticipants = view.findViewById(R.id.showParticipants);
+
+             view.setOnClickListener(view1 -> {
+                if(listener != null){
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        listener.onItemClicked(position);
+                    }
+                }
+             });
         }
     }
 }

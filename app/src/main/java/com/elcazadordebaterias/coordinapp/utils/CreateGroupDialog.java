@@ -3,6 +3,7 @@ package com.elcazadordebaterias.coordinapp.utils;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +19,7 @@ import com.elcazadordebaterias.coordinapp.R;
 
 import com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -32,10 +34,9 @@ import java.util.Map;
  * Class to create the pop-up dialog to create a new chat group. The requester selects a course, a
  * subject, and then selects the participants to make the group.
  *
+ * @author Martín Mateos Sánchez
  * @see CreateGroupDialogSpinnerItem
  * @see CreateGroupDialogParticipantsAdapter
- *
- * @author Martín Mateos Sánchez
  */
 
 public class CreateGroupDialog extends DialogFragment {
@@ -56,7 +57,7 @@ public class CreateGroupDialog extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) { // TODO: Totally improve this class for errors
         context = getActivity();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -119,7 +120,7 @@ public class CreateGroupDialog extends DialogFragment {
         // Listeners when we select the items
 
         // Course spinner listener
-        courseListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        courseListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 subjectNames.clear();
@@ -144,11 +145,12 @@ public class CreateGroupDialog extends DialogFragment {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         // Subject spinner listener
-        subjectListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        subjectListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 participantsList.clear();
@@ -158,32 +160,26 @@ public class CreateGroupDialog extends DialogFragment {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects"); // Array of the subjects. Contains all the subjects from the current course
+                            ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects"); // Array of the subjects. Contains all the subjects from the current course.
 
-                            for (int i = 0; i < data.size(); i++) { // Iterate over all the subjects in the current course
-                                Map<String, Object> subjectInfo = data.get(i); // Current subject information (the list with the students, the name of the subject and the teacher id)
+                            for (int i = 0; i < data.size(); i++) { // Iterate over all the subjects in the current course.
+                                Map<String, Object> subjectInfo = data.get(i); // Current subject information (the list with the students, the name of the subject and the teacher id).
 
-                                if(subjectInfo.get("SubjectName").toString().equals(selectedSubjectName)){
+                                if (subjectInfo.get("SubjectName").toString().equals(selectedSubjectName)) {
 
                                     ArrayList<String> studentsIds = (ArrayList<String>) subjectInfo.get("Students");
 
-                                    fStore.collection("Students").get().addOnCompleteListener(task1 -> { // Search for student info to build the student list
+                                    fStore.collection("Students").get().addOnCompleteListener(task1 -> { // Search for student info to build the student list.
                                         if (task1.isSuccessful()) {
-                                            fStore.collection("Teachers").document((String) subjectInfo.get("TeacherId")).get().addOnCompleteListener(task2 -> { // Add the teacher to be displayed
-                                                if (task2.isSuccessful()) {
-
-                                                    DocumentSnapshot document2 = task2.getResult();
-
-                                                    participantsList.add(new CreateGroupDialogSpinnerItem(document2.getData().get("FullName").toString(), document2.getId(),true , true));
-
-                                                    for (QueryDocumentSnapshot document1 : task1.getResult()) { // Create the list of the students
-                                                        if (studentsIds.contains(document1.getId()) && !document1.getId().equals(fAuth.getCurrentUser().getUid())) { // The current user is not shown in the list
-                                                            participantsList.add(new CreateGroupDialogSpinnerItem(document1.getData().get("FullName").toString(), document1.getId(), false, false));
-                                                        }
-                                                    }
-                                                    participantsListAdapter.notifyDataSetChanged();
+                                            for (QueryDocumentSnapshot document1 : task1.getResult()) { // Create the list of the students. The requester name will be displayed first.
+                                                if (studentsIds.contains(document1.getId())) {
+                                                    if(document1.getId().equals(fAuth.getUid()))
+                                                        participantsList.add(new CreateGroupDialogSpinnerItem(document1.getData().get("FullName").toString(), document1.getId(), true, false));
+                                                    else
+                                                        participantsList.add(new CreateGroupDialogSpinnerItem(document1.getData().get("FullName").toString(), document1.getId(), false, false));
                                                 }
-                                            });
+                                            }
+                                            participantsListAdapter.notifyDataSetChanged();
                                         }
                                     });
                                     break;
@@ -195,13 +191,14 @@ public class CreateGroupDialog extends DialogFragment {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         builder.setView(view).setTitle("Solicitud para crear un grupo")
                 .setNegativeButton("Cancelar", (dialogInterface, i) -> {
                     // Just closes the dialog
-        })
+                })
                 .setPositiveButton("Solicitar", (dialogInterface, i) -> {
 
                     String course = courseListSpinner.getSelectedItem().toString();
@@ -211,20 +208,40 @@ public class CreateGroupDialog extends DialogFragment {
                     ArrayList<PetitionUser> petitionUsersList = new ArrayList<PetitionUser>();
                     ArrayList<String> petitionUsersIds = new ArrayList<String>();
 
-                    for(CreateGroupDialogSpinnerItem item : participantsList){
-                        if(item.isSelected()){
+                    // Add all the students to the petition.
+                    for (CreateGroupDialogSpinnerItem item : participantsList) {
+                        if (item.isSelected()) {
                             String participantId = item.getParticipantId();
-                            petitionUsersList.add(new PetitionUser(participantId, item.getParticipantName(), item.isTeacher(),0));
+                            petitionUsersList.add(new PetitionUser(participantId, item.getParticipantName(), item.isTeacher(), 0));
                             petitionUsersIds.add(participantId);
                         }
                     }
 
-                    fStore.collection("Students").document(requesterId).get().addOnCompleteListener(task -> {
+                    //Add the teacher
+                    fStore.collection("CoursesOrganization").document(course).get().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
-                                PetitionRequest currentPetition = new PetitionRequest(course, subject, requesterId,(String) document.getData().get("FullName"), petitionUsersIds, petitionUsersList);
-                                fStore.collection("Petitions").add(currentPetition);
+                                ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects"); // Array of the subjects. Contains all the subjects from the current course.
+                                String teacherId = null;
+
+                                for(Map<String, Object> currentSubject : data){
+                                    if(currentSubject.get("SubjectName").equals(subject)){
+                                        teacherId = (String) currentSubject.get("TeacherId");
+                                        break;
+                                    }
+                                }
+
+                                String finalTeacherId = teacherId;
+                                fStore.collection("Teachers").document(teacherId).get().addOnSuccessListener(documentSnapshot -> {
+                                    petitionUsersList.add(new PetitionUser(finalTeacherId, (String) documentSnapshot.getData().get("FullName"), true, 0));
+                                    petitionUsersIds.add(finalTeacherId);
+
+                                    fStore.collection("Students").document(requesterId).get().addOnSuccessListener(documentSnapshot1 -> {
+                                        PetitionRequest currentPetition = new PetitionRequest(course, subject, requesterId, (String) documentSnapshot1.getData().get("FullName"), petitionUsersIds, petitionUsersList);
+                                        fStore.collection("Petitions").add(currentPetition);
+                                    });
+                                });
                             }
                         }
                     });

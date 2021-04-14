@@ -11,16 +11,30 @@ import android.widget.Toast;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.CreateGroupDialogSpinnerItem;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+
+/**
+ * Class to handle the objects of type {@link CreateGroupDialogSpinnerItem}, which is used by the {@link com.elcazadordebaterias.coordinapp.utils.CreateGroupDialog} class.
+ *
+ * @see com.elcazadordebaterias.coordinapp.utils.CreateGroupDialog
+ * @see CreateGroupDialogSpinnerItem
+ *
+ * @author Martín Mateos Sánchez
+ */
 
 public class CreateGroupDialogParticipantsAdapter extends ArrayAdapter<CreateGroupDialogSpinnerItem> {
 
     private final ArrayList<CreateGroupDialogSpinnerItem> participantsList;
 
+    FirebaseAuth fAuth;
+
     public CreateGroupDialogParticipantsAdapter(Context context, ArrayList<CreateGroupDialogSpinnerItem> participantsList) {
         super(context, 0, participantsList);
         this.participantsList = participantsList;
+
+        fAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -48,10 +62,10 @@ public class CreateGroupDialogParticipantsAdapter extends ArrayAdapter<CreateGro
 
             viewHolder.mCheckBox.setOnClickListener(checkBox -> {
                 CreateGroupDialogSpinnerItem element = (CreateGroupDialogSpinnerItem) viewHolder.mCheckBox.getTag();
-                if(!element.isTeacher()){
+                if(!element.isTeacher() && !element.getParticipantId().equals(fAuth.getUid())){
                     element.setSelected(!element.isSelected());
-                }else{
-                    Toast.makeText(getContext(), "El profesor debe de estar siempre incluido", Toast.LENGTH_LONG).show();
+                }else if (element.getParticipantId().equals(fAuth.getUid())){
+                    Toast.makeText(getContext(), "Si vas a hacer la petición, debes de estar incluido en ella", Toast.LENGTH_LONG).show();
                     viewHolder.mCheckBox.setChecked(true);
                 }
             });

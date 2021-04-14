@@ -92,5 +92,6 @@
     <string name="coursename">CourseName</string>
     <string name="participantes">Participantes</string>
     <string name="subjectname">SubjectName</string>
+    <string name="escribe_un_mensaje">Escribe un mensaje</string>
 
 </resources>

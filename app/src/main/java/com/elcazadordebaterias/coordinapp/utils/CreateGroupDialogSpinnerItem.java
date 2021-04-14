@@ -1,7 +1,9 @@
 package com.elcazadordebaterias.coordinapp.utils;
 
 /**
- * Reprsents the custom spinner item used in {@link CreateGroupDialog} and {@link com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter}
+ * Reprsents the custom spinner item used in {@link CreateGroupDialog} and {@link com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter},
+ * and its layout is {@link com.elcazadordebaterias.coordinapp.R.layout#utils_creategroupdialog_spinner_item}
+ * When you click on the checkbox, the selected participant will be included in the petition for group creation.
  *
  * @see CreateGroupDialog
  * @see com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter

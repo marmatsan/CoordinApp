@@ -1,5 +1,8 @@
 package com.elcazadordebaterias.coordinapp.utils;
 
+import android.content.Intent;
+
+import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
 import com.elcazadordebaterias.coordinapp.adapters.GroupalCardAdapter;
 
 import java.util.ArrayList;
@@ -67,4 +70,5 @@ public class GroupalCard {
     public void setParticipantNames(ArrayList<String> participantNames) {
         this.participantNames = participantNames;
     }
+
 }

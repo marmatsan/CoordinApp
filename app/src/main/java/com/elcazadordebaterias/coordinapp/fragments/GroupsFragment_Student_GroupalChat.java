@@ -1,6 +1,8 @@
 package com.elcazadordebaterias.coordinapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
+import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
 import com.elcazadordebaterias.coordinapp.adapters.GroupalCardAdapter;
 import com.elcazadordebaterias.coordinapp.adapters.PetitionGroupCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.Group;
@@ -55,6 +58,10 @@ public class GroupsFragment_Student_GroupalChat extends Fragment {
 
         ArrayList<GroupalCard> groupCardList = new ArrayList<GroupalCard>();
         GroupalCardAdapter groupsAdapter = new GroupalCardAdapter(groupCardList, getContext());
+        groupsAdapter.setOnItemClickListener(position -> {
+            Intent intent = new Intent(getContext(), ChatActivity.class);
+            startActivity(intent);
+        });
 
         groupsPetitionsRecyclerView.setAdapter(groupsAdapter);
         groupsPetitionsRecyclerView.setLayoutManager(groupsLayoutManager);
@@ -67,7 +74,9 @@ public class GroupsFragment_Student_GroupalChat extends Fragment {
                     ArrayList<String> participantNames = new ArrayList<String>();
 
                     for(GroupParticipant participant : currentGroup.getParticipants()){
-                        participantNames.add(participant.getParticipantFullName());
+                        if(!participant.getParticipantAsTeacher()) { // The teacher is not displayed in the participants list, just the student.
+                            participantNames.add(participant.getParticipantFullName());
+                        }
                     }
 
                     GroupalCard card = new GroupalCard(document.getId(), R.drawable.ic_baseline_maths_24, currentGroup.getGroupName(), currentGroup.getSubjectName(), participantNames);
