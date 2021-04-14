@@ -32,6 +32,9 @@ import java.util.Map;
  * Class to create the pop-up dialog to create a new chat group. The requester selects a course, a
  * subject, and then selects the participants to make the group.
  *
+ * @see CreateGroupDialogSpinnerItem
+ * @see CreateGroupDialogParticipantsAdapter
+ *
  * @author Martín Mateos Sánchez
  */
 

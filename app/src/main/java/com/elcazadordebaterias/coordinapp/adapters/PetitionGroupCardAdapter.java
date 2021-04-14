@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -91,7 +92,17 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        updatePetition(document, petitionCard, position, 2);
+                        PetitionRequest currentPetition = document.toObject(PetitionRequest.class);
+
+                        for (PetitionUser user : currentPetition.getPetitionUsersList()){
+                            if(user.getUserId().equals(fAuth.getUid()) && user.getUserAsTeacher()){ // A teacher has deny the petition. Delete the petition
+                                fStore.collection("Petitions").document(document.getId()).delete();
+                                break;
+                            }else if (user.getUserId().equals(fAuth.getUid())){ // An student has deny the petition
+                                updatePetition(document, petitionCard, position, 2);
+                                break;
+                            }
+                        }
                     }
                 }
             });
@@ -172,30 +183,18 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
 
         for(PetitionUser user : currentPetition.getPetitionUsersList()){
-            participants.add(new GroupParticipant(user.getUserFullName(), user.getUserAsTeacher(), user.getUserId()));
+            if(user.getPetitionStatus() == 1 || user.getUserAsTeacher()) { //Add the students to the group who have accepted the petiton and add also the teacher
+                participants.add(new GroupParticipant(user.getUserFullName(), user.getUserAsTeacher(), user.getUserId()));
+            }
         }
 
         Group group = new Group(fAuth.getUid(), currentPetition.getCourse(), currentPetition.getSubject(), currentPetition.getPetitionUsersIds(), participants);
 
-        fStore.collection("Groups").add(group).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                HashMap<String, Object> setAvailable = new HashMap<String, Object>();
-                setAvailable.put("Available", 1);
-
-                WriteBatch batch = fStore.batch();
-                String [] chatNames = {"GroupalChat", "SingleChat"};
-
-                for(String chatName : chatNames){
-                    DocumentReference newChatRoom = documentReference.collection("ChatRooms").document(chatName);
-                    batch.update(newChatRoom, setAvailable);
-                }
-
-                batch.commit().addOnCompleteListener(task -> {
-                    fStore.collection("Petitions").document(petitionCard.getPetitionId()).delete();
-                });
-            }
-        });
+        if(participants.size() <= 2) {
+            Toast.makeText(mContext, "Deben de haber aceptado la petición más de dos estudiantes", Toast.LENGTH_SHORT).show();
+        }else{
+            fStore.collection("Groups").add(group).addOnSuccessListener(documentReference -> fStore.collection("Petitions").document(petitionCard.getPetitionId()).delete());
+        }
 
     }
 

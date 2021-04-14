@@ -1,6 +1,12 @@
 package com.elcazadordebaterias.coordinapp.utils;
 
-
+/**
+ * Reprsents the custom spinner item used in {@link CreateGroupDialog} and {@link com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter}
+ *
+ * @see CreateGroupDialog
+ * @see com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter
+ * @author Martín Mateos Sánchez
+ */
 public class CreateGroupDialogSpinnerItem {
     private String participantName;
     private String participantId;
