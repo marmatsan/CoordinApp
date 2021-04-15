@@ -27,10 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * @author Martín Mateos Sánchez
  */
 public class AdministrationFragment_Teacher extends Fragment {
-
-    FirebaseAuth fAuth;
-    FirebaseFirestore fStore;
-
     AdministrationFragmentTeacherAdapter optionsAdapter;
 
     private MaterialButton logout;

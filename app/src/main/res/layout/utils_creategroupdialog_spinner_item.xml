@@ -13,7 +13,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/name_of_the_participant"
-        android:textColor="@color/black"
+        android:textColor="@color/colorOnSecondary"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/selectParticipant"
         app:layout_constraintStart_toStartOf="parent"

@@ -11,9 +11,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
+import com.elcazadordebaterias.coordinapp.utils.CreateGroupDialog;
+import com.elcazadordebaterias.coordinapp.utils.DisplayParticipantsListDialog;
 import com.elcazadordebaterias.coordinapp.utils.Group;
 import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCardParticipant;
@@ -108,39 +111,11 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
             });
         });
 
-
         holder.displayParticipantsList.setOnClickListener(v -> {
-            if(holder.participantsList.getVisibility() == View.GONE){
-                holder.participantsList.setVisibility(View.VISIBLE);
-            }else{
-                holder.participantsList.setVisibility(View.GONE);
-            }
+            DisplayParticipantsListDialog dialog = new DisplayParticipantsListDialog(petitionCard.getParticipantsList());
+            dialog.show(((AppCompatActivity)mContext).getSupportFragmentManager(), "dialog");
         });
 
-        // Add all the participants to the card
-        holder.participantsList.removeAllViews();
-
-        for (int i = 0; i < petitionCard.getParticipantsList().size(); i++) {
-            PetitionGroupCardParticipant currentParticipant = petitionCard.getParticipantsList().get(i);
-            View view = LayoutInflater.from(mContext).inflate(R.layout.utils_groupparticipant, null);
-
-            TextView participantName = view.findViewById(R.id.participantName);
-            ImageView petitionStatusImage = view.findViewById(R.id.petitionStatusImage);
-
-            participantName.setText(currentParticipant.getParticipantName());
-
-            int petitionImage = currentParticipant.getPetitionStatusImage();
-
-            if(petitionImage == 0){
-                petitionStatusImage.setImageResource(R.drawable.petition_pending);
-            }else if(petitionImage == 1){
-                petitionStatusImage.setImageResource(R.drawable.petition_accepted);
-            }else{
-                petitionStatusImage.setImageResource(R.drawable.petition_rejected);
-            }
-
-            holder.participantsList.addView(view);
-        }
     }
 
     @Override
@@ -203,7 +178,6 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         TextView courseName;
         MaterialButton acceptRequest;
         MaterialButton denyRequest;
-        LinearLayout participantsList;
         MaterialButton displayParticipantsList;
 
         PetitionGroupCardViewHolder(View itemView) {
@@ -213,8 +187,8 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
             courseName = itemView.findViewById(R.id.courseName);
             acceptRequest = itemView.findViewById(R.id.acceptRequest);
             denyRequest = itemView.findViewById(R.id.denyRequest);
-            participantsList = itemView.findViewById(R.id.participantsList);
             displayParticipantsList = itemView.findViewById(R.id.displayParticipantsList);
+
         }
     }
 }

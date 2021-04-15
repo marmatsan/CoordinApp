@@ -21,7 +21,6 @@
             android:padding="2dp"
             app:strokeWidth="1dp"
             app:strokeColor="@android:color/darker_gray"
-            android:background="@color/white"
 
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"

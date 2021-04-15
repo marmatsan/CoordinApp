@@ -45,8 +45,6 @@ public class CreateGroupDialog extends DialogFragment {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
-    Context context;
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -58,8 +56,6 @@ public class CreateGroupDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) { // TODO: Totally improve this class for errors
-        context = getActivity();
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
