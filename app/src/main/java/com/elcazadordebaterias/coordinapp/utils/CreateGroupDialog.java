@@ -61,7 +61,6 @@ public class CreateGroupDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.utils_creategroupdialog, null);
 
-
         // All the spinners
         courseListSpinner = view.findViewById(R.id.courseNameSpinner);
         subjectListSpinner = view.findViewById(R.id.subjectNameSpinner);
