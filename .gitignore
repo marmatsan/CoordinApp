@@ -14,4 +14,45 @@
 .externalNativeBuild
 .cxx
 local.properties
-/admin/coordinapprest/serviceAccountKey.json
+
+admin/coordinapprest/HELP.md
+admin/coordinapprest/.gradle
+admin/coordinapprest/build/
+admin/coordinapprest/!gradle/wrapper/gradle-wrapper.jar
+admin/coordinapprest/!**/src/main/**/build/
+admin/coordinapprest/!**/src/test/**/build/
+
+### STS ###
+admin/coordinapprest/.apt_generated
+admin/coordinapprest/.classpath
+admin/coordinapprest/.factorypath
+admin/coordinapprest/.project
+admin/coordinapprest/.settings
+admin/coordinapprest/.springBeans
+admin/coordinapprest/.sts4-cache
+admin/coordinapprest/bin/
+admin/coordinapprest/!**/src/main/**/bin/
+admin/coordinapprest/!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+admin/coordinapprest/.idea
+admin/coordinapprest/*.iws
+admin/coordinapprest/*.iml
+admin/coordinapprest/*.ipr
+admin/coordinapprest/out/
+admin/coordinapprest/!**/src/main/**/out/
+admin/coordinapprest/!**/src/test/**/out/
+
+### NetBeans ###
+admin/coordinapprest//nbproject/private/
+admin/coordinapprest//nbbuild/
+admin/coordinapprest//dist/
+admin/coordinapprest//nbdist/
+admin/coordinapprest//.nb-gradle/
+
+### VS Code ###
+admin/coordinapprest/.vscode/
+
+### Credentials ###
+admin/coordinapprest/serviceAccountKey.json
+
