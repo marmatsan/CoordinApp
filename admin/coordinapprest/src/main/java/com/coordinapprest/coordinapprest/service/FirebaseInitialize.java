@@ -19,12 +19,14 @@ public class FirebaseInitialize {
         FileInputStream serviceAccount;
         
         String path = System.getProperty("user.dir");
-        String keyPath = path + "/coordinapprest/serviceAccountKey.json";
+        String separator = System.getProperty("file.separator");
+
+        String keyPath = path + separator + "serviceAccountKey.json";
 
         try {
             serviceAccount = new FileInputStream(keyPath);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("The file " + keyPath + " does not exist.");
             return;
         }
 

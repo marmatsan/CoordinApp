@@ -51,7 +51,7 @@ admin/coordinapprest//nbdist/
 admin/coordinapprest//.nb-gradle/
 
 ### VS Code ###
-admin/coordinapprest/.vscode/
+admin/.vscode/
 
 ### Credentials ###
 admin/coordinapprest/serviceAccountKey.json

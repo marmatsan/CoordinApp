@@ -176,7 +176,7 @@ public class CreateGroupDialog extends DialogFragment {
                                             }
                                             participantsListAdapter.notifyDataSetChanged();
                                         }
-                                    });
+                                    }); 
                                     break;
                                 }
                             }

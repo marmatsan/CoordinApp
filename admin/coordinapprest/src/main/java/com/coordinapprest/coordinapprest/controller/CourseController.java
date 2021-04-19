@@ -28,7 +28,7 @@ public class CourseController {
     @PostMapping("/postCourse") // Create course
     public String postCourse(@RequestBody Course course) throws InterruptedException, ExecutionException{ 
         return firebaseService.postCourse(course);
-    } 
+    }
 
     @PutMapping("/putCourse") // Update course
     public String putCourse(){ 
