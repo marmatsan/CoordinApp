@@ -10,15 +10,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.CreateGroupDialogSpinnerItem;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.CreateGroupDialogSpinnerItem;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.CreateGroupDialog;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 /**
- * Class to handle the objects of type {@link CreateGroupDialogSpinnerItem}, which is used by the {@link com.elcazadordebaterias.coordinapp.utils.CreateGroupDialog} class.
+ * Class to handle the objects of type {@link CreateGroupDialogSpinnerItem}, which is used by the {@link CreateGroupDialog} class.
  *
- * @see com.elcazadordebaterias.coordinapp.utils.CreateGroupDialog
+ * @see CreateGroupDialog
  * @see CreateGroupDialogSpinnerItem
  *
  * @author Martín Mateos Sánchez

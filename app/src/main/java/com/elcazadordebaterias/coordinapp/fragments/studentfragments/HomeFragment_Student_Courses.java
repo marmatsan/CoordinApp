@@ -90,15 +90,16 @@ public class HomeFragment_Student_Courses extends Fragment {
                                         CourseSubject courseSubject = new CourseSubject(subject.getSubjectName(), courseParticipantList);
                                         courseSubjectList.add(courseSubject);
 
-                                        fStore.collection("Students").whereIn(FieldPath.documentId(), studentsIDs).get().addOnCompleteListener(getStudentsInfo -> {
+                                        fStore.collection("Students").whereIn(FieldPath.documentId(), studentsIDs).get().addOnCompleteListener(getStudentsInfo -> { // Get the information of the students
                                             if (getStudentsInfo.isSuccessful()) {
+
                                                 for (QueryDocumentSnapshot studentDocument : getStudentsInfo.getResult()) {
                                                     CourseParticipant participant = new CourseParticipant("Alumno", (String) studentDocument.get("FullName"), (String) studentDocument.get("UserEmail"));
                                                     courseParticipantList.add(participant);
                                                 }
                                                 courseCardAdapter.notifyDataSetChanged();
 
-                                                fStore.collection("Teachers").document(subject.getTeacherID()).get().addOnSuccessListener(teacherDocument -> {
+                                                fStore.collection("Teachers").document(subject.getTeacherID()).get().addOnSuccessListener(teacherDocument -> { // Get the information of the teacher
                                                     CourseParticipant participant = new CourseParticipant("Profesor", (String) teacherDocument.get("FullName"), (String) teacherDocument.get("UserEmail"));
                                                     courseParticipantList.add(participant);
                                                     courseCardAdapter.notifyDataSetChanged();

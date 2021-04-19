@@ -1,9 +1,8 @@
-package com.elcazadordebaterias.coordinapp.utils;
+package com.elcazadordebaterias.coordinapp.utils.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,17 +17,17 @@ import androidx.fragment.app.DialogFragment;
 import com.elcazadordebaterias.coordinapp.R;
 
 import com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
+import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
+import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Class to create the pop-up dialog to create a new chat group. The requester selects a course, a
@@ -85,16 +84,15 @@ public class CreateGroupDialog extends DialogFragment {
          * 3. CreateGroupDialogParticipantsAdapter participantsListAdapter: The adapter of participantsListSpinner
          */
 
-        // Group adapter
+        // Course adapter
         ArrayAdapter<String> courseListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, coursesNames);
 
         courseListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         courseListSpinner.setAdapter(courseListAdapter);
         courseListSpinner.setSelection(0);
 
-        // Group list spinner
-
-        fStore.collection("CoursesOrganization").get().addOnCompleteListener(task -> { // Get group names
+        // Course list spinner
+        fStore.collection("CoursesOrganization").whereArrayContains("allParticipantsIDs", fAuth.getUid()).get().addOnCompleteListener(task -> { // Get group names
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     coursesNames.add(document.getId());
@@ -115,29 +113,20 @@ public class CreateGroupDialog extends DialogFragment {
         participantsListSpinner.setAdapter(participantsListAdapter);
 
         // Listeners when we select the items
-
         // Course spinner listener
         courseListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 subjectNames.clear();
-
                 String selectedCourseName = parent.getItemAtPosition(position).toString();
 
-                fStore.collection("CoursesOrganization").document(selectedCourseName).get().addOnCompleteListener(task -> {
+                fStore.collection("CoursesOrganization").document(selectedCourseName).collection("Subjects").whereArrayContains("studentIDs", fAuth.getUid()).get().addOnCompleteListener(task -> { // Get group names
                     if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects"); // Array of the subjects. Contains all the subjects from the current course
-
-                            for (int i = 0; i < data.size(); i++) { // Iterate over all the subjects in the current course
-                                Map<String, Object> subjectInfo = data.get(i); // Current subject information (the list with the students, the name of the subject and the teacher id)
-                                subjectNames.add(subjectInfo.get("SubjectName").toString());
-                            }
-
-                            subjectListAdapter.notifyDataSetChanged();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            subjectNames.add(document.getId());
                         }
                     }
+                    subjectListAdapter.notifyDataSetChanged();
                 });
             }
 
@@ -153,36 +142,24 @@ public class CreateGroupDialog extends DialogFragment {
                 participantsList.clear();
                 String selectedSubjectName = parent.getItemAtPosition(position).toString();
 
-                fStore.collection("CoursesOrganization").document(courseListSpinner.getSelectedItem().toString()).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects"); // Array of the subjects. Contains all the subjects from the current course.
+                fStore.collection("CoursesOrganization").document(courseListSpinner.getSelectedItem().toString()).collection("Subjects").document(selectedSubjectName).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Subject subject = documentSnapshot.toObject(Subject.class);
 
-                            for (int i = 0; i < data.size(); i++) { // Iterate over all the subjects in the current course.
-                                Map<String, Object> subjectInfo = data.get(i); // Current subject information (the list with the students, the name of the subject and the teacher id).
+                        fStore.collection("Students").whereIn(FieldPath.documentId(), subject.getStudentIDs()).get().addOnCompleteListener(getStudentsInfo -> { // Get the information of the students
+                            if (getStudentsInfo.isSuccessful()) {
 
-                                if (subjectInfo.get("SubjectName").toString().equals(selectedSubjectName)) {
-
-                                    ArrayList<String> studentsIds = (ArrayList<String>) subjectInfo.get("Students");
-
-                                    fStore.collection("Students").get().addOnCompleteListener(task1 -> { // Search for student info to build the student list.
-                                        if (task1.isSuccessful()) {
-                                            for (QueryDocumentSnapshot document1 : task1.getResult()) { // Create the list of the students. The requester name will be displayed first.
-                                                if (studentsIds.contains(document1.getId())) {
-                                                    if(document1.getId().equals(fAuth.getUid()))
-                                                        participantsList.add(new CreateGroupDialogSpinnerItem(document1.getData().get("FullName").toString(), document1.getId(), true, false));
-                                                    else
-                                                        participantsList.add(new CreateGroupDialogSpinnerItem(document1.getData().get("FullName").toString(), document1.getId(), false, false));
-                                                }
-                                            }
-                                            participantsListAdapter.notifyDataSetChanged();
-                                        }
-                                    }); 
-                                    break;
+                                for (QueryDocumentSnapshot studentDocument : getStudentsInfo.getResult()) {
+                                    if(studentDocument.getId().equals(fAuth.getUid()))
+                                        participantsList.add(new CreateGroupDialogSpinnerItem(studentDocument.getData().get("FullName").toString(), studentDocument.getId(), true, false));
+                                    else
+                                        participantsList.add(new CreateGroupDialogSpinnerItem(studentDocument.getData().get("FullName").toString(), studentDocument.getId(), false, false));
                                 }
+
+                                participantsListAdapter.notifyDataSetChanged();
                             }
-                        }
+                        });
                     }
                 });
             }
@@ -198,8 +175,8 @@ public class CreateGroupDialog extends DialogFragment {
                 })
                 .setPositiveButton("Solicitar", (dialogInterface, i) -> {
 
-                    String course = courseListSpinner.getSelectedItem().toString();
-                    String subject = subjectListSpinner.getSelectedItem().toString();
+                    String selectedCourse = courseListSpinner.getSelectedItem().toString();
+                    String selectedSubject = subjectListSpinner.getSelectedItem().toString();
                     String requesterId = fAuth.getUid();
 
                     ArrayList<PetitionUser> petitionUsersList = new ArrayList<PetitionUser>();
@@ -214,34 +191,22 @@ public class CreateGroupDialog extends DialogFragment {
                         }
                     }
 
-                    //Add the teacher
-                    fStore.collection("CoursesOrganization").document(course).get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                ArrayList<Map<String, Object>> data = (ArrayList<Map<String, Object>>) document.get("Subjects"); // Array of the subjects. Contains all the subjects from the current course.
-                                String teacherId = null;
+                    fStore.collection("CoursesOrganization").document(selectedCourse).collection("Subjects").document(selectedSubject).get().addOnSuccessListener(subjectDocument -> {
+                        Subject subject = subjectDocument.toObject(Subject.class);
 
-                                for(Map<String, Object> currentSubject : data){
-                                    if(currentSubject.get("SubjectName").equals(subject)){
-                                        teacherId = (String) currentSubject.get("TeacherId");
-                                        break;
-                                    }
-                                }
+                        String teacherID = subject.getTeacherID();
 
-                                String finalTeacherId = teacherId;
-                                fStore.collection("Teachers").document(teacherId).get().addOnSuccessListener(documentSnapshot -> {
-                                    petitionUsersList.add(new PetitionUser(finalTeacherId, (String) documentSnapshot.getData().get("FullName"), true, 0));
-                                    petitionUsersIds.add(finalTeacherId);
+                        fStore.collection("Teachers").document(teacherID).get().addOnSuccessListener(teacherDocument -> {
+                            petitionUsersList.add(new PetitionUser(teacherDocument.getId(), (String) teacherDocument.getData().get("FullName"), true, 0));
+                            petitionUsersIds.add(teacherID);
 
-                                    fStore.collection("Students").document(requesterId).get().addOnSuccessListener(documentSnapshot1 -> {
-                                        PetitionRequest currentPetition = new PetitionRequest(course, subject, requesterId, (String) documentSnapshot1.getData().get("FullName"), petitionUsersIds, petitionUsersList);
-                                        fStore.collection("Petitions").add(currentPetition);
-                                    });
-                                });
-                            }
-                        }
+                            fStore.collection("Students").document(requesterId).get().addOnSuccessListener(requesterDocument -> {
+                                PetitionRequest currentPetition = new PetitionRequest(selectedCourse, selectedSubject, requesterId, (String) requesterDocument.getData().get("FullName"), petitionUsersIds, petitionUsersList);
+                                fStore.collection("Petitions").add(currentPetition);
+                            });
+                        });
                     });
+
                 });
 
         return builder.create();

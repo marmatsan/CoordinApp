@@ -13,9 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.AdministrationFragmentTeacherAdapter;
 import com.elcazadordebaterias.coordinapp.adapters.GroupsFragmentStudentAdapter;
-import com.elcazadordebaterias.coordinapp.utils.CreateGroupDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.CreateGroupDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -50,8 +49,8 @@ public class GroupsFragment_Student extends Fragment {
 
         mGroupCreationRequest = rootView.findViewById(R.id.groupCreationRequest);
         mGroupCreationRequest.setOnClickListener(view -> {
-           // CreateGroupDialog dialog = new CreateGroupDialog();
-           // dialog.show(getFragmentManager(), "dialog");
+           CreateGroupDialog dialog = new CreateGroupDialog();
+           dialog.show(getFragmentManager(), "dialog");
         });
 
         return rootView;

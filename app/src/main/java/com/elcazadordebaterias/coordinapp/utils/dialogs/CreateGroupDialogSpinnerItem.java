@@ -1,4 +1,6 @@
-package com.elcazadordebaterias.coordinapp.utils;
+package com.elcazadordebaterias.coordinapp.utils.dialogs;
+
+import com.elcazadordebaterias.coordinapp.utils.dialogs.CreateGroupDialog;
 
 /**
  * Reprsents the custom spinner item used in {@link CreateGroupDialog} and {@link com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter},

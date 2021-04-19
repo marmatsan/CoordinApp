@@ -64,4 +64,8 @@ public class ParticipansListViewAdapter extends BaseAdapter {
         return v;
     }
 
+    @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }
 }
