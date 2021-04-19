@@ -33,6 +33,7 @@ public class CourseParticipantAdapter extends RecyclerView.Adapter<CoursePartici
     public void onBindViewHolder(@NonNull CourseParticipantViewHolder viewHolder, int position) {
         CourseParticipant courseParticipant = courseParticipantList.get(position);
 
+        viewHolder.participantRole.setText(courseParticipant.getParticipantRole());
         viewHolder.participantName.setText(courseParticipant.getParticipantName());
         viewHolder.participantEmail.setText(courseParticipant.getParticipantEmail());
     }
@@ -43,12 +44,13 @@ public class CourseParticipantAdapter extends RecyclerView.Adapter<CoursePartici
     }
 
     static class CourseParticipantViewHolder extends RecyclerView.ViewHolder {
+        TextView participantRole;
         TextView participantName;
         TextView participantEmail;
-
         CourseParticipantViewHolder(View itemView) {
             super(itemView);
 
+            participantRole = itemView.findViewById(R.id.courseparticipant_role);
             participantName = itemView.findViewById(R.id.courseparticipant_name);
             participantEmail = itemView.findViewById(R.id.courseparticipant_email);
         }

@@ -12,12 +12,18 @@ package com.elcazadordebaterias.coordinapp.utils;
 
 public class CourseParticipant {
 
+    private String participantRole;
     private String mParticipantName;
     private String mParticipantEmail;
 
-    public CourseParticipant(String participantName, String participantEmail) {
+    public CourseParticipant(String participantRole, String participantName, String participantEmail) {
+        this.participantRole = participantRole;
         this.mParticipantName = participantName;
         this.mParticipantEmail = participantEmail;
+    }
+
+    public String getParticipantRole() {
+        return participantRole;
     }
 
     public String getParticipantName() {

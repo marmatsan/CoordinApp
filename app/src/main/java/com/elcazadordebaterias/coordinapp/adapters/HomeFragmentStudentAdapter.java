@@ -4,12 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.elcazadordebaterias.coordinapp.fragments.AdministrationFragment_Teacher_Courses;
-import com.elcazadordebaterias.coordinapp.fragments.AdministrationFragment_Teacher_Dates;
-import com.elcazadordebaterias.coordinapp.fragments.AdministrationFragment_Teacher_Petitions;
-import com.elcazadordebaterias.coordinapp.fragments.HomeFragment_Student;
-import com.elcazadordebaterias.coordinapp.fragments.HomeFragment_Student_Courses;
-import com.elcazadordebaterias.coordinapp.fragments.HomeFragment_Student_Petitions;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.HomeFragment_Student_Courses;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.HomeFragment_Student_Petitions;
 
 public class HomeFragmentStudentAdapter extends FragmentStateAdapter {
 

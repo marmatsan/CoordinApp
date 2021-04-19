@@ -44,11 +44,11 @@ admin/coordinapprest/!**/src/main/**/out/
 admin/coordinapprest/!**/src/test/**/out/
 
 ### NetBeans ###
-admin/coordinapprest//nbproject/private/
-admin/coordinapprest//nbbuild/
-admin/coordinapprest//dist/
-admin/coordinapprest//nbdist/
-admin/coordinapprest//.nb-gradle/
+admin/coordinapprest/nbproject/private/
+admin/coordinapprest/nbbuild/
+admin/coordinapprest/dist/
+admin/coordinapprest/nbdist/
+admin/coordinapprest/.nb-gradle/
 
 ### VS Code ###
 admin/.vscode/

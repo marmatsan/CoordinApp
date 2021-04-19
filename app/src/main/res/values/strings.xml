@@ -72,7 +72,6 @@
     <string name="solicitudes_de_grupo">Solicitudes de grupo</string>
     <string name="_1">1.</string>
     <string name="_2">2.</string>
-    <string name="name_of_the_participant">Name of the participant</string>
     <string name="_3">3.</string>
     <string name="selecciona_a_los_participantes">Selecciona a los participantes</string>
     <string name="_1_selecciona_el_curso">1. Selecciona el curso</string>
@@ -93,5 +92,8 @@
     <string name="participantes">Participantes</string>
     <string name="subjectname">SubjectName</string>
     <string name="escribe_un_mensaje">Escribe un mensaje</string>
+    <string name="role_of_the_participant">Role of the participant</string>
+    <string name="name_of_the_participant">Name of the participant</string>
+    <string name="email_of_the_participant">Email of the participant</string>
 
 </resources>

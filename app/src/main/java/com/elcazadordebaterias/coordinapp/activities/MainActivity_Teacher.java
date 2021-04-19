@@ -7,10 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.fragments.AdministrationFragment_Teacher;
-import com.elcazadordebaterias.coordinapp.fragments.FilesFragment_Teacher;
-import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_Teacher;
-import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment_Teacher;
+import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.AdministrationFragment_Teacher;
+import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.FilesFragment_Teacher;
+import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.GroupsFragment_Teacher;
+import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.InteractivityFragment_Teacher;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**

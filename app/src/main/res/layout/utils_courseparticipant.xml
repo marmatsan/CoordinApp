@@ -20,44 +20,52 @@
             android:id="@+id/courseparticipant_avatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:shapeAppearanceOverlay="@style/RoundedImage"
-            app:srcCompat="@drawable/ic_baseline_person_24"
-            android:padding="2dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@android:color/darker_gray"
-            android:background="@color/white"
-
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:background="@color/white"
+            android:padding="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/RoundedImage"
+            app:srcCompat="@drawable/ic_baseline_person_24"
+            app:strokeColor="@android:color/darker_gray"
+            app:strokeWidth="1dp" />
 
         <TextView
-            android:id="@+id/courseparticipant_name"
-            android:layout_width="0dp"
+            android:id="@+id/courseparticipant_role"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/name_of_the_student"
+            android:text="@string/role_of_the_participant"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/courseparticipant_avatar"
+            app:layout_constraintStart_toEndOf="@+id/courseparticipant_avatar"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/courseparticipant_email"
-            android:layout_width="0dp"
+            android:id="@+id/courseparticipant_name"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/name_of_the_participant"
+            app:layout_constraintStart_toEndOf="@+id/courseparticipant_avatar"
+            app:layout_constraintTop_toBottomOf="@+id/courseparticipant_role" />
+
+        <TextView
+            android:id="@+id/courseparticipant_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/email_of_the_student"
+            android:text="@string/email_of_the_participant"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/courseparticipant_avatar" />
+            app:layout_constraintStart_toEndOf="@+id/courseparticipant_avatar"
+            app:layout_constraintTop_toBottomOf="@+id/courseparticipant_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

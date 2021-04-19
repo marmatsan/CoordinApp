@@ -1,6 +1,7 @@
-package com.elcazadordebaterias.coordinapp.fragments;
+package com.elcazadordebaterias.coordinapp.fragments.studentfragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.PetitionGroupCardAdapter;
-import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCardParticipant;
 import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCard;
+import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCardParticipant;
 import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,10 +22,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-public class AdministrationFragment_Teacher_Petitions extends Fragment {
-
+public class HomeFragment_Student_Petitions extends Fragment {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,9 +37,8 @@ public class AdministrationFragment_Teacher_Petitions extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v =  inflater.inflate(R.layout.fragment_administration_teacher_petitions, container, false);
+        View v = inflater.inflate(R.layout.fragment_home_student_petitions, container, false);
 
-        // Recyclerview - Petitions
         RecyclerView groupsPetitionsRecyclerView = v.findViewById(R.id.recyclerview_petitions);
         LinearLayoutManager petitionsLayoutManager = new LinearLayoutManager(getContext());
 
@@ -47,6 +47,7 @@ public class AdministrationFragment_Teacher_Petitions extends Fragment {
         PetitionGroupCardAdapter petitionsAdapter = new PetitionGroupCardAdapter(petitions, getContext());
         groupsPetitionsRecyclerView.setAdapter(petitionsAdapter);
         groupsPetitionsRecyclerView.setLayoutManager(petitionsLayoutManager);
+
 
         fStore.collection("Petitions").whereArrayContains("petitionUsersIds", fAuth.getUid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -57,6 +58,7 @@ public class AdministrationFragment_Teacher_Petitions extends Fragment {
                     for(PetitionUser currentUser : currentPetition.getPetitionUsersList()){
                         participantsList.add(new PetitionGroupCardParticipant(currentUser.getUserFullName(), currentUser.getPetitionStatus()));
                     }
+
                     petitions.add(new PetitionGroupCard(document.getId(), currentPetition.getRequesterName(), currentPetition.getCourse() + " / " + currentPetition.getSubject(), participantsList));
                 }
                 petitionsAdapter.notifyDataSetChanged();

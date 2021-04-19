@@ -4,11 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.elcazadordebaterias.coordinapp.fragments.AdministrationFragment_Teacher_Courses;
-import com.elcazadordebaterias.coordinapp.fragments.AdministrationFragment_Teacher_Dates;
-import com.elcazadordebaterias.coordinapp.fragments.AdministrationFragment_Teacher_Petitions;
-import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_Student_GroupalChat;
-import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_Student_SingleChat;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.GroupsFragment_Student_GroupalChat;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.GroupsFragment_Student_SingleChat;
 
 /**
  * Class to handle the pages of the viewpager attached at the AdministrationFragment_Teacher fragment.

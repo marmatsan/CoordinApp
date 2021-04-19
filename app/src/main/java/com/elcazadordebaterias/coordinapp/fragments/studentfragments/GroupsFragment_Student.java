@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments;
+package com.elcazadordebaterias.coordinapp.fragments.studentfragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -50,8 +50,8 @@ public class GroupsFragment_Student extends Fragment {
 
         mGroupCreationRequest = rootView.findViewById(R.id.groupCreationRequest);
         mGroupCreationRequest.setOnClickListener(view -> {
-            CreateGroupDialog dialog = new CreateGroupDialog();
-            dialog.show(getFragmentManager(), "dialog");
+           // CreateGroupDialog dialog = new CreateGroupDialog();
+           // dialog.show(getFragmentManager(), "dialog");
         });
 
         return rootView;

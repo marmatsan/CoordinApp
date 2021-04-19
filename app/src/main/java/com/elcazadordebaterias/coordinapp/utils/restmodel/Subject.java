@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.utils;
+package com.elcazadordebaterias.coordinapp.utils.restmodel;
 
 import java.util.ArrayList;
 

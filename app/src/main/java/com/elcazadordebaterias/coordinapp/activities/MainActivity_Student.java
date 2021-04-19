@@ -7,15 +7,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.fragments.FilesFragment_Student;
-import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_Student;
-import com.elcazadordebaterias.coordinapp.fragments.HomeFragment_Student;
-import com.elcazadordebaterias.coordinapp.fragments.InteractivityFragment_Student;
-import com.elcazadordebaterias.coordinapp.fragments.ProfileFragment_Student;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.FilesFragment_Student;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.GroupsFragment_Student;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.HomeFragment_Student;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.InteractivityFragment_Student;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.ProfileFragment_Student;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**

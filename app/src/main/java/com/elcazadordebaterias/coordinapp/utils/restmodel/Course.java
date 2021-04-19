@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.utils;
+package com.elcazadordebaterias.coordinapp.utils.restmodel;
 
 
 import java.util.ArrayList;
@@ -6,14 +6,16 @@ import java.util.ArrayList;
 public class Course {
 
     private String courseName;
+    private CourseParticipantsIDs courseParticipantsIDs;
     private ArrayList<Subject> courseSubjects;
 
     public Course() {
         super();
     }
 
-    public Course(String courseName, ArrayList<Subject> courseSubjects) {
+    public Course(String courseName, CourseParticipantsIDs courseParticipantsIDs, ArrayList<Subject> courseSubjects) {
         this.courseName = courseName;
+        this.courseParticipantsIDs = courseParticipantsIDs;
         this.courseSubjects = courseSubjects;
     }
 
@@ -26,6 +28,13 @@ public class Course {
         this.courseName = courseName;
     }
 
+    public CourseParticipantsIDs getCourseParticipantsIDs() {
+        return this.courseParticipantsIDs;
+    }
+
+    public void setCourseParticipantsIDs(CourseParticipantsIDs courseParticipantsIDs) {
+        this.courseParticipantsIDs = courseParticipantsIDs;
+    }
 
     public ArrayList<Subject> getCourseSubjects() {
         return this.courseSubjects;

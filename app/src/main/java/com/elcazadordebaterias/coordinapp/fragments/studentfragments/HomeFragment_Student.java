@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments;
+package com.elcazadordebaterias.coordinapp.fragments.studentfragments;
 
 import android.content.Intent;
 import android.os.Bundle;
