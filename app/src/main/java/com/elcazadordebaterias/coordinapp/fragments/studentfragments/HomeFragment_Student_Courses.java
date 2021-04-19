@@ -42,6 +42,7 @@ public class HomeFragment_Student_Courses extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
@@ -107,7 +108,6 @@ public class HomeFragment_Student_Courses extends Fragment {
 
                                             }
                                         });
-
                                     }
                                 }
                             });
