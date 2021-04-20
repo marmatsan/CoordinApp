@@ -95,5 +95,6 @@
     <string name="role_of_the_participant">Role of the participant</string>
     <string name="name_of_the_participant">Name of the participant</string>
     <string name="email_of_the_participant">Email of the participant</string>
+    <string name="cerrar_sesi_n">Cerrar sesión</string>
 
 </resources>

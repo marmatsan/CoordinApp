@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,8 +31,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class AdministrationFragment_Teacher extends Fragment {
     AdministrationFragmentTeacherAdapter optionsAdapter;
 
-    private MaterialButton logout;
-
     private ViewPager2 viewpager;
     private TabLayout tablayout;
 
@@ -41,16 +41,7 @@ public class AdministrationFragment_Teacher extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_administration_teacher, container, false);
-
-        logout = rootView.findViewById(R.id.logout_button);
-        logout.setOnClickListener(view -> {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(getContext(), LoginActivity.class));
-            getActivity().finish();
-        });
-
-        return rootView;
+        return inflater.inflate(R.layout.fragment_administration_teacher, container, false);
     }
 
     @Override

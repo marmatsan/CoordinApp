@@ -1,9 +1,15 @@
 package com.elcazadordebaterias.coordinapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
@@ -12,6 +18,7 @@ import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.FilesFragme
 import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.GroupsFragment_Teacher;
 import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.InteractivityFragment_Teacher;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * The main activity for the teacher.
@@ -23,6 +30,10 @@ public class MainActivity_Teacher extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_teacher);
+
+        // Top App Bar management
+        Toolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
 
         // Bottom navigation management
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view_teacher);
@@ -77,4 +88,24 @@ public class MainActivity_Teacher extends AppCompatActivity {
 
         return true;
     };
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.topappbar_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if(item.getItemId() == R.id.menu_logout){
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

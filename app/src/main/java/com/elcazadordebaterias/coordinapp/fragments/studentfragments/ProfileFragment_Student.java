@@ -19,8 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
  */
 public class ProfileFragment_Student extends Fragment {
 
-    MaterialButton logout;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,15 +26,6 @@ public class ProfileFragment_Student extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_profile_student, container, false);
-
-        logout = rootView.findViewById(R.id.logout_button);
-        logout.setOnClickListener(view -> {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(getContext(), LoginActivity.class));
-            getActivity().finish();
-        });
-
-        return rootView;
+        return inflater.inflate(R.layout.fragment_profile_student, container, false);
     }
 }
