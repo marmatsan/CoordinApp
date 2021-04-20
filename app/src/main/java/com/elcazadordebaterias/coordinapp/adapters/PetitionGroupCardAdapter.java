@@ -67,7 +67,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
 
                         for (PetitionUser user : currentPetition.getPetitionUsersList()){
                             if(user.getUserId().equals(fAuth.getUid()) && user.getUserAsTeacher()){ // A teacher has accepted the petition
-                                createNewGroup(currentPetition, petitionCard);
+                                createNewGroup(currentPetition, petitionCard, position);
                                 break;
                             }else if (user.getUserId().equals(fAuth.getUid())){ // An student has accepted the petition
                                 updatePetition(document, petitionCard, position, 1);
@@ -90,8 +90,12 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                         for (PetitionUser user : currentPetition.getPetitionUsersList()){
                             if(user.getUserId().equals(fAuth.getUid()) && user.getUserAsTeacher()){ // A teacher has deny the petition. Delete the petition
                                 fStore.collection("Petitions").document(document.getId()).delete();
+
+                                petitionsList.remove(position);
+                                notifyItemChanged(position);
                                 break;
                             }else if (user.getUserId().equals(fAuth.getUid())){ // An student has deny the petition
+
                                 updatePetition(document, petitionCard, position, 2);
                                 break;
                             }
@@ -143,23 +147,24 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
     }
 
     // Creates the new group and deletes the petition that has been accepted
-    private void createNewGroup(PetitionRequest currentPetition, PetitionGroupCard petitionCard){
+    private void createNewGroup(PetitionRequest currentPetition, PetitionGroupCard petitionCard, int position){
 
         ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
 
         for(PetitionUser user : currentPetition.getPetitionUsersList()){
-            if(user.getPetitionStatus() == 1 || user.getUserAsTeacher()) { //Add the students to the group who have accepted the petiton and add also the teacher
-                participants.add(new GroupParticipant(user.getUserFullName(), user.getUserAsTeacher(), user.getUserId()));
-            }
+            participants.add(new GroupParticipant(user.getUserFullName(), user.getUserAsTeacher(), user.getUserId()));
         }
 
-        Group group = new Group(fAuth.getUid(), currentPetition.getCourse(), currentPetition.getSubject(), currentPetition.getPetitionUsersIds(), participants);
+        Group group = new Group(fAuth.getUid(),
+                                currentPetition.getCourse(),
+                                currentPetition.getSubject(),
+                                currentPetition.getPetitionUsersIds(),
+                                participants);
 
-        if(participants.size() <= 2) {
-            Toast.makeText(mContext, "Deben de haber aceptado la petición más de dos estudiantes", Toast.LENGTH_SHORT).show();
-        }else{
-            fStore.collection("Groups").add(group).addOnSuccessListener(documentReference -> fStore.collection("Petitions").document(petitionCard.getPetitionId()).delete());
-        }
+
+        fStore.collection("Groups").document(fAuth.getUid()).set(group).addOnSuccessListener(documentReference -> fStore.collection("Petitions").document(petitionCard.getPetitionId()).delete());
+        petitionsList.remove(position);
+        notifyItemChanged(position);
 
     }
 

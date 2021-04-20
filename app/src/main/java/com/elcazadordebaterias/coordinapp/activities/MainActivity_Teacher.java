@@ -19,6 +19,7 @@ import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.GroupsFragm
 import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.InteractivityFragment_Teacher;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * The main activity for the teacher.
@@ -26,13 +27,24 @@ import com.google.firebase.auth.FirebaseAuth;
  */
 public class MainActivity_Teacher extends AppCompatActivity {
 
+    FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_teacher);
 
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+
         // Top App Bar management
         Toolbar toolbar = findViewById(R.id.topAppBar);
+
+        fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> { // TODO: Maybe setting the title in asynchronous way may lead to error
+            toolbar.setTitle((String) documentSnapshot.getData().get("FullName"));
+        });
+
         setSupportActionBar(toolbar);
 
         // Bottom navigation management

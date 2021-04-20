@@ -40,8 +40,6 @@
         android:id="@+id/fragment_groups_textview_placeholder"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:text="@string/pulsa_el_bot_n_para_enviar_una_solicitud_de_creaci_n_de_grupo"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"

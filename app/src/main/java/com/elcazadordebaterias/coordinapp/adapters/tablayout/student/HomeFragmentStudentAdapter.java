@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.adapters;
+package com.elcazadordebaterias.coordinapp.adapters.tablayout.student;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

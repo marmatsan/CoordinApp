@@ -96,5 +96,8 @@
     <string name="name_of_the_participant">Name of the participant</string>
     <string name="email_of_the_participant">Email of the participant</string>
     <string name="cerrar_sesi_n">Cerrar sesión</string>
+    <string name="no_tienes_ning_n_grupo_creado_o_no_est_s_en_ning_n_grupo_puedes_crear_un_nuevo_grupo_pulsando_el_bot_n">No tienes ningún grupo creado o no estás en ningún grupo. Puedes crear un nuevo grupo pulsando el botón +</string>
+    <string name="profesor_a">Profesor/a</string>
+    <string name="individuales">Individuales</string>
 
 </resources>

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -191,21 +192,25 @@ public class CreateGroupDialog extends DialogFragment {
                         }
                     }
 
-                    fStore.collection("CoursesOrganization").document(selectedCourse).collection("Subjects").document(selectedSubject).get().addOnSuccessListener(subjectDocument -> {
-                        Subject subject = subjectDocument.toObject(Subject.class);
+                    if(petitionUsersList.size() <= 1){
+                        Toast.makeText(getContext(), "Debes agregar al menos a un miembro más al grupo", Toast.LENGTH_SHORT).show();
+                    } else {
+                        fStore.collection("CoursesOrganization").document(selectedCourse).collection("Subjects").document(selectedSubject).get().addOnSuccessListener(subjectDocument -> {
+                            Subject subject = subjectDocument.toObject(Subject.class);
 
-                        String teacherID = subject.getTeacherID();
+                            String teacherID = subject.getTeacherID();
 
-                        fStore.collection("Teachers").document(teacherID).get().addOnSuccessListener(teacherDocument -> {
-                            petitionUsersList.add(new PetitionUser(teacherDocument.getId(), (String) teacherDocument.getData().get("FullName"), true, 0));
-                            petitionUsersIds.add(teacherID);
+                            fStore.collection("Teachers").document(teacherID).get().addOnSuccessListener(teacherDocument -> {
+                                petitionUsersList.add(new PetitionUser(teacherDocument.getId(), (String) teacherDocument.getData().get("FullName"), true, 0));
+                                petitionUsersIds.add(teacherID);
 
-                            fStore.collection("Students").document(requesterId).get().addOnSuccessListener(requesterDocument -> {
-                                PetitionRequest currentPetition = new PetitionRequest(selectedCourse, selectedSubject, requesterId, (String) requesterDocument.getData().get("FullName"), petitionUsersIds, petitionUsersList);
-                                fStore.collection("Petitions").add(currentPetition);
+                                fStore.collection("Students").document(requesterId).get().addOnSuccessListener(requesterDocument -> {
+                                    PetitionRequest currentPetition = new PetitionRequest(selectedCourse, selectedSubject, requesterId, (String) requesterDocument.getData().get("FullName"), petitionUsersIds, petitionUsersList);
+                                    fStore.collection("Petitions").add(currentPetition);
+                                });
                             });
                         });
-                    });
+                    }
 
                 });
 
