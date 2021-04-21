@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +14,8 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.DisplayParticipantsListDialog;
 import com.elcazadordebaterias.coordinapp.utils.Group;
 import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
-import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCardParticipant;
-import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.PetitionGroupParticipantCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.PetitionGroupCard;
 import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
 
@@ -132,13 +131,13 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         PetitionRequest currentPetition = document.toObject(PetitionRequest.class);
 
         ArrayList<PetitionUser> petitionUsers = currentPetition.getPetitionUsersList();
-        ArrayList<PetitionGroupCardParticipant> participantsList = new ArrayList<PetitionGroupCardParticipant>();
+        ArrayList<PetitionGroupParticipantCard> participantsList = new ArrayList<PetitionGroupParticipantCard>();
 
         for(PetitionUser user : petitionUsers){
             if(user.getUserId().equals(fAuth.getUid())){
                 user.setPetitionStatus(newStatus);
             }
-            participantsList.add(new PetitionGroupCardParticipant(user.getUserFullName(), user.getPetitionStatus()));
+            participantsList.add(new PetitionGroupParticipantCard(user.getUserFullName(), user.getPetitionStatus()));
         }
 
         petitionCard.setParticipantsList(participantsList);

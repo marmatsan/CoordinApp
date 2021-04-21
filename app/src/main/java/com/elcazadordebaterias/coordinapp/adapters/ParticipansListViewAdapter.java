@@ -1,7 +1,6 @@
 package com.elcazadordebaterias.coordinapp.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +9,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.PetitionGroupCardParticipant;
+import com.elcazadordebaterias.coordinapp.utils.cards.PetitionGroupParticipantCard;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ParticipansListViewAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<PetitionGroupCardParticipant> items;
+    private ArrayList<PetitionGroupParticipantCard> items;
 
-    public ParticipansListViewAdapter(Context context, ArrayList<PetitionGroupCardParticipant> items){
+    public ParticipansListViewAdapter(Context context, ArrayList<PetitionGroupParticipantCard> items){
         this.context = context;
         this.items = items;
     }
@@ -47,7 +45,7 @@ public class ParticipansListViewAdapter extends BaseAdapter {
             v = view;
         }
 
-        PetitionGroupCardParticipant participant = items.get(position);
+        PetitionGroupParticipantCard participant = items.get(position);
 
         TextView participantName = v.findViewById(R.id.participantName);
         ImageView participantStatus = v.findViewById(R.id.petitionStatusImage);

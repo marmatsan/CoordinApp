@@ -35,18 +35,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
-    <TextView
-        android:id="@+id/no_group_indication"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/no_tienes_ning_n_grupo_creado_o_no_est_s_en_ning_n_grupo_puedes_crear_un_nuevo_grupo_pulsando_el_bot_n"
-        android:textAlignment="center"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <include
         layout="@layout/roundedbutton_add"
         android:id="@+id/groupCreationButton"

@@ -12,11 +12,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.FilesFragment_Student;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.GroupsFragment_Student;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.HomeFragment_Student;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.InteractivityFragment_Student;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.ProfileFragment_Student;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.files.FilesFragment;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.groups.GroupsFragment;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.home.HomeFragment;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.interactivity.InteractivityFragment;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.profile.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -61,17 +61,17 @@ public class MainActivity_Student extends AppCompatActivity {
         int itemId = item.getItemId();
 
         if (itemId == R.id.nav_student_interactivity) {
-            selectedFragment = new InteractivityFragment_Student();
+            selectedFragment = new InteractivityFragment();
         } else if (itemId == R.id.nav_student_groups) {
-            selectedFragment = new GroupsFragment_Student();
+            selectedFragment = new GroupsFragment();
         } else if (itemId == R.id.nav_student_home) {
-            selectedFragment = new HomeFragment_Student();
+            selectedFragment = new HomeFragment();
         } else if (itemId == R.id.nav_student_files) {
-            selectedFragment = new FilesFragment_Student();
+            selectedFragment = new FilesFragment();
         } else if (itemId == R.id.nav_student_profile) {
-            selectedFragment = new ProfileFragment_Student();
+            selectedFragment = new ProfileFragment();
         } else {
-            selectedFragment = new HomeFragment_Student();
+            selectedFragment = new HomeFragment();
         }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_student, selectedFragment).commit();

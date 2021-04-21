@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.ParticipansListViewAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.PetitionGroupParticipantCard;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -25,9 +26,9 @@ public class DisplayParticipantsListDialog extends DialogFragment {
     FirebaseFirestore fStore;
 
     Context context;
-    ArrayList<PetitionGroupCardParticipant> participantsList;
+    ArrayList<PetitionGroupParticipantCard> participantsList;
 
-    public DisplayParticipantsListDialog(ArrayList<PetitionGroupCardParticipant> participantsList){
+    public DisplayParticipantsListDialog(ArrayList<PetitionGroupParticipantCard> participantsList){
         this.participantsList = participantsList;
     }
 

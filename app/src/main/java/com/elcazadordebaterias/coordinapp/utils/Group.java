@@ -3,7 +3,8 @@ package com.elcazadordebaterias.coordinapp.utils;
 import java.util.ArrayList;
 
 /**
- * Class that represents the data of the group an user is in FireStore.
+ * Class that represents the data of the group an user is in FireStore. Used when creating a new group,
+ * accepted by the teacher.
  *
  * @author Martín Mateos Sánchez
  */
