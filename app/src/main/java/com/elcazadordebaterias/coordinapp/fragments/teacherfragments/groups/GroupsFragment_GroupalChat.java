@@ -46,13 +46,13 @@ public class GroupsFragment_GroupalChat extends Fragment {
         ExpandableListView expandableListView;
         ExpandableListAdapter expandableListAdapter;
         ArrayList<String> expandableListTitle;
-        HashMap<String, ArrayList<String>> expandableListDetail;
+        HashMap<String, ArrayList<String>> expandableListData;
 
         expandableListView = (ExpandableListView) v.findViewById(R.id.courses_list);
-        expandableListDetail = ExpandableListDataPump.getData();
+        expandableListData = ExpandableListDataPump.getData();
 
-        expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
-        expandableListAdapter = new CourseExpandableListAdapter(expandableListTitle, expandableListDetail);
+        expandableListTitle = new ArrayList<String>(expandableListData.keySet());
+        expandableListAdapter = new CourseExpandableListAdapter(expandableListTitle, expandableListData);
 
         expandableListView.setAdapter(expandableListAdapter);
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
@@ -84,7 +84,7 @@ public class GroupsFragment_GroupalChat extends Fragment {
                         getContext(),
                         expandableListTitle.get(groupPosition)
                                 + " -> "
-                                + expandableListDetail.get(
+                                + expandableListData.get(
                                 expandableListTitle.get(groupPosition)).get(
                                 childPosition), Toast.LENGTH_SHORT
                 ).show();
