@@ -13,7 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.administration.AdministrationFragment_Teacher;
+import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.administration.AdministrationFragment;
 import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.files.FilesFragment_Teacher;
 import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.groups.GroupsFragment;
 import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.interactivity.InteractivityFragment_Teacher;
@@ -91,9 +91,9 @@ public class MainActivity_Teacher extends AppCompatActivity {
         } else if (itemId == R.id.nav_teacher_files) {
             selectedFragment = new FilesFragment_Teacher();
         } else if (itemId == R.id.nav_teacher_administration) {
-            selectedFragment = new AdministrationFragment_Teacher();
+            selectedFragment = new AdministrationFragment();
         } else {
-            selectedFragment = new AdministrationFragment_Teacher();
+            selectedFragment = new AdministrationFragment();
         }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_teacher, selectedFragment).commit();

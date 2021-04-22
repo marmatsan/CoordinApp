@@ -14,10 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupalCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.Group;
 import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
-import com.elcazadordebaterias.coordinapp.utils.cards.GroupCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -50,6 +49,7 @@ public class GroupsFragment_GroupalChat extends Fragment {
         RecyclerView groupsPetitionsRecyclerView = v.findViewById(R.id.recyclerViewGroups);
         LinearLayoutManager groupsLayoutManager = new LinearLayoutManager(getContext());
 
+        /*
         ArrayList<GroupCard> groupCardList = new ArrayList<GroupCard>();
         GroupalCardAdapter groupsAdapter = new GroupalCardAdapter(groupCardList, getContext());
         groupsAdapter.setOnItemClickListener(position -> {
@@ -79,6 +79,7 @@ public class GroupsFragment_GroupalChat extends Fragment {
                 groupsAdapter.notifyDataSetChanged();
             }
         });
+        */
 
         return v;
     }

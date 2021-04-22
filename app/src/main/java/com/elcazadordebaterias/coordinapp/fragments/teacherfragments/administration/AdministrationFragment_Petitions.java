@@ -21,7 +21,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-public class AdministrationFragment_Teacher_Petitions extends Fragment {
+public class AdministrationFragment_Petitions extends Fragment {
 
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;

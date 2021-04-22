@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.elcazadordebaterias.coordinapp.R;
 
-public class AdministrationFragment_Teacher_Dates extends Fragment {
+public class AdministrationFragment_Dates extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -91,7 +91,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                                 fStore.collection("Petitions").document(document.getId()).delete();
 
                                 petitionsList.remove(position);
-                                notifyItemChanged(position);
+                                notifyDataSetChanged();
                                 break;
                             }else if (user.getUserId().equals(fAuth.getUid())){ // An student has deny the petition
 
@@ -161,9 +161,14 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                                 participants);
 
 
-        fStore.collection("Groups").document(fAuth.getUid()).set(group).addOnSuccessListener(documentReference -> fStore.collection("Petitions").document(petitionCard.getPetitionId()).delete());
+        fStore.collection("CoursesOrganization")
+                .document(group.getGroupName())
+                .collection("Subjects")
+                .document(group.getSubjectName())
+                .collection("Groups").add(group)
+                .addOnSuccessListener(documentReference -> fStore.collection("Petitions").document(petitionCard.getPetitionId()).delete());
         petitionsList.remove(position);
-        notifyItemChanged(position);
+        notifyDataSetChanged();
 
     }
 

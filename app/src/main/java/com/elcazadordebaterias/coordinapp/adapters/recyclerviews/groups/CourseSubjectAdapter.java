@@ -1,10 +1,13 @@
-package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
+package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -12,22 +15,29 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.cards.CourseSubjectCard;
+import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
+import com.elcazadordebaterias.coordinapp.utils.cards.groups.CourseSubjectCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CourseSubjectAdapter extends RecyclerView.Adapter<CourseSubjectAdapter.CourseSubjectViewHolder> {
 
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
     private SparseBooleanArray expandState = new SparseBooleanArray();
-    private List<CourseSubjectCard> mCourseSubjectsList;
+    private ArrayList<CourseSubjectCard> mCourseSubjectsList;
+    private Context context;
 
-    public CourseSubjectAdapter(List<CourseSubjectCard> courseSubjectList) {
+    public CourseSubjectAdapter(ArrayList<CourseSubjectCard> courseSubjectList, Context context) {
         this.mCourseSubjectsList = courseSubjectList;
+        this.context = context;
+
         for (int i = 0; i < courseSubjectList.size(); i++) {
             expandState.append(i, false);
         }
+
     }
 
     @NonNull
@@ -46,11 +56,18 @@ public class CourseSubjectAdapter extends RecyclerView.Adapter<CourseSubjectAdap
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(viewHolder.participantsRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
 
-        layoutManager.setInitialPrefetchItemCount(courseSubject.getCourseParticipantList().size());
+        layoutManager.setInitialPrefetchItemCount(courseSubject.getGroupsList().size());
 
-        CourseParticipantAdapter courseParticipantAdapter = new CourseParticipantAdapter(courseSubject.getCourseParticipantList());
+        GroupCardAdapter groupCardAdapter = new GroupCardAdapter(courseSubject.getGroupsList(), context);
+
+        groupCardAdapter.setOnItemClickListener(position1 -> {
+            GroupCard card = courseSubject.getGroupsList().get(position1);
+            Intent intent = new Intent(context, ChatActivity.class);
+            context.startActivity(intent);
+        });
+
         viewHolder.participantsRecyclerView.setLayoutManager(layoutManager);
-        viewHolder.participantsRecyclerView.setAdapter(courseParticipantAdapter);
+        viewHolder.participantsRecyclerView.setAdapter(groupCardAdapter);
         viewHolder.participantsRecyclerView.setRecycledViewPool(viewPool);
 
         final boolean isExpanded = expandState.get(position); //Check if the view is expanded
@@ -72,17 +89,6 @@ public class CourseSubjectAdapter extends RecyclerView.Adapter<CourseSubjectAdap
     @Override
     public int getItemCount() {
         return mCourseSubjectsList.size();
-    }
-
-    private void onClickButton(final ConstraintLayout expandableLayout, final  int i) {
-
-        if (expandableLayout.getVisibility() == View.VISIBLE){
-            expandableLayout.setVisibility(View.GONE);
-            expandState.put(i, false);
-        }else{
-            expandableLayout.setVisibility(View.VISIBLE);
-            expandState.put(i, true);
-        }
     }
 
     static class CourseSubjectViewHolder extends RecyclerView.ViewHolder {

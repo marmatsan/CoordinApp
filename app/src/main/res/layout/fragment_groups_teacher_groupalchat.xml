@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".fragments.teacherfragments.groups.GroupsFragment_GroupalChat">
 
-    <ExpandableListView
-        android:id="@+id/courses_list"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerviewGroups"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

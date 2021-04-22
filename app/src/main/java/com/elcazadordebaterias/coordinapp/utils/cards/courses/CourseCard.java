@@ -1,6 +1,6 @@
-package com.elcazadordebaterias.coordinapp.utils.cards;
+package com.elcazadordebaterias.coordinapp.utils.cards.courses;
 
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.CourseCardAdapter;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.courses.CourseCardAdapter;
 
 import java.util.List;
 

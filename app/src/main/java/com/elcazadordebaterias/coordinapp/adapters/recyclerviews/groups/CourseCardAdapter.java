@@ -1,5 +1,6 @@
-package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
+package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups;
 
+import android.content.Context;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,19 +13,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.cards.CourseCard;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups.CourseSubjectAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.groups.CourseCard;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CourseCardAdapter extends RecyclerView.Adapter<CourseCardAdapter.CourseCardViewHolder> {
 
     private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
     private SparseBooleanArray expandState = new SparseBooleanArray();
-    private List<CourseCard> mCoursesList;
+    private ArrayList<CourseCard> coursesList;
+    private Context context;
 
-    public CourseCardAdapter(List<CourseCard> coursesList) {
-        this.mCoursesList = coursesList;
+    public CourseCardAdapter(ArrayList<CourseCard> coursesList, Context context) {
+        this.coursesList = coursesList;
+        this.context = context;
+
         for (int i = 0; i < coursesList.size(); i++) {
             expandState.append(i, false);
         }
@@ -41,17 +47,17 @@ public class CourseCardAdapter extends RecyclerView.Adapter<CourseCardAdapter.Co
     @Override
     public void onBindViewHolder(@NonNull CourseCardViewHolder viewHolder, int position) {
 
-        CourseCard course = mCoursesList.get(position);
+        CourseCard course = coursesList.get(position);
 
         viewHolder.courseName.setText(course.getCourseName());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(viewHolder.subjectsRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
 
         layoutManager.setInitialPrefetchItemCount(course.getSubjectList().size());
-        CourseSubjectAdapter courseSubjectAdapter = new CourseSubjectAdapter(course.getSubjectList());
+        CourseSubjectAdapter courseSubjectAdapter = new CourseSubjectAdapter(course.getSubjectList(), context);
 
         viewHolder.subjectsRecyclerView.setLayoutManager(layoutManager);
-        viewHolder.subjectsRecyclerView.setAdapter(courseSubjectAdapter);
+            viewHolder.subjectsRecyclerView.setAdapter(courseSubjectAdapter);
         viewHolder.subjectsRecyclerView.setRecycledViewPool(viewPool);
 
         final boolean isExpanded = expandState.get(position); //Check if the view is expanded
@@ -73,7 +79,7 @@ public class CourseCardAdapter extends RecyclerView.Adapter<CourseCardAdapter.Co
 
     @Override
     public int getItemCount() {
-        return mCoursesList.size();
+        return coursesList.size();
     }
 
     static class CourseCardViewHolder extends RecyclerView.ViewHolder {

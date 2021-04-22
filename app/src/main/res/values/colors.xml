@@ -10,4 +10,6 @@
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#000000</color>
+    <color name="lightgray">#E3E2E0</color>
+
 </resources>

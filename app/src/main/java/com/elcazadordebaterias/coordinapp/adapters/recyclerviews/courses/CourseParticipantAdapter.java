@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
+package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.courses;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseParticipantCard;
 
 import java.util.List;
 
@@ -47,6 +47,7 @@ public class CourseParticipantAdapter extends RecyclerView.Adapter<CoursePartici
         TextView participantRole;
         TextView participantName;
         TextView participantEmail;
+
         CourseParticipantViewHolder(View itemView) {
             super(itemView);
 

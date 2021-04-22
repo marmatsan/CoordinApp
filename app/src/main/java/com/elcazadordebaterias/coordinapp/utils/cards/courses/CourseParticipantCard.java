@@ -1,6 +1,6 @@
-package com.elcazadordebaterias.coordinapp.utils.cards;
+package com.elcazadordebaterias.coordinapp.utils.cards.courses;
 
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.CourseParticipantAdapter;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.courses.CourseParticipantAdapter;
 
 /**
  * Object to hold the information of the layout card that represents an user (its name and its e-mail).

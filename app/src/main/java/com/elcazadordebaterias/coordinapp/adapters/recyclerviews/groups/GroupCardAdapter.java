@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
+package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,32 +12,32 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.cards.GroupCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
-public class GroupalCardAdapter extends RecyclerView.Adapter<GroupalCardAdapter.GroupalCardViewHolder> {
+public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.GroupCardViewHolder> {
 
     ArrayList<GroupCard> groupsList;
     Context context;
 
     private OnItemClickListener listener;
 
-    public GroupalCardAdapter(ArrayList<GroupCard> groupsList, Context context){
+    public GroupCardAdapter(ArrayList<GroupCard> groupsList, Context context){
         this.groupsList = groupsList;
         this.context = context;
     }
 
     @NonNull
     @Override
-    public GroupalCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public GroupCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_groupcard, parent, false);
-        return new GroupalCardViewHolder(view, listener);
+        return new GroupCardViewHolder(view, listener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GroupalCardViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GroupCardViewHolder holder, int position) {
         GroupCard group = groupsList.get(position);
 
         holder.courseName.setText(group.getCourseName());
@@ -77,26 +77,27 @@ public class GroupalCardAdapter extends RecyclerView.Adapter<GroupalCardAdapter.
         this.listener = listener;
     }
 
-    static class GroupalCardViewHolder extends RecyclerView.ViewHolder{
+    static class GroupCardViewHolder extends RecyclerView.ViewHolder{
         TextView courseName;
         TextView subjectName;
         MaterialButton showParticipants;
 
-        GroupalCardViewHolder(View view, OnItemClickListener listener){
+        GroupCardViewHolder(View view, OnItemClickListener listener){
             super(view);
 
             courseName = view.findViewById(R.id.courseName);
             subjectName = view.findViewById(R.id.subjectName);
             showParticipants = view.findViewById(R.id.showParticipants);
 
-             view.setOnClickListener(view1 -> {
+            view.setOnClickListener(view1 -> {
                 if(listener != null){
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION){
                         listener.onItemClicked(position);
                     }
                 }
-             });
+            });
         }
     }
 }
+

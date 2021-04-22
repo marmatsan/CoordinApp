@@ -36,17 +36,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
-    <TextView
-        android:id="@+id/fragment_groups_textview_placeholder"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/pulsa_el_bot_n_para_enviar_una_solicitud_de_creaci_n_de_grupo"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <include
         layout="@layout/roundedbutton_add"
         android:id="@+id/groupCreationRequest"

@@ -21,7 +21,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
  *
  * @author Martín Mateos Sánchez
  */
-public class AdministrationFragment_Teacher extends Fragment {
+public class AdministrationFragment extends Fragment {
     AdministrationFragmentTeacherAdapter optionsAdapter;
 
     private ViewPager2 viewpager;

@@ -1,6 +1,4 @@
-package com.elcazadordebaterias.coordinapp.utils.cards;
-
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupalCardAdapter;
+package com.elcazadordebaterias.coordinapp.utils.cards.groups;
 
 import java.util.ArrayList;
 
@@ -8,7 +6,6 @@ import java.util.ArrayList;
  * Class that represents a group for both the group chat (between students) and single chat (between students and teacher)
  * The layout of this object is {@link com.elcazadordebaterias.coordinapp.R.layout#utils_groupcard}
  *
- * @see GroupalCardAdapter
  * @author Martín Mateos Sánchez
  */
 

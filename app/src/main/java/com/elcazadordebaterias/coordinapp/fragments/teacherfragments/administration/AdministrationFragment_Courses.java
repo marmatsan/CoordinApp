@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.CourseCardAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.CourseCard;
-import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;
-import com.elcazadordebaterias.coordinapp.utils.cards.CourseSubjectCard;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.courses.CourseCardAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseParticipantCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseSubjectCard;
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldPath;
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author Martín Mateos Sánchez
  */
-public class AdministrationFragment_Teacher_Courses extends Fragment {
+public class AdministrationFragment_Courses extends Fragment {
 
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
