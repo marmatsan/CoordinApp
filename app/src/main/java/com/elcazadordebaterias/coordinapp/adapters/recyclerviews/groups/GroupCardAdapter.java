@@ -97,6 +97,7 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
                     }
                 }
             });
+
         }
     }
 }

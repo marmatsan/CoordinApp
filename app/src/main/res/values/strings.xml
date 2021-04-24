@@ -99,5 +99,7 @@
     <string name="profesor_a">Profesor/a</string>
     <string name="individuales">Individuales</string>
     <string name="name_of_the_subject">Name of the subject</string>
+    <string name="sender_message">Sender message</string>
+    <string name="selecciona_el_modo_de_creaci_n_de_grupo">3. Selecciona el modo de creación de grupo</string>
 
 </resources>

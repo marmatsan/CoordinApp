@@ -1,5 +1,7 @@
 package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.courses;
 
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,11 @@ public class CourseCardAdapter extends RecyclerView.Adapter<CourseCardAdapter.Co
         for (int i = 0; i < coursesList.size(); i++) {
             expandState.append(i, false);
         }
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
     @NonNull

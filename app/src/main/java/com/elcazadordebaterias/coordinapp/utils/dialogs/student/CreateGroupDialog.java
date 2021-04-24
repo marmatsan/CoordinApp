@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.utils.dialogs;
+package com.elcazadordebaterias.coordinapp.utils.dialogs.student;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -20,6 +20,7 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter;
 import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.CreateGroupDialogSpinnerItem;
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,7 +61,7 @@ public class CreateGroupDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.utils_creategroupdialog, null);
+        View view = inflater.inflate(R.layout.utils_creategroupdialog_student, null);
 
 
         // All the spinners

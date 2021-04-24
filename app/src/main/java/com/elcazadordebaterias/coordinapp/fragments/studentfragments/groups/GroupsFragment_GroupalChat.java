@@ -49,37 +49,6 @@ public class GroupsFragment_GroupalChat extends Fragment {
         RecyclerView groupsPetitionsRecyclerView = v.findViewById(R.id.recyclerViewGroups);
         LinearLayoutManager groupsLayoutManager = new LinearLayoutManager(getContext());
 
-        /*
-        ArrayList<GroupCard> groupCardList = new ArrayList<GroupCard>();
-        GroupalCardAdapter groupsAdapter = new GroupalCardAdapter(groupCardList, getContext());
-        groupsAdapter.setOnItemClickListener(position -> {
-            Intent intent = new Intent(getContext(), ChatActivity.class);
-            startActivity(intent);
-        });
-
-        groupsPetitionsRecyclerView.setAdapter(groupsAdapter);
-        groupsPetitionsRecyclerView.setLayoutManager(groupsLayoutManager);
-
-        // Create the groupal chat (only between students)
-        fStore.collection("Groups").whereArrayContains("participantsIds", fAuth.getUid()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    Group currentGroup = document.toObject(Group.class);
-                    ArrayList<String> participantNames = new ArrayList<String>();
-
-                    for(GroupParticipant participant : currentGroup.getParticipants()){
-                        if(!participant.getParticipantAsTeacher()) { // The teacher is not displayed in the participants list, just the student.
-                            participantNames.add(participant.getParticipantFullName());
-                        }
-                    }
-
-                    GroupCard card = new GroupCard(document.getId(), currentGroup.getGroupName(), currentGroup.getSubjectName(), participantNames);
-                    groupCardList.add(card);
-                }
-                groupsAdapter.notifyDataSetChanged();
-            }
-        });
-        */
 
         return v;
     }

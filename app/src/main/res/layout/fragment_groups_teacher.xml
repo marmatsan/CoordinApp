@@ -37,7 +37,7 @@
 
     <include
         layout="@layout/roundedbutton_add"
-        android:id="@+id/groupCreationButton"
+        android:id="@+id/createGroup"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

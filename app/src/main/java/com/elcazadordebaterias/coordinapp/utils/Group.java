@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Group {
 
     private String coordinatorId; // The id of the teacher that accepted the group
-    private String groupName;
+    private String groupName;     // The name of this group. Do not confuse with the name of the course
     private String subjectName;
 
     private ArrayList<String> participantsIds;

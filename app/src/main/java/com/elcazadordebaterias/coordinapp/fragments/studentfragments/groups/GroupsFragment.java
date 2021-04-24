@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.tablayouts.student.GroupsFragmentStudentAdapter;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.CreateGroupDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.student.CreateGroupDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;

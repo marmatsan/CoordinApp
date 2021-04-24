@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.CreateGroupDialogSpinnerItem;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.CreateGroupDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.student.CreateGroupDialog;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class CreateGroupDialogParticipantsAdapter extends ArrayAdapter<CreateGro
         ViewHolder viewHolder;
 
         if (convertView == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.utils_creategroupdialog_spinner_item, parent, false);
+            view = LayoutInflater.from(getContext()).inflate(R.layout.utils_creategroupdialog_spinneritem, parent, false);
 
             viewHolder = new ViewHolder();
 
