@@ -69,7 +69,8 @@ public class GroupsFragment extends Fragment {
 
         listPopupWindow.setOnItemClickListener((parent, view1, position, id) -> {
             if(position == 0){
-                Toast.makeText(getContext(), "First option", Toast.LENGTH_SHORT).show();
+                CreateGroupDialog dialog = new CreateGroupDialog();
+                dialog.show(getFragmentManager(), "dialog");
             }else{
                 Toast.makeText(getContext(), "Second option", Toast.LENGTH_SHORT).show();
             }
@@ -83,8 +84,6 @@ public class GroupsFragment extends Fragment {
         createGroup.setOnClickListener(v -> {
             listPopupWindow.show();
         });
-
-
 
         optionsAdapter = new GroupsFragmentTeacherAdapter(this);
         viewpager.setAdapter(optionsAdapter);
