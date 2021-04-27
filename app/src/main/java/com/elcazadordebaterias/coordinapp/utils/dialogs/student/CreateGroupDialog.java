@@ -46,12 +46,15 @@ public class CreateGroupDialog extends DialogFragment {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
+    Context context;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
+        this.context = context;
     }
 
 
@@ -144,25 +147,22 @@ public class CreateGroupDialog extends DialogFragment {
                 participantsList.clear();
                 String selectedSubjectName = parent.getItemAtPosition(position).toString();
 
-                fStore.collection("CoursesOrganization").document(courseListSpinner.getSelectedItem().toString()).collection("Subjects").document(selectedSubjectName).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Subject subject = documentSnapshot.toObject(Subject.class);
+                fStore.collection("CoursesOrganization").document(courseListSpinner.getSelectedItem().toString()).collection("Subjects").document(selectedSubjectName).get().addOnSuccessListener(documentSnapshot -> {
+                    Subject subject = documentSnapshot.toObject(Subject.class);
 
-                        fStore.collection("Students").whereIn(FieldPath.documentId(), subject.getStudentIDs()).get().addOnCompleteListener(getStudentsInfo -> { // Get the information of the students
-                            if (getStudentsInfo.isSuccessful()) {
+                    fStore.collection("Students").whereIn(FieldPath.documentId(), subject.getStudentIDs()).get().addOnCompleteListener(getStudentsInfo -> { // Get the information of the students
+                        if (getStudentsInfo.isSuccessful()) {
 
-                                for (QueryDocumentSnapshot studentDocument : getStudentsInfo.getResult()) {
-                                    if(studentDocument.getId().equals(fAuth.getUid()))
-                                        participantsList.add(new CreateGroupDialogSpinnerItem(studentDocument.getData().get("FullName").toString(), studentDocument.getId(), true, false));
-                                    else
-                                        participantsList.add(new CreateGroupDialogSpinnerItem(studentDocument.getData().get("FullName").toString(), studentDocument.getId(), false, false));
-                                }
-
-                                participantsListAdapter.notifyDataSetChanged();
+                            for (QueryDocumentSnapshot studentDocument : getStudentsInfo.getResult()) {
+                                if(studentDocument.getId().equals(fAuth.getUid()))
+                                    participantsList.add(new CreateGroupDialogSpinnerItem(studentDocument.getData().get("FullName").toString(), studentDocument.getId(), true, false));
+                                else
+                                    participantsList.add(new CreateGroupDialogSpinnerItem(studentDocument.getData().get("FullName").toString(), studentDocument.getId(), false, false));
                             }
-                        });
-                    }
+
+                            participantsListAdapter.notifyDataSetChanged();
+                        }
+                    });
                 });
             }
 
@@ -194,7 +194,7 @@ public class CreateGroupDialog extends DialogFragment {
                     }
 
                     if(petitionUsersList.size() <= 1){
-                        Toast.makeText(getContext(), "Debes agregar al menos a un miembro más al grupo", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Debes agregar al menos a un miembro más al grupo", Toast.LENGTH_SHORT).show();
                     } else {
                         fStore.collection("CoursesOrganization").document(selectedCourse).collection("Subjects").document(selectedSubject).get().addOnSuccessListener(subjectDocument -> {
                             Subject subject = subjectDocument.toObject(Subject.class);

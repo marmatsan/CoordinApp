@@ -3,12 +3,14 @@ package com.elcazadordebaterias.coordinapp.utils.dialogs.teacher;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,15 +19,25 @@ import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter;
+import com.elcazadordebaterias.coordinapp.utils.Group;
+import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
+import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.CreateGroupDialogSpinnerItem;
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CreateAutomaticDialog extends DialogFragment {
 
@@ -35,12 +47,15 @@ public class CreateAutomaticDialog extends DialogFragment {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
+    Context context;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
+
+        this.context = context;
     }
 
     @NonNull
@@ -124,27 +139,75 @@ public class CreateAutomaticDialog extends DialogFragment {
                     String selectedCourse = courseSpinner.getSelectedItem().toString();
                     String selectedSubject = subjectSpinner.getSelectedItem().toString();
                     String selectedMode = modeSpinner.getSelectedItem().toString();
-                    String selectedNmuber = numberInput.getText().toString();
+                    String selectedSplitString = numberInput.getText().toString();
 
-                    String requesterId = fAuth.getUid();
+                    // TODO: Error checking in edittext
+                    fStore.collection("CoursesOrganization").document(selectedCourse).collection("Subjects").document(selectedSubject).get().addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot document = task.getResult();
+                            if(document.exists()){
+                                Subject subject = document.toObject(Subject.class);
 
-                    fStore.collection("CoursesOrganization").document(selectedCourse).collection("Subjects").document(selectedSubject).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if(task.isSuccessful()){
-                                DocumentSnapshot document = task.getResult();
-                                if(document.exists()){
-                                    Subject subject = document.toObject(Subject.class);
+                                ArrayList<String> studentIDs = subject.getStudentIDs();
+                                Collections.shuffle(studentIDs);
 
-                                    ArrayList<String> studentIDs = subject.getStudentIDs();
+                                String teacherID = subject.getTeacherID();
+                                int splitNumber = Integer.parseInt(selectedSplitString);
 
+                                int totalGroups = (int) Math.floor(studentIDs.size()/splitNumber);
+                                int remainderStudents = studentIDs.size()%splitNumber;
+
+                                if(remainderStudents == 1) {
+                                    Toast.makeText(context, "Un estudiante se quedará sin grupo. Introduce otro número", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    for (int j = 0; j < totalGroups; j++) {
+                                        createGroup(selectedCourse, selectedSubject, studentIDs.subList(j * splitNumber, j * splitNumber + splitNumber), teacherID);
+                                    }
+
+                                    if (remainderStudents != 0) {
+                                        createGroup(selectedCourse, selectedSubject, studentIDs.subList(studentIDs.size() - remainderStudents, studentIDs.size()), teacherID);
+                                    }
                                 }
                             }
                         }
                     });
-
                 });
 
         return builder.create();
     }
+
+    private void createGroup(String course, String subject, List<String> studentIDs, String teacherID){
+
+        ArrayList<String> participantsIds = new ArrayList<String>(studentIDs);
+
+        ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
+
+        fStore.collection("Students").whereIn(FieldPath.documentId(), participantsIds).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                   participants.add(new GroupParticipant((String) document.get("FullName"), false, document.getId()));
+                }
+
+                fStore.collection("Teachers").document(teacherID).get().addOnSuccessListener(documentSnapshot -> {
+                    if(documentSnapshot.exists()){
+                        participants.add(new GroupParticipant((String) documentSnapshot.get("FullName"), true, documentSnapshot.getId()));
+                        participantsIds.add(teacherID);
+
+                        Group group = new Group(fAuth.getUid(),
+                                course,
+                                subject,
+                                participantsIds,
+                                participants);
+
+                        fStore.collection("CoursesOrganization")
+                                .document(group.getGroupName())
+                                .collection("Subjects")
+                                .document(group.getSubjectName())
+                                .collection("Groups").add(group);
+                    }
+                });
+            }
+        });
+    }
+
 }

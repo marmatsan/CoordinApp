@@ -92,7 +92,6 @@ public class AdministrationFragment_Courses extends Fragment {
                                             if (getStudentsInfo.isSuccessful()) {
 
                                                 for (QueryDocumentSnapshot studentDocument : getStudentsInfo.getResult()) {
-                                                    Log.d("DEBUGGING", studentDocument.getId());
                                                     CourseParticipantCard participant = new CourseParticipantCard("Alumno", (String) studentDocument.get("FullName"), (String) studentDocument.get("UserEmail"));
                                                     courseParticipantList.add(participant);
                                                 }
