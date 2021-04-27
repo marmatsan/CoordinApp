@@ -101,5 +101,9 @@
     <string name="name_of_the_subject">Name of the subject</string>
     <string name="sender_message">Sender message</string>
     <string name="selecciona_el_modo_de_creaci_n_de_grupo">3. Selecciona el modo de creación de grupo</string>
+    <string name="_3_selecciona_el_modo_de_creaci_n_de_grupos">3. Selecciona el modo de creación de grupos</string>
+    <string name="_4_selecciona_el_n_mero_de_alumnos_por_grupo">4. Selecciona el número de alumnos por grupo</string>
+    <string name="_4_introduce_el_n_mero_de_alumnos_por_grupo">4. Introduce el número de alumnos por grupo</string>
+    <string name="introduce_un_n_mero">Introduce un número</string>
 
 </resources>

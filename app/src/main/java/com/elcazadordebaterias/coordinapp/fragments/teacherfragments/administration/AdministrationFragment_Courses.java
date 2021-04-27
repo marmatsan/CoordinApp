@@ -57,7 +57,7 @@ public class AdministrationFragment_Courses extends Fragment {
 
         ParentRecyclerViewItem.setAdapter(courseCardAdapter);
         ParentRecyclerViewItem.setLayoutManager(layoutManager);
-
+        
         createCoursesList();
 
         return v;

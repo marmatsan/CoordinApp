@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -42,7 +43,6 @@ import java.util.ArrayList;
 
 public class CreateGroupDialog extends DialogFragment {
     private Spinner courseListSpinner, subjectListSpinner, participantsListSpinner;
-
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
@@ -61,7 +61,7 @@ public class CreateGroupDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.utils_creategroupdialog_student, null);
+        View view = inflater.inflate(R.layout.utils_creategroupdialog, null);
 
 
         // All the spinners

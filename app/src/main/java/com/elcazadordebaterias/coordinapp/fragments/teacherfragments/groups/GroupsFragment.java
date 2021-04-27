@@ -20,6 +20,7 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.listpopupwindows.ListPopupWindowAdapter;
 import com.elcazadordebaterias.coordinapp.adapters.tablayouts.teacher.GroupsFragmentTeacherAdapter;
 import com.elcazadordebaterias.coordinapp.utils.CreateGroupItem;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacher.CreateAutomaticDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacher.CreateGroupDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
@@ -72,7 +73,8 @@ public class GroupsFragment extends Fragment {
                 CreateGroupDialog dialog = new CreateGroupDialog();
                 dialog.show(getFragmentManager(), "dialog");
             }else{
-                Toast.makeText(getContext(), "Second option", Toast.LENGTH_SHORT).show();
+                CreateAutomaticDialog dialog = new CreateAutomaticDialog();
+                dialog.show(getFragmentManager(), "dialog");
             }
         });
 
