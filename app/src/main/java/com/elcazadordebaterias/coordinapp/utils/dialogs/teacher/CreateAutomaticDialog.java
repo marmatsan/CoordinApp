@@ -99,7 +99,7 @@ public class CreateAutomaticDialog extends DialogFragment {
         subjectSpinner.setSelection(0);
 
         // Mode adapter
-        String[] modes = new String[]{"1"};
+        String[] modes = new String[]{"Dividir los grupos en partes iguales"};
         ArrayAdapter<String> modeAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, modes);
 
         subjectListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -193,7 +193,8 @@ public class CreateAutomaticDialog extends DialogFragment {
                         participants.add(new GroupParticipant((String) documentSnapshot.get("FullName"), true, documentSnapshot.getId()));
                         participantsIds.add(teacherID);
 
-                        Group group = new Group(fAuth.getUid(),
+                        Group group = new Group(
+                                fAuth.getUid(),
                                 course,
                                 subject,
                                 participantsIds,

@@ -2,6 +2,7 @@ package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -22,11 +26,17 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
     ArrayList<GroupCard> groupsList;
     Context context;
 
+    FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
+
     private OnItemClickListener listener;
 
     public GroupCardAdapter(ArrayList<GroupCard> groupsList, Context context){
         this.groupsList = groupsList;
         this.context = context;
+
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -43,23 +53,35 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
         holder.courseName.setText(group.getCourseName());
         holder.subjectName.setText(group.getSubjectName());
 
-        holder.showParticipants.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
-                builderSingle.setTitle("Participantes");
+        holder.showParticipants.setOnClickListener(v -> {
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
+            builderSingle.setTitle("Participantes");
 
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.utils_participantname, R.id.participantName, group.getParticipantNames()){
-                    @Override
-                    public boolean isEnabled(int position) {
-                        return false;
-                    }
-                };
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.utils_participantname, R.id.participantName, group.getParticipantNames()){
+                @Override
+                public boolean isEnabled(int position1) {
+                    return false;
+                }
+            };
 
-                builderSingle.setNegativeButton("Vale", (dialog, which) -> dialog.dismiss());
-                builderSingle.setAdapter(arrayAdapter, null);
-                builderSingle.show();
-            }
+            builderSingle.setNegativeButton("Vale", (dialog, which) -> dialog.dismiss());
+            builderSingle.setAdapter(arrayAdapter, null);
+            builderSingle.show();
+        });
+
+        holder.deleteGroup.setOnClickListener(v -> {
+            fStore.collection("CoursesOrganization")
+                    .document(group.getCourseName())
+                    .collection("Subjects")
+                    .document(group.getSubjectName())
+                    .collection("Groups")
+                    .document(group.getGroupId())
+                    .delete().addOnSuccessListener(aVoid -> {
+
+                groupsList.remove(position);
+                notifyDataSetChanged();
+
+            });
         });
 
     }
@@ -81,6 +103,7 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
         TextView courseName;
         TextView subjectName;
         MaterialButton showParticipants;
+        MaterialButton deleteGroup;
 
         GroupCardViewHolder(View view, OnItemClickListener listener){
             super(view);
@@ -88,6 +111,7 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
             courseName = view.findViewById(R.id.courseName);
             subjectName = view.findViewById(R.id.subjectName);
             showParticipants = view.findViewById(R.id.showParticipants);
+            deleteGroup = view.findViewById(R.id.deleteGroup);
 
             view.setOnClickListener(view1 -> {
                 if(listener != null){
