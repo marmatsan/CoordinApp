@@ -21,6 +21,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter to be used in a list made of {@link GroupCard}. The mentioned list is displayed
+ * when we expand a {@link com.elcazadordebaterias.coordinapp.utils.cards.groups.CourseSubjectCard}, and
+ * it shows all the groups the logged user is in in the selected subject. When clicked in one of the {@link GroupCard}
+ * in the mentioned list, the {@link com.elcazadordebaterias.coordinapp.activities.ChatActivity} is launched, opening
+ * the associated chat room of this group.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.GroupCardViewHolder> {
 
     ArrayList<GroupCard> groupsList;

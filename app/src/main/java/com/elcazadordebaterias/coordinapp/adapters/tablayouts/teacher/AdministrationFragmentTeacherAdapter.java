@@ -9,7 +9,9 @@ import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.administrat
 import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.administration.AdministrationFragment_Petitions;
 
 /**
- * Class to handle the pages of the viewpager attached at the AdministrationFragment_Teacher fragment.
+ * Adapter to handle the pages of the viewpager attached at the
+ * {@link com.elcazadordebaterias.coordinapp.fragments.teacherfragments.administration.AdministrationFragment} fragment.
+ *
  *
  * @author Martín Mateos Sánchez
  */

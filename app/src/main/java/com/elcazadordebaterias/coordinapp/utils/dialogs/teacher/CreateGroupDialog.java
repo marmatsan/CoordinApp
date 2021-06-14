@@ -29,6 +29,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * Dialog accessible only by the teacher to let the app create a group selecting the participants
+ * that are going to be in that group.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class CreateGroupDialog extends DialogFragment {
     private Spinner courseListSpinner, subjectListSpinner, participantsListSpinner;
 

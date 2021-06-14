@@ -16,6 +16,13 @@ import com.elcazadordebaterias.coordinapp.utils.CreateGroupItem;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter to be used with a popup list in {@link com.elcazadordebaterias.coordinapp.fragments.teacherfragments.groups.GroupsFragment}.
+ * It will be used to display a popup list with (by now) two options by the teacher: create a group
+ * by hand or create a group automatically. The student does not have access to this list.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class ListPopupWindowAdapter extends ArrayAdapter<CreateGroupItem> {
 
     public ListPopupWindowAdapter(Context context, ArrayList<CreateGroupItem> menuItemsList) {

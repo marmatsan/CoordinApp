@@ -5,15 +5,17 @@ import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.courses.CourseS
 import java.util.List;
 
 /**
- * Expandable card that displays the participants of the subject of the current course.
+ * Expandable card that displays the participants of the subject of the current course. Do not confuse with
+ * {@link com.elcazadordebaterias.coordinapp.utils.cards.groups.CourseSubjectCard}, which contains a list of
+ * the groups of the current subject. This card contains the list of the participants of the subject instead.
+ *
  * Used for both teacher and student.
  *
- * The layout of this object is {@link com.elcazadordebaterias.coordinapp.R.layout#utils_coursesubject}
+ * Layout: {@link com.elcazadordebaterias.coordinapp.R.layout#utils_coursesubject}
  *
  * @see CourseSubjectAdapter
  * @author Martín Mateos Sánchez
  */
-
 public class CourseSubjectCard {
 
     private String mSubjectName;

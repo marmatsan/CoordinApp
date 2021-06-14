@@ -1,7 +1,5 @@
 package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.courses;
 
-import android.transition.AutoTransition;
-import android.transition.TransitionManager;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseSubjectCard;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
+/**
+ * Adapter to be used in a list made of {@link CourseCard}. The mentioned list displays all of the
+ * courses the logger user is enrolled in.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class CourseCardAdapter extends RecyclerView.Adapter<CourseCardAdapter.CourseCardViewHolder> {
 
     private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();

@@ -13,6 +13,13 @@ import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseParticipantC
 
 import java.util.List;
 
+/**
+ * Adapter to be used in a list made of {@link CourseParticipantCard}. The mentioned list is displayed
+ * when we expand a {@link com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseSubjectCard}, and
+ * it shows all the participants of the subject (teacher and students).
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class CourseParticipantAdapter extends RecyclerView.Adapter<CourseParticipantAdapter.CourseParticipantViewHolder> {
 
     private List<CourseParticipantCard> courseParticipantList;

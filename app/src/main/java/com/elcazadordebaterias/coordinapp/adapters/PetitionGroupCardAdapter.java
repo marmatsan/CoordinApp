@@ -26,6 +26,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter to handle the list of {@link PetitionGroupCard}'s, which is used for both teacher and
+ * student.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroupCardAdapter.PetitionGroupCardViewHolder> {
 
     FirebaseAuth fAuth;

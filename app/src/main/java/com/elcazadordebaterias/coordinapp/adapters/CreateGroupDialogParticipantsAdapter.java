@@ -17,14 +17,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 
 /**
- * Class to handle the objects of type {@link CreateGroupDialogSpinnerItem}, which is used by the {@link CreateGroupDialog} class.
+ * Adapter to handle the objects of type {@link CreateGroupDialogSpinnerItem}, which is used by the {@link CreateGroupDialog} class.
  *
  * @see CreateGroupDialog
  * @see CreateGroupDialogSpinnerItem
  *
  * @author Martín Mateos Sánchez
  */
-
 public class CreateGroupDialogParticipantsAdapter extends ArrayAdapter<CreateGroupDialogSpinnerItem> {
 
     private final ArrayList<CreateGroupDialogSpinnerItem> participantsList;

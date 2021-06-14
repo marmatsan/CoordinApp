@@ -23,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * The main activity for the teacher.
+ *
  * @author Martín Mateos Sánchez
  */
 public class MainActivity_Teacher extends AppCompatActivity {

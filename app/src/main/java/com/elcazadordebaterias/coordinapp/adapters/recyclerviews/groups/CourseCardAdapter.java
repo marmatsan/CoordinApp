@@ -20,6 +20,12 @@ import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter to be used in a list made of {@link CourseCard}.
+ * The mentioned list displays all of the courses the logger user is enrolled in.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class CourseCardAdapter extends RecyclerView.Adapter<CourseCardAdapter.CourseCardViewHolder> {
 
     private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();

@@ -17,6 +17,13 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
+/**
+ * Adapter to be used in a list made of {@link CourseSubjectCard}. The mentioned list is displayed
+ * when we expand a {@link com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseCard}, and
+ * it shows all the subjects of the selected course.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class CourseSubjectAdapter extends RecyclerView.Adapter<CourseSubjectAdapter.CourseSubjectViewHolder> {
 
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();

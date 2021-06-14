@@ -7,6 +7,13 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.elcazadordebaterias.coordinapp.fragments.studentfragments.home.HomeFragment_Courses;
 import com.elcazadordebaterias.coordinapp.fragments.studentfragments.home.HomeFragment_Petitions;
 
+/**
+ * Adapter to handle the pages of the viewpager attached at the
+ * {@link com.elcazadordebaterias.coordinapp.fragments.studentfragments.home.HomeFragment} fragment.
+ *
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class HomeFragmentStudentAdapter extends FragmentStateAdapter {
 
     public HomeFragmentStudentAdapter(Fragment fragment) {

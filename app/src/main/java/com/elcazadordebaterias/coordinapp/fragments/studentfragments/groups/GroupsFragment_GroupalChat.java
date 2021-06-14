@@ -24,6 +24,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 
 /**
+ * This is the class that
  * @see com.elcazadordebaterias.coordinapp.R.layout#fragment_groups_student_groupalchat
  */
 
@@ -48,7 +49,6 @@ public class GroupsFragment_GroupalChat extends Fragment {
         // Recyclerview - Groups
         RecyclerView groupsPetitionsRecyclerView = v.findViewById(R.id.recyclerViewGroups);
         LinearLayoutManager groupsLayoutManager = new LinearLayoutManager(getContext());
-
 
         return v;
     }

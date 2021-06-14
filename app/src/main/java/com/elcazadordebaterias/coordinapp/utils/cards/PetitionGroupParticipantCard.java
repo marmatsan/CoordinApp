@@ -1,5 +1,11 @@
 package com.elcazadordebaterias.coordinapp.utils.cards;
 
+
+/**
+ * Represents a petition card to create a group.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class PetitionGroupParticipantCard {
 
     private String participantName;

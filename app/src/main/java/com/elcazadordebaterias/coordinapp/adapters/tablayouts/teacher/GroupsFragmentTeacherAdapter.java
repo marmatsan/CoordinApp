@@ -8,7 +8,9 @@ import com.elcazadordebaterias.coordinapp.fragments.studentfragments.groups.Grou
 import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.groups.GroupsFragment_GroupalChat;
 
 /**
- * Class to handle the pages of the viewpager attached at the AdministrationFragment_Teacher fragment.
+ * Adapter to handle the pages of the viewpager attached at the
+ * {@link com.elcazadordebaterias.coordinapp.fragments.teacherfragments.groups.GroupsFragment} fragment.
+ *
  *
  * @author Martín Mateos Sánchez
  */

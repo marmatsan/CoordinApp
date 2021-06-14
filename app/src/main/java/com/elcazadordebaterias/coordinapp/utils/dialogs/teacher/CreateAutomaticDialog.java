@@ -39,6 +39,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+/**
+ * Dialog accessible only by the teacher to let the app create a group based on some rules.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class CreateAutomaticDialog extends DialogFragment {
 
     private Spinner courseSpinner, subjectSpinner, modeSpinner;

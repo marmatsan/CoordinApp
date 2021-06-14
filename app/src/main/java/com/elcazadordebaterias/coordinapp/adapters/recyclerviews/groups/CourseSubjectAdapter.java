@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -21,8 +20,14 @@ import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * Adapter to be used in a list made of {@link CourseSubjectCard}. The mentioned list is displayed
+ * when we expand a {@link com.elcazadordebaterias.coordinapp.utils.cards.groups.CourseCard}, and
+ * it shows all the subjects of the selected course.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class CourseSubjectAdapter extends RecyclerView.Adapter<CourseSubjectAdapter.CourseSubjectViewHolder> {
 
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
@@ -61,7 +66,7 @@ public class CourseSubjectAdapter extends RecyclerView.Adapter<CourseSubjectAdap
         GroupCardAdapter groupCardAdapter = new GroupCardAdapter(courseSubject.getGroupsList(), context);
 
         groupCardAdapter.setOnItemClickListener(position1 -> {
-            GroupCard card = courseSubject.getGroupsList().get(position1);
+            GroupCard card = courseSubject.getGroupsList().get(position1); //TODO
             Intent intent = new Intent(context, ChatActivity.class);
             context.startActivity(intent);
         });

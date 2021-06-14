@@ -13,6 +13,13 @@ import com.elcazadordebaterias.coordinapp.utils.cards.PetitionGroupParticipantCa
 
 import java.util.ArrayList;
 
+/**
+ * Adapter used to display the list of the participants that are going to make a group, and the status
+ * of the petition, which is displayed as an image based on the status (pending, accepted or rejected).
+ * The mentioned list can be displayed by clicking a button in {@link com.elcazadordebaterias.coordinapp.utils.cards.PetitionGroupCard}
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class ParticipansListViewAdapter extends BaseAdapter {
 
     private Context context;

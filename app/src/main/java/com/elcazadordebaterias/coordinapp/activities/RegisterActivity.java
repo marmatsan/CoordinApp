@@ -21,6 +21,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Register activity. Used when an user wants to register as a new user of the app. Can be launched from
+ * {@link LoginActivity}.
+ *
+ * @author Martín Mateos Sánchez
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     LinearProgressIndicator logIndicator;

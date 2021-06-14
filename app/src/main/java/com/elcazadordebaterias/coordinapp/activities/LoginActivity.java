@@ -26,6 +26,12 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * The Login Activity. Launched when we start the app for the first time (declared with the intent filter
+ * in the manifest).
+ *
+ * @author Martín Mateos Sánchez.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     LinearProgressIndicator logIndicator;
