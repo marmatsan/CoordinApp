@@ -17,11 +17,15 @@ import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessage;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.student.CreateGroupDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
@@ -116,6 +120,7 @@ public class ChatActivity extends AppCompatActivity {
                         messageAdapter.notifyDataSetChanged();
                     }
                 });
+
     }
 
     private void sendMessage(GroupCard card, String fullName, String text, String uid) {
@@ -124,7 +129,12 @@ public class ChatActivity extends AppCompatActivity {
         fStore.collection("CoursesOrganization").document(card.getCourseName())
                 .collection("Subjects").document(card.getSubjectName())
                 .collection("Groups").document(card.getGroupId())
-                .collection("ChatRoom").add(message);
+                .collection("ChatRoom").add(message).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                messageInput.getText().clear();
+            }
+        });
 
     }
 
