@@ -6,6 +6,10 @@ public class ChatMessage {
     private String senderId;
     private String message;
 
+    public ChatMessage(){
+
+    }
+
     public ChatMessage(String senderName, String senderId, String message) {
         this.senderName = senderName;
         this.senderId = senderId;
