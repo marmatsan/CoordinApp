@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
 
         DocumentReference df = fStore.collection("Teachers").document(uid);
 
-        df.get().addOnCompleteListener(task -> { // TODO: 23-01-2021 Chech the robustness of this
+        df.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {

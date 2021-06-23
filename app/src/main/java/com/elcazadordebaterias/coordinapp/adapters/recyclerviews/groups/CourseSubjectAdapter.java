@@ -18,6 +18,7 @@ import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.CourseSubjectCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -66,8 +67,13 @@ public class CourseSubjectAdapter extends RecyclerView.Adapter<CourseSubjectAdap
         GroupCardAdapter groupCardAdapter = new GroupCardAdapter(courseSubject.getGroupsList(), context);
 
         groupCardAdapter.setOnItemClickListener(position1 -> {
-            GroupCard card = courseSubject.getGroupsList().get(position1); //TODO
+            GroupCard card = courseSubject.getGroupsList().get(position1);
             Intent intent = new Intent(context, ChatActivity.class);
+
+            Gson gson = new Gson();
+            String cardAsString = gson.toJson(card);
+            intent.putExtra("cardAsString", cardAsString);
+
             context.startActivity(intent);
         });
 

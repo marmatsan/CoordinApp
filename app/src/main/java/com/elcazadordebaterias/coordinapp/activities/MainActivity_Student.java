@@ -12,11 +12,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.files.FilesFragment;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.FilesFragment;
 import com.elcazadordebaterias.coordinapp.fragments.studentfragments.groups.GroupsFragment;
 import com.elcazadordebaterias.coordinapp.fragments.studentfragments.home.HomeFragment;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.interactivity.InteractivityFragment;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.profile.ProfileFragment;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.InteractivityFragment;
+import com.elcazadordebaterias.coordinapp.fragments.studentfragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;

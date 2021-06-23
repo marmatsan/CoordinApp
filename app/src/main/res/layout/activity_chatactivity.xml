@@ -24,7 +24,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/messageListContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
@@ -39,7 +39,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView">
+        app:layout_constraintTop_toBottomOf="@+id/messageListContainer">
 
         <View
             android:id="@+id/view"
@@ -51,7 +51,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/messageInput"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
@@ -59,13 +59,13 @@
             android:background="@drawable/rounded_edittext"
             android:hint="@string/escribe_un_mensaje"
             android:paddingStart="10dp"
-            app:layout_constraintBottom_toBottomOf="@+id/materialButton"
-            app:layout_constraintEnd_toStartOf="@+id/materialButton"
+            app:layout_constraintBottom_toBottomOf="@+id/sendMessage"
+            app:layout_constraintEnd_toStartOf="@+id/sendMessage"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/materialButton" />
+            app:layout_constraintTop_toTopOf="@+id/sendMessage" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/materialButton"
+            android:id="@+id/sendMessage"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="8dp"

@@ -72,7 +72,7 @@ public class GroupsFragment extends Fragment {
             if(position == 0){
                 CreateGroupDialog dialog = new CreateGroupDialog();
                 dialog.show(getFragmentManager(), "dialog");
-            }else{
+                } else {
                 CreateAutomaticDialog dialog = new CreateAutomaticDialog();
                 dialog.show(getFragmentManager(), "dialog");
             }

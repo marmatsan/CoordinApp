@@ -8,7 +8,6 @@ import java.util.ArrayList;
  *
  * @author Martín Mateos Sánchez
  */
-
 public class Group {
 
     private String coordinatorId; // The id of the teacher that accepted the group

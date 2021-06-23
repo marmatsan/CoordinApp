@@ -14,9 +14,9 @@ import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.administration.AdministrationFragment;
-import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.files.FilesFragment_Teacher;
+import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.FilesFragment_Teacher;
 import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.groups.GroupsFragment;
-import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.interactivity.InteractivityFragment_Teacher;
+import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.InteractivityFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -86,7 +86,7 @@ public class MainActivity_Teacher extends AppCompatActivity {
         int itemId = item.getItemId();
 
         if (itemId == R.id.nav_teacher_interactivity) {
-            selectedFragment = new InteractivityFragment_Teacher();
+            selectedFragment = new InteractivityFragment();
         } else if (itemId == R.id.nav_teacher_groups) {
             selectedFragment = new GroupsFragment();
         } else if (itemId == R.id.nav_teacher_files) {

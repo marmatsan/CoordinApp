@@ -11,9 +11,9 @@ import java.util.ArrayList;
 
 public class GroupCard {
 
-    private String groupId; // The id of the document for this group in FireBase
     private String courseName;
     private String subjectName;
+    private String groupId; // The id of the document for this group in FireBase
     private ArrayList<String> participantNames;
 
     public GroupCard(String groupId, String courseName, String subjectName, ArrayList<String> participantNames) {
