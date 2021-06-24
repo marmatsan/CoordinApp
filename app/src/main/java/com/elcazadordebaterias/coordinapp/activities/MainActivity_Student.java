@@ -12,11 +12,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.FilesFragment;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.groups.GroupsFragment;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.home.HomeFragment;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.InteractivityFragment;
-import com.elcazadordebaterias.coordinapp.fragments.studentfragments.ProfileFragment;
+import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
+import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment;
+import com.elcazadordebaterias.coordinapp.fragments.student.HomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -61,15 +59,15 @@ public class MainActivity_Student extends AppCompatActivity {
         int itemId = item.getItemId();
 
         if (itemId == R.id.nav_student_interactivity) {
-            selectedFragment = new InteractivityFragment();
+            selectedFragment = new EmptyFragment();
         } else if (itemId == R.id.nav_student_groups) {
             selectedFragment = new GroupsFragment();
         } else if (itemId == R.id.nav_student_home) {
             selectedFragment = new HomeFragment();
         } else if (itemId == R.id.nav_student_files) {
-            selectedFragment = new FilesFragment();
+            selectedFragment = new EmptyFragment();
         } else if (itemId == R.id.nav_student_profile) {
-            selectedFragment = new ProfileFragment();
+            selectedFragment = new EmptyFragment();
         } else {
             selectedFragment = new HomeFragment();
         }

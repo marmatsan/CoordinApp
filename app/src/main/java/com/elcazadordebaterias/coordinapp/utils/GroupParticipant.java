@@ -3,16 +3,14 @@ package com.elcazadordebaterias.coordinapp.utils;
 public class GroupParticipant {
 
     private String participantFullName;
-    private boolean participantAsTeacher;
     private String participantId;
 
     public GroupParticipant(){
 
     }
 
-    public GroupParticipant(String participantFullName, boolean participantAsTeacher, String participantId) {
+    public GroupParticipant(String participantFullName, String participantId) {
         this.participantFullName = participantFullName;
-        this.participantAsTeacher = participantAsTeacher;
         this.participantId = participantId;
     }
 
@@ -22,14 +20,6 @@ public class GroupParticipant {
 
     public void setParticipantFullName(String participantFullName) {
         this.participantFullName = participantFullName;
-    }
-
-    public boolean getParticipantAsTeacher() {
-        return participantAsTeacher;
-    }
-
-    public void setParticipantAsTeacher(boolean participantAsTeacher) {
-        this.participantAsTeacher = participantAsTeacher;
     }
 
     public String getParticipantId() {

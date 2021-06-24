@@ -8,6 +8,8 @@ public class PetitionRequest {
     private String subject;
     private String requesterId;
     private String requesterName;
+    private String teacherId;
+    private String teacherName;
     private ArrayList<PetitionUser> petitionUsersList;
     private ArrayList<String> petitionUsersIds;
 
@@ -15,11 +17,13 @@ public class PetitionRequest {
 
     }
 
-    public PetitionRequest(String course, String subject, String requesterId, String requesterName, ArrayList<String> petitionUsersIds, ArrayList<PetitionUser> petitionUsersList){
+    public PetitionRequest(String course, String subject, String requesterId, String requesterName, String teacherId, String teacherName, ArrayList<String> petitionUsersIds, ArrayList<PetitionUser> petitionUsersList){
         this.course = course;
         this.subject = subject;
         this.requesterId = requesterId;
         this.requesterName = requesterName;
+        this.teacherId = teacherId;
+        this.teacherName = teacherName;
         this.petitionUsersIds = petitionUsersIds;
         this.petitionUsersList = petitionUsersList;
     }
@@ -38,6 +42,14 @@ public class PetitionRequest {
 
     public String getRequesterName() {
         return requesterName;
+    }
+
+    public String getTeacherId() {
+        return teacherId;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
     }
 
     public ArrayList<String> getPetitionUsersIds() {

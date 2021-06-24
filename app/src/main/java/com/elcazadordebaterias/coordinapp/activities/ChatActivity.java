@@ -15,7 +15,7 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.MessagesListAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessage;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.student.CreateGroupDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.CreateGroupDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;

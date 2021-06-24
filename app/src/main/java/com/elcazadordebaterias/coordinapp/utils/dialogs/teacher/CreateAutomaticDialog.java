@@ -3,7 +3,6 @@ package com.elcazadordebaterias.coordinapp.utils.dialogs.teacher;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,22 +17,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.CreateGroupDialogParticipantsAdapter;
 import com.elcazadordebaterias.coordinapp.utils.Group;
 import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
-import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
-import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.CreateGroupDialogSpinnerItem;
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +37,7 @@ import java.util.List;
  * @author Martín Mateos Sánchez
  */
 public class CreateAutomaticDialog extends DialogFragment {
-
+    /*
     private Spinner courseSpinner, subjectSpinner, modeSpinner;
     private EditText numberInput;
 
@@ -216,5 +207,5 @@ public class CreateAutomaticDialog extends DialogFragment {
             }
         });
     }
-
+*/
 }

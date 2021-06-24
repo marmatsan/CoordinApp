@@ -2,19 +2,21 @@ package com.elcazadordebaterias.coordinapp.utils;
 
 public class PetitionUser {
 
+    public static final int STATUS_PENDING = 0;
+    public static final int STATUS_ACCEPTED = 1;
+    public static final int STATUS_REJECTED = 2;
+
     private String userId;
     private String userFullName;
-    private boolean userAsTeacher;
     private int petitionStatus;
 
     public PetitionUser(){
 
     }
 
-    public PetitionUser(String userId, String userFullName, boolean userAsTeacher, int petitionStatus){
+    public PetitionUser(String userId, String userFullName, int petitionStatus){
         this.userId = userId;
         this.userFullName = userFullName;
-        this.userAsTeacher = userAsTeacher;
         this.petitionStatus = petitionStatus;
     }
 
@@ -24,10 +26,6 @@ public class PetitionUser {
 
     public String getUserFullName() {
         return userFullName;
-    }
-
-    public boolean getUserAsTeacher() {
-        return userAsTeacher;
     }
 
     public int getPetitionStatus() {

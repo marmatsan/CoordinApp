@@ -4,13 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.administration.AdministrationFragment_Courses;
-import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.administration.AdministrationFragment_Dates;
-import com.elcazadordebaterias.coordinapp.fragments.teacherfragments.administration.AdministrationFragment_Petitions;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.AdministrationFragment;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.AdministrationFragment_Courses;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.AdministrationFragment_Dates;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.AdministrationFragment_Petitions;
 
 /**
  * Adapter to handle the pages of the viewpager attached at the
- * {@link com.elcazadordebaterias.coordinapp.fragments.teacherfragments.administration.AdministrationFragment} fragment.
+ * {@link AdministrationFragment} fragment.
  *
  *
  * @author Martín Mateos Sánchez

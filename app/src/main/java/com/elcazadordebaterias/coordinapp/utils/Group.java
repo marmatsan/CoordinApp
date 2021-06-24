@@ -10,7 +10,8 @@ import java.util.ArrayList;
  */
 public class Group {
 
-    private String coordinatorId; // The id of the teacher that accepted the group
+    private String coordinatorId; // The id of the teacher that created the group
+    private String coordinatorName; // The name of the teacher that created the group
     private String groupName;     // The name of this group. Do not confuse with the name of the course
     private String subjectName;
 
@@ -21,8 +22,9 @@ public class Group {
 
     }
 
-    public Group(String coordinatorId, String groupName, String subjectName, ArrayList<String> participantsIds, ArrayList<GroupParticipant> participants){
+    public Group(String coordinatorId, String coordinatorName, String groupName, String subjectName, ArrayList<String> participantsIds, ArrayList<GroupParticipant> participants){
         this.coordinatorId = coordinatorId;
+        this.coordinatorName = coordinatorName;
         this.groupName = groupName;
         this.subjectName = subjectName;
         this.participantsIds = participantsIds;
@@ -31,6 +33,10 @@ public class Group {
 
     public String getCoordinatorId() {
         return coordinatorId;
+    }
+
+    public String getCoordinatorName() {
+        return coordinatorName;
     }
 
     public String getGroupName() {

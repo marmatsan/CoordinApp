@@ -108,5 +108,6 @@
     <string name="name_of_receiver">Name of receiver</string>
     <string name="name_of_the_sender">Name of the sender</string>
     <string name="content_of_the_message">Content of the message</string>
+    <string name="test_label">Test label</string>
 
 </resources>
