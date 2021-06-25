@@ -18,6 +18,8 @@ import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.listviews.SelectParticipantsListAdapter;
+import com.elcazadordebaterias.coordinapp.utils.Group;
+import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
 import com.elcazadordebaterias.coordinapp.utils.SelectParticipantItem;
@@ -159,10 +161,11 @@ public class CreateGroupDialog extends DialogFragment {
                     String selectedCourse = courseListSpinner.getSelectedItem().toString();
                     String selectedSubject = subjectListSpinner.getSelectedItem().toString();
 
-                    ArrayList<PetitionUser> petitionUsersList = new ArrayList<PetitionUser>();
-                    ArrayList<String> petitionUsersIds = new ArrayList<String>();
-
                     if (userType == TYPE_STUDENT){
+
+                        ArrayList<PetitionUser> petitionUsersList = new ArrayList<PetitionUser>();
+                        ArrayList<String> petitionUsersIds = new ArrayList<String>();
+
                         String requesterId = fAuth.getUid();
 
                         for (SelectParticipantItem item : participantsList) {
@@ -222,6 +225,37 @@ public class CreateGroupDialog extends DialogFragment {
                         }
 
                     } else if (userType == TYPE_TEACHER){
+
+                        ArrayList<String> petitionUsersIds = new ArrayList<String>();
+                        ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
+
+                        // Add all selected students to the petition.
+                        for (SelectParticipantItem item : participantsList) {
+                            if (item.isSelected()) {
+                                participants.add(new GroupParticipant(item.getParticipantName(), item.getParticipantId()));
+                                petitionUsersIds.add(item.getParticipantId());
+                            }
+                        }
+
+                        if(participants.size() <= 1){
+                            Toast.makeText(getContext(), "Debes agregar al menos a un miembro más al grupo", Toast.LENGTH_SHORT).show();
+                        } else {
+                            fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(teacherDocument -> {
+
+                                Group group = new Group(fAuth.getUid(),
+                                        (String) teacherDocument.get("FullName"),
+                                        selectedCourse,
+                                        selectedSubject,
+                                        petitionUsersIds,
+                                        participants);
+
+                                fStore.collection("CoursesOrganization")
+                                        .document(group.getGroupName())
+                                        .collection("Subjects")
+                                        .document(group.getSubjectName())
+                                        .collection("Groups").add(group);
+                            });
+                        }
 
                     }
                 });
