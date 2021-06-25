@@ -43,11 +43,13 @@ public class CreateGroupDialog extends DialogFragment {
     private static final int TYPE_STUDENT = 0;
     private static final int TYPE_TEACHER = 1;
 
-    private Spinner courseListSpinner, subjectListSpinner;
-    private ListView participantsListView;
-
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
+
+    private Context context;
+
+    private Spinner courseListSpinner, subjectListSpinner;
+    private ListView participantsListView;
 
     private int userType;
 
@@ -65,6 +67,8 @@ public class CreateGroupDialog extends DialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
+        this.context = context;
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -170,27 +174,48 @@ public class CreateGroupDialog extends DialogFragment {
                         }
 
                         if (petitionUsersList.size() <= 1){
-                            Toast.makeText(getContext(), "Debes agregar al menos a un miembro más al grupo", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Debes agregar al menos a un miembro más al grupo", Toast.LENGTH_SHORT).show();
                         } else {
-                            fStore.collection("CoursesOrganization").document(selectedCourse).collection("Subjects").document(selectedSubject).get().addOnSuccessListener(subjectDocument -> {
-                                Subject subject = subjectDocument.toObject(Subject.class);
-                                String teacherID = subject.getTeacherID();
 
-                                fStore.collection("Teachers").document(teacherID).get().addOnSuccessListener(teacherDocument -> {
-                                    String teacherName = (String) teacherDocument.get("FullName");
+                            fStore.collection("Petitions").whereEqualTo("requesterId", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> {
 
-                                    fStore.collection("Students").document(requesterId).get().addOnSuccessListener(requesterDocument -> {
-                                        petitionUsersList.add(new PetitionUser(requesterId, (String) requesterDocument.getData().get("FullName"), PetitionUser.STATUS_ACCEPTED));
-                                        petitionUsersIds.add(requesterId);
-                                        PetitionRequest currentPetition = new PetitionRequest(selectedCourse,
-                                                selectedSubject,
-                                                requesterId,
-                                                (String) requesterDocument.getData().get("FullName"),
-                                                teacherID,
-                                                teacherName,
-                                                petitionUsersIds,
-                                                petitionUsersList);
-                                        fStore.collection("Petitions").add(currentPetition);
+                                for(QueryDocumentSnapshot petitionDoc : queryDocumentSnapshots){
+                                    PetitionRequest petition = petitionDoc.toObject(PetitionRequest.class);
+                                    if(petition.getCourse().equals(selectedCourse) && petition.getSubject().equals(selectedSubject) && petition.getRequesterId().equals(fAuth.getUid())) {
+                                        Toast.makeText(context, "Ya has hecho una petición de esta asignatura. Espera a que el tutor la acepte o la rechace", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }
+
+                                fStore.collection("CoursesOrganization").document(selectedCourse)
+                                        .collection("Subjects").document(selectedSubject)
+                                        .get().addOnSuccessListener(subjectDocument -> {
+                                    Subject subject = subjectDocument.toObject(Subject.class);
+                                    String teacherID = subject.getTeacherID();
+
+                                    fStore.collection("Teachers").document(teacherID).get().addOnSuccessListener(teacherDocument -> {
+                                        String teacherName = (String) teacherDocument.get("FullName");
+
+                                        fStore.collection("Students").document(requesterId)
+                                                .get().addOnSuccessListener(requesterDocument -> {
+
+                                            petitionUsersList.add(new PetitionUser(requesterId,
+                                                    (String) requesterDocument.getData().get("FullName"),
+                                                    PetitionUser.STATUS_ACCEPTED));
+
+                                            petitionUsersIds.add(requesterId);
+
+                                            PetitionRequest currentPetition = new PetitionRequest(selectedCourse,
+                                                    selectedSubject,
+                                                    requesterId,
+                                                    (String) requesterDocument.getData().get("FullName"),
+                                                    teacherID,
+                                                    teacherName,
+                                                    petitionUsersIds,
+                                                    petitionUsersList);
+
+                                            fStore.collection("Petitions").add(currentPetition);
+                                        });
                                     });
                                 });
                             });
@@ -235,6 +260,8 @@ public class CreateGroupDialog extends DialogFragment {
 
                     subjectsNames.clear();
                     subjectsNames.addAll(updateSubjects);
+
+                    selectedSubject = subjectsNames.get(0); // TODO: If there are no subjects, updateParticipantsList will produce a nullpointerexception
 
                     updateParticipantsList(selectedCourse, selectedSubject);
 

@@ -17,12 +17,14 @@ public class PetitionGroupCard {
 
     private String petitionId; // The id of the document of this card in FireStore
     private String requesterName;
+    private String requesterId;
     private String courseSubject;
     private ArrayList<PetitionGroupParticipant> participantsList;
 
-    public PetitionGroupCard(String petitionId, String requesterName, String courseSubject, ArrayList<PetitionGroupParticipant> participantsList){
+    public PetitionGroupCard(String petitionId, String requesterId, String requesterName, String courseSubject, ArrayList<PetitionGroupParticipant> participantsList){
         this.petitionId = petitionId;
         this.requesterName = requesterName;
+        this.requesterId = requesterId;
         this.courseSubject = courseSubject;
         this.participantsList = participantsList;
     }
@@ -33,6 +35,10 @@ public class PetitionGroupCard {
 
     public String getRequesterName() {
         return requesterName;
+    }
+
+    public String getRequesterId() {
+        return requesterId;
     }
 
     public String getCourseSubject() {

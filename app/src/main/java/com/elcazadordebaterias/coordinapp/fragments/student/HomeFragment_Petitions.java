@@ -51,14 +51,14 @@ public class HomeFragment_Petitions extends Fragment {
         fStore.collection("Petitions").whereArrayContains("petitionUsersIds", fAuth.getUid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    PetitionRequest currentPetition = document.toObject(PetitionRequest.class);
+                    PetitionRequest petition = document.toObject(PetitionRequest.class);
                     ArrayList<PetitionGroupParticipant> participantsList = new ArrayList<PetitionGroupParticipant>();
 
-                    for(PetitionUser currentUser : currentPetition.getPetitionUsersList()){
+                    for(PetitionUser currentUser : petition.getPetitionUsersList()){
                         participantsList.add(new PetitionGroupParticipant(currentUser.getUserFullName(), currentUser.getPetitionStatus()));
                     }
 
-                    petitions.add(new PetitionGroupCard(document.getId(), currentPetition.getRequesterName(), currentPetition.getCourse() + " / " + currentPetition.getSubject(), participantsList));
+                    petitions.add(new PetitionGroupCard(document.getId(), petition.getRequesterId(), petition.getRequesterName(), petition.getCourse() + " / " + petition.getSubject(), participantsList));
                 }
                 petitionsAdapter.notifyDataSetChanged();
             }

@@ -62,7 +62,11 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         PetitionGroupCard petitionCard = petitionsList.get(position);
 
         // Bind views of petitionCard
-        holder.requesterName.setText(petitionCard.getRequesterName());
+        if (petitionCard.getRequesterId().equals(fAuth.getUid())){
+            holder.requesterName.setText(R.string.peticion_propia);
+        } else {
+            holder.requesterName.setText(petitionCard.getRequesterName());
+        }
         holder.courseName.setText(petitionCard.getCourseSubject());
 
         holder.acceptRequest.setOnClickListener(v -> {

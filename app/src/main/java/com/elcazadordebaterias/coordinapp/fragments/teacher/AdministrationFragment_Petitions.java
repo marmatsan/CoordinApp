@@ -51,13 +51,13 @@ public class AdministrationFragment_Petitions extends Fragment {
         fStore.collection("Petitions").whereEqualTo("teacherId", fAuth.getUid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    PetitionRequest currentPetition = document.toObject(PetitionRequest.class);
+                    PetitionRequest petition = document.toObject(PetitionRequest.class);
                     ArrayList<PetitionGroupParticipant> participantsList = new ArrayList<PetitionGroupParticipant>();
 
-                    for(PetitionUser user : currentPetition.getPetitionUsersList()){
+                    for(PetitionUser user : petition.getPetitionUsersList()){
                         participantsList.add(new PetitionGroupParticipant(user.getUserFullName(), user.getPetitionStatus()));
                     }
-                    petitions.add(new PetitionGroupCard(document.getId(), currentPetition.getRequesterName(), currentPetition.getCourse() + " / " + currentPetition.getSubject(), participantsList));
+                    petitions.add(new PetitionGroupCard(document.getId(), petition.getRequesterId(), petition.getRequesterName(), petition.getCourse() + " / " + petition.getSubject(), participantsList));
                 }
                 petitionsAdapter.notifyDataSetChanged();
             }
