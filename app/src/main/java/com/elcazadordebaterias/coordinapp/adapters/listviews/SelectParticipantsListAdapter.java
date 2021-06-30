@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.SelectParticipantItem;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.SelectParticipantItem;
 import com.google.android.material.checkbox.MaterialCheckBox;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.student;
+package com.elcazadordebaterias.coordinapp.fragments.student.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,7 +23,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment_Courses extends Fragment {
+public class Courses extends Fragment {
 
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;

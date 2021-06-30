@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.teacher;
+package com.elcazadordebaterias.coordinapp.fragments.teacher.administration;
 
 import android.os.Bundle;
 
@@ -21,7 +21,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
  *
  * @author Martín Mateos Sánchez
  */
-public class AdministrationFragment extends Fragment {
+public class Administration extends Fragment {
     AdministrationFragmentTeacherAdapter optionsAdapter;
 
     private ViewPager2 viewpager;

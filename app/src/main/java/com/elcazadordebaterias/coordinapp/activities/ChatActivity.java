@@ -1,11 +1,8 @@
 package com.elcazadordebaterias.coordinapp.activities;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,24 +10,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.MessagesListAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessage;
+import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.CreateGroupDialog;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -51,7 +40,7 @@ public class ChatActivity extends AppCompatActivity {
     EditText messageInput;
     MaterialButton sendMessage;
 
-    ArrayList<ChatMessage> messageList;
+    ArrayList<ChatMessageCard> messageList;
 
 
     @Override
@@ -74,7 +63,7 @@ public class ChatActivity extends AppCompatActivity {
         // Recyclerview setup
         RecyclerView messageListContainer = findViewById(R.id.messageListContainer);
 
-        ArrayList<ChatMessage> messageList = new ArrayList<ChatMessage>();
+        ArrayList<ChatMessageCard> messageList = new ArrayList<ChatMessageCard>();
         MessagesListAdapter messageAdapter = new MessagesListAdapter(messageList);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -115,7 +104,7 @@ public class ChatActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            messageList.add(document.toObject(ChatMessage.class));
+                            messageList.add(document.toObject(ChatMessageCard.class));
                         }
                         messageAdapter.notifyDataSetChanged();
                     }
@@ -124,7 +113,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage(GroupCard card, String fullName, String text, String uid) {
-        ChatMessage message = new ChatMessage(fullName, uid, text);
+        ChatMessageCard message = new ChatMessageCard(fullName, uid, text);
 
         fStore.collection("CoursesOrganization").document(card.getCourseName())
                 .collection("Subjects").document(card.getSubjectName())

@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.student;
+package com.elcazadordebaterias.coordinapp.fragments.teacher.administration;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,20 +11,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.PetitionGroupCardAdapter;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionGroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.cards.PetitionGroupCard;
-import com.elcazadordebaterias.coordinapp.utils.PetitionGroupParticipant;
-import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
-import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionRequest;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionUser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-public class HomeFragment_Petitions extends Fragment {
+public class Petitions extends Fragment {
+
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,8 +36,9 @@ public class HomeFragment_Petitions extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_home_student_petitions, container, false);
+        View v =  inflater.inflate(R.layout.fragment_administration_teacher_petitions, container, false);
 
+        // Recyclerview - Petitions
         RecyclerView groupsPetitionsRecyclerView = v.findViewById(R.id.recyclerview_petitions);
         LinearLayoutManager petitionsLayoutManager = new LinearLayoutManager(getContext());
 
@@ -47,17 +48,15 @@ public class HomeFragment_Petitions extends Fragment {
         groupsPetitionsRecyclerView.setAdapter(petitionsAdapter);
         groupsPetitionsRecyclerView.setLayoutManager(petitionsLayoutManager);
 
-
-        fStore.collection("Petitions").whereArrayContains("petitionUsersIds", fAuth.getUid()).get().addOnCompleteListener(task -> {
+        fStore.collection("Petitions").whereEqualTo("teacherId", fAuth.getUid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     PetitionRequest petition = document.toObject(PetitionRequest.class);
                     ArrayList<PetitionGroupParticipant> participantsList = new ArrayList<PetitionGroupParticipant>();
 
-                    for(PetitionUser currentUser : petition.getPetitionUsersList()){
-                        participantsList.add(new PetitionGroupParticipant(currentUser.getUserFullName(), currentUser.getPetitionStatus()));
+                    for(PetitionUser user : petition.getPetitionUsersList()){
+                        participantsList.add(new PetitionGroupParticipant(user.getUserFullName(), user.getPetitionStatus()));
                     }
-
                     petitions.add(new PetitionGroupCard(document.getId(), petition.getRequesterId(), petition.getRequesterName(), petition.getCourse() + " / " + petition.getSubject(), participantsList));
                 }
                 petitionsAdapter.notifyDataSetChanged();

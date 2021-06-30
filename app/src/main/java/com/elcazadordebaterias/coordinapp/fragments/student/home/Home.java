@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.student;
+package com.elcazadordebaterias.coordinapp.fragments.student.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,7 +20,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
  *
  * @author Martín Mateos Sánchez
  */
-public class HomeFragment extends Fragment {
+public class Home extends Fragment {
 
     HomeFragmentStudentAdapter optionsAdapter;
 

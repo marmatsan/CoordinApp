@@ -1,10 +1,13 @@
-package com.elcazadordebaterias.coordinapp.utils;
+package com.elcazadordebaterias.coordinapp.utils.customdatamodels;
 
+/**
+ * Used in the listview when we select the users
+ *
+ */
 public class SelectParticipantItem {
 
     private String participantName;
     private String participantId;
-
     private boolean isSelected;
 
     public SelectParticipantItem(String participantName, String participantId, boolean isSelected) {

@@ -1,8 +1,8 @@
-package com.elcazadordebaterias.coordinapp.utils;
+package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
 
 
 /**
- * Represents a petition card to create a group.
+ * Represents a petition card to create a group in firestore
  *
  * @author Martín Mateos Sánchez
  */

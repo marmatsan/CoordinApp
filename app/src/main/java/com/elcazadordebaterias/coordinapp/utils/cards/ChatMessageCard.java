@@ -1,16 +1,16 @@
 package com.elcazadordebaterias.coordinapp.utils.cards;
 
-public class ChatMessage {
+public class ChatMessageCard {
 
     private String senderName;
     private String senderId;
     private String message;
 
-    public ChatMessage(){
+    public ChatMessageCard(){
 
     }
 
-    public ChatMessage(String senderName, String senderId, String message) {
+    public ChatMessageCard(String senderName, String senderId, String message) {
         this.senderName = senderName;
         this.senderId = senderId;
         this.message = message;

@@ -9,10 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups.CourseCardAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessage;
+import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,11 +21,11 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
     private static final int MESSAGE_LEFT = 0;
     private static final int MESSAGE_RIGHT = 1;
 
-    private ArrayList<ChatMessage> messageList;
+    private ArrayList<ChatMessageCard> messageList;
 
     FirebaseAuth fAuth;
 
-    public MessagesListAdapter(ArrayList<ChatMessage> messageList) {
+    public MessagesListAdapter(ArrayList<ChatMessageCard> messageList) {
         this.messageList = messageList;
         fAuth = FirebaseAuth.getInstance();
     }
@@ -48,7 +46,7 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull MessageListViewHolder holder, int position) {
-        ChatMessage message = messageList.get(position);
+        ChatMessageCard message = messageList.get(position);
 
         holder.senderName.setText(message.getSenderName());
         holder.message.setText(message.getMessage());

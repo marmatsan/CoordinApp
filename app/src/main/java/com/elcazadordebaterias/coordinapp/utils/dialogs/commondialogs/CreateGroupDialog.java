@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.utils.dialogs;
+package com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -18,32 +18,24 @@ import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.listviews.SelectParticipantsListAdapter;
-import com.elcazadordebaterias.coordinapp.utils.Group;
-import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
-import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
-import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
-import com.elcazadordebaterias.coordinapp.utils.SelectParticipantItem;
-import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseParticipantCard;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionRequest;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionUser;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.SelectParticipantItem;
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
 /**
- * Dialog accessible only by the teacher to let the app create a group selecting the participants
- * that are going to be in that group.
- *
  * @author Martín Mateos Sánchez
  */
 public class CreateGroupDialog extends DialogFragment {
-    private static final int TYPE_STUDENT = 0;
-    private static final int TYPE_TEACHER = 1;
 
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
@@ -53,7 +45,7 @@ public class CreateGroupDialog extends DialogFragment {
     private Spinner courseListSpinner, subjectListSpinner;
     private ListView participantsListView;
 
-    private int userType;
+    private final int userType;
 
     private ArrayList<String> coursesNames;
     private ArrayList<String> subjectsNames;
@@ -65,6 +57,10 @@ public class CreateGroupDialog extends DialogFragment {
 
     private String selectedCourse;
     private String selectedSubject;
+
+    public CreateGroupDialog(int userType){
+        this.userType = userType;
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -82,16 +78,6 @@ public class CreateGroupDialog extends DialogFragment {
         coursesAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, coursesNames);
         subjectsAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, subjectsNames);
         participantsAdapter = new SelectParticipantsListAdapter(getContext(), participantsList);
-
-        fStore.collection("Teachers").document(fAuth.getUid()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()){
-                if (task.getResult().exists()){ // The user is a teacher
-                    userType = TYPE_TEACHER;
-                } else {
-                    userType = TYPE_STUDENT;
-                }
-            }
-        });
 
     }
 
@@ -161,7 +147,7 @@ public class CreateGroupDialog extends DialogFragment {
                     String selectedCourse = courseListSpinner.getSelectedItem().toString();
                     String selectedSubject = subjectListSpinner.getSelectedItem().toString();
 
-                    if (userType == TYPE_STUDENT){
+                    if (userType == UserType.TYPE_STUDENT){
 
                         ArrayList<PetitionUser> petitionUsersList = new ArrayList<PetitionUser>();
                         ArrayList<String> petitionUsersIds = new ArrayList<String>();
@@ -184,8 +170,11 @@ public class CreateGroupDialog extends DialogFragment {
 
                                 for(QueryDocumentSnapshot petitionDoc : queryDocumentSnapshots){
                                     PetitionRequest petition = petitionDoc.toObject(PetitionRequest.class);
-                                    if(petition.getCourse().equals(selectedCourse) && petition.getSubject().equals(selectedSubject) && petition.getRequesterId().equals(fAuth.getUid())) {
-                                        Toast.makeText(context, "Ya has hecho una petición de esta asignatura. Espera a que el tutor la acepte o la rechace", Toast.LENGTH_SHORT).show();
+                                    if(petition.getCourse().equals(selectedCourse)
+                                            && petition.getSubject().equals(selectedSubject)
+                                            && petition.getRequesterId().equals(fAuth.getUid())) {
+                                        Toast.makeText(context, "Ya has hecho una petición de esta asignatura. " +
+                                                "Espera a que el tutor la acepte o la rechace", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
                                 }
@@ -208,7 +197,7 @@ public class CreateGroupDialog extends DialogFragment {
 
                                             petitionUsersIds.add(requesterId);
 
-                                            PetitionRequest currentPetition = new PetitionRequest(selectedCourse,
+                                            PetitionRequest petition = new PetitionRequest(selectedCourse,
                                                     selectedSubject,
                                                     requesterId,
                                                     (String) requesterDocument.getData().get("FullName"),
@@ -217,28 +206,28 @@ public class CreateGroupDialog extends DialogFragment {
                                                     petitionUsersIds,
                                                     petitionUsersList);
 
-                                            fStore.collection("Petitions").add(currentPetition);
+                                            fStore.collection("Petitions").add(petition);
                                         });
                                     });
                                 });
                             });
                         }
 
-                    } else if (userType == TYPE_TEACHER){
+                    } else if (userType == UserType.TYPE_TEACHER){ // Directly create the group
 
-                        ArrayList<String> petitionUsersIds = new ArrayList<String>();
+                        ArrayList<String> studentsIDs = new ArrayList<String>();
                         ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
 
                         // Add all selected students to the petition.
                         for (SelectParticipantItem item : participantsList) {
                             if (item.isSelected()) {
                                 participants.add(new GroupParticipant(item.getParticipantName(), item.getParticipantId()));
-                                petitionUsersIds.add(item.getParticipantId());
+                                studentsIDs.add(item.getParticipantId());
                             }
                         }
 
                         if(participants.size() <= 1){
-                            Toast.makeText(getContext(), "Debes agregar al menos a un miembro más al grupo", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Debes agregar al menos a un miembro más al grupo", Toast.LENGTH_SHORT).show();
                         } else {
                             fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(teacherDocument -> {
 
@@ -246,14 +235,16 @@ public class CreateGroupDialog extends DialogFragment {
                                         (String) teacherDocument.get("FullName"),
                                         selectedCourse,
                                         selectedSubject,
-                                        petitionUsersIds,
+                                        studentsIDs,
                                         participants);
 
                                 fStore.collection("CoursesOrganization")
-                                        .document(group.getGroupName())
+                                        .document(group.getCourseName())
                                         .collection("Subjects")
                                         .document(group.getSubjectName())
-                                        .collection("Groups").add(group);
+                                        .collection("Groups").add(group).addOnSuccessListener(documentReference -> { // Write groups info of students and teacher
+                                            fStore.collection("Students").whereIn(FieldPath.documentId(), studentsIDs);
+                                        });
                             });
                         }
 
@@ -266,7 +257,7 @@ public class CreateGroupDialog extends DialogFragment {
     private void updateSubjectsList(int userType, String selectedCourse){
         ArrayList<String> updateSubjects = new ArrayList<String>();
 
-        if(userType == TYPE_STUDENT){ // The user is a student
+        if(userType == UserType.TYPE_STUDENT){ // The user is a student
             fStore.collection("CoursesOrganization").document(selectedCourse)
                     .collection("Subjects").whereArrayContains("studentIDs", fAuth.getUid()).get()
                     .addOnCompleteListener(task -> { // Get the name of the subjects
@@ -285,7 +276,7 @@ public class CreateGroupDialog extends DialogFragment {
                     subjectsAdapter.notifyDataSetChanged();
                 }
             });
-        } else if (userType == TYPE_TEACHER) { // The user is a teacher
+        } else if (userType == UserType.TYPE_TEACHER) { // The user is a teacher
             fStore.collection("CoursesOrganization").document(selectedCourse).collection("Subjects").whereEqualTo("teacherID", fAuth.getUid()).get().addOnCompleteListener(task -> { // Get the name of the subjects
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {

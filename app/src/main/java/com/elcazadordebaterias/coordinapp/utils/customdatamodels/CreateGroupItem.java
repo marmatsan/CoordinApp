@@ -1,5 +1,8 @@
-package com.elcazadordebaterias.coordinapp.utils;
+package com.elcazadordebaterias.coordinapp.utils.customdatamodels;
 
+/**
+ Used in the listpopupwindow of the teacher when creategroupbutton is created
+ */
 public class CreateGroupItem {
 
     private int itemIcon;

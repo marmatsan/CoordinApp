@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.teacher;
+package com.elcazadordebaterias.coordinapp.fragments.teacher.administration;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author Martín Mateos Sánchez
  */
-public class AdministrationFragment_Courses extends Fragment {
+public class Courses extends Fragment {
 
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;

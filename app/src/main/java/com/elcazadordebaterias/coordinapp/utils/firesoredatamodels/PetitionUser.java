@@ -1,5 +1,9 @@
-package com.elcazadordebaterias.coordinapp.utils;
+package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
 
+/**
+ * Represents a petition user and its status in firestore
+ *
+ */
 public class PetitionUser {
 
     public static final int STATUS_PENDING = 0;

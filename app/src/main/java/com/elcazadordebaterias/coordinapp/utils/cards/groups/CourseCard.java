@@ -16,20 +16,20 @@ import java.util.ArrayList;
  */
 public class CourseCard {
 
-    private String mCourseName;
-    private ArrayList<CourseSubjectCard> mSubjectList;
+    private String courseName;
+    private ArrayList<CourseSubjectCard> subjectList;
 
     public CourseCard(String courseName, ArrayList<CourseSubjectCard> subjectList) {
-        this.mCourseName = courseName;
-        this.mSubjectList = subjectList;
+        this.courseName = courseName;
+        this.subjectList = subjectList;
     }
 
     public String getCourseName() {
-        return mCourseName;
+        return courseName;
     }
 
     public ArrayList<CourseSubjectCard> getSubjectList() {
-        return mSubjectList;
+        return subjectList;
     }
 
 }

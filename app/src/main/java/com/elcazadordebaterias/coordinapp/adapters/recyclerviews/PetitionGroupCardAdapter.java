@@ -11,15 +11,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.DisplayParticipantsListDialog;
-import com.elcazadordebaterias.coordinapp.utils.Group;
-import com.elcazadordebaterias.coordinapp.utils.GroupParticipant;
-import com.elcazadordebaterias.coordinapp.utils.PetitionGroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.DisplayParticipantsListDialog;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionGroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.cards.PetitionGroupCard;
-import com.elcazadordebaterias.coordinapp.utils.PetitionRequest;
-import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionRequest;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionUser;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -157,7 +156,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                                 participants);
 
         fStore.collection("CoursesOrganization")
-                .document(group.getGroupName())
+                .document(group.getCourseName())
                 .collection("Subjects")
                 .document(group.getSubjectName())
                 .collection("Groups").add(group)

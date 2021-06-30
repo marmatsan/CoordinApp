@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.PetitionGroupParticipant;
-import com.elcazadordebaterias.coordinapp.utils.PetitionUser;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionGroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionUser;
 
 import java.util.ArrayList;
 

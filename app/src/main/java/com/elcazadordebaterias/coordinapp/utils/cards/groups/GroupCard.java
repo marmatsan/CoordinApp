@@ -11,9 +11,9 @@ import java.util.ArrayList;
 
 public class GroupCard {
 
+    private String groupId; // The id of the document for this group in FireBase
     private String courseName;
     private String subjectName;
-    private String groupId; // The id of the document for this group in FireBase
     private ArrayList<String> participantNames;
 
     public GroupCard(String groupId, String courseName, String subjectName, ArrayList<String> participantNames) {
@@ -25,10 +25,6 @@ public class GroupCard {
 
     public String getGroupId() {
         return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
     }
 
     public String getCourseName() {
@@ -49,10 +45,6 @@ public class GroupCard {
 
     public ArrayList<String> getParticipantNames() {
         return participantNames;
-    }
-
-    public void setParticipantNames(ArrayList<String> participantNames) {
-        this.participantNames = participantNames;
     }
 
 }

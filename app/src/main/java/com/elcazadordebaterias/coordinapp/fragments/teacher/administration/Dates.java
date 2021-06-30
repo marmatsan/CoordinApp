@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.teacher;
+package com.elcazadordebaterias.coordinapp.fragments.teacher.administration;
 
 import android.os.Bundle;
 
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.elcazadordebaterias.coordinapp.R;
 
-public class AdministrationFragment_Dates extends Fragment {
+public class Dates extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

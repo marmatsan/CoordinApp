@@ -4,14 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.elcazadordebaterias.coordinapp.fragments.teacher.AdministrationFragment;
-import com.elcazadordebaterias.coordinapp.fragments.teacher.AdministrationFragment_Courses;
-import com.elcazadordebaterias.coordinapp.fragments.teacher.AdministrationFragment_Dates;
-import com.elcazadordebaterias.coordinapp.fragments.teacher.AdministrationFragment_Petitions;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Courses;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Dates;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Petitions;
 
 /**
  * Adapter to handle the pages of the viewpager attached at the
- * {@link AdministrationFragment} fragment.
+ * {@link Administration} fragment.
  *
  *
  * @author Martín Mateos Sánchez
@@ -26,11 +26,11 @@ public class AdministrationFragmentTeacherAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 1:
-                return new AdministrationFragment_Petitions();
+                return new Petitions();
             case 2:
-                return new AdministrationFragment_Dates();
+                return new Dates();
             default:
-                return new AdministrationFragment_Courses();
+                return new Courses();
         }
     }
 

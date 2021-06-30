@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments;
+package com.elcazadordebaterias.coordinapp.fragments.groups;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,10 +11,10 @@ import com.elcazadordebaterias.coordinapp.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link GroupsFragment_SingleChat#newInstance} factory method to
+ * Use the {@link SingleChat#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GroupsFragment_SingleChat extends Fragment {
+public class SingleChat extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,7 +25,7 @@ public class GroupsFragment_SingleChat extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public GroupsFragment_SingleChat() {
+    public SingleChat() {
         // Required empty public constructor
     }
 
@@ -38,8 +38,8 @@ public class GroupsFragment_SingleChat extends Fragment {
      * @return A new instance of fragment GroupsFragment_Teacher_SingleChat.
      */
     // TODO: Rename and change types and number of parameters
-    public static GroupsFragment_SingleChat newInstance(String param1, String param2) {
-        GroupsFragment_SingleChat fragment = new GroupsFragment_SingleChat();
+    public static SingleChat newInstance(String param1, String param2) {
+        SingleChat fragment = new SingleChat();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

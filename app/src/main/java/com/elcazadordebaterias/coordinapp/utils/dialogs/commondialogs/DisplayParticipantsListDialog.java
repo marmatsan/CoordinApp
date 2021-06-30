@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.utils.dialogs;
+package com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -14,7 +14,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.listviews.PendingParticipantsListAdapter;
-import com.elcazadordebaterias.coordinapp.utils.PetitionGroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionGroupParticipant;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 

@@ -4,19 +4,24 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_GroupalChat;
-import com.elcazadordebaterias.coordinapp.fragments.GroupsFragment_SingleChat;
+import com.elcazadordebaterias.coordinapp.fragments.groups.Groups;
+import com.elcazadordebaterias.coordinapp.fragments.groups.GroupalChat;
+import com.elcazadordebaterias.coordinapp.fragments.groups.SingleChat;
 
 /**
  * Adapter to handle the pages of the viewpager attached at the
- * {@link com.elcazadordebaterias.coordinapp.fragments.GroupsFragment} fragment.
+ * {@link Groups} fragment.
  *
  *
  * @author Martín Mateos Sánchez
  */
 public class GroupsFragmentAdapter extends FragmentStateAdapter {
-    public GroupsFragmentAdapter(Fragment fragment) {
+
+    private final int userType;
+
+    public GroupsFragmentAdapter(Fragment fragment, int userType) {
         super(fragment);
+        this.userType = userType;
     }
 
     @NonNull
@@ -24,9 +29,9 @@ public class GroupsFragmentAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 1:
-                return new GroupsFragment_SingleChat();
+                return new SingleChat();
             default:
-                return new GroupsFragment_GroupalChat();
+                return new GroupalChat(userType);
         }
     }
 

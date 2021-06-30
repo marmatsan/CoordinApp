@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.CreateGroupItem;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.CreateGroupItem;
 
 import java.util.ArrayList;
 

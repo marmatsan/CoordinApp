@@ -1,4 +1,6 @@
-package com.elcazadordebaterias.coordinapp.utils;
+package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
+
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
 
 import java.util.ArrayList;
 
@@ -12,7 +14,7 @@ public class Group {
 
     private String coordinatorId; // The id of the teacher that created the group
     private String coordinatorName; // The name of the teacher that created the group
-    private String groupName;     // The name of this group. Do not confuse with the name of the course
+    private String courseName;     // The name of this group
     private String subjectName;
 
     private ArrayList<String> participantsIds;
@@ -22,10 +24,10 @@ public class Group {
 
     }
 
-    public Group(String coordinatorId, String coordinatorName, String groupName, String subjectName, ArrayList<String> participantsIds, ArrayList<GroupParticipant> participants){
+    public Group(String coordinatorId, String coordinatorName, String courseName, String subjectName, ArrayList<String> participantsIds, ArrayList<GroupParticipant> participants){
         this.coordinatorId = coordinatorId;
         this.coordinatorName = coordinatorName;
-        this.groupName = groupName;
+        this.courseName = courseName;
         this.subjectName = subjectName;
         this.participantsIds = participantsIds;
         this.participants = participants;
@@ -39,8 +41,8 @@ public class Group {
         return coordinatorName;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public String getCourseName() {
+        return courseName;
     }
 
     public String getSubjectName() {

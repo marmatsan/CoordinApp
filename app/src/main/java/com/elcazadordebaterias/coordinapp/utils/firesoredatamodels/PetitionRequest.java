@@ -1,7 +1,11 @@
-package com.elcazadordebaterias.coordinapp.utils;
+package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a petition request in firestore
+ *
+ */
 public class PetitionRequest {
 
     private String course;

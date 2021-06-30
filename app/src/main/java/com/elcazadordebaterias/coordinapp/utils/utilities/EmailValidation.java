@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.utils;
+package com.elcazadordebaterias.coordinapp.utils.utilities;
 
 /**
  * Class which single method is used to check if the format of the email given as input is valid.

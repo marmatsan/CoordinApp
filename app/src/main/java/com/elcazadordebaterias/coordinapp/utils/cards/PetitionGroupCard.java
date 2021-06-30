@@ -1,7 +1,7 @@
 package com.elcazadordebaterias.coordinapp.utils.cards;
 
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.PetitionGroupCardAdapter;
-import com.elcazadordebaterias.coordinapp.utils.PetitionGroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionGroupParticipant;
 
 import java.util.ArrayList;
 
