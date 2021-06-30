@@ -30,6 +30,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,14 +44,12 @@ public class GroupalChat extends Fragment {
     private FirebaseAuth fAuth;
 
     private ArrayList<CourseCard> coursesList;
-    private ArrayList<CourseSubjectCard> subjectsList;
     private ArrayList<GroupCard> groupsList;
-
     private CourseCardAdapter coursesAdapter;
 
     private int userType;
 
-    public GroupalChat(int userType){
+    public GroupalChat(int userType) {
         this.userType = userType;
     }
 
@@ -61,7 +61,6 @@ public class GroupalChat extends Fragment {
         fAuth = FirebaseAuth.getInstance();
 
         coursesList = new ArrayList<CourseCard>();
-        subjectsList = new ArrayList<CourseSubjectCard>();
         groupsList = new ArrayList<GroupCard>();
 
         coursesAdapter = new CourseCardAdapter(coursesList, getContext());
@@ -79,11 +78,14 @@ public class GroupalChat extends Fragment {
         recyclerviewGroups.setAdapter(coursesAdapter);
         recyclerviewGroups.setLayoutManager(layoutManager);
 
-        if(userType == UserType.TYPE_STUDENT) {
-            fStore.collectionGroup("Groups").whereArrayContains("participantsIds", fAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        if (userType == UserType.TYPE_STUDENT) {
+            fStore.collectionGroup("Groups").whereArrayContains("participantsIds", fAuth.getUid())
+                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                 @Override
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                     populateGroups(queryDocumentSnapshots);
+                    Map<String, ArrayList<GroupCard>> shortedByCourseName = shortByCourseName();
+
                 }
             });
         } else if (userType == UserType.TYPE_TEACHER) {
@@ -92,7 +94,7 @@ public class GroupalChat extends Fragment {
         return view;
     }
 
-    private void populateGroups(QuerySnapshot queryDocumentSnapshots){
+    private void populateGroups(QuerySnapshot queryDocumentSnapshots) {
         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
             Group group = document.toObject(Group.class);
             ArrayList<String> participantNames = new ArrayList<String>();
@@ -102,12 +104,61 @@ public class GroupalChat extends Fragment {
             }
 
             groupsList.add(new GroupCard(document.getId(), group.getCourseName(), group.getSubjectName(), participantNames));
-
         }
     }
 
-    private void shortGroups(){
+    /**
+     * Returns a map whose key is the name of the course and whose value is an arraylist of groupcards
+     * belonging to the same course.
+     *
+     * @return
+     */
+    private Map<String, ArrayList<GroupCard>> shortByCourseName() {
+        Map<String, ArrayList<GroupCard>> map = new HashMap<String, ArrayList<GroupCard>>();
 
+        for (GroupCard groupCard : groupsList) {
+            ArrayList<GroupCard> list = map.get(groupCard.getCourseName());
+            if (list == null) {
+                list = new ArrayList<GroupCard>();
+                map.put(groupCard.getCourseName(), list);
+            }
+            list.add(groupCard);
+        }
+
+        return map;
+    }
+
+    /**
+     * Returns a map whose key is the name of the course and whose value is another map whose key is the name
+     * of the subject and whose value is an arraylist of groupcards belonging to the same subject.
+     *
+     * @param data
+     * @return
+     */
+    private Map<String, Map<String, ArrayList<GroupCard>>> shortBySubjectName(Map<String, ArrayList<GroupCard>> data) {
+        Map<String, Map<String, ArrayList<GroupCard>>> map = new HashMap<String, Map<String, ArrayList<GroupCard>>>();
+
+        for (Map.Entry<String, ArrayList<GroupCard>> entry : data.entrySet()) {
+            Map<String, ArrayList<GroupCard>> subjectsMap = new HashMap<String, ArrayList<GroupCard>>();
+
+            for (GroupCard group : entry.getValue()) {
+                ArrayList<GroupCard> list = subjectsMap.get(group.getSubjectName());
+                if (list == null) {
+                    list = new ArrayList<GroupCard>();
+                    subjectsMap.put(group.getSubjectName(), list);
+                }
+                list.add(group);
+            }
+            map.put(entry.getKey(), subjectsMap);
+        }
+
+        return map;
+    }
+
+    private void populateCourses(Map<String, Map<String, ArrayList<GroupCard>>> data) {
+        for (Map.Entry<String, Map<String, ArrayList<GroupCard>>> entry : data.entrySet()) {
+
+        }
     }
 
 }
