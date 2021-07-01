@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
@@ -18,11 +19,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -45,6 +51,10 @@ public class ChatActivity extends AppCompatActivity {
     EditText messageInput;
     MaterialButton sendMessage;
 
+    private String course;
+    private String subject;
+    private String groupId;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +62,6 @@ public class ChatActivity extends AppCompatActivity {
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
-
 
         // Views
         messageInput = findViewById(R.id.messageInput);
@@ -62,6 +71,18 @@ public class ChatActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String cardAsString = getIntent().getStringExtra("cardAsString");
         GroupCard card = gson.fromJson(cardAsString, GroupCard.class);
+
+        // Initialize vital variables
+        course = card.getCourseName();
+        subject = card.getSubjectName();
+        groupId = card.getGroupId();
+
+        // Reference to the collection of the messages
+        CollectionReference chatroomRef = fStore
+                .collection("CoursesOrganization").document(course)
+                .collection("Subjects").document(subject)
+                .collection("Groups").document(groupId)
+                .collection("ChatRoom");
 
         // Recyclerview setup
         RecyclerView messageListContainer = findViewById(R.id.messageListContainer);
@@ -75,20 +96,36 @@ public class ChatActivity extends AppCompatActivity {
         messageListContainer.setLayoutManager(layoutManager);
 
         // Initialize message list
-        fStore.collection("CoursesOrganization").document(card.getCourseName())
-                .collection("Subjects").document(card.getSubjectName())
-                .collection("Groups").document(card.getGroupId())
-                .collection("ChatRoom")
-                .orderBy("date", Query.Direction.ASCENDING)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            messageList.add(document.toObject(ChatMessageCard.class));
-                        }
-                        messageAdapter.notifyDataSetChanged();
+        /*
+        chatroomRef.orderBy("date", Query.Direction.ASCENDING).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        messageList.add(document.toObject(ChatMessageCard.class));
                     }
+                    messageAdapter.notifyDataSetChanged();
                 });
+         */
+
+        // Listen for new messages
+        chatroomRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot queryDocumentSnapshots,
+                                @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+
+                if(error != null){
+                    return;
+                } else if (queryDocumentSnapshots == null){
+                    return;
+                }
+
+                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+                    if (dc.getType() == DocumentChange.Type.ADDED) {
+                        messageList.add(dc.getDocument().toObject(ChatMessageCard.class));
+                    }
+                }
+                messageAdapter.notifyDataSetChanged();
+            }
+        });
 
         // Setup for send message button
         sendMessage.setOnClickListener(v -> {
