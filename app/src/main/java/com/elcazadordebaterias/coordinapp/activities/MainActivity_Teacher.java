@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
-import com.elcazadordebaterias.coordinapp.fragments.groups.Groups;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Groups;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,7 +39,7 @@ public class MainActivity_Teacher extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
-        // Top App Bar management
+        // Toolbar
         Toolbar toolbar = findViewById(R.id.topAppBar);
 
         fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> { // TODO: Maybe setting the title in asynchronous way may lead to error

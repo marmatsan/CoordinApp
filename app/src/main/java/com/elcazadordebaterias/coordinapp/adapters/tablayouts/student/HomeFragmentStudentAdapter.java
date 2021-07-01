@@ -7,6 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.elcazadordebaterias.coordinapp.fragments.student.home.Home;
 import com.elcazadordebaterias.coordinapp.fragments.student.home.Courses;
 import com.elcazadordebaterias.coordinapp.fragments.student.home.Petitions;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 
 /**
  * Adapter to handle the pages of the viewpager attached at the

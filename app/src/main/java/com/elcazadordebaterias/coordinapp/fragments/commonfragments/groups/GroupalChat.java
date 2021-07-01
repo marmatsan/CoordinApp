@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.groups;
+package com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -83,13 +83,17 @@ public class GroupalChat extends Fragment {
                     .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                 @Override
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    populateGroups(queryDocumentSnapshots);
-                    Map<String, ArrayList<GroupCard>> shortedByCourseName = shortByCourseName();
-
+                    coursesListSetup(queryDocumentSnapshots);
                 }
             });
         } else if (userType == UserType.TYPE_TEACHER) {
-
+            fStore.collectionGroup("Groups").whereEqualTo("coordinatorId", fAuth.getUid())
+                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    coursesListSetup(queryDocumentSnapshots);
+                }
+            });
         }
         return view;
     }
@@ -156,9 +160,25 @@ public class GroupalChat extends Fragment {
     }
 
     private void populateCourses(Map<String, Map<String, ArrayList<GroupCard>>> data) {
-        for (Map.Entry<String, Map<String, ArrayList<GroupCard>>> entry : data.entrySet()) {
+        for (Map.Entry<String, Map<String, ArrayList<GroupCard>>> courseEntry : data.entrySet()) {
 
+            ArrayList<CourseSubjectCard> subjectsList = new ArrayList<CourseSubjectCard>();
+            CourseCard courseCard = new CourseCard(courseEntry.getKey(), subjectsList);
+
+            for(Map.Entry<String, ArrayList<GroupCard>> subjectEntry : courseEntry.getValue().entrySet()){
+                subjectsList.add(new CourseSubjectCard(subjectEntry.getKey(), subjectEntry.getValue()));
+            }
+
+            coursesList.add(courseCard);
         }
+        coursesAdapter.notifyDataSetChanged();
+    }
+
+    private void coursesListSetup(QuerySnapshot queryDocumentSnapshots){
+        populateGroups(queryDocumentSnapshots);
+        Map<String, ArrayList<GroupCard>> shortedByCourseName = shortByCourseName();
+        Map<String, Map<String, ArrayList<GroupCard>>> shortedBySubjectName = shortBySubjectName(shortedByCourseName);
+        populateCourses(shortedBySubjectName);
     }
 
 }

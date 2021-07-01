@@ -4,9 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.elcazadordebaterias.coordinapp.fragments.groups.Groups;
-import com.elcazadordebaterias.coordinapp.fragments.groups.GroupalChat;
-import com.elcazadordebaterias.coordinapp.fragments.groups.SingleChat;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Groups;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.GroupalChat;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.SingleChat;
 
 /**
  * Adapter to handle the pages of the viewpager attached at the

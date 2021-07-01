@@ -5,6 +5,7 @@ import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,12 +13,15 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.MessagesListAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
 
@@ -34,14 +38,12 @@ import java.util.ArrayList;
  */
 public class ChatActivity extends AppCompatActivity {
 
+    // Firestore
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
     EditText messageInput;
     MaterialButton sendMessage;
-
-    ArrayList<ChatMessageCard> messageList;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +52,7 @@ public class ChatActivity extends AppCompatActivity {
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
+
 
         // Views
         messageInput = findViewById(R.id.messageInput);
@@ -71,8 +74,23 @@ public class ChatActivity extends AppCompatActivity {
         messageListContainer.setAdapter(messageAdapter);
         messageListContainer.setLayoutManager(layoutManager);
 
-        // Setup for send message button
+        // Initialize message list
+        fStore.collection("CoursesOrganization").document(card.getCourseName())
+                .collection("Subjects").document(card.getSubjectName())
+                .collection("Groups").document(card.getGroupId())
+                .collection("ChatRoom")
+                .orderBy("date", Query.Direction.ASCENDING)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            messageList.add(document.toObject(ChatMessageCard.class));
+                        }
+                        messageAdapter.notifyDataSetChanged();
+                    }
+                });
 
+        // Setup for send message button
         sendMessage.setOnClickListener(v -> {
             if(!messageInput.getText().toString().isEmpty()){
                 fStore.collection("Students").document(fAuth.getUid()).get().addOnCompleteListener(task -> {
@@ -95,25 +113,10 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        // Initialize message list
-        fStore.collection("CoursesOrganization").document(card.getCourseName())
-                .collection("Subjects").document(card.getSubjectName())
-                .collection("Groups").document(card.getGroupId())
-                .collection("ChatRoom")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            messageList.add(document.toObject(ChatMessageCard.class));
-                        }
-                        messageAdapter.notifyDataSetChanged();
-                    }
-                });
-
     }
 
     private void sendMessage(GroupCard card, String fullName, String text, String uid) {
-        ChatMessageCard message = new ChatMessageCard(fullName, uid, text);
+        ChatMessageCard message = new ChatMessageCard(fullName, uid, text, Timestamp.now().toDate());
 
         fStore.collection("CoursesOrganization").document(card.getCourseName())
                 .collection("Subjects").document(card.getSubjectName())

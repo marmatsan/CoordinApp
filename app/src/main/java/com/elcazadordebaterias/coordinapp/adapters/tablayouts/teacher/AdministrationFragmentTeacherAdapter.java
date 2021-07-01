@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Courses;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Dates;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Petitions;
 
@@ -17,6 +17,7 @@ import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Petit
  * @author Martín Mateos Sánchez
  */
 public class AdministrationFragmentTeacherAdapter extends FragmentStateAdapter {
+
     public AdministrationFragmentTeacherAdapter(Fragment fragment) {
         super(fragment);
     }

@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.groups;
+package com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

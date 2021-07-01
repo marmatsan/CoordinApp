@@ -35,6 +35,7 @@ public class Courses extends Fragment {
     FirebaseFirestore fStore;
     ArrayList<CourseCard> coursesList;
     CourseCardAdapter courseCardAdapter;
+    private CourseSubjectCard courseSubject;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,18 +50,18 @@ public class Courses extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_administration_teacher_courses, container, false);
+        View view = inflater.inflate(R.layout.fragment_administration_teacher_courses, container, false);
 
-        RecyclerView ParentRecyclerViewItem = v.findViewById(R.id.recyclerview_courses);
+        RecyclerView ParentRecyclerViewItem = view.findViewById(R.id.recyclerview_courses);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
         ParentRecyclerViewItem.setAdapter(courseCardAdapter);
         ParentRecyclerViewItem.setLayoutManager(layoutManager);
-        
+
         createCoursesList();
 
-        return v;
+        return view;
     }
 
     private void createCoursesList() {

@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
-import com.elcazadordebaterias.coordinapp.fragments.groups.Groups;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Groups;
 import com.elcazadordebaterias.coordinapp.fragments.student.home.Home;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -43,7 +43,7 @@ public class MainActivity_Student extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.setSelectedItemId(R.id.nav_student_home);
 
-        // Top App Bar management
+        // Toolbar
         Toolbar toolbar = findViewById(R.id.topAppBar);
 
         fStore.collection("Students").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> { // TODO: Maybe setting the title in asynchronous way may lead to error
