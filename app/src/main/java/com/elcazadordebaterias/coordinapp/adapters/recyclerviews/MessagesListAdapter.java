@@ -16,6 +16,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter to be used by chatactivity to manage the messages
+ *
+ */
 public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapter.MessageListViewHolder> {
 
     private static final int MESSAGE_LEFT = 0;

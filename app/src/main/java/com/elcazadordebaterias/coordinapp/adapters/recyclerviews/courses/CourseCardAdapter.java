@@ -16,6 +16,7 @@ import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseSubjectCard;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,9 +29,9 @@ public class CourseCardAdapter extends RecyclerView.Adapter<CourseCardAdapter.Co
 
     private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
     private SparseBooleanArray expandState = new SparseBooleanArray();
-    private List<CourseCard> mCoursesList;
+    private ArrayList<CourseCard> mCoursesList;
 
-    public CourseCardAdapter(List<CourseCard> coursesList) {
+    public CourseCardAdapter(ArrayList<CourseCard> coursesList) {
         this.mCoursesList = coursesList;
         for (int i = 0; i < coursesList.size(); i++) {
             expandState.append(i, false);

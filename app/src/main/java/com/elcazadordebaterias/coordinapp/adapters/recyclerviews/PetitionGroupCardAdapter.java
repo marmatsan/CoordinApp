@@ -66,6 +66,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         } else {
             holder.requesterName.setText(petitionCard.getRequesterName());
         }
+
         holder.courseName.setText(petitionCard.getCourseSubject());
 
         holder.acceptRequest.setOnClickListener(v -> {

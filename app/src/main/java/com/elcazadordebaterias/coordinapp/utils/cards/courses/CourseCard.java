@@ -2,6 +2,7 @@ package com.elcazadordebaterias.coordinapp.utils.cards.courses;
 
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.courses.CourseCardAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,23 +15,22 @@ import java.util.List;
  * @see CourseCardAdapter
  * @author Martín Mateos Sánchez
  */
-
 public class CourseCard {
 
-    private String mCourseName;
-    private List<CourseSubjectCard> mSubjectList;
+    private String courseName;
+    private ArrayList<CourseSubjectCard> subjectList;
 
-    public CourseCard(String courseName, List<CourseSubjectCard> subjectList) {
-        this.mCourseName = courseName;
-        this.mSubjectList = subjectList;
+    public CourseCard(String courseName, ArrayList<CourseSubjectCard> subjectList) {
+        this.courseName = courseName;
+        this.subjectList = subjectList;
     }
 
     public String getCourseName() {
-        return mCourseName;
+        return courseName;
     }
 
-    public List<CourseSubjectCard> getSubjectList() {
-        return mSubjectList;
+    public ArrayList<CourseSubjectCard> getSubjectList() {
+        return subjectList;
     }
 
 }

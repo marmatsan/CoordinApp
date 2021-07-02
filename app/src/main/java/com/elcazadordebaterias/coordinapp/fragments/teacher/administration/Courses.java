@@ -35,7 +35,6 @@ public class Courses extends Fragment {
     FirebaseFirestore fStore;
     ArrayList<CourseCard> coursesList;
     CourseCardAdapter courseCardAdapter;
-    private CourseSubjectCard courseSubject;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +68,7 @@ public class Courses extends Fragment {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot courseDocument : task.getResult()) { // For each course that the student has at least one subject
 
-                    List<CourseSubjectCard> courseSubjectList = new ArrayList<>();  // List with the information of the subjects
+                    ArrayList<CourseSubjectCard> courseSubjectList = new ArrayList<>();  // List with the information of the subjects
 
                     CourseCard course = new CourseCard(courseDocument.getId(), courseSubjectList);
                     coursesList.add(course);
@@ -84,7 +83,7 @@ public class Courses extends Fragment {
                                         Subject subject = subjectDocument.toObject(Subject.class);
 
                                         ArrayList<String> studentsIDs = subject.getStudentIDs();
-                                        List<CourseParticipantCard> courseParticipantList = new ArrayList<>();
+                                        ArrayList<CourseParticipantCard> courseParticipantList = new ArrayList<>();
 
                                         CourseSubjectCard courseSubject = new CourseSubjectCard(subject.getSubjectName(), courseParticipantList);
                                         courseSubjectList.add(courseSubject);
