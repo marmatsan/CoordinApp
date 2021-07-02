@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ListPopupWindow;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,7 @@ import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateAutomaticDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.CreateGroupDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,12 +40,19 @@ public class Groups extends Fragment {
     FirebaseFirestore fStore;
     FirebaseAuth fAuth;
 
+    // Animations for the buttons
+    Animation rotateOpen = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim);
+    Animation rotateClose = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim);
+    Animation fromBotton = AnimationUtils.loadAnimation(getContext(), R.anim.from_botton_anim);
+    Animation toBottom = AnimationUtils.loadAnimation(getContext(), R.anim.to_bottom_anim);
+
     // Views
     private TabLayout tablayout;
     private ViewPager2 viewpager;
-    private MaterialButton createGroup;
 
-    private ListPopupWindow listPopupWindow;
+    private FloatingActionButton createGroup;
+    private FloatingActionButton createGroupDialog;
+    private FloatingActionButton createAutomaticDialog;
 
     // Adapters
     private ListPopupWindowAdapter popupWindowAdapter;
@@ -69,38 +79,12 @@ public class Groups extends Fragment {
 
         createGroup = view.findViewById(R.id.createGroup);
 
-        if (userType == UserType.TYPE_TEACHER) {
-
-            // PopupWindow configuration
-            ArrayList<CreateGroupItem> createGroupMenu = new ArrayList<CreateGroupItem>();
-            createGroupMenu.add(new CreateGroupItem(R.drawable.people, "Crear un grupo seleccionando los participantes"));
-            createGroupMenu.add(new CreateGroupItem(R.drawable.usersfolder, "Crear un conjunto de grupos de forma aleatoria"));
-
-            popupWindowAdapter = new ListPopupWindowAdapter(getContext(), createGroupMenu);
-
-            listPopupWindow = new ListPopupWindow(getContext());
-            listPopupWindow.setWidth(1000);
-
-            listPopupWindow.setOnItemClickListener((parent, view1, position, id) -> {
-                if (position == 0) {
-                    CreateGroupDialog dialog = new CreateGroupDialog(userType);
-                    dialog.show(getFragmentManager(), "dialog");
-                } else {
-                    CreateAutomaticDialog dialog = new CreateAutomaticDialog();
-                    dialog.show(getFragmentManager(), "dialog");
-                }
-            });
-
-            listPopupWindow.setAnchorView(createGroup);
-            listPopupWindow.setAdapter(popupWindowAdapter);
-            listPopupWindow.setModal(true);
-
-            // CreateGroup button configuration
+        if (userType == UserType.TYPE_STUDENT) {
             createGroup.setOnClickListener(v -> {
-                listPopupWindow.show();
+                CreateGroupDialog dialog = new CreateGroupDialog(userType);
+                dialog.show(getFragmentManager(), "dialog");
             });
-
-        } else if (userType == UserType.TYPE_STUDENT) {
+        } else if (userType == UserType.TYPE_TEACHER) {
             createGroup.setOnClickListener(v -> {
                 CreateGroupDialog dialog = new CreateGroupDialog(userType);
                 dialog.show(getFragmentManager(), "dialog");
