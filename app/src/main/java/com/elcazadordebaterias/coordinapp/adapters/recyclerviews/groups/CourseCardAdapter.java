@@ -32,10 +32,12 @@ public class CourseCardAdapter extends RecyclerView.Adapter<CourseCardAdapter.Co
     private SparseBooleanArray expandState = new SparseBooleanArray();
     private ArrayList<CourseCard> coursesList;
     private Context context;
+    private final int userType;
 
-    public CourseCardAdapter(ArrayList<CourseCard> coursesList, Context context) {
+    public CourseCardAdapter(ArrayList<CourseCard> coursesList, Context context, int userType) {
         this.coursesList = coursesList;
         this.context = context;
+        this.userType = userType;
 
         for (int i = 0; i < coursesList.size(); i++) {
             expandState.append(i, false);
@@ -60,7 +62,7 @@ public class CourseCardAdapter extends RecyclerView.Adapter<CourseCardAdapter.Co
         LinearLayoutManager layoutManager = new LinearLayoutManager(viewHolder.subjectsRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
 
         layoutManager.setInitialPrefetchItemCount(course.getSubjectList().size());
-        CourseSubjectAdapter courseSubjectAdapter = new CourseSubjectAdapter(course.getSubjectList(), context);
+        CourseSubjectAdapter courseSubjectAdapter = new CourseSubjectAdapter(course.getSubjectList(), context, userType);
 
         viewHolder.subjectsRecyclerView.setLayoutManager(layoutManager);
             viewHolder.subjectsRecyclerView.setAdapter(courseSubjectAdapter);

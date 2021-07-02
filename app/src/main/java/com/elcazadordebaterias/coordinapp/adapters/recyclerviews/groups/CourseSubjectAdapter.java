@@ -35,10 +35,12 @@ public class CourseSubjectAdapter extends RecyclerView.Adapter<CourseSubjectAdap
     private SparseBooleanArray expandState = new SparseBooleanArray();
     private ArrayList<CourseSubjectCard> mCourseSubjectsList;
     private Context context;
+    private final int userType;
 
-    public CourseSubjectAdapter(ArrayList<CourseSubjectCard> courseSubjectList, Context context) {
+    public CourseSubjectAdapter(ArrayList<CourseSubjectCard> courseSubjectList, Context context, int userType) {
         this.mCourseSubjectsList = courseSubjectList;
         this.context = context;
+        this.userType = userType;
 
         for (int i = 0; i < courseSubjectList.size(); i++) {
             expandState.append(i, false);
@@ -64,12 +66,13 @@ public class CourseSubjectAdapter extends RecyclerView.Adapter<CourseSubjectAdap
 
         layoutManager.setInitialPrefetchItemCount(courseSubject.getGroupsList().size());
 
-        GroupCardAdapter groupCardAdapter = new GroupCardAdapter(courseSubject.getGroupsList(), context);
+        GroupCardAdapter groupCardAdapter = new GroupCardAdapter(courseSubject.getGroupsList(), context, userType);
 
         groupCardAdapter.setOnItemClickListener(position1 -> {
             GroupCard card = courseSubject.getGroupsList().get(position1);
             Intent intent = new Intent(context, ChatActivity.class);
 
+            // Convert the GroupCard to JSON to send it to ChatActivity
             Gson gson = new Gson();
             String cardAsString = gson.toJson(card);
             intent.putExtra("cardAsString", cardAsString);
@@ -82,6 +85,7 @@ public class CourseSubjectAdapter extends RecyclerView.Adapter<CourseSubjectAdap
         viewHolder.participantsRecyclerView.setRecycledViewPool(viewPool);
 
         final boolean isExpanded = expandState.get(position); //Check if the view is expanded
+
         viewHolder.expandableView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
 
         viewHolder.expandableParticipantsButton.setOnClickListener(view -> {

@@ -63,7 +63,7 @@ public class GroupalChat extends Fragment {
         coursesList = new ArrayList<CourseCard>();
         groupsList = new ArrayList<GroupCard>();
 
-        coursesAdapter = new CourseCardAdapter(coursesList, getContext());
+        coursesAdapter = new CourseCardAdapter(coursesList, getContext(), userType);
 
     }
 

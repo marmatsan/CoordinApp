@@ -4,10 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Courses;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.courses.Courses;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Dates;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Petitions;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 
 /**
  * Adapter to handle the pages of the viewpager attached at the
@@ -31,7 +32,7 @@ public class AdministrationFragmentTeacherAdapter extends FragmentStateAdapter {
             case 2:
                 return new Dates();
             default:
-                return new Courses();
+                return new Courses(UserType.TYPE_TEACHER);
         }
     }
 

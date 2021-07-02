@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.elcazadordebaterias.coordinapp.fragments.student.home.Home;
-import com.elcazadordebaterias.coordinapp.fragments.student.home.Courses;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.courses.Courses;
 import com.elcazadordebaterias.coordinapp.fragments.student.home.Petitions;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 
@@ -29,7 +29,7 @@ public class HomeFragmentStudentAdapter extends FragmentStateAdapter {
             case 1:
                 return new Petitions();
             default:
-                return new Courses();
+                return new Courses(UserType.TYPE_STUDENT);
         }
     }
 

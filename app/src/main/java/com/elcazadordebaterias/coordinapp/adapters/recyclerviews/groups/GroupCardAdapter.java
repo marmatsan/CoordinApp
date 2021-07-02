@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,10 +40,12 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
     FirebaseFirestore fStore;
 
     private OnItemClickListener listener;
+    private final int userType;
 
-    public GroupCardAdapter(ArrayList<GroupCard> groupsList, Context context){
+    public GroupCardAdapter(ArrayList<GroupCard> groupsList, Context context, int userType){
         this.groupsList = groupsList;
         this.context = context;
+        this.userType = userType;
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -61,6 +64,11 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
 
         holder.courseName.setText(group.getCourseName());
         holder.subjectName.setText(group.getSubjectName());
+
+        // A student can't have permits to delete a group
+        if (userType == UserType.TYPE_STUDENT) {
+            holder.deleteGroup.setVisibility(View.GONE);
+        }
 
         holder.showParticipants.setOnClickListener(v -> {
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
