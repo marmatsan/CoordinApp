@@ -1,12 +1,12 @@
 package com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups;
 
 import android.os.Bundle;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ListPopupWindow;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,20 +14,17 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.listpopupwindows.ListPopupWindowAdapter;
 import com.elcazadordebaterias.coordinapp.adapters.tablayouts.GroupsFragmentAdapter;
-import com.elcazadordebaterias.coordinapp.utils.customdatamodels.CreateGroupItem;
+
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateAutomaticDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.CreateGroupDialog;
-import com.google.android.material.button.MaterialButton;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateAutomaticDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
 
 /**
  * The fragment representing the Groups/Chat Tab of the teacher.
@@ -41,27 +38,28 @@ public class Groups extends Fragment {
     FirebaseAuth fAuth;
 
     // Animations for the buttons
-    Animation rotateOpen = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim);
-    Animation rotateClose = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim);
-    Animation fromBotton = AnimationUtils.loadAnimation(getContext(), R.anim.from_botton_anim);
-    Animation toBottom = AnimationUtils.loadAnimation(getContext(), R.anim.to_bottom_anim);
+    Animation rotateOpen;
+    Animation rotateClose;
+    Animation fromBottom;
+    Animation toBottom;
 
     // Views
     private TabLayout tablayout;
     private ViewPager2 viewpager;
 
     private FloatingActionButton createGroup;
-    private FloatingActionButton createGroupDialog;
-    private FloatingActionButton createAutomaticDialog;
+    private FloatingActionButton createAutomaticGroup;
+    private FloatingActionButton createManualGroup;
 
-    // Adapters
-    private ListPopupWindowAdapter popupWindowAdapter;
+    // Adapter
     private GroupsFragmentAdapter optionsAdapter;
 
     private final int userType;
+    private boolean clicked;
 
     public Groups(int userType) {
         this.userType = userType;
+        clicked = false;
     }
 
     @Override
@@ -70,6 +68,11 @@ public class Groups extends Fragment {
 
         fStore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
+
+        rotateOpen = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim);
+        rotateClose = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim);
+        fromBottom = AnimationUtils.loadAnimation(getContext(), R.anim.from_botton_anim);
+        toBottom = AnimationUtils.loadAnimation(getContext(), R.anim.to_bottom_anim);
     }
 
     @Override
@@ -78,6 +81,9 @@ public class Groups extends Fragment {
         View view = inflater.inflate(R.layout.fragment_groups, container, false);
 
         createGroup = view.findViewById(R.id.createGroup);
+        createAutomaticGroup = view.findViewById(R.id.createAutomaticGroup);
+        createManualGroup = view.findViewById(R.id.createManualGroup);
+
 
         if (userType == UserType.TYPE_STUDENT) {
             createGroup.setOnClickListener(v -> {
@@ -86,10 +92,19 @@ public class Groups extends Fragment {
             });
         } else if (userType == UserType.TYPE_TEACHER) {
             createGroup.setOnClickListener(v -> {
-                CreateGroupDialog dialog = new CreateGroupDialog(userType);
-                dialog.show(getFragmentManager(), "dialog");
+                onAddButtonClicked();
             });
         }
+
+        createManualGroup.setOnClickListener(v -> {
+            CreateGroupDialog dialog = new CreateGroupDialog(userType);
+            dialog.show(getFragmentManager(), "dialog");
+        });
+
+        createAutomaticGroup.setOnClickListener(v -> {
+            CreateAutomaticDialog dialog = new CreateAutomaticDialog();
+            dialog.show(getFragmentManager(), "dialog");
+        });
 
         return view;
     }
@@ -116,6 +131,34 @@ public class Groups extends Fragment {
                     break;
             }
         }).attach();
+    }
+
+    private void onAddButtonClicked(){
+        setVisibility(clicked);
+        setAnimation(clicked);
+        clicked = !clicked;
+    }
+
+    private void setVisibility(boolean clicked){
+        if(!clicked){
+            createAutomaticGroup.setVisibility(View.VISIBLE);
+            createManualGroup.setVisibility(View.VISIBLE);
+        } else {
+            createAutomaticGroup.setVisibility(View.INVISIBLE);
+            createManualGroup.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void setAnimation(boolean clicked){
+        if(!clicked) {
+            createManualGroup.startAnimation(fromBottom);
+            createAutomaticGroup.startAnimation(fromBottom);
+            createGroup.startAnimation(rotateOpen);
+        } else {
+            createManualGroup.startAnimation(toBottom);
+            createAutomaticGroup.startAnimation(toBottom);
+            createGroup.startAnimation(rotateClose);
+        }
     }
 
 }
