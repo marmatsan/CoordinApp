@@ -12,4 +12,8 @@
     <color name="black">#000000</color>
     <color name="lightgray">#E3E2E0</color>
 
+    <color name="green">#76B22B</color>
+    <color name="purple">#6658A1</color>
+    <color name="orange">#F18313</color>
+
 </resources>

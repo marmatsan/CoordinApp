@@ -231,7 +231,8 @@ public class CreateGroupDialog extends DialogFragment {
                         } else {
                             fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(teacherDocument -> {
 
-                                Group group = new Group(fAuth.getUid(),
+                                Group group = new Group(
+                                        fAuth.getUid(),
                                         (String) teacherDocument.get("FullName"),
                                         selectedCourse,
                                         selectedSubject,

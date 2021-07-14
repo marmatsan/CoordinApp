@@ -11,9 +11,7 @@ import android.view.ViewGroup;
 import com.elcazadordebaterias.coordinapp.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link EmptyFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment to fill non implemented fragments
  */
 public class EmptyFragment extends Fragment {
 

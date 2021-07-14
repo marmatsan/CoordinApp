@@ -4,9 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.courses.Courses;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
-import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Dates;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Petitions;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 
@@ -30,7 +30,7 @@ public class AdministrationFragmentTeacherAdapter extends FragmentStateAdapter {
             case 1:
                 return new Petitions();
             case 2:
-                return new Dates();
+                return new EmptyFragment();
             default:
                 return new Courses(UserType.TYPE_TEACHER);
         }

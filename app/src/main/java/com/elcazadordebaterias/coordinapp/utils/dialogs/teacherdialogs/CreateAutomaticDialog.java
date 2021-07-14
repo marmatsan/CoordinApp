@@ -1,7 +1,39 @@
 package com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import com.elcazadordebaterias.coordinapp.R;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Dialog accessible only by the teacher to let the app create a group based on some rules.
@@ -9,8 +41,11 @@ import androidx.fragment.app.DialogFragment;
  * @author Martín Mateos Sánchez
  */
 public class CreateAutomaticDialog extends DialogFragment {
-    /*
+
+    // Spinners
     private Spinner courseSpinner, subjectSpinner, modeSpinner;
+
+    // EditText
     private EditText numberInput;
 
     FirebaseAuth fAuth;
@@ -68,7 +103,10 @@ public class CreateAutomaticDialog extends DialogFragment {
         subjectSpinner.setSelection(0);
 
         // Mode adapter
-        String[] modes = new String[]{"Dividir los grupos en partes iguales"};
+        ArrayList<String> modes = new ArrayList<String>();
+        modes.add("Introducir el número de alumnos por grupo");
+        modes.add("Introducir el número de grupos");
+
         ArrayAdapter<String> modeAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, modes);
 
         subjectListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -154,23 +192,24 @@ public class CreateAutomaticDialog extends DialogFragment {
         fStore.collection("Students").whereIn(FieldPath.documentId(), participantsIds).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                   participants.add(new GroupParticipant((String) document.get("FullName"), false, document.getId()));
+                   participants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
                 }
 
                 fStore.collection("Teachers").document(teacherID).get().addOnSuccessListener(documentSnapshot -> {
                     if(documentSnapshot.exists()){
-                        participants.add(new GroupParticipant((String) documentSnapshot.get("FullName"), true, documentSnapshot.getId()));
+                        participants.add(new GroupParticipant((String) documentSnapshot.get("FullName"), documentSnapshot.getId()));
                         participantsIds.add(teacherID);
 
                         Group group = new Group(
                                 fAuth.getUid(),
+                                (String) documentSnapshot.get("FullName"),
                                 course,
                                 subject,
                                 participantsIds,
                                 participants);
 
                         fStore.collection("CoursesOrganization")
-                                .document(group.getGroupName())
+                                .document(group.getCourseName())
                                 .collection("Subjects")
                                 .document(group.getSubjectName())
                                 .collection("Groups").add(group);
@@ -179,5 +218,4 @@ public class CreateAutomaticDialog extends DialogFragment {
             }
         });
     }
-*/
 }

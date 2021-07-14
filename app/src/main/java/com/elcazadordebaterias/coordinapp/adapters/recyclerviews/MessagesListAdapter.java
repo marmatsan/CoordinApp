@@ -27,7 +27,7 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
 
     private ArrayList<ChatMessageCard> messageList;
 
-    FirebaseAuth fAuth;
+    private FirebaseAuth fAuth;
 
     public MessagesListAdapter(ArrayList<ChatMessageCard> messageList) {
         this.messageList = messageList;

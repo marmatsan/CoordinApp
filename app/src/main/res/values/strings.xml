@@ -110,5 +110,6 @@
     <string name="content_of_the_message">Content of the message</string>
     <string name="test_label">Test label</string>
     <string name="peticion_propia">Petición propia</string>
+    <string name="escribe_algo">Escribe algo</string>
 
 </resources>
