@@ -43,7 +43,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_inputextcard, parent, false);
                 return new InputTextCardViewHolder(view);
             case TYPE_CHOICES:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_inputextcard, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_multichoicescard, parent, false);
                 return new MultiChoiceCardViewHolder(view);
             default: // ReminderCard
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_remindercard, parent, false);
@@ -59,9 +59,25 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
         switch(holder.getItemViewType()){
             case TYPE_INPUTTEXT:
                 InputTextCard textCard = (InputTextCard) card;
-                
+                InputTextCardViewHolder holder1 = (InputTextCardViewHolder) holder;
+
+                holder1.cardTitle.setText(textCard.getCardTitle());
+                textCard.setInputText(holder1.inputText.getText().toString());
+                break;
+
             case TYPE_CHOICES:
-            default:
+                MultichoiceCard choicesCard = (MultichoiceCard) card;
+                MultiChoiceCardViewHolder holder2 = (MultiChoiceCardViewHolder) holder;
+
+                holder2.cardTitle.setText(choicesCard.getCardTitle());
+                break;
+
+            default: // ReminderCard
+                ReminderCard reminderCard = (ReminderCard) card;
+                ReminderCardViewHolder holder3 = (ReminderCardViewHolder) holder;
+
+                holder3.cardTitle.setText(reminderCard.getCardTitle());
+                break;
         }
     }
 
@@ -120,7 +136,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     }
 
-    public static class ReminderCardViewHolder extends RecyclerView.ViewHolder{
+    public static class ReminderCardViewHolder extends CardViewHolder{
 
         TextView reminderContainer;
 
