@@ -17,6 +17,7 @@ import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.Interactivit
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.MultichoiceCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.ReminderCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateInteractivityCardDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,6 +46,13 @@ public class Interactivity extends Fragment {
 
         // newInteractivityCard button
         FloatingActionButton newInteractivityCard = view.findViewById(R.id.newInteractivityCard);
+        newInteractivityCard.setOnClickListener(new View.OnClickListener() { // Create new interactivitycard
+            @Override
+            public void onClick(View v) {
+                CreateInteractivityCardDialog dialog = new CreateInteractivityCardDialog();
+                dialog.show(getParentFragmentManager(), "dialog");
+            }
+        });
 
         if(userType == UserType.TYPE_STUDENT){
             newInteractivityCard.setVisibility(View.GONE);

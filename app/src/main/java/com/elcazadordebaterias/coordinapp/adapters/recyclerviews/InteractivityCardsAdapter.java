@@ -15,6 +15,7 @@ import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.InputTextCar
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.InteractivityCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.MultichoiceCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.ReminderCard;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.jetbrains.annotations.NotNull;
@@ -64,6 +65,12 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
                 holder1.cardTitle.setText(textCard.getCardTitle());
                 textCard.setInputText(holder1.inputText.getText().toString());
+                holder1.sendResponse.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Implement send response
+                    }
+                });
                 break;
 
             case TYPE_CHOICES:
@@ -125,10 +132,12 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
     public static class InputTextCardViewHolder extends CardViewHolder{
 
         TextInputEditText inputText;
+        MaterialButton sendResponse;
 
         public InputTextCardViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             inputText = itemView.findViewById(R.id.inputText);
+            sendResponse = itemView.findViewById(R.id.sendResponse);
         }
 
     }

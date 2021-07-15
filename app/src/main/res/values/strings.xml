@@ -111,5 +111,11 @@
     <string name="test_label">Test label</string>
     <string name="peticion_propia">Petición propia</string>
     <string name="escribe_algo">Escribe algo</string>
+    <string name="enviar">Enviar</string>
+    <string name="ask_for_card">Ask for card</string>
+    <string name="createinputtextcard">CreateInputTextCard</string>
+    <string name="createmultichoicecard">CreateMultichoiceCard</string>
+    <string name="createremindercard">CreateReminderCard</string>
+    <string name="selecciona_el_tipo_de_tarjeta_que_quieres_crear">Selecciona el tipo de tarjeta que quieres crear</string>
 
 </resources>
