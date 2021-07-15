@@ -3,6 +3,7 @@ package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -70,6 +71,12 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 MultiChoiceCardViewHolder holder2 = (MultiChoiceCardViewHolder) holder;
 
                 holder2.cardTitle.setText(choicesCard.getCardTitle());
+
+                for(String question : choicesCard.getQuestions()){
+                    RadioButton button = new RadioButton(holder2.radioGroup.getContext());
+                    button.setText(question);
+                    holder2.radioGroup.addView(button);
+                }
                 break;
 
             default: // ReminderCard
@@ -77,6 +84,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 ReminderCardViewHolder holder3 = (ReminderCardViewHolder) holder;
 
                 holder3.cardTitle.setText(reminderCard.getCardTitle());
+                holder3.reminderContainer.setText(reminderCard.getReminderText());
                 break;
         }
     }

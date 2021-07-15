@@ -55,8 +55,14 @@ public class Interactivity extends Fragment {
 
         ArrayList<InteractivityCard> cardsList = new ArrayList<InteractivityCard>();
         cardsList.add(new InputTextCard("InputTextCard"));
-        cardsList.add(new MultichoiceCard("MulitchoiceCard"));
-        cardsList.add(new ReminderCard("ReminderCard"));
+
+        ArrayList<String> questions = new ArrayList<String>();
+        questions.add("Napoleón");
+        questions.add("Sócrates");
+        questions.add("Benedicto IV");
+
+        cardsList.add(new MultichoiceCard("MulitchoiceCard", questions));
+        cardsList.add(new ReminderCard("ReminderCard", "Recordad que mañana hay examen de geografía e historia a las 11:00 PM"));
 
         InteractivityCardsAdapter adapter = new InteractivityCardsAdapter(cardsList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
