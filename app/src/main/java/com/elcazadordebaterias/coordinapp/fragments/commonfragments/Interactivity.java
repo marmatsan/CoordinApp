@@ -17,7 +17,10 @@ import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.Interactivit
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.MultichoiceCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.ReminderCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateInteractivityCardDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateInputTextCardDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateMultichoiceCardDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateReminderCardDialog;
+import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,9 +29,11 @@ import java.util.ArrayList;
 
 public class Interactivity extends Fragment {
 
+    // Firestore
     private FirebaseFirestore fStore;
     private FirebaseAuth fAuth;
 
+    // User Type
     private final int userType;
 
     public Interactivity(int userType){
@@ -44,18 +49,39 @@ public class Interactivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_interactivity, container, false);
 
-        // newInteractivityCard button
-        FloatingActionButton newInteractivityCard = view.findViewById(R.id.newInteractivityCard);
-        newInteractivityCard.setOnClickListener(new View.OnClickListener() { // Create new interactivitycard
-            @Override
-            public void onClick(View v) {
-                CreateInteractivityCardDialog dialog = new CreateInteractivityCardDialog();
-                dialog.show(getParentFragmentManager(), "dialog");
-            }
+        // Buttons
+        FloatingActionButton createInteractivityCard = view.findViewById(R.id.createInteractivityCard);
+        FloatingActionButton createInputTextCard = view.findViewById(R.id.createInputTextCard);
+        FloatingActionButton createMultichoiceCard = view.findViewById(R.id.createMultichoiceCard);
+        FloatingActionButton createReminderCard = view.findViewById(R.id.createReminderCard);
+
+        ArrayList<FloatingActionButton> buttons = new ArrayList<FloatingActionButton>();
+        buttons.add(createInputTextCard);
+        buttons.add(createMultichoiceCard);
+        buttons.add(createReminderCard);
+
+        ButtonAnimator buttonAnimator = new ButtonAnimator(getContext(), createInteractivityCard, buttons);
+
+        // Buttons listeners
+        createInteractivityCard.setOnClickListener(v -> buttonAnimator.onButtonClicked());
+
+        createInputTextCard.setOnClickListener(v -> {
+            CreateInputTextCardDialog dialog = new CreateInputTextCardDialog();
+            dialog.show(getParentFragmentManager(), "dialog");
+        });
+
+        createMultichoiceCard.setOnClickListener(v -> {
+            CreateMultichoiceCardDialog dialog = new CreateMultichoiceCardDialog();
+            dialog.show(getParentFragmentManager(), "dialog");
+        });
+
+        createReminderCard.setOnClickListener(v -> {
+            CreateReminderCardDialog dialog = new CreateReminderCardDialog();
+            dialog.show(getParentFragmentManager(), "dialog");
         });
 
         if(userType == UserType.TYPE_STUDENT){
-            newInteractivityCard.setVisibility(View.GONE);
+            createInteractivityCard.setVisibility(View.GONE);
         }
 
         // Container for the interactivity cards

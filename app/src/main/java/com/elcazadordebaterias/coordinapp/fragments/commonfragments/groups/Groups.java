@@ -19,12 +19,15 @@ import com.elcazadordebaterias.coordinapp.adapters.tablayouts.GroupsFragmentAdap
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.CreateGroupDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateAutomaticDialog;
+import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 
 /**
  * The fragment representing the Groups/Chat Tab of the teacher.
@@ -37,29 +40,23 @@ public class Groups extends Fragment {
     FirebaseFirestore fStore;
     FirebaseAuth fAuth;
 
-    // Animations for the buttons
-    Animation rotateOpen;
-    Animation rotateClose;
-    Animation fromBottom;
-    Animation toBottom;
-
     // Views
     private TabLayout tablayout;
     private ViewPager2 viewpager;
 
-    private FloatingActionButton createGroup;
-    private FloatingActionButton createAutomaticGroup;
-    private FloatingActionButton createManualGroup;
+    // Animator for the buttons
+    ButtonAnimator buttonAnimator;
+    FloatingActionButton createGroup;
+    FloatingActionButton createAutomaticGroup;
+    FloatingActionButton createManualGroup;
 
     // Adapter
     private GroupsFragmentAdapter optionsAdapter;
 
     private final int userType;
-    private boolean clicked;
 
     public Groups(int userType) {
         this.userType = userType;
-        clicked = false;
     }
 
     @Override
@@ -68,11 +65,6 @@ public class Groups extends Fragment {
 
         fStore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
-
-        rotateOpen = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim);
-        rotateClose = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim);
-        fromBottom = AnimationUtils.loadAnimation(getContext(), R.anim.from_botton_anim);
-        toBottom = AnimationUtils.loadAnimation(getContext(), R.anim.to_bottom_anim);
     }
 
     @Override
@@ -81,9 +73,15 @@ public class Groups extends Fragment {
         View view = inflater.inflate(R.layout.fragment_groups, container, false);
 
         createGroup = view.findViewById(R.id.createGroup);
+        ArrayList<FloatingActionButton> buttons = new ArrayList<FloatingActionButton>();
+
         createAutomaticGroup = view.findViewById(R.id.createAutomaticGroup);
         createManualGroup = view.findViewById(R.id.createManualGroup);
 
+        buttons.add(createAutomaticGroup);
+        buttons.add(createManualGroup);
+
+        buttonAnimator = new ButtonAnimator(getContext(), createGroup, buttons);
 
         if (userType == UserType.TYPE_STUDENT) {
             createGroup.setOnClickListener(v -> {
@@ -92,7 +90,7 @@ public class Groups extends Fragment {
             });
         } else if (userType == UserType.TYPE_TEACHER) {
             createGroup.setOnClickListener(v -> {
-                onAddButtonClicked();
+                buttonAnimator.onButtonClicked();
             });
         }
 
@@ -131,34 +129,6 @@ public class Groups extends Fragment {
                     break;
             }
         }).attach();
-    }
-
-    private void onAddButtonClicked(){
-        setVisibility(clicked);
-        setAnimation(clicked);
-        clicked = !clicked;
-    }
-
-    private void setVisibility(boolean clicked){
-        if(!clicked){
-            createAutomaticGroup.setVisibility(View.VISIBLE);
-            createManualGroup.setVisibility(View.VISIBLE);
-        } else {
-            createAutomaticGroup.setVisibility(View.INVISIBLE);
-            createManualGroup.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void setAnimation(boolean clicked){
-        if(!clicked) {
-            createManualGroup.startAnimation(fromBottom);
-            createAutomaticGroup.startAnimation(fromBottom);
-            createGroup.startAnimation(rotateOpen);
-        } else {
-            createManualGroup.startAnimation(toBottom);
-            createAutomaticGroup.startAnimation(toBottom);
-            createGroup.startAnimation(rotateClose);
-        }
     }
 
 }

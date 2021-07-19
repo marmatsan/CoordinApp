@@ -117,5 +117,8 @@
     <string name="createmultichoicecard">CreateMultichoiceCard</string>
     <string name="createremindercard">CreateReminderCard</string>
     <string name="selecciona_el_tipo_de_tarjeta_que_quieres_crear">Selecciona el tipo de tarjeta que quieres crear</string>
+    <string name="entrada_de_texto">Entrada de texto</string>
+    <string name="multirespuesta">Multirespuesta</string>
+    <string name="recordatorio">Recordatorio</string>
 
 </resources>
