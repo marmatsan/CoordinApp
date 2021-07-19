@@ -29,7 +29,6 @@ public class CreateInputTextCardDialog extends DialogFragment {
 
         View view = getActivity().getLayoutInflater().inflate(R.layout.utils_dialogs_createinputtextcarddialog, null);
 
-
         builder.setTitle("Crear una nueva tarjeta")
                 .setView(view)
                 .setNegativeButton("Cancelar", (dialog, i) -> {

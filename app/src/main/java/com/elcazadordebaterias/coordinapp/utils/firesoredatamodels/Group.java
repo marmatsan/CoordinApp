@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
 
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -56,4 +57,13 @@ public class Group {
     public ArrayList<GroupParticipant> getParticipants() {
         return participants;
     }
+
+    public void commit(FirebaseFirestore fStore){
+        fStore.collection("CoursesOrganization")
+                .document(this.getCourseName())
+                .collection("Subjects")
+                .document(this.getSubjectName())
+                .collection("Groups").add(this);
+    }
+
 }

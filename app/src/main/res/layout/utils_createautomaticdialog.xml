@@ -89,6 +89,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/modeSpinner" />
 
+    <TextView
+        android:id="@+id/textview5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/_4_introduce_el_n_mero_de_grupos"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/modeSpinner"
+        app:layout_constraintStart_toStartOf="@+id/modeSpinner"
+        app:layout_constraintTop_toBottomOf="@+id/modeSpinner" />
+
     <EditText
         android:id="@+id/numberInput"
         android:layout_width="0dp"
@@ -96,6 +109,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="number"
+        android:hint="@string/introduce_un_n_mero"
         app:layout_constraintEnd_toEndOf="@+id/textview4"
         app:layout_constraintStart_toStartOf="@+id/textview4"
         app:layout_constraintTop_toBottomOf="@+id/textview4" />

@@ -27,8 +27,7 @@ public class CreateReminderCardDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        View view = getActivity().getLayoutInflater().inflate(R.layout.utils_dialogs_createinputtextcarddialog, null);
-
+        View view = getActivity().getLayoutInflater().inflate(R.layout.utils_dialogs_createremindercarddialog, null);
 
         builder.setTitle("Crear una nueva tarjeta")
                 .setView(view)

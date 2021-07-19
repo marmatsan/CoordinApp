@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
@@ -48,6 +50,10 @@ public class CreateAutomaticDialog extends DialogFragment {
     // EditText
     private EditText numberInput;
 
+    // Textview if we choose the second option
+    TextView textview5;
+
+    // Firestore
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
@@ -70,32 +76,24 @@ public class CreateAutomaticDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.utils_createautomaticdialog, null);
 
+        // Views
         courseSpinner =  view.findViewById(R.id.courseSpinner);
         subjectSpinner = view.findViewById(R.id.subjectSpinner);
         modeSpinner = view.findViewById(R.id.modeSpinner);
         numberInput = view.findViewById(R.id.numberInput);
 
-        ArrayList<String> coursesNames = new ArrayList<String>();
-        ArrayList<String> subjectNames = new ArrayList<String>();
+        textview5 = view.findViewById(R.id.textview5);
 
         // Course adapter
+        ArrayList<String> coursesNames = new ArrayList<String>();
         ArrayAdapter<String> courseListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, coursesNames);
 
         courseListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         courseSpinner.setAdapter(courseListAdapter);
         courseSpinner.setSelection(0);
 
-        // Course list spinner
-        fStore.collection("CoursesOrganization").whereArrayContains("allParticipantsIDs", fAuth.getUid()).get().addOnCompleteListener(task -> { // Get group names
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    coursesNames.add(document.getId());
-                }
-            }
-            courseListAdapter.notifyDataSetChanged();
-        });
-
         // Subjects adapter
+        ArrayList<String> subjectNames = new ArrayList<String>();
         ArrayAdapter<String> subjectListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subjectNames);
 
         subjectListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -113,8 +111,17 @@ public class CreateAutomaticDialog extends DialogFragment {
         modeSpinner.setAdapter(modeAdapter);
         modeSpinner.setSelection(0);
 
-        // Listeners when we select the items
-        // Course spinner listener
+        // Populate coursesNames
+        fStore.collection("CoursesOrganization").whereArrayContains("allParticipantsIDs", fAuth.getUid()).get().addOnCompleteListener(task -> { // Get group names
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    coursesNames.add(document.getId());
+                }
+            }
+            courseListAdapter.notifyDataSetChanged();
+        });
+
+        // Populate subjectNames
         courseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -146,44 +153,44 @@ public class CreateAutomaticDialog extends DialogFragment {
                     String selectedCourse = courseSpinner.getSelectedItem().toString();
                     String selectedSubject = subjectSpinner.getSelectedItem().toString();
                     String selectedMode = modeSpinner.getSelectedItem().toString();
-                    String selectedSplitString = numberInput.getText().toString();
+                    String selectedNumer = numberInput.getText().toString();
 
-                    // TODO: Error checking in edittext
-                    fStore.collection("CoursesOrganization").document(selectedCourse).collection("Subjects").document(selectedSubject).get().addOnCompleteListener(task -> {
-                        if(task.isSuccessful()){
-                            DocumentSnapshot document = task.getResult();
-                            if(document.exists()){
-                                Subject subject = document.toObject(Subject.class);
+                    if (selectedMode.equals("Introducir el número de alumnos por grupo")) {
+                        fStore.collection("CoursesOrganization").document(selectedCourse)
+                                .collection("Subjects").document(selectedSubject)
+                                .get().addOnSuccessListener(documentSnapshot -> {
+                                    Subject subject = documentSnapshot.toObject(Subject.class);
 
-                                ArrayList<String> studentIDs = subject.getStudentIDs();
-                                Collections.shuffle(studentIDs);
+                                    ArrayList<String> studentIDs = subject.getStudentIDs();
+                                    Collections.shuffle(studentIDs);
 
-                                String teacherID = subject.getTeacherID();
-                                int splitNumber = Integer.parseInt(selectedSplitString);
+                                    String teacherID = subject.getTeacherID();
+                                    int splitNumber = Integer.parseInt(selectedNumer);
 
-                                int totalGroups = (int) Math.floor(studentIDs.size()/splitNumber);
-                                int remainderStudents = studentIDs.size()%splitNumber;
+                                    int totalGroups = (int) Math.floor(studentIDs.size()/splitNumber);
+                                    int remainderStudents = studentIDs.size() % splitNumber;
 
-                                if(remainderStudents == 1) {
-                                    Toast.makeText(context, "Un estudiante se quedará sin grupo. Introduce otro número", Toast.LENGTH_SHORT).show();
-                                }else{
-                                    for (int j = 0; j < totalGroups; j++) {
-                                        createGroup(selectedCourse, selectedSubject, studentIDs.subList(j * splitNumber, j * splitNumber + splitNumber), teacherID);
+                                    if(remainderStudents == 1) {
+                                        Toast.makeText(context, "Un estudiante se quedará sin grupo. Introduce otro número", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        for (int j = 0; j < totalGroups; j++) {
+                                            createGroup(selectedCourse, selectedSubject, studentIDs.subList(j * splitNumber, j * splitNumber + splitNumber), teacherID);
+                                        }
+
+                                        if (remainderStudents != 0) {
+                                            createGroup(selectedCourse, selectedSubject, studentIDs.subList(studentIDs.size() - remainderStudents, studentIDs.size()), teacherID);
+                                        }
                                     }
+                                });
+                    } else {
 
-                                    if (remainderStudents != 0) {
-                                        createGroup(selectedCourse, selectedSubject, studentIDs.subList(studentIDs.size() - remainderStudents, studentIDs.size()), teacherID);
-                                    }
-                                }
-                            }
-                        }
-                    });
+                    }
                 });
 
         return builder.create();
     }
 
-    private void createGroup(String course, String subject, List<String> studentIDs, String teacherID){
+    private void createGroup(String course, String subject, List<String> studentIDs, String teacherID) {
 
         ArrayList<String> participantsIds = new ArrayList<String>(studentIDs);
 
@@ -208,14 +215,12 @@ public class CreateAutomaticDialog extends DialogFragment {
                                 participantsIds,
                                 participants);
 
-                        fStore.collection("CoursesOrganization")
-                                .document(group.getCourseName())
-                                .collection("Subjects")
-                                .document(group.getSubjectName())
-                                .collection("Groups").add(group);
+                        group.commit(fStore);
+
                     }
                 });
             }
         });
     }
+
 }

@@ -145,10 +145,12 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
     public static class MultiChoiceCardViewHolder extends CardViewHolder{
 
         RadioGroup radioGroup;
+        MaterialButton sendAnswer;
 
         public MultiChoiceCardViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             radioGroup = itemView.findViewById(R.id.radioGroup);
+            sendAnswer = itemView.findViewById(R.id.sendAnswer);
         }
 
     }

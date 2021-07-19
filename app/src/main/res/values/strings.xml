@@ -120,5 +120,9 @@
     <string name="entrada_de_texto">Entrada de texto</string>
     <string name="multirespuesta">Multirespuesta</string>
     <string name="recordatorio">Recordatorio</string>
+    <string name="responder">Responder</string>
+    <string name="introduce_el_n_mero_de_grupos">Introduce el número de grupos</string>
+    <string name="_5_introduce_el_n_mero_de_grupos">5. Introduce el número de grupos</string>
+    <string name="_4_introduce_el_n_mero_de_grupos">4. Introduce el número de grupos</string>
 
 </resources>
