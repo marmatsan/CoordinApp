@@ -2,6 +2,7 @@ package com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -51,13 +54,17 @@ public class CreateAutomaticDialog extends DialogFragment {
     private EditText numberInput;
 
     // Textview if we choose the second option
-    TextView textview5;
+    TextView textview4;
+
+    // Checkbox
+    CheckBox checkBox;
 
     // Firestore
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
     Context context;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -82,7 +89,9 @@ public class CreateAutomaticDialog extends DialogFragment {
         modeSpinner = view.findViewById(R.id.modeSpinner);
         numberInput = view.findViewById(R.id.numberInput);
 
-        textview5 = view.findViewById(R.id.textview5);
+        textview4 = view.findViewById(R.id.textview4);
+
+        checkBox = view.findViewById(R.id.checkBox);
 
         // Course adapter
         ArrayList<String> coursesNames = new ArrayList<String>();
@@ -121,7 +130,7 @@ public class CreateAutomaticDialog extends DialogFragment {
             courseListAdapter.notifyDataSetChanged();
         });
 
-        // Populate subjectNames
+        // Populate subjectNames, and selection behaviour
         courseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -143,51 +152,100 @@ public class CreateAutomaticDialog extends DialogFragment {
             }
         });
 
+        // Modes selection behaviour
+        modeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedOption = parent.getItemAtPosition(position).toString();
+                checkBox.setVisibility(View.GONE);
 
-        builder.setView(view).setTitle("Menú de creación de grupos")
+                if(selectedOption.equals("Introducir el número de alumnos por grupo")){
+                    textview4.setText(R.string._4_introduce_el_n_mero_de_alumnos_por_grupo);
+                } else if (selectedOption.equals("Introducir el número de grupos")) {
+                    textview4.setText(R.string._4_introduce_el_n_mero_de_grupos);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        builder.setView(view)
+                .setTitle("Menú de creación de grupos")
                 .setNegativeButton("Cancelar", (dialogInterface, i) -> {
                     // Just closes the dialog
-                })
-                .setPositiveButton("Solicitar", (dialogInterface, i) -> {
+                }).setPositiveButton("Solicitar", null);
 
-                    String selectedCourse = courseSpinner.getSelectedItem().toString();
-                    String selectedSubject = subjectSpinner.getSelectedItem().toString();
-                    String selectedMode = modeSpinner.getSelectedItem().toString();
-                    String selectedNumer = numberInput.getText().toString();
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(dialogInterface -> {
 
-                    if (selectedMode.equals("Introducir el número de alumnos por grupo")) {
-                        fStore.collection("CoursesOrganization").document(selectedCourse)
-                                .collection("Subjects").document(selectedSubject)
-                                .get().addOnSuccessListener(documentSnapshot -> {
-                                    Subject subject = documentSnapshot.toObject(Subject.class);
+            Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
-                                    ArrayList<String> studentIDs = subject.getStudentIDs();
-                                    Collections.shuffle(studentIDs);
+            button.setOnClickListener(view1 -> {
+                String selectedCourse = courseSpinner.getSelectedItem().toString();
+                String selectedSubject = subjectSpinner.getSelectedItem().toString();
+                String selectedMode = modeSpinner.getSelectedItem().toString();
 
-                                    String teacherID = subject.getTeacherID();
-                                    int splitNumber = Integer.parseInt(selectedNumer);
+                int selectedNumber = Integer.parseInt(numberInput.getText().toString());
 
-                                    int totalGroups = (int) Math.floor(studentIDs.size()/splitNumber);
-                                    int remainderStudents = studentIDs.size() % splitNumber;
+                fStore.collection("CoursesOrganization").document(selectedCourse)
+                        .collection("Subjects").document(selectedSubject)
+                        .get().addOnSuccessListener(documentSnapshot -> {
+                            Subject subject = documentSnapshot.toObject(Subject.class);
+                            String teacherID = subject.getTeacherID();
 
-                                    if(remainderStudents == 1) {
-                                        Toast.makeText(context, "Un estudiante se quedará sin grupo. Introduce otro número", Toast.LENGTH_SHORT).show();
-                                    }else{
-                                        for (int j = 0; j < totalGroups; j++) {
-                                            createGroup(selectedCourse, selectedSubject, studentIDs.subList(j * splitNumber, j * splitNumber + splitNumber), teacherID);
-                                        }
+                            ArrayList<String> studentIDs = subject.getStudentIDs();
+                            Collections.shuffle(studentIDs);
 
-                                        if (remainderStudents != 0) {
-                                            createGroup(selectedCourse, selectedSubject, studentIDs.subList(studentIDs.size() - remainderStudents, studentIDs.size()), teacherID);
-                                        }
+                            if(selectedMode.equals("Introducir el número de alumnos por grupo")){
+
+                                if(selectedNumber >= studentIDs.size()){
+                                    Toast.makeText(context, "El tamaño del grupo deseado es más grande que el número total de alumnos. Seleccione un número más pequeño", Toast.LENGTH_LONG).show();
+                                } else if (selectedNumber == 0){
+                                    Toast.makeText(context, "No puedes crear un grupo de 0 alumnos", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    int reminder = studentIDs.size() % selectedNumber;
+                                    int numGroups = studentIDs.size() / selectedNumber;
+
+                                    if (reminder != 0 && !checkBox.isChecked()){
+                                        checkBox.setVisibility(View.VISIBLE);
+                                        Toast.makeText(context, "El número de alumnos por grupo no es exacto. Si desea incluirlos en un grupo de un tamaño más grande a " + numGroups + ", marque la casilla ", Toast.LENGTH_LONG).show();
+                                    } else if (reminder == 0 || checkBox.isChecked()) {
+                                        createGroupsBatch(selectedCourse, selectedSubject, teacherID, numGroups, reminder, studentIDs);
+                                        dialog.dismiss();
                                     }
-                                });
-                    } else {
+                                }
+                            } else if(selectedMode.equals("Introducir el número de grupos")){
 
-                    }
+                            }
+
                 });
+            });
+        });
 
-        return builder.create();
+        return dialog;
+    }
+
+    private void createGroupsBatch(String selectedCourse, String selectedSubject, String teacherID,  int numGroups, int reminder, ArrayList<String> studentIDs){
+        ArrayList<List<String>> subLists = new ArrayList<List<String>>();
+
+        for (int i = 0; i < numGroups; i++) {
+            List<String> subList = studentIDs.subList(i * numGroups, i * numGroups + numGroups);
+            subLists.add(subList);
+        }
+
+        if (reminder != 0){
+            List<String> lastList = subLists.get(subLists.size() - 1);
+            lastList.add(studentIDs.get(studentIDs.size() - 1));
+        }
+
+        for (int i = 0; i < subLists.size(); i++) {
+            createGroup(selectedCourse, selectedSubject, subLists.get(i), teacherID);
+        }
+
     }
 
     private void createGroup(String course, String subject, List<String> studentIDs, String teacherID) {

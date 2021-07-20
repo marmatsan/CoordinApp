@@ -100,9 +100,7 @@
     <string name="individuales">Individuales</string>
     <string name="name_of_the_subject">Name of the subject</string>
     <string name="sender_message">Sender message</string>
-    <string name="selecciona_el_modo_de_creaci_n_de_grupo">3. Selecciona el modo de creación de grupo</string>
     <string name="_3_selecciona_el_modo_de_creaci_n_de_grupos">3. Selecciona el modo de creación de grupos</string>
-    <string name="_4_selecciona_el_n_mero_de_alumnos_por_grupo">4. Selecciona el número de alumnos por grupo</string>
     <string name="_4_introduce_el_n_mero_de_alumnos_por_grupo">4. Introduce el número de alumnos por grupo</string>
     <string name="introduce_un_n_mero">Introduce un número</string>
     <string name="name_of_receiver">Name of receiver</string>
@@ -121,8 +119,7 @@
     <string name="multirespuesta">Multirespuesta</string>
     <string name="recordatorio">Recordatorio</string>
     <string name="responder">Responder</string>
-    <string name="introduce_el_n_mero_de_grupos">Introduce el número de grupos</string>
-    <string name="_5_introduce_el_n_mero_de_grupos">5. Introduce el número de grupos</string>
     <string name="_4_introduce_el_n_mero_de_grupos">4. Introduce el número de grupos</string>
+    <string name="incluir_a_los_alumnos_restantes">Incluir a los alumnos restantes</string>
 
 </resources>
