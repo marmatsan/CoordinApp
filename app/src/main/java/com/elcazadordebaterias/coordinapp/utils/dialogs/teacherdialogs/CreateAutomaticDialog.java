@@ -33,6 +33,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -159,9 +160,9 @@ public class CreateAutomaticDialog extends DialogFragment {
                 String selectedOption = parent.getItemAtPosition(position).toString();
                 checkBox.setVisibility(View.GONE);
 
-                if(selectedOption.equals("Introducir el número de alumnos por grupo")){
+                if(selectedOption.equals("Crear por número de alumnos por grupo")){
                     textview4.setText(R.string._4_introduce_el_n_mero_de_alumnos_por_grupo);
-                } else if (selectedOption.equals("Introducir el número de grupos")) {
+                } else if (selectedOption.equals("Crear por número de grupos")) {
                     textview4.setText(R.string._4_introduce_el_n_mero_de_grupos);
                 }
 
@@ -205,21 +206,33 @@ public class CreateAutomaticDialog extends DialogFragment {
                                 if(selectedNumber >= studentIDs.size()){
                                     Toast.makeText(context, "El tamaño del grupo deseado es más grande que el número total de alumnos. Seleccione un número más pequeño", Toast.LENGTH_LONG).show();
                                 } else if (selectedNumber == 0){
-                                    Toast.makeText(context, "No puedes crear un grupo de 0 alumnos", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "No puedes crear un grupo de 0 alumnos. Seleccione un número más grande", Toast.LENGTH_SHORT).show();
+                                } else if (selectedNumber == 1){
+                                    Toast.makeText(context, "No puedes crear un grupo con solo 1 alumno. Seleccione un número más grande", Toast.LENGTH_SHORT).show();
                                 } else {
                                     int reminder = studentIDs.size() % selectedNumber;
                                     int numGroups = studentIDs.size() / selectedNumber;
 
-                                    if (reminder != 0 && !checkBox.isChecked()){
-                                        checkBox.setVisibility(View.VISIBLE);
-                                        Toast.makeText(context, "El número de alumnos por grupo no es exacto. Si desea incluirlos en un grupo de un tamaño más grande a " + numGroups + ", marque la casilla ", Toast.LENGTH_LONG).show();
-                                    } else if (reminder == 0 || checkBox.isChecked()) {
-                                        createGroupsBatch(selectedCourse, selectedSubject, teacherID, numGroups, reminder, studentIDs);
-                                        dialog.dismiss();
+                                    if (numGroups <= 1) {
+                                        Toast.makeText(context, "Con este número de alumnos se crearía únicamente un grupo. Seleccione un número de almunos por grupo más pequeño", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        if (reminder != 0 && !checkBox.isChecked()){
+                                            checkBox.setVisibility(View.VISIBLE);
+                                            Toast.makeText(context, "No se pueden crear grupos de exactamente " + selectedNumber +" alumnos. Un alumno se quedará sin grupo . Si desea incluirlo en un grupo de un tamaño más grande a " + selectedNumber + " alumnos, marque la casilla ", Toast.LENGTH_LONG).show();
+                                        } else if (reminder == 0 || checkBox.isChecked()) {
+                                            createGroupsBatch(selectedCourse, selectedSubject, teacherID, numGroups, reminder, studentIDs);
+                                            dialog.dismiss();
+                                        }
                                     }
                                 }
-                            } else if(selectedMode.equals("Introducir el número de grupos")){
-
+                            } else if (selectedMode.equals("Introducir el número de grupos")){
+                                if (selectedNumber == 0) {
+                                    Toast.makeText(context, "El número de grupos tiene que ser mayor que 0", Toast.LENGTH_LONG).show();
+                                } else if (selectedNumber == 1) {
+                                    Toast.makeText(context, "No se puede crear un solo grupo", Toast.LENGTH_LONG).show();
+                                } else {
+                                    createGroupsBatch(selectedCourse, selectedSubject, teacherID, selectedNumber, 0, studentIDs);
+                                }
                             }
 
                 });
@@ -246,6 +259,7 @@ public class CreateAutomaticDialog extends DialogFragment {
             createGroup(selectedCourse, selectedSubject, subLists.get(i), teacherID);
         }
 
+        Toast.makeText(context, "Grupos creados correctamente", Toast.LENGTH_LONG).show();
     }
 
     private void createGroup(String course, String subject, List<String> studentIDs, String teacherID) {
@@ -254,30 +268,29 @@ public class CreateAutomaticDialog extends DialogFragment {
 
         ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
 
-        fStore.collection("Students").whereIn(FieldPath.documentId(), participantsIds).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                   participants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
-                }
-
-                fStore.collection("Teachers").document(teacherID).get().addOnSuccessListener(documentSnapshot -> {
-                    if(documentSnapshot.exists()){
-                        participants.add(new GroupParticipant((String) documentSnapshot.get("FullName"), documentSnapshot.getId()));
-                        participantsIds.add(teacherID);
-
-                        Group group = new Group(
-                                fAuth.getUid(),
-                                (String) documentSnapshot.get("FullName"),
-                                course,
-                                subject,
-                                participantsIds,
-                                participants);
-
-                        group.commit(fStore);
-
-                    }
-                });
+        fStore.collection("Students").whereIn(FieldPath.documentId(), participantsIds).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                participants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
             }
+
+            fStore.collection("Teachers").document(teacherID).get().addOnSuccessListener(documentSnapshot -> {
+                if(documentSnapshot.exists()){
+                    participants.add(new GroupParticipant((String) documentSnapshot.get("FullName"), documentSnapshot.getId()));
+                    participantsIds.add(teacherID);
+
+                    Group group = new Group(
+                            fAuth.getUid(),
+                            (String) documentSnapshot.get("FullName"),
+                            course,
+                            subject,
+                            participantsIds,
+                            participants);
+
+                    group.commit(fStore);
+
+                }
+            });
+
         });
     }
 

@@ -78,6 +78,6 @@
         app:layout_constraintBottom_toTopOf="@+id/createGroup"
         app:layout_constraintEnd_toEndOf="@+id/createGroup"
         app:layout_constraintStart_toStartOf="@+id/createGroup"
-        app:srcCompat="@drawable/ic_tap" />
+        app:srcCompat="@drawable/ic_single" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

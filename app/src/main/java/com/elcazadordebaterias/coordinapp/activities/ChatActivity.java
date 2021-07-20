@@ -2,6 +2,7 @@ package com.elcazadordebaterias.coordinapp.activities;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
@@ -50,6 +51,7 @@ public class ChatActivity extends AppCompatActivity {
     // Views
     private EditText messageInput;
     private MaterialButton sendMessage;
+    private MaterialButton sendFile;
 
     // Reference to chatroom collection
     private CollectionReference chatroomRef;
@@ -65,6 +67,7 @@ public class ChatActivity extends AppCompatActivity {
         // Views
         messageInput = findViewById(R.id.messageInput);
         sendMessage = findViewById(R.id.sendMessage);
+        sendFile = findViewById(R.id.sendFile);
 
         // Get card to know where we have to write the messages
         Gson gson = new Gson();
@@ -127,6 +130,10 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
             }
+        });
+
+        sendMessage.setOnClickListener(v -> {
+
         });
 
     }
