@@ -218,7 +218,7 @@ public class CreateAutomaticDialog extends DialogFragment {
                                     } else {
                                         if (reminder != 0 && !checkBox.isChecked()){
                                             checkBox.setVisibility(View.VISIBLE);
-                                            Toast.makeText(context, "No se pueden crear grupos de exactamente " + selectedNumber +" alumnos. Un alumno se quedará sin grupo . Si desea incluirlo en un grupo de un tamaño más grande a " + selectedNumber + " alumnos, marque la casilla ", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(context, "No se pueden crear grupos de exactamente " + selectedNumber + " alumnos. Un alumno se quedará sin grupo . Si desea incluirlo en un grupo de un tamaño más grande a " + selectedNumber + " alumnos, marque la casilla ", Toast.LENGTH_LONG).show();
                                         } else if (reminder == 0 || checkBox.isChecked()) {
                                             createGroupsBatch(selectedCourse, selectedSubject, teacherID, numGroups, reminder, studentIDs);
                                             dialog.dismiss();

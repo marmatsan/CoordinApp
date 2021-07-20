@@ -62,8 +62,7 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
     public void onBindViewHolder(@NonNull GroupCardViewHolder holder, int position) {
         GroupCard group = groupsList.get(position);
 
-        holder.courseName.setText(group.getCourseName());
-        holder.subjectName.setText(group.getSubjectName());
+        holder.groupName.setText(group.getGroupName());
 
         // A student can't have permits to delete a group
         if (userType == UserType.TYPE_STUDENT) {
@@ -117,16 +116,14 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
     }
 
     static class GroupCardViewHolder extends RecyclerView.ViewHolder{
-        TextView courseName;
-        TextView subjectName;
+        TextView groupName;
         MaterialButton showParticipants;
         MaterialButton deleteGroup;
 
         GroupCardViewHolder(View view, OnItemClickListener listener){
             super(view);
 
-            courseName = view.findViewById(R.id.courseName);
-            subjectName = view.findViewById(R.id.subjectName);
+            groupName = view.findViewById(R.id.groupName);
             showParticipants = view.findViewById(R.id.showParticipants);
             deleteGroup = view.findViewById(R.id.deleteGroup);
 

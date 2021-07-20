@@ -121,5 +121,6 @@
     <string name="responder">Responder</string>
     <string name="_4_introduce_el_n_mero_de_grupos">4. Introduce el número de grupos</string>
     <string name="incluir_a_los_alumnos_restantes">Incluir a los alumnos restantes</string>
+    <string name="groupname">GroupName</string>
 
 </resources>

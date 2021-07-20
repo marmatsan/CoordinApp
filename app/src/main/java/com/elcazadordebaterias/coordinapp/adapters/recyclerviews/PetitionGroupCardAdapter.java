@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +20,16 @@ import com.elcazadordebaterias.coordinapp.utils.cards.PetitionGroupCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionUser;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Adapter to handle the list of {@link PetitionGroupCard}'s, which is used for both teacher and
@@ -149,21 +154,57 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
             participants.add(new GroupParticipant(user.getUserFullName(), user.getUserId()));
         }
 
-        Group group = new Group(petition.getTeacherId(),
-                                petition.getTeacherName(),
-                                petition.getCourse(),
-                                petition.getSubject(),
-                                petition.getPetitionUsersIds(),
-                                participants);
-
-        fStore.collection("CoursesOrganization")
-                .document(group.getCourseName())
+        // Reference to the subject that the group is going to be created
+        CollectionReference groupsCollRef =
+                fStore.collection("CoursesOrganization")
+                .document(petition.getCourse())
                 .collection("Subjects")
-                .document(group.getSubjectName())
-                .collection("Groups").add(group)
-                .addOnSuccessListener(documentReference -> fStore.collection("Petitions").document(petitionCard.getPetitionId()).delete());
-        petitionsList.remove(position);
-        notifyDataSetChanged();
+                .document(petition.getSubject())
+                .collection("Groups");
+
+        // Search for the greatest group identifier
+        groupsCollRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            ArrayList<String> groupsIdentifiers = new ArrayList<String>();
+
+            for (DocumentSnapshot document : queryDocumentSnapshots){
+                Group group = document.toObject(Group.class);
+                groupsIdentifiers.add(group.getGroupName());
+            }
+
+            Group group = new Group(
+                    petition.getTeacherId(),
+                    petition.getTeacherName(),
+                    petition.getCourse(),
+                    petition.getSubject(),
+                    petition.getPetitionUsersIds(),
+                    participants);
+
+            if (groupsIdentifiers.isEmpty()){ // There was no group in the collection
+                group.setGroupName("Grupo 1");
+            } else {
+                ArrayList<Integer> numbers = new ArrayList<Integer>();
+
+                for (String identifier : groupsIdentifiers){
+                    String numberOnly = identifier.replaceAll("[^0-9]", "");
+                    numbers.add(Integer.parseInt(numberOnly));
+                }
+
+                int maxNumber = Collections.max(numbers);
+                int newGroupNumber = maxNumber + 1;
+
+                String newGroupName = "Grupo " + newGroupNumber;
+
+                group.setGroupName(newGroupName);
+
+            }
+
+            groupsCollRef
+                    .add(group)
+                    .addOnSuccessListener(documentReference -> fStore.collection("Petitions").document(petitionCard.getPetitionId()).delete());
+            petitionsList.remove(position);
+            notifyDataSetChanged();
+        });
+
 
     }
 

@@ -11,16 +11,22 @@ import java.util.ArrayList;
 
 public class GroupCard {
 
+    private String groupName;
     private String groupId; // The id of the document for this group in FireBase
     private String courseName;
     private String subjectName;
     private ArrayList<String> participantNames;
 
-    public GroupCard(String groupId, String courseName, String subjectName, ArrayList<String> participantNames) {
+    public GroupCard(String groupName, String groupId, String courseName, String subjectName, ArrayList<String> participantNames) {
+        this.groupName = groupName;
         this.groupId = groupId;
         this.courseName = courseName;
         this.subjectName = subjectName;
         this.participantNames = participantNames;
+    }
+
+    public String getGroupName() {
+        return groupName;
     }
 
     public String getGroupId() {
