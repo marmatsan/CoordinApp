@@ -179,24 +179,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                     petition.getPetitionUsersIds(),
                     participants);
 
-            if (groupsIdentifiers.isEmpty()){ // There was no group in the collection
-                group.setGroupName("Grupo 1");
-            } else {
-                ArrayList<Integer> numbers = new ArrayList<Integer>();
-
-                for (String identifier : groupsIdentifiers){
-                    String numberOnly = identifier.replaceAll("[^0-9]", "");
-                    numbers.add(Integer.parseInt(numberOnly));
-                }
-
-                int maxNumber = Collections.max(numbers);
-                int newGroupNumber = maxNumber + 1;
-
-                String newGroupName = "Grupo " + newGroupNumber;
-
-                group.setGroupName(newGroupName);
-
-            }
+            group.setGroupName(groupsIdentifiers);
 
             groupsCollRef
                     .add(group)
@@ -204,7 +187,6 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
             petitionsList.remove(position);
             notifyDataSetChanged();
         });
-
 
     }
 

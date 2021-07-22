@@ -88,12 +88,7 @@ public class GroupalChat extends Fragment {
             });
         } else if (userType == UserType.TYPE_TEACHER) {
             fStore.collectionGroup("Groups").whereEqualTo("coordinatorId", fAuth.getUid())
-                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    coursesListSetup(queryDocumentSnapshots);
-                }
-            });
+                    .get().addOnSuccessListener(queryDocumentSnapshots -> coursesListSetup(queryDocumentSnapshots));
         }
         return view;
     }

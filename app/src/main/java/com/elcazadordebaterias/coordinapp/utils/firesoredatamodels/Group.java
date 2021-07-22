@@ -42,8 +42,23 @@ public class Group {
         return groupName;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    // Set the name of the group by searching the max identifier from an array of String identifiers
+    public void setGroupName(ArrayList<String> groupsIdentifiers) {
+        if (groupsIdentifiers.isEmpty()) {
+            this.groupName = "Grupo 1";
+        } else {
+            ArrayList<Integer> numbers = new ArrayList<Integer>();
+
+            for (String identifier : groupsIdentifiers){
+                String numberOnly = identifier.replaceAll("[^0-9]", "");
+                numbers.add(Integer.parseInt(numberOnly));
+            }
+
+            int maxNumber = Collections.max(numbers);
+            int newGroupNumber = maxNumber + 1;
+
+            this.groupName = "Grupo " + newGroupNumber;
+        }
     }
 
     public String getCoordinatorId() {
@@ -77,52 +92,5 @@ public class Group {
                 .document(this.getSubjectName())
                 .collection("Groups").add(this);
     }
-
-    /*
-   public void setNameAndCommit(CollectionReference groupsCollRef){
-       // Search for the greatest group identifier
-       groupsCollRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
-           ArrayList<String> groupsIdentifiers = new ArrayList<String>();
-
-           for (DocumentSnapshot document : queryDocumentSnapshots){
-               Group group = document.toObject(Group.class);
-               groupsIdentifiers.add(group.getGroupName());
-           }
-
-           Group group = new Group(
-                   petition.getTeacherId(),
-                   petition.getTeacherName(),
-                   petition.getCourse(),
-                   petition.getSubject(),
-                   petition.getPetitionUsersIds(),
-                   participants);
-
-           if (groupsIdentifiers.isEmpty()){ // There was no group in the collection
-               group.setGroupName("Grupo 1");
-           } else {
-               ArrayList<Integer> numbers = new ArrayList<Integer>();
-
-               for (String identifier : groupsIdentifiers){
-                   String numberOnly = identifier.replaceAll("[^0-9]", "");
-                   numbers.add(Integer.parseInt(numberOnly));
-               }
-
-               int maxNumber = Collections.max(numbers);
-               int newGroupNumber = maxNumber + 1;
-
-               String newGroupName = "Grupo " + newGroupNumber;
-
-               group.setGroupName(newGroupName);
-
-           }
-
-           groupsCollRef
-                   .add(group)
-                   .addOnSuccessListener(documentReference -> fStore.collection("Petitions").document(petitionCard.getPetitionId()).delete());
-           petitionsList.remove(position);
-           notifyDataSetChanged();
-       });
-   }
-    */
 
 }

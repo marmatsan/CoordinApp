@@ -31,6 +31,8 @@ public class AdministrationFragmentTeacherAdapter extends FragmentStateAdapter {
                 return new Petitions();
             case 2:
                 return new EmptyFragment();
+            case 3:
+                return new EmptyFragment();
             default:
                 return new Courses(UserType.TYPE_TEACHER);
         }
@@ -38,6 +40,6 @@ public class AdministrationFragmentTeacherAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3; // To be changed if the number of tabs increases
+        return 4; // To be changed if the number of tabs increases
     }
 }

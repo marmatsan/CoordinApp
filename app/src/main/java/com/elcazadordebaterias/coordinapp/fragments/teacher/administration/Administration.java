@@ -61,6 +61,10 @@ public class Administration extends Fragment {
                     tab.setText("Fechas");
                     tab.setIcon(R.drawable.ic_baseline_calendar_today_24);
                     break;
+                case 3:
+                    tab.setText("Estadísticas");
+                    tab.setIcon(R.drawable.ic_baseline_pie_chart_24);
+                    break;
             }
         }).attach();
     }

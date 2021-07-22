@@ -183,9 +183,9 @@ public class CreateAutomaticDialog extends DialogFragment {
         AlertDialog dialog = builder.create();
         dialog.setOnShowListener(dialogInterface -> {
 
-            Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
-            button.setOnClickListener(view1 -> {
+            positiveButton.setOnClickListener(view1 -> {
                 String selectedCourse = courseSpinner.getSelectedItem().toString();
                 String selectedSubject = subjectSpinner.getSelectedItem().toString();
                 String selectedMode = modeSpinner.getSelectedItem().toString();
@@ -250,7 +250,7 @@ public class CreateAutomaticDialog extends DialogFragment {
             subLists.add(subList);
         }
 
-        if (reminder != 0){
+        if (reminder != 0) {
             List<String> lastList = subLists.get(subLists.size() - 1);
             lastList.add(studentIDs.get(studentIDs.size() - 1));
         }
