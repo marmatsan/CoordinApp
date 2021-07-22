@@ -28,6 +28,14 @@ public class Administration extends Fragment {
     private ViewPager2 viewpager;
     private TabLayout tablayout;
 
+    private String selectedCourse;
+    private String selectedSubject;
+
+    public Administration(String selectedCourse, String selectedSubject){
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +52,7 @@ public class Administration extends Fragment {
         tablayout.setInlineLabel(false);
         viewpager = view.findViewById(R.id.fragment_container_teacher_administration);
 
-        optionsAdapter = new AdministrationFragmentTeacherAdapter(this);
+        optionsAdapter = new AdministrationFragmentTeacherAdapter(this, selectedCourse, selectedSubject);
         viewpager.setAdapter(optionsAdapter);
 
         new TabLayoutMediator(tablayout, viewpager, (tab, position) -> {

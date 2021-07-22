@@ -22,10 +22,19 @@ import com.google.android.material.tabs.TabLayoutMediator;
  */
 public class Home extends Fragment {
 
-    HomeFragmentStudentAdapter optionsAdapter;
+    private HomeFragmentStudentAdapter optionsAdapter;
 
     private ViewPager2 viewpager;
     private TabLayout tablayout;
+
+    private String selectedCourse;
+    private String selectedSubject;
+
+
+    public Home(String selectedCourse, String selectedSubject){
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,9 +43,9 @@ public class Home extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_home_student, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_student, container, false);
 
-        return rootView;
+        return view;
     }
 
     @Override
@@ -45,7 +54,7 @@ public class Home extends Fragment {
         tablayout.setInlineLabel(false);
         viewpager = view.findViewById(R.id.fragment_container_student_home);
 
-        optionsAdapter = new HomeFragmentStudentAdapter(this);
+        optionsAdapter = new HomeFragmentStudentAdapter(this, selectedCourse, selectedSubject);
         viewpager.setAdapter(optionsAdapter);
 
         new TabLayoutMediator(tablayout, viewpager, (tab, position) -> {

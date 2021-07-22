@@ -55,7 +55,12 @@ public class Groups extends Fragment {
 
     private final int userType;
 
-    public Groups(int userType) {
+    private String selectedCourse;
+    private String selectedSubject;
+
+    public Groups(int userType, String selectedCourse, String selectedSubject) {
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
         this.userType = userType;
     }
 
@@ -114,7 +119,7 @@ public class Groups extends Fragment {
 
         tablayout.setInlineLabel(false);
 
-        optionsAdapter = new GroupsFragmentAdapter(this, userType);
+        optionsAdapter = new GroupsFragmentAdapter(this, userType, selectedCourse, selectedSubject);
         viewpager.setAdapter(optionsAdapter);
 
         new TabLayoutMediator(tablayout, viewpager, (tab, position) -> {

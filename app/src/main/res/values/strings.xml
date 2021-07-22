@@ -123,5 +123,6 @@
     <string name="incluir_a_los_alumnos_restantes">Incluir a los alumnos restantes</string>
     <string name="groupname">GroupName</string>
     <string name="estad_sticas">Estadísticas</string>
+    <string name="seleccionar_curso_asignatura">Seleccionar curso/asignatura</string>
 
 </resources>

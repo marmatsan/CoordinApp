@@ -40,8 +40,13 @@ public class Courses extends Fragment {
     // Type of user who called this fragment
     private final int userType;
 
-    public Courses(int userType) {
+    private String selectedCourse;
+    private String selectedSubject;
+
+    public Courses(int userType, String selectedCourse, String selectedSubject) {
         this.userType = userType;
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
     }
 
     @Override

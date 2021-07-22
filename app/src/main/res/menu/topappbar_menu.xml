@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/select_course_subject"
+        android:title="@string/seleccionar_curso_asignatura"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/menu_logout"
         android:title="@string/cerrar_sesi_n"
         app:showAsAction="never" />

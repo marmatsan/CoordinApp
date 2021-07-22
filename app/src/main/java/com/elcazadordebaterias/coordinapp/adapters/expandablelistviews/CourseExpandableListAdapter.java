@@ -13,6 +13,7 @@ import com.elcazadordebaterias.coordinapp.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Test class to implement a new way of displaying the courses. Currently not used (in development).
@@ -21,22 +22,27 @@ import java.util.List;
  */
 public class CourseExpandableListAdapter extends BaseExpandableListAdapter {
 
-    private ArrayList<String> expandableListTitle;
-    private HashMap<String, ArrayList<String>> expandableListDetail;
+    private final HashMap<String, ArrayList<String>> data;
+    private final ArrayList<String> keySet;
 
-    public CourseExpandableListAdapter(ArrayList<String> expandableListTitle, HashMap<String, ArrayList<String>> expandableListDetail) {
-        this.expandableListTitle = expandableListTitle;
-        this.expandableListDetail = expandableListDetail;
+    private OnChildClick onChildClick;
+
+    public CourseExpandableListAdapter(HashMap<String, ArrayList<String>> expandableListDetail, OnChildClick onChildClick) {
+        this.data = expandableListDetail;
+        this.keySet = new ArrayList<String>();
+        this.onChildClick = onChildClick;
+
+        keySet.addAll(data.keySet());
     }
 
     @Override
     public Object getGroup(int listPosition) {
-        return this.expandableListTitle.get(listPosition);
+        return keySet.get(listPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return this.expandableListTitle.size();
+        return data.size();
     }
 
     @Override
@@ -53,14 +59,13 @@ public class CourseExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         TextView listTitleTextView = (TextView) convertView.findViewById(R.id.courseName);
-        listTitleTextView.setTypeface(null, Typeface.BOLD);
         listTitleTextView.setText(listTitle);
         return convertView;
     }
 
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).get(expandedListPosition);
+        return data.get(keySet.get(listPosition)).get(expandedListPosition);
     }
 
     @Override
@@ -78,12 +83,24 @@ public class CourseExpandableListAdapter extends BaseExpandableListAdapter {
 
         TextView expandedListTextView = (TextView) convertView.findViewById(R.id.subjectName);
         expandedListTextView.setText(expandedListText);
+
+        convertView.setOnClickListener(v -> {
+            if(onChildClick != null){
+                String selectedCourse, selectedSubject;
+
+                selectedCourse = keySet.get(listPosition);
+                selectedSubject = data.get(selectedCourse).get(expandedListPosition);
+
+                onChildClick.onClick(selectedCourse, selectedSubject);
+            }
+        });
+
         return convertView;
     }
 
     @Override
     public int getChildrenCount(int listPosition) {
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).size();
+        return data.get(keySet.get(listPosition)).size();
     }
 
     @Override
@@ -94,6 +111,10 @@ public class CourseExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int listPosition, int expandedListPosition) {
         return true;
+    }
+
+    public interface OnChildClick {
+        void onClick(String selectedCourse, String selectedSubject);
     }
 
 }

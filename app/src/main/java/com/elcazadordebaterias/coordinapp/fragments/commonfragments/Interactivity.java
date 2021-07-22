@@ -36,7 +36,12 @@ public class Interactivity extends Fragment {
     // User Type
     private final int userType;
 
-    public Interactivity(int userType){
+    private String selectedCouse;
+    private String selectedSubject;
+
+    public Interactivity(int userType, String selectedCouse, String selectedSubject){
+        this.selectedCouse = selectedCouse;
+        this.selectedSubject = selectedSubject;
         this.userType = userType;
     }
 

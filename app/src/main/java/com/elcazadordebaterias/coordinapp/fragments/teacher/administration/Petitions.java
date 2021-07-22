@@ -26,6 +26,14 @@ public class Petitions extends Fragment {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
+    private String selectedCourse;
+    private String selectedSubject;
+
+    public Petitions(String selectedCourse, String selectedSubject){
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

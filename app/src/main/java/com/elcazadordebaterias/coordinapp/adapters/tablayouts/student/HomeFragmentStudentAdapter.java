@@ -18,8 +18,13 @@ import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
  */
 public class HomeFragmentStudentAdapter extends FragmentStateAdapter {
 
-    public HomeFragmentStudentAdapter(Fragment fragment) {
+    private String selectedCourse;
+    private String selectedSubject;
+
+    public HomeFragmentStudentAdapter(Fragment fragment, String selectedCourse, String selectedSubject) {
         super(fragment);
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
     }
 
     @NonNull
@@ -29,7 +34,7 @@ public class HomeFragmentStudentAdapter extends FragmentStateAdapter {
             case 1:
                 return new Petitions();
             default:
-                return new Courses(UserType.TYPE_STUDENT);
+                return new Courses(UserType.TYPE_STUDENT, selectedCourse, selectedSubject);
         }
     }
 

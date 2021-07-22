@@ -19,8 +19,13 @@ import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
  */
 public class AdministrationFragmentTeacherAdapter extends FragmentStateAdapter {
 
-    public AdministrationFragmentTeacherAdapter(Fragment fragment) {
+    private String selectedCourse;
+    private String selectedSubject;
+
+    public AdministrationFragmentTeacherAdapter(Fragment fragment, String selectedCourse, String selectedSubject) {
         super(fragment);
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
     }
 
     @NonNull
@@ -28,13 +33,13 @@ public class AdministrationFragmentTeacherAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 1:
-                return new Petitions();
+                return new Petitions(selectedCourse, selectedSubject);
             case 2:
                 return new EmptyFragment();
             case 3:
                 return new EmptyFragment();
             default:
-                return new Courses(UserType.TYPE_TEACHER);
+                return new Courses(UserType.TYPE_TEACHER, selectedCourse, selectedSubject);
         }
     }
 

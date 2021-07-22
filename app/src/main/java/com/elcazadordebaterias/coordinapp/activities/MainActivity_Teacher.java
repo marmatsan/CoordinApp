@@ -2,9 +2,11 @@ package com.elcazadordebaterias.coordinapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +20,7 @@ import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Interactivit
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Groups;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.SelectDisplayedCourse;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,10 +30,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
  *
  * @author Martín Mateos Sánchez
  */
-public class MainActivity_Teacher extends AppCompatActivity {
+public class MainActivity_Teacher extends AppCompatActivity implements SelectDisplayedCourse.onSelectedCourse {
 
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
+
+    private String selectedCourse;
+    private String selectedSubject;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,15 +93,15 @@ public class MainActivity_Teacher extends AppCompatActivity {
         int itemId = item.getItemId();
 
         if (itemId == R.id.nav_teacher_interactivity) {
-            selectedFragment = new Interactivity(UserType.TYPE_TEACHER);
+            selectedFragment = new Interactivity(UserType.TYPE_TEACHER, selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_teacher_groups) {
-            selectedFragment = new Groups(UserType.TYPE_TEACHER);
+            selectedFragment = new Groups(UserType.TYPE_TEACHER, selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_teacher_files) {
             selectedFragment = new EmptyFragment();
         } else if (itemId == R.id.nav_teacher_administration) {
-            selectedFragment = new Administration();
+            selectedFragment = new Administration(selectedCourse, selectedSubject);
         } else {
-            selectedFragment = new Administration();
+            selectedFragment = new Administration(selectedCourse, selectedSubject);
         }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_teacher, selectedFragment).commit();
@@ -107,19 +113,28 @@ public class MainActivity_Teacher extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.topappbar_menu, menu);
-
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        if(item.getItemId() == R.id.menu_logout){
+        if(item.getItemId() == R.id.select_course_subject){
+            SelectDisplayedCourse dialog = new SelectDisplayedCourse();
+            dialog.show(getSupportFragmentManager(), "dialog");
+        } else if(item.getItemId() == R.id.menu_logout){
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSelectedCourseChange(String selectedCourse, String selectedSubject) {
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
+        Log.d("DEBUGGING", "From activity: " + selectedCourse + " - " + selectedSubject);
     }
 }

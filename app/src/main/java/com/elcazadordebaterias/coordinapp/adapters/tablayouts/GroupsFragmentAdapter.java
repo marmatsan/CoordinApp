@@ -18,10 +18,14 @@ import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Singl
 public class GroupsFragmentAdapter extends FragmentStateAdapter {
 
     private final int userType;
+    private String selectedCourse;
+    private String selectedSubject;
 
-    public GroupsFragmentAdapter(Fragment fragment, int userType) {
+    public GroupsFragmentAdapter(Fragment fragment, int userType, String selectedCourse, String selectedSubject) {
         super(fragment);
         this.userType = userType;
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
     }
 
     @NonNull
