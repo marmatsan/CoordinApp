@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,10 +45,20 @@ public class Petitions extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v =  inflater.inflate(R.layout.fragment_administration_teacher_petitions, container, false);
+        View view =  inflater.inflate(R.layout.fragment_administration_teacher_petitions, container, false);
 
         // Recyclerview - Petitions
-        RecyclerView groupsPetitionsRecyclerView = v.findViewById(R.id.recyclerview_petitions);
+        RecyclerView groupsPetitionsRecyclerView = view.findViewById(R.id.recyclerview_petitions);
+        TextView noCourseSelected = view.findViewById(R.id.noCourseSelected);
+
+        if (selectedCourse == null || selectedSubject == null) {
+            noCourseSelected.setVisibility(View.VISIBLE);
+            groupsPetitionsRecyclerView.setVisibility(View.GONE);
+        } else {
+            noCourseSelected.setVisibility(View.GONE);
+            groupsPetitionsRecyclerView.setVisibility(View.VISIBLE);
+        }
+
         LinearLayoutManager petitionsLayoutManager = new LinearLayoutManager(getContext());
 
         ArrayList<PetitionGroupCard> petitions = new ArrayList<PetitionGroupCard>();
@@ -71,7 +82,7 @@ public class Petitions extends Fragment {
             }
         });
 
-        return v;
+        return view;
     }
 
 }

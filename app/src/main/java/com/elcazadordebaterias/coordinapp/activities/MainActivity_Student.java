@@ -23,6 +23,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * The main activity for the student.
  *
@@ -96,7 +99,9 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         if (item.getItemId() == R.id.select_course_subject){
-            SelectDisplayedCourse dialog = new SelectDisplayedCourse();
+            HashMap<String, ArrayList<String>> detail = new HashMap<String, ArrayList<String>>();
+            SelectDisplayedCourse dialog = new SelectDisplayedCourse(detail);
+
             dialog.show(getSupportFragmentManager(), "dialog");
         } else if (item.getItemId() == R.id.menu_logout){
             FirebaseAuth.getInstance().signOut();

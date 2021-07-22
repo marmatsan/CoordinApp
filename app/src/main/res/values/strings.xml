@@ -124,5 +124,7 @@
     <string name="groupname">GroupName</string>
     <string name="estad_sticas">Estadísticas</string>
     <string name="seleccionar_curso_asignatura">Seleccionar curso/asignatura</string>
+    <string name="alumnos">Alumnos</string>
+    <string name="selecciona_un_curso_y_una_asignatura_sobre_el_que_mostrar_informaci_n">Selecciona un curso y una asignatura sobre el que mostrar información</string>
 
 </resources>

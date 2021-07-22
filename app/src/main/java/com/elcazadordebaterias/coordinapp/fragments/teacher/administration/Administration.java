@@ -13,9 +13,12 @@ import android.view.ViewGroup;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.tablayouts.teacher.AdministrationFragmentTeacherAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseParticipantCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.ArrayList;
 
 /**
  * The fragment representing the Administration Tab of the teacher.
@@ -58,7 +61,7 @@ public class Administration extends Fragment {
         new TabLayoutMediator(tablayout, viewpager, (tab, position) -> {
             switch (position){
                 case 0:
-                    tab.setText("Cursos");
+                    tab.setText("Cursos"); // TODO: Change
                     tab.setIcon(R.drawable.ic_baseline_folder_24);
                     break;
                 case 1:

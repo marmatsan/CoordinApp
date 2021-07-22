@@ -30,8 +30,8 @@ public class SelectDisplayedCourse extends DialogFragment implements CourseExpan
 
     private onSelectedCourse onSelectedCourse;
 
-    public SelectDisplayedCourse(){
-
+    public SelectDisplayedCourse(HashMap<String, ArrayList<String>> detail){
+        this.detail = detail;
     }
 
     @Override
@@ -42,7 +42,6 @@ public class SelectDisplayedCourse extends DialogFragment implements CourseExpan
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement onSelectedCourse");
         }
-        this.detail = new HashMap<String, ArrayList<String>>();
         this.context = context;
     }
 
@@ -56,13 +55,6 @@ public class SelectDisplayedCourse extends DialogFragment implements CourseExpan
         View view = inflater.inflate(R.layout.utils_dialogs_selectdisplayedcourse, null);
 
         ExpandableListView expandableListView = view.findViewById(R.id.expandableListView);
-
-        ArrayList<String> subject = new ArrayList<String>();
-        subject.add("Matemáticas");
-        subject.add("Ed. Física");
-
-
-        detail.put("2º ESO", subject);
 
         CourseExpandableListAdapter adapter = new CourseExpandableListAdapter(detail, this);
         expandableListView.setAdapter(adapter);

@@ -8,7 +8,10 @@ import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.courses.Courses;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Petitions;
+import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseParticipantCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+
+import java.util.ArrayList;
 
 /**
  * Adapter to handle the pages of the viewpager attached at the
