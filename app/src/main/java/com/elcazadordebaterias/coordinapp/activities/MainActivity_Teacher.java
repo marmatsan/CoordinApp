@@ -38,6 +38,8 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
     private String selectedCourse;
     private String selectedSubject;
 
+    private MenuItem menuItem;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +91,8 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
 
     // Static interface to create the fragment associated with the pressed item on the BottomNavigationView
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
+        this.menuItem = item;
+
         Fragment selectedFragment;
         int itemId = item.getItemId();
 
@@ -135,6 +139,6 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
     public void onSelectedCourseChange(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
-        Log.d("DEBUGGING", "From activity: " + selectedCourse + " - " + selectedSubject);
+        navListener.onNavigationItemSelected(menuItem); // Update fragments with the new info
     }
 }
