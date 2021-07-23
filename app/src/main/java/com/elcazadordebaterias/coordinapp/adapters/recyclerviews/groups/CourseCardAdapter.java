@@ -13,12 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups.CourseSubjectAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.CourseCard;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Adapter to be used in a list made of {@link CourseCard}.
@@ -47,7 +45,7 @@ public class CourseCardAdapter extends RecyclerView.Adapter<CourseCardAdapter.Co
     @NonNull
     @Override
     public CourseCardViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.utils_coursecard, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.utils_cards_coursecard, viewGroup, false);
 
         return new CourseCardViewHolder(view);
     }

@@ -128,7 +128,7 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
             deleteGroup = view.findViewById(R.id.deleteGroup);
 
             view.setOnClickListener(view1 -> {
-                if(listener != null){
+                if (listener != null){
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION){
                         listener.onItemClicked(position);

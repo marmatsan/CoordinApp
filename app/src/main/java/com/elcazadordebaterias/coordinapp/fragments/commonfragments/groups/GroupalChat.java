@@ -14,15 +14,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups.CourseCardAdapter;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups.GroupCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.CourseCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.CourseSubjectCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -30,6 +33,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,14 +48,18 @@ public class GroupalChat extends Fragment {
     private FirebaseFirestore fStore;
     private FirebaseAuth fAuth;
 
-    private ArrayList<CourseCard> coursesList;
     private ArrayList<GroupCard> groupsList;
-    private CourseCardAdapter coursesAdapter;
+    private GroupCardAdapter groupsAdapter;
 
     private int userType;
 
-    public GroupalChat(int userType) {
+    private String selectedCourse;
+    private String selectedSubject;
+
+    public GroupalChat(int userType, String selectedCourse, String selectedSubject) {
         this.userType = userType;
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
     }
 
     @Override
@@ -60,11 +69,8 @@ public class GroupalChat extends Fragment {
         fStore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
 
-        coursesList = new ArrayList<CourseCard>();
         groupsList = new ArrayList<GroupCard>();
-
-        coursesAdapter = new CourseCardAdapter(coursesList, getContext(), userType);
-
+        groupsAdapter = new GroupCardAdapter(groupsList, getContext(), userType);
     }
 
     @Override
@@ -75,105 +81,37 @@ public class GroupalChat extends Fragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-        recyclerviewGroups.setAdapter(coursesAdapter);
+        recyclerviewGroups.setAdapter(groupsAdapter);
         recyclerviewGroups.setLayoutManager(layoutManager);
 
+        CollectionReference groupsCollRef =
+                fStore.collection("CoursesOrganization").document(selectedCourse)
+                        .collection("Subjects").document(selectedSubject)
+                        .collection("Groups");
+
         if (userType == UserType.TYPE_STUDENT) {
-            fStore.collectionGroup("Groups").whereArrayContains("participantsIds", fAuth.getUid())
-                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    coursesListSetup(queryDocumentSnapshots);
-                }
-            });
+            groupsCollRef.whereEqualTo("courseName", "4ºESO B")
+                    .get().addOnSuccessListener(queryDocumentSnapshots -> populateGroups(queryDocumentSnapshots));
         } else if (userType == UserType.TYPE_TEACHER) {
-            fStore.collectionGroup("Groups").whereEqualTo("coordinatorId", fAuth.getUid())
-                    .get().addOnSuccessListener(queryDocumentSnapshots -> coursesListSetup(queryDocumentSnapshots));
+            groupsCollRef.whereEqualTo("courseName", "4ºESO B")
+                    .get().addOnSuccessListener(queryDocumentSnapshots -> populateGroups(queryDocumentSnapshots));
         }
+
         return view;
     }
 
     private void populateGroups(QuerySnapshot queryDocumentSnapshots) {
         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
             Group group = document.toObject(Group.class);
-            ArrayList<String> participantNames = new ArrayList<String>();
+            ArrayList<String> participantsNames = new ArrayList<String>();
 
-            for (int i = 0; i < group.getParticipants().size(); i++) {
-                participantNames.add(group.getParticipants().get(i).getParticipantFullName());
+            for (GroupParticipant participant : group.getParticipants()) {
+                participantsNames.add(participant.getParticipantFullName());
             }
 
-            groupsList.add(new GroupCard(group.getGroupName(),document.getId(), group.getCourseName(), group.getSubjectName(), participantNames));
+            groupsList.add(new GroupCard(group.getName(), document.getId(), group.getCourseName(), group.getSubjectName(), participantsNames));
         }
-    }
-
-    /**
-     * Returns a map whose key is the name of the course and whose value is an arraylist of groupcards
-     * belonging to the same course.
-     *
-     * @return
-     */
-    private Map<String, ArrayList<GroupCard>> shortByCourseName() {
-        Map<String, ArrayList<GroupCard>> map = new HashMap<String, ArrayList<GroupCard>>();
-
-        for (GroupCard groupCard : groupsList) {
-            ArrayList<GroupCard> list = map.get(groupCard.getCourseName());
-            if (list == null) {
-                list = new ArrayList<GroupCard>();
-                map.put(groupCard.getCourseName(), list);
-            }
-            list.add(groupCard);
-        }
-
-        return map;
-    }
-
-    /**
-     * Returns a map whose key is the name of the course and whose value is another map whose key is the name
-     * of the subject and whose value is an arraylist of groupcards belonging to the same subject.
-     *
-     * @param data
-     * @return
-     */
-    private Map<String, Map<String, ArrayList<GroupCard>>> shortBySubjectName(Map<String, ArrayList<GroupCard>> data) {
-        Map<String, Map<String, ArrayList<GroupCard>>> map = new HashMap<String, Map<String, ArrayList<GroupCard>>>();
-
-        for (Map.Entry<String, ArrayList<GroupCard>> entry : data.entrySet()) {
-            Map<String, ArrayList<GroupCard>> subjectsMap = new HashMap<String, ArrayList<GroupCard>>();
-
-            for (GroupCard group : entry.getValue()) {
-                ArrayList<GroupCard> list = subjectsMap.get(group.getSubjectName());
-                if (list == null) {
-                    list = new ArrayList<GroupCard>();
-                    subjectsMap.put(group.getSubjectName(), list);
-                }
-                list.add(group);
-            }
-            map.put(entry.getKey(), subjectsMap);
-        }
-
-        return map;
-    }
-
-    private void populateCourses(Map<String, Map<String, ArrayList<GroupCard>>> data) {
-        for (Map.Entry<String, Map<String, ArrayList<GroupCard>>> courseEntry : data.entrySet()) {
-
-            ArrayList<CourseSubjectCard> subjectsList = new ArrayList<CourseSubjectCard>();
-            CourseCard courseCard = new CourseCard(courseEntry.getKey(), subjectsList);
-
-            for(Map.Entry<String, ArrayList<GroupCard>> subjectEntry : courseEntry.getValue().entrySet()){
-                subjectsList.add(new CourseSubjectCard(subjectEntry.getKey(), subjectEntry.getValue()));
-            }
-
-            coursesList.add(courseCard);
-        }
-        coursesAdapter.notifyDataSetChanged();
-    }
-
-    private void coursesListSetup(QuerySnapshot queryDocumentSnapshots){
-        populateGroups(queryDocumentSnapshots);
-        Map<String, ArrayList<GroupCard>> shortedByCourseName = shortByCourseName();
-        Map<String, Map<String, ArrayList<GroupCard>>> shortedBySubjectName = shortBySubjectName(shortedByCourseName);
-        populateCourses(shortedBySubjectName);
+        groupsAdapter.notifyDataSetChanged();
     }
 
 }

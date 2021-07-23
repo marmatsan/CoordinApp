@@ -6,6 +6,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,8 +50,8 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
-    private String selectedCourse;
-    private String selectedSubject;
+    private String selectedCourse = "4ºESO B";
+    private String selectedSubject = "Matemáticas";
 
     private MenuItem menuItem;
 
@@ -56,7 +59,11 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
 
     // Toolbar
     Toolbar toolbar;
-    String name;
+    String name; // TODO: Just for test
+
+    TextView noCourseSelected;
+    FrameLayout fragmentContainer;
+    BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +76,17 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
         // Toolbar
         toolbar = findViewById(R.id.topAppBar);
 
+        // Views
+        noCourseSelected = findViewById(R.id.noCourseSelected);
+        fragmentContainer = findViewById(R.id.fragmentContainer);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        if (selectedCourse == null || selectedSubject == null){
+            noCourseSelected.setVisibility(View.VISIBLE);
+            fragmentContainer.setVisibility(View.GONE);
+            bottomNavigationView.setVisibility(View.GONE);
+        }
+
         fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> { // TODO: Maybe setting the title in asynchronous way may lead to error
             name = (String) documentSnapshot.getData().get("FullName");
             toolbar.setTitle((String) documentSnapshot.getData().get("FullName")+ " | " + selectedCourse +"/"+ selectedSubject);
@@ -80,7 +98,6 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
         participants = new ArrayList<CourseParticipantCard>();
 
         // Bottom navigation management
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view_teacher);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.setSelectedItemId(R.id.nav_teacher_administration);
 
@@ -128,7 +145,7 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
             selectedFragment = new Administration(selectedCourse, selectedSubject);
         }
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_teacher, selectedFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, selectedFragment).commit();
 
         return true;
     };
@@ -159,6 +176,11 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
     public void onSelectedCourseChange(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
+
+        noCourseSelected.setVisibility(View.GONE);
+        fragmentContainer.setVisibility(View.VISIBLE);
+        bottomNavigationView.setVisibility(View.VISIBLE);
+
         toolbar.setTitle((String) name+ " | " + selectedCourse +"/"+ selectedSubject);
         navListener.onNavigationItemSelected(menuItem); // Update fragments with the new info
     }

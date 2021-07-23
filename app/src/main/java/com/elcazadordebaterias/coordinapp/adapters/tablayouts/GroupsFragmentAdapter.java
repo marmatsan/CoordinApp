@@ -18,8 +18,8 @@ import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Singl
 public class GroupsFragmentAdapter extends FragmentStateAdapter {
 
     private final int userType;
-    private String selectedCourse;
-    private String selectedSubject;
+    private final String selectedCourse;
+    private final String selectedSubject;
 
     public GroupsFragmentAdapter(Fragment fragment, int userType, String selectedCourse, String selectedSubject) {
         super(fragment);
@@ -35,7 +35,7 @@ public class GroupsFragmentAdapter extends FragmentStateAdapter {
             case 1:
                 return new SingleChat();
             default:
-                return new GroupalChat(userType);
+                return new GroupalChat(userType, selectedCourse, selectedSubject);
         }
     }
 

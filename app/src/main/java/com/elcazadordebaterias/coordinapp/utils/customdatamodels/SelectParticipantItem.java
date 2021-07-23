@@ -6,14 +6,14 @@ package com.elcazadordebaterias.coordinapp.utils.customdatamodels;
  */
 public class SelectParticipantItem {
 
-    private String participantName;
-    private String participantId;
+    private final String participantName;
+    private final String participantId;
     private boolean isSelected;
 
-    public SelectParticipantItem(String participantName, String participantId, boolean isSelected) {
+    public SelectParticipantItem(String participantName, String participantId) {
         this.participantName = participantName;
         this.participantId = participantId;
-        this.isSelected = isSelected;
+        this.isSelected = false;
     }
 
     public String getParticipantName() {

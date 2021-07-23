@@ -168,9 +168,9 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
 
             for (DocumentSnapshot document : queryDocumentSnapshots){
                 Group group = document.toObject(Group.class);
-                groupsIdentifiers.add(group.getGroupName());
+                groupsIdentifiers.add(group.getName());
             }
-
+        /*
             Group group = new Group(
                     petition.getTeacherId(),
                     petition.getTeacherName(),
@@ -186,6 +186,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                     .addOnSuccessListener(documentReference -> fStore.collection("Petitions").document(petitionCard.getPetitionId()).delete());
             petitionsList.remove(position);
             notifyDataSetChanged();
+            */
         });
 
     }

@@ -90,8 +90,8 @@ public class Groups extends Fragment {
 
         if (userType == UserType.TYPE_STUDENT) {
             createGroup.setOnClickListener(v -> {
-                CreateGroupDialog dialog = new CreateGroupDialog(userType);
-                dialog.show(getFragmentManager(), "dialog");
+                CreateGroupDialog dialog = new CreateGroupDialog(userType, selectedCourse, selectedSubject);
+                dialog.show(getParentFragmentManager(), "dialog");
             });
         } else if (userType == UserType.TYPE_TEACHER) {
             createGroup.setOnClickListener(v -> {
@@ -100,13 +100,13 @@ public class Groups extends Fragment {
         }
 
         createManualGroup.setOnClickListener(v -> {
-            CreateGroupDialog dialog = new CreateGroupDialog(userType);
-            dialog.show(getFragmentManager(), "dialog");
+            CreateGroupDialog dialog = new CreateGroupDialog(userType, selectedCourse, selectedSubject);
+            dialog.show(getParentFragmentManager(), "dialog");
         });
 
         createAutomaticGroup.setOnClickListener(v -> {
-            CreateAutomaticDialog dialog = new CreateAutomaticDialog();
-            dialog.show(getFragmentManager(), "dialog");
+            // CreateAutomaticDialog dialog = new CreateAutomaticDialog(selectedCourse, selectedSubject);
+            // dialog.show(getParentFragmentManager(), "dialog");
         });
 
         return view;

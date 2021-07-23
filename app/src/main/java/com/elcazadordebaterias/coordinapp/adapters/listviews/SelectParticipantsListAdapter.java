@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.adapters.listviews;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,6 @@ public class SelectParticipantsListAdapter extends BaseAdapter {
         }
 
         SelectParticipantItem participant = participantsList.get(position);
-
         holder.participantName.setText(participant.getParticipantName());
         holder.selectParticipant.setTag(participant);
         holder.selectParticipant.setChecked(participant.isSelected());

@@ -16,9 +16,12 @@ import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionGroup
 import com.elcazadordebaterias.coordinapp.utils.cards.PetitionGroupCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionUser;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -50,6 +53,7 @@ public class Petitions extends Fragment {
         // Recyclerview - Petitions
         RecyclerView groupsPetitionsRecyclerView = view.findViewById(R.id.recyclerview_petitions);
         TextView noCourseSelected = view.findViewById(R.id.noCourseSelected);
+        TextView noPetitions = view.findViewById(R.id.noPetitions);
 
         if (selectedCourse == null || selectedSubject == null) {
             noCourseSelected.setVisibility(View.VISIBLE);
@@ -67,17 +71,25 @@ public class Petitions extends Fragment {
         groupsPetitionsRecyclerView.setAdapter(petitionsAdapter);
         groupsPetitionsRecyclerView.setLayoutManager(petitionsLayoutManager);
 
-        fStore.collection("Petitions").whereEqualTo("teacherId", fAuth.getUid()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
+        fStore.collection("Petitions").whereEqualTo("teacherId", fAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                     PetitionRequest petition = document.toObject(PetitionRequest.class);
                     ArrayList<PetitionGroupParticipant> participantsList = new ArrayList<PetitionGroupParticipant>();
 
-                    for(PetitionUser user : petition.getPetitionUsersList()){
+                    for (PetitionUser user : petition.getPetitionUsersList()){
                         participantsList.add(new PetitionGroupParticipant(user.getUserFullName(), user.getPetitionStatus()));
                     }
                     petitions.add(new PetitionGroupCard(document.getId(), petition.getRequesterId(), petition.getRequesterName(), petition.getCourse() + " / " + petition.getSubject(), participantsList));
                 }
+                
+                if (petitions.isEmpty() && !(noCourseSelected.getVisibility() == View.VISIBLE)){
+                    noPetitions.setVisibility(View.VISIBLE);
+                } else {
+                    noPetitions.setVisibility(View.GONE);
+                }
+
                 petitionsAdapter.notifyDataSetChanged();
             }
         });

@@ -10,22 +10,38 @@
     <include
         android:id="@+id/topAppBar"
         layout="@layout/topappbar"
-        app:layout_constraintBottom_toTopOf="@id/fragment_container_teacher"
+        app:layout_constraintBottom_toTopOf="@id/fragmentContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <FrameLayout
-        android:id="@+id/fragment_container_teacher"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view_teacher"
+    <TextView
+        android:id="@+id/noCourseSelected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/selecciona_un_curso_y_una_asignatura_sobre_la_que_mostrar_informaci_n_para_empezar_a_usar_la_app"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topAppBar" />
+        app:layout_constraintTop_toBottomOf="@+id/topAppBar" />
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topAppBar" >
+
+    </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation_view_teacher"
+        android:id="@+id/bottomNavigationView"
         style="@style/BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,7 +49,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fragment_container_teacher"
-        app:menu="@menu/bottomnavigation_teacher_menu" />
+        app:layout_constraintTop_toBottomOf="@id/fragmentContainer"
+        app:menu="@menu/bottomnavigation_teacher_menu" >
+
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

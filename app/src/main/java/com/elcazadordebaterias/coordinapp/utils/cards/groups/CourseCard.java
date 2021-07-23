@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * the name of the course and the list of the subjects, which are also cards.
  * Used for both teacher and student.
  *
- * The layout of this object is {@link com.elcazadordebaterias.coordinapp.R.layout#utils_coursecard}
+ * The layout of this object is {@link com.elcazadordebaterias.coordinapp.R.layout#utils_cards_coursecard}
  *
  * @see CourseCardAdapter
  * @author Martín Mateos Sánchez

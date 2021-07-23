@@ -47,12 +47,15 @@ import java.util.List;
  * @author Martín Mateos Sánchez
  */
 public class CreateAutomaticDialog extends DialogFragment {
-
+/*
     // Spinners
     private Spinner courseSpinner, subjectSpinner, modeSpinner;
 
     // EditText
     private EditText numberInput;
+
+    private String selectedCourse;
+    private String selectedSubject;
 
     // Textview if we choose the second option
     TextView textview4;
@@ -65,6 +68,11 @@ public class CreateAutomaticDialog extends DialogFragment {
     FirebaseFirestore fStore;
 
     Context context;
+
+    public CreateAutomaticDialog(String selectedCourse, String selectedSubject){
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -286,12 +294,12 @@ public class CreateAutomaticDialog extends DialogFragment {
                             participantsIds,
                             participants);
 
-                    group.commit(fStore);
+                    group.createAndCommit(fStore, context);
 
                 }
             });
 
         });
     }
-
+*/
 }
