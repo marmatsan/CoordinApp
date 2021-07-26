@@ -1,8 +1,8 @@
-package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups;
+package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.util.Log;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
+import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -39,10 +40,9 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
-    private OnItemClickListener listener;
     private final int userType;
 
-    public GroupCardAdapter(ArrayList<GroupCard> groupsList, Context context, int userType){
+    public GroupCardAdapter(ArrayList<GroupCard> groupsList, Context context, int userType) {
         this.groupsList = groupsList;
         this.context = context;
         this.userType = userType;
@@ -55,14 +55,14 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
     @Override
     public GroupCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_groupcard, parent, false);
-        return new GroupCardViewHolder(view, listener);
+        return new GroupCardViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull GroupCardViewHolder holder, int position) {
-        GroupCard group = groupsList.get(position);
+        GroupCard groupCard = groupsList.get(position);
 
-        holder.groupName.setText(group.getGroupName());
+        holder.groupName.setText(groupCard.getGroupName());
 
         // A student can't have permits to delete a group
         if (userType == UserType.TYPE_STUDENT) {
@@ -73,7 +73,7 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
             builderSingle.setTitle("Participantes");
 
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.utils_participantname, R.id.participantName, group.getParticipantNames()){
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.utils_participantname, R.id.participantName, groupCard.getParticipantNames()) {
                 @Override
                 public boolean isEnabled(int position1) {
                     return false;
@@ -87,17 +87,24 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
 
         holder.deleteGroup.setOnClickListener(v -> {
             fStore.collection("CoursesOrganization")
-                    .document(group.getCourseName())
+                    .document(groupCard.getCourseName())
                     .collection("Subjects")
-                    .document(group.getSubjectName())
+                    .document(groupCard.getSubjectName())
                     .collection("Groups")
-                    .document(group.getGroupId())
+                    .document(groupCard.getGroupId())
                     .delete().addOnSuccessListener(aVoid -> {
-
-                groupsList.remove(position);
-                notifyDataSetChanged();
-
             });
+        });
+
+        holder.view.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ChatActivity.class);
+
+            // Convert the GroupCard to JSON to send it to ChatActivity
+            Gson gson = new Gson();
+            String cardAsString = gson.toJson(groupCard);
+            intent.putExtra("cardAsString", cardAsString);
+            intent.putExtra("userType", userType);
+            context.startActivity(intent);
         });
 
     }
@@ -107,35 +114,18 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
         return groupsList.size();
     }
 
-    public interface OnItemClickListener{
-        void onItemClicked(int position);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener){
-        this.listener = listener;
-    }
-
-    static class GroupCardViewHolder extends RecyclerView.ViewHolder{
+    static class GroupCardViewHolder extends RecyclerView.ViewHolder {
+        View view;
         TextView groupName;
         MaterialButton showParticipants;
         MaterialButton deleteGroup;
 
-        GroupCardViewHolder(View view, OnItemClickListener listener){
+        GroupCardViewHolder(View view) {
             super(view);
-
+            this.view = view;
             groupName = view.findViewById(R.id.groupName);
             showParticipants = view.findViewById(R.id.showParticipants);
             deleteGroup = view.findViewById(R.id.deleteGroup);
-
-            view.setOnClickListener(view1 -> {
-                if (listener != null){
-                    int position = getAdapterPosition();
-                    if(position != RecyclerView.NO_POSITION){
-                        listener.onItemClicked(position);
-                    }
-                }
-            });
-
         }
     }
 }

@@ -5,38 +5,31 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups.CourseCardAdapter;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups.GroupCardAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.groups.CourseCard;
-import com.elcazadordebaterias.coordinapp.utils.cards.groups.CourseSubjectCard;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupCardAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,6 +49,8 @@ public class GroupalChat extends Fragment {
     private String selectedCourse;
     private String selectedSubject;
 
+    private TextView noGroups;
+
     public GroupalChat(int userType, String selectedCourse, String selectedSubject) {
         this.userType = userType;
         this.selectedCourse = selectedCourse;
@@ -71,31 +66,44 @@ public class GroupalChat extends Fragment {
 
         groupsList = new ArrayList<GroupCard>();
         groupsAdapter = new GroupCardAdapter(groupsList, getContext(), userType);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_groups_groupalchat, container, false);
 
+        // Views
         RecyclerView recyclerviewGroups = view.findViewById(R.id.recyclerviewGroups);
+        noGroups = view.findViewById(R.id.noGroups);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
         recyclerviewGroups.setAdapter(groupsAdapter);
         recyclerviewGroups.setLayoutManager(layoutManager);
 
-        CollectionReference groupsCollRef =
-                fStore.collection("CoursesOrganization").document(selectedCourse)
-                        .collection("Subjects").document(selectedSubject)
-                        .collection("Groups");
+        CollectionReference groupsCollRef = fStore
+                .collection("CoursesOrganization").document(selectedCourse)
+                .collection("Subjects").document(selectedSubject)
+                .collection("Groups");
 
-        if (userType == UserType.TYPE_STUDENT) {
-            groupsCollRef.whereEqualTo("courseName", "4ºESO B")
-                    .get().addOnSuccessListener(queryDocumentSnapshots -> populateGroups(queryDocumentSnapshots));
-        } else if (userType == UserType.TYPE_TEACHER) {
-            groupsCollRef.whereEqualTo("courseName", "4ºESO B")
-                    .get().addOnSuccessListener(queryDocumentSnapshots -> populateGroups(queryDocumentSnapshots));
-        }
+        groupsCollRef
+                .orderBy("name", Query.Direction.ASCENDING)
+                .addSnapshotListener((value, error) -> {
+
+                    if (error != null) {
+                        return;
+                    }
+
+                    groupsList.clear();
+
+                    if (userType == UserType.TYPE_STUDENT) {
+                        groupsCollRef.whereArrayContains("participantsIds", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> populateGroups(queryDocumentSnapshots));
+                    } else if (userType == UserType.TYPE_TEACHER){
+                        groupsCollRef.whereEqualTo("coordinatorId", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> populateGroups(queryDocumentSnapshots));
+                    }
+
+                });
 
         return view;
     }
@@ -111,7 +119,13 @@ public class GroupalChat extends Fragment {
 
             groupsList.add(new GroupCard(group.getName(), document.getId(), group.getCourseName(), group.getSubjectName(), participantsNames));
         }
+
+        if (groupsList.isEmpty()){
+            noGroups.setVisibility(View.VISIBLE);
+        } else {
+            noGroups.setVisibility(View.GONE);
+        }
+
         groupsAdapter.notifyDataSetChanged();
     }
-
 }

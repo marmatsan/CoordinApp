@@ -70,7 +70,7 @@ public class SelectDisplayedCourse extends DialogFragment implements CourseExpan
     // Get selected course and selected subject
     @Override
     public void onClick(String selectedCourse, String selectedSubject) {
-        onSelectedCourse.onSelectedCourseChange(selectedCourse, selectedSubject);
+        onSelectedCourse.   onSelectedCourseChange(selectedCourse, selectedSubject);
         Toast.makeText(context, "From fragment: " + selectedCourse + " - " + selectedSubject, Toast.LENGTH_SHORT).show();
 
     }

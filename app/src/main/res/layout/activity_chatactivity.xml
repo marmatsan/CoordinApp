@@ -16,7 +16,7 @@
         <include
             android:id="@+id/topAppBar"
             layout="@layout/topappbar"
-            app:layout_constraintBottom_toTopOf="@id/fragment_container_student"
+            app:layout_constraintBottom_toTopOf="@id/fragmentContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

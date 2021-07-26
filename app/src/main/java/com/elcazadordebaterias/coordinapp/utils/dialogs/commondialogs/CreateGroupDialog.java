@@ -54,8 +54,8 @@ public class CreateGroupDialog extends DialogFragment {
     private ArrayList<SelectParticipantItem> participantsList;
     private SelectParticipantsListAdapter participantsAdapter;
 
-    private String selectedCourse;
-    private String selectedSubject;
+    private final String selectedCourse;
+    private final String selectedSubject;
 
     public CreateGroupDialog(int userType, String selectedCourse, String selectedSubject) {
         this.userType = userType;
@@ -90,7 +90,15 @@ public class CreateGroupDialog extends DialogFragment {
 
         populateParticipants();
 
-        builder.setView(view).setTitle("Crear un único grupo")
+        String dialogTitle = null;
+        
+        if (userType == UserType.TYPE_STUDENT) {
+            dialogTitle = "Petición para crear un grupo";
+        } else if (userType == UserType.TYPE_TEACHER){
+            dialogTitle = "Crear un único grupo";
+        }
+        
+        builder.setView(view).setTitle(dialogTitle)
                 .setNegativeButton("Cancelar", (dialogInterface, i) -> {
                     // Just closes the dialog
                 })
@@ -199,7 +207,8 @@ public class CreateGroupDialog extends DialogFragment {
     }
 
     private void populateParticipants(){
-        fStore.collection("CoursesOrganization").document(selectedCourse)
+        fStore
+                .collection("CoursesOrganization").document(selectedCourse)
                 .collection("Subjects").document(selectedSubject).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     Subject subject = documentSnapshot.toObject(Subject.class);

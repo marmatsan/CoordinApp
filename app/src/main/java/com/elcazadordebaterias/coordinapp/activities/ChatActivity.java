@@ -1,13 +1,11 @@
 package com.elcazadordebaterias.coordinapp.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,12 +19,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -36,11 +30,9 @@ import java.util.ArrayList;
 
 /**
  * Activity that represents a chat room. It is launched when we click on one {@link com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard},
- * and it is assigned to each GroupCard in class {@link com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups.CourseSubjectAdapter}
  *
  * @author Martín Mateos Sánchez
  * @see com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard
- * @see com.elcazadordebaterias.coordinapp.adapters.recyclerviews.groups.CourseSubjectAdapter
  */
 public class ChatActivity extends AppCompatActivity {
 
@@ -55,6 +47,11 @@ public class ChatActivity extends AppCompatActivity {
 
     // Reference to chatroom collection
     private CollectionReference chatroomRef;
+
+    private ArrayList<ChatMessageCard> messageList;
+    private MessagesListAdapter messageAdapter;
+
+    private int userType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +71,9 @@ public class ChatActivity extends AppCompatActivity {
         String cardAsString = getIntent().getStringExtra("cardAsString");
         GroupCard card = gson.fromJson(cardAsString, GroupCard.class);
 
+        // Get userType
+        userType = getIntent().getIntExtra("userType", 0);
+
         // Reference to the collection of the messages
         chatroomRef = fStore
                 .collection("CoursesOrganization").document(card.getCourseName())
@@ -84,8 +84,8 @@ public class ChatActivity extends AppCompatActivity {
         // Recyclerview setup
         RecyclerView messageListContainer = findViewById(R.id.messageListContainer);
 
-        ArrayList<ChatMessageCard> messageList = new ArrayList<ChatMessageCard>();
-        MessagesListAdapter messageAdapter = new MessagesListAdapter(messageList);
+        messageList = new ArrayList<ChatMessageCard>();
+        messageAdapter = new MessagesListAdapter(messageList);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
@@ -102,37 +102,25 @@ public class ChatActivity extends AppCompatActivity {
             }
 
             messageList.clear();
-            for (QueryDocumentSnapshot messageDoc : queryDocumentSnapshots) {
-                ChatMessageCard message = messageDoc.toObject(ChatMessageCard.class);
-                messageList.add(message);
-            }
-            messageAdapter.notifyDataSetChanged();
+            populateMessages(queryDocumentSnapshots);
         });
 
         // Setup for send message button
         sendMessage.setOnClickListener(v -> {
             if (!messageInput.getText().toString().isEmpty()) {
-                fStore.collection("Students").document(fAuth.getUid()).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            sendMessage((String) document.getData().get("FullName"), messageInput.getText().toString(), fAuth.getUid());
-                        } else {
-                            fStore.collection("Teachers").document(fAuth.getUid()).get().addOnCompleteListener(task1 -> {
-                                if (task1.isSuccessful()) {
-                                    DocumentSnapshot document1 = task1.getResult();
-                                    if (document1.exists()) {
-                                        sendMessage((String) document1.getData().get("FullName"), messageInput.getText().toString(), fAuth.getUid());
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
+                if (userType == UserType.TYPE_STUDENT){
+                    fStore.collection("Students").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
+                        sendMessage((String) documentSnapshot.getData().get("FullName"), messageInput.getText().toString(), fAuth.getUid());
+                    });
+                } else if (userType == UserType.TYPE_TEACHER){
+                    fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
+                        sendMessage((String) documentSnapshot.getData().get("FullName"), messageInput.getText().toString(), fAuth.getUid());
+                    });
+                }
             }
         });
 
-        sendMessage.setOnClickListener(v -> {
+        sendFile.setOnClickListener(v -> {
 
         });
 
@@ -140,9 +128,15 @@ public class ChatActivity extends AppCompatActivity {
 
     private void sendMessage(String fullName, String text, String userId) {
         ChatMessageCard message = new ChatMessageCard(fullName, userId, text, Timestamp.now().toDate());
-
         chatroomRef.add(message).addOnSuccessListener(documentReference -> messageInput.getText().clear());
+    }
 
+    private void populateMessages(QuerySnapshot queryDocumentSnapshots){
+        for (QueryDocumentSnapshot messageDoc : queryDocumentSnapshots) {
+            ChatMessageCard message = messageDoc.toObject(ChatMessageCard.class);
+            messageList.add(message);
+        }
+        messageAdapter.notifyDataSetChanged();
     }
 
 }

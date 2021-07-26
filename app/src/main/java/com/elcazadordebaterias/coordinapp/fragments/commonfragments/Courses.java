@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.commonfragments.courses;
+package com.elcazadordebaterias.coordinapp.fragments.commonfragments;
 
 import android.os.Bundle;
 
@@ -98,24 +98,21 @@ public class Courses extends Fragment {
         fStore.collection("CoursesOrganization").document(selectedCourse)
                 .collection("Subjects").document(selectedSubject)
                 .get().addOnSuccessListener(documentSnapshot -> {
-            Subject subject = documentSnapshot.toObject(Subject.class);
-            ArrayList<String> studentIds = subject.getStudentIDs();
-            String teacherId = subject.getTeacherID();
+                    Subject subject = documentSnapshot.toObject(Subject.class);
+                    ArrayList<String> studentIds = subject.getStudentIDs();
+                    String teacherId = subject.getTeacherID();
 
-            fStore.collection("Students").whereIn(FieldPath.documentId(), studentIds)
-                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        participants.add(new CourseParticipantCard("Estudiante", (String) document.get("FullName"), (String) document.get("UserEmail")));
-                    }
-                    fStore.collection("Teachers").document(teacherId)
-                            .get().addOnSuccessListener(document2 -> {
-                        participants.add(new CourseParticipantCard("Profesor", (String) document2.get("FullName"), (String) document2.get("UserEmail")));
-                        courseParticipantAdapter.notifyDataSetChanged();
-                    });
-                }
-            });
+                    fStore.collection("Students").whereIn(FieldPath.documentId(), studentIds)
+                            .get().addOnSuccessListener(queryDocumentSnapshots -> {
+                                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                    participants.add(new CourseParticipantCard("Estudiante", (String) document.get("FullName"), (String) document.get("UserEmail")));
+                                }
+                                fStore.collection("Teachers").document(teacherId)
+                                        .get().addOnSuccessListener(document2 -> {
+                                    participants.add(new CourseParticipantCard("Profesor", (String) document2.get("FullName"), (String) document2.get("UserEmail")));
+                                    courseParticipantAdapter.notifyDataSetChanged();
+                                });
+                            });
         });
     }
 

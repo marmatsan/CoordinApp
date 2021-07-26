@@ -47,9 +47,11 @@ import java.util.List;
  */
 public class MainActivity_Teacher extends AppCompatActivity implements SelectDisplayedCourse.onSelectedCourse {
 
+    // Firebase
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
+    // Selected course and subject
     private String selectedCourse = "4ºESO B";
     private String selectedSubject = "Matemáticas";
 
@@ -61,6 +63,7 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
     Toolbar toolbar;
     String name; // TODO: Just for test
 
+    // Views
     TextView noCourseSelected;
     FrameLayout fragmentContainer;
     BottomNavigationView bottomNavigationView;
@@ -100,7 +103,6 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
         // Bottom navigation management
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.setSelectedItemId(R.id.nav_teacher_administration);
-
     }
 
     @Override

@@ -170,23 +170,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                 Group group = document.toObject(Group.class);
                 groupsIdentifiers.add(group.getName());
             }
-        /*
-            Group group = new Group(
-                    petition.getTeacherId(),
-                    petition.getTeacherName(),
-                    petition.getCourse(),
-                    petition.getSubject(),
-                    petition.getPetitionUsersIds(),
-                    participants);
 
-            group.setGroupName(groupsIdentifiers);
-
-            groupsCollRef
-                    .add(group)
-                    .addOnSuccessListener(documentReference -> fStore.collection("Petitions").document(petitionCard.getPetitionId()).delete());
-            petitionsList.remove(position);
-            notifyDataSetChanged();
-            */
         });
 
     }

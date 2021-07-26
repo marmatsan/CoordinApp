@@ -130,5 +130,6 @@
     <string name="selecciona_a_los_participantes_que_quieres_incluir_en_el_grupo">Selecciona a los participantes que quieres incluir en el grupo</string>
     <string name="selecciona_un_curso_y_una_asignatura_sobre_la_que_mostrar_informaci_n">Selecciona un curso y una asignatura sobre la que mostrar información</string>
     <string name="selecciona_un_curso_y_una_asignatura_sobre_la_que_mostrar_informaci_n_para_empezar_a_usar_la_app">Selecciona un curso y una asignatura sobre la que mostrar información para empezar a usar la app</string>
+    <string name="a_n_no_tienes_creado_ning_n_grupo_puedes_pulsar_el_bot_n_para_crear_un_grupo">Aún no tienes creado ningún grupo. Puedes pulsar el botón + para crear un grupo.</string>
 
 </resources>

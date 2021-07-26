@@ -4,10 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Petitions;
 import com.elcazadordebaterias.coordinapp.fragments.student.home.Home;
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.courses.Courses;
-import com.elcazadordebaterias.coordinapp.fragments.student.home.Petitions;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Courses;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 
 /**
@@ -33,9 +32,9 @@ public class HomeFragmentStudentAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 1:
-                return new Petitions();
+                return new Petitions(UserType.TYPE_STUDENT, selectedCourse, selectedSubject);
             default:
-                return new EmptyFragment(); // TODO: Change
+                return new Courses(UserType.TYPE_STUDENT, selectedCourse, selectedSubject); // TODO: Change
         }
     }
 

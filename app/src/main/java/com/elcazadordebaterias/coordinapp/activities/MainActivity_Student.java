@@ -6,6 +6,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +25,7 @@ import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.SelectDisp
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,11 +37,24 @@ import java.util.HashMap;
  */
 public class MainActivity_Student extends AppCompatActivity implements SelectDisplayedCourse.onSelectedCourse {
 
+    // Firebase
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
+    // Selected course and subject
     private String selectedCourse;
     private String selectedSubject;
+
+    private MenuItem menuItem;
+
+    // Views
+    TextView noCourseSelected;
+    FrameLayout fragmentContainer;
+    BottomNavigationView bottomNavigationView;
+
+    // Toolbar
+    Toolbar toolbar;
+    String name; // TODO: Just for test
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,23 +64,35 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
-        // Bottom navigation management
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view_student);
-        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-        bottomNavigationView.setSelectedItemId(R.id.nav_student_home);
-
         // Toolbar
-        Toolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar = findViewById(R.id.topAppBar);
+
+        // Views
+        noCourseSelected = findViewById(R.id.noCourseSelected);
+        fragmentContainer = findViewById(R.id.fragmentContainer);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        if (selectedCourse == null || selectedSubject == null){
+            noCourseSelected.setVisibility(View.VISIBLE);
+            fragmentContainer.setVisibility(View.GONE);
+            bottomNavigationView.setVisibility(View.GONE);
+        }
 
         fStore.collection("Students").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> { // TODO: Maybe setting the title in asynchronous way may lead to error
-            toolbar.setTitle((String) documentSnapshot.getData().get("FullName"));
+            name = (String) documentSnapshot.getData().get("FullName");
+            toolbar.setTitle((String) documentSnapshot.getData().get("FullName")+ " | " + selectedCourse +"/"+ selectedSubject);
         });
 
         setSupportActionBar(toolbar);
+
+        // Bottom navigation management
+        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+        bottomNavigationView.setSelectedItemId(R.id.nav_student_home);
     }
 
     // Static interface to create the fragment associated with the pressed item on the BottomNavigationView
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
+        this.menuItem = item;
         Fragment selectedFragment;
 
         int itemId = item.getItemId();
@@ -82,7 +111,7 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
             selectedFragment = new Home(selectedCourse, selectedSubject);
         }
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_student, selectedFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, selectedFragment).commit();
 
         return true;
     };
@@ -91,7 +120,6 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.topappbar_menu, menu);
-
         return true;
     }
 
@@ -101,8 +129,7 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
         if (item.getItemId() == R.id.select_course_subject){
             HashMap<String, ArrayList<String>> detail = new HashMap<String, ArrayList<String>>();
             SelectDisplayedCourse dialog = new SelectDisplayedCourse(detail);
-
-            dialog.show(getSupportFragmentManager(), "dialog");
+            populateCoursesListAndShow(detail, dialog);
         } else if (item.getItemId() == R.id.menu_logout){
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(this, LoginActivity.class));
@@ -116,6 +143,33 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
     public void onSelectedCourseChange(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
-        Log.d("DEBUGGING", "From activity: " + selectedCourse + " - " + selectedSubject);
+
+        noCourseSelected.setVisibility(View.GONE);
+        fragmentContainer.setVisibility(View.VISIBLE);
+        bottomNavigationView.setVisibility(View.VISIBLE);
+
+        toolbar.setTitle((String) name+ " | " + selectedCourse +"/"+ selectedSubject);
+        navListener.onNavigationItemSelected(menuItem); // Update fragments with the new info
     }
+
+    public void populateCoursesListAndShow(HashMap<String, ArrayList<String>> detail, SelectDisplayedCourse dialog) {
+        fStore.collection("CoursesOrganization")
+                .whereArrayContains("allParticipantsIDs", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                ArrayList<String> subjectNames = new ArrayList<String>();
+                detail.put(document.getId(), subjectNames);
+
+                fStore.collection("CoursesOrganization").document(document.getId())
+                        .collection("Subjects").whereArrayContains("studentIDs", fAuth.getUid())
+                        .get().addOnSuccessListener(queryDocumentSnapshots1 -> {
+                    for (QueryDocumentSnapshot document1 : queryDocumentSnapshots1) {
+                        subjectNames.add(document1.getId());
+                    }
+                });
+
+            }
+            dialog.show(getSupportFragmentManager(), "dialog");
+        });
+    }
+
 }

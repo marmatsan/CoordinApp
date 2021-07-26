@@ -87,7 +87,6 @@ public class Group {
             ArrayList<Integer> numbers = new ArrayList<Integer>();
 
             for (String identifier : groupsNames) {
-                Log.d("DEBUGGING", "" + groupsNames);
                 String numberOnly = identifier.replaceAll("[^0-9]", "");
                 numbers.add(Integer.parseInt(numberOnly));
             }
