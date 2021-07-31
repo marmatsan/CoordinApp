@@ -105,31 +105,6 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
         bottomNavigationView.setSelectedItemId(R.id.nav_teacher_administration);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
     // Static interface to create the fragment associated with the pressed item on the BottomNavigationView
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
         this.menuItem = item;

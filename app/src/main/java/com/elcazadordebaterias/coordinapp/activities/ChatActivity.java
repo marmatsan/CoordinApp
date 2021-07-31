@@ -1,9 +1,23 @@
 package com.elcazadordebaterias.coordinapp.activities;
 
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,18 +28,24 @@ import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.MessagesListAda
 import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.StorageFileReference;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -40,6 +60,9 @@ public class ChatActivity extends AppCompatActivity {
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
 
+    // Storage
+    private StorageReference groupStorageRef;
+
     // Views
     private EditText messageInput;
     private MaterialButton sendMessage;
@@ -48,8 +71,14 @@ public class ChatActivity extends AppCompatActivity {
     // Reference to chatroom collection
     private CollectionReference chatroomRef;
 
+    // Reference to file storage collection
+    private CollectionReference storageRef;
+
     private ArrayList<ChatMessageCard> messageList;
     private MessagesListAdapter messageAdapter;
+
+    // Card with all the information
+    GroupCard card;
 
     private int userType;
 
@@ -58,6 +87,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatactivity);
 
+        // Firebase
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
@@ -69,23 +99,29 @@ public class ChatActivity extends AppCompatActivity {
         // Get card to know where we have to write the messages
         Gson gson = new Gson();
         String cardAsString = getIntent().getStringExtra("cardAsString");
-        GroupCard card = gson.fromJson(cardAsString, GroupCard.class);
+        card = gson.fromJson(cardAsString, GroupCard.class);
+
+        // Reference to Storage custom of this group
+        groupStorageRef = FirebaseStorage.getInstance().getReference()
+                .child(card.getCourseName() + "/" + card.getSubjectName() + "/" + card.getGroupName());
 
         // Get userType
         userType = getIntent().getIntExtra("userType", 0);
 
         // Reference to the collection of the messages
-        chatroomRef = fStore
+        DocumentReference groupRef = fStore
                 .collection("CoursesOrganization").document(card.getCourseName())
                 .collection("Subjects").document(card.getSubjectName())
-                .collection("Groups").document(card.getGroupId())
-                .collection("ChatRoom");
+                .collection("Groups").document(card.getGroupId());
+
+        chatroomRef = groupRef.collection("ChatRoom");
+        storageRef = groupRef.collection("Storage");
 
         // Recyclerview setup
         RecyclerView messageListContainer = findViewById(R.id.messageListContainer);
 
         messageList = new ArrayList<ChatMessageCard>();
-        messageAdapter = new MessagesListAdapter(messageList);
+        messageAdapter = new MessagesListAdapter(messageList, this);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
@@ -108,35 +144,114 @@ public class ChatActivity extends AppCompatActivity {
         // Setup for send message button
         sendMessage.setOnClickListener(v -> {
             if (!messageInput.getText().toString().isEmpty()) {
-                if (userType == UserType.TYPE_STUDENT){
-                    fStore.collection("Students").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
-                        sendMessage((String) documentSnapshot.getData().get("FullName"), messageInput.getText().toString(), fAuth.getUid());
-                    });
-                } else if (userType == UserType.TYPE_TEACHER){
-                    fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
-                        sendMessage((String) documentSnapshot.getData().get("FullName"), messageInput.getText().toString(), fAuth.getUid());
-                    });
-                }
+                sendMessage(messageInput.getText().toString(), null);
             }
         });
 
         sendFile.setOnClickListener(v -> {
-
+            selectFile();
         });
 
     }
 
-    private void sendMessage(String fullName, String text, String userId) {
-        ChatMessageCard message = new ChatMessageCard(fullName, userId, text, Timestamp.now().toDate());
-        chatroomRef.add(message).addOnSuccessListener(documentReference -> messageInput.getText().clear());
+    private void sendMessage(String messageInputText, StorageFileReference fileRef) {
+        String collectionPath = null;
+
+        if (userType == UserType.TYPE_STUDENT) {
+            collectionPath = "Students";
+        } else if (userType == UserType.TYPE_TEACHER) {
+            collectionPath = "Teachers";
+        }
+
+        fStore.collection(collectionPath).document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
+            String fullName = (String) documentSnapshot.get("FullName");
+            String messageTitle = null;
+            String message = null;
+            if(fileRef == null){
+                messageTitle = fullName;
+                message = messageInputText;
+            } else {
+                messageTitle = "Archivo subido";
+                message = fullName + " ha subido el archivo " + fileRef.getFileName() + ". Puedes encontrarlo en la pestaña Archivos o descargarlo haciendo click en el siguiente link.";
+            }
+            ChatMessageCard messageCard = new ChatMessageCard(messageTitle, fAuth.getUid(), message, Timestamp.now().toDate(), fileRef);
+            chatroomRef.add(messageCard).addOnSuccessListener(documentReference -> messageInput.getText().clear());
+        });
+
     }
 
-    private void populateMessages(QuerySnapshot queryDocumentSnapshots){
+    private void populateMessages(QuerySnapshot queryDocumentSnapshots) {
         for (QueryDocumentSnapshot messageDoc : queryDocumentSnapshots) {
             ChatMessageCard message = messageDoc.toObject(ChatMessageCard.class);
             messageList.add(message);
         }
         messageAdapter.notifyDataSetChanged();
+    }
+
+    private void selectFile() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        startActivityForResult(Intent.createChooser(intent, "Selecciona un archivo"), 12);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 12 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            uploadFile(data.getData());
+        }
+
+    }
+
+    private void uploadFile(Uri data) {
+
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        String type = mime.getExtensionFromMimeType(cR.getType(data));
+
+        if (type.equals("pdf") || type.equals("jpeg") || type.equals("png")) {
+
+            String fileNameWithExtension = getFileName(data);
+
+            StorageReference fileRef = groupStorageRef.child("/" + fileNameWithExtension);
+
+            fileRef.putFile(data).addOnSuccessListener(taskSnapshot -> {
+                Toast.makeText(this, "Archivo subido", Toast.LENGTH_SHORT).show();
+
+                fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    StorageFileReference fileReference = new StorageFileReference(fileNameWithExtension, uri.toString());
+                    storageRef.add(fileReference).addOnSuccessListener(documentReference -> {
+                        sendMessage(null, fileReference);
+                    });
+                });
+
+            });
+
+        } else {
+            Toast.makeText(this, "Archivo no soportado. Se soportan archivos con extensión .pdf, .png y .jpeg", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 
 }

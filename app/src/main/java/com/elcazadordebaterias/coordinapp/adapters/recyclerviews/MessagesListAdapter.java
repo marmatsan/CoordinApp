@@ -1,5 +1,14 @@
 package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +33,18 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
 
     private static final int MESSAGE_LEFT = 0;
     private static final int MESSAGE_RIGHT = 1;
+    private static final int MESSAGE_CENTER = 2;
 
     private ArrayList<ChatMessageCard> messageList;
 
     private FirebaseAuth fAuth;
 
-    public MessagesListAdapter(ArrayList<ChatMessageCard> messageList) {
+    private Context context;
+
+    public MessagesListAdapter(ArrayList<ChatMessageCard> messageList, Context context) {
         this.messageList = messageList;
+        this.context = context;
+
         fAuth = FirebaseAuth.getInstance();
     }
 
@@ -39,10 +53,13 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
     @Override
     public MessageListViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View view;
+
         if (viewType == MESSAGE_RIGHT) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_chatmessage_right, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_chatmessageright, parent, false);
+        } else if (viewType == MESSAGE_LEFT) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_chatmessageleft, parent, false);
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_chatmessage_left, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_chatmessagecenter, parent, false);
         }
 
         return new MessageListViewHolder(view);
@@ -50,10 +67,32 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull MessageListViewHolder holder, int position) {
-        ChatMessageCard message = messageList.get(position);
+        ChatMessageCard messageCard = messageList.get(position);
 
-        holder.senderName.setText(message.getSenderName());
-        holder.message.setText(message.getMessage());
+        holder.messageTitle.setText(messageCard.getMessageTitle());
+
+        if (messageCard.getFileRef() == null){
+            holder.message.setText(messageCard.getMessage());
+        } else {
+            SpannableString ss = new SpannableString(messageCard.getMessage());
+            ClickableSpan span = new ClickableSpan() {
+                @Override
+                public void onClick(View textView) {
+                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                    Uri uri = Uri.parse(messageCard.getFileRef().getDownloadLink());
+                    DownloadManager.Request request = new DownloadManager.Request(uri);
+
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, messageCard.getFileRef().getFileName());
+
+                    downloadManager.enqueue(request);
+                }
+            };
+            ss.setSpan(span, messageCard.getMessage().indexOf("link"), messageCard.getMessage().indexOf("link") + "link".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.message.setText(ss);
+            holder.message.setMovementMethod(LinkMovementMethod.getInstance());
+        }
+
     }
 
     @Override
@@ -63,22 +102,26 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
 
     @Override
     public int getItemViewType(int position) {
-        if (messageList.get(position).getSenderId().equals(fAuth.getUid())){
-            return MESSAGE_RIGHT;
+        if (messageList.get(position).getFileRef() != null){
+            return MESSAGE_CENTER;
         } else {
-            return MESSAGE_LEFT;
+            if (messageList.get(position).getSenderId().equals(fAuth.getUid())){
+                return MESSAGE_RIGHT;
+            } else {
+                return MESSAGE_LEFT;
+            }
         }
     }
 
     static class MessageListViewHolder extends RecyclerView.ViewHolder{
 
-        TextView senderName;
+        TextView messageTitle;
         TextView message;
 
         public MessageListViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
 
-            senderName = itemView.findViewById(R.id.senderName);
+            messageTitle = itemView.findViewById(R.id.messageTitle);
             message = itemView.findViewById(R.id.message);
         }
     }

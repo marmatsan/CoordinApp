@@ -50,10 +50,14 @@ public class Groups extends Fragment {
     // Adapter
     private GroupsFragmentAdapter optionsAdapter;
 
-    private final int userType;
+    private int userType;
 
     private String selectedCourse;
     private String selectedSubject;
+
+    public Groups(){
+
+    }
 
     public Groups(int userType, String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
