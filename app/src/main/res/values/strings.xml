@@ -119,7 +119,6 @@
     <string name="multirespuesta">Multirespuesta</string>
     <string name="recordatorio">Recordatorio</string>
     <string name="responder">Responder</string>
-    <string name="_4_introduce_el_n_mero_de_grupos">4. Introduce el número de grupos</string>
     <string name="incluir_a_los_alumnos_restantes">Incluir a los alumnos restantes</string>
     <string name="groupname">GroupName</string>
     <string name="estad_sticas">Estadísticas</string>
@@ -131,5 +130,10 @@
     <string name="selecciona_un_curso_y_una_asignatura_sobre_la_que_mostrar_informaci_n">Selecciona un curso y una asignatura sobre la que mostrar información</string>
     <string name="selecciona_un_curso_y_una_asignatura_sobre_la_que_mostrar_informaci_n_para_empezar_a_usar_la_app">Selecciona un curso y una asignatura sobre la que mostrar información para empezar a usar la app</string>
     <string name="a_n_no_tienes_creado_ning_n_grupo_puedes_pulsar_el_bot_n_para_crear_un_grupo">Aún no tienes creado ningún grupo. Puedes pulsar el botón + para crear un grupo.</string>
+    <string name="_1_selecciona_el_modo_de_creaci_n_de_grupos">1. Selecciona el modo de creación de grupos</string>
+    <string name="indicar_el_n_mero_de_alumnos_por_grupo">Indicar el número de alumnos por grupo</string>
+    <string name="indicar_el_n_mero_de_grupos">Indicar el número de grupos</string>
+    <string name="_2_introduce_el_n_mero_de_alumnos_por_grupo">2. Introduce el número de alumnos por grupo</string>
+    <string name="_2_introduce_el_n_mero_de_grupos">2. Introduce el número de grupos</string>
 
 </resources>

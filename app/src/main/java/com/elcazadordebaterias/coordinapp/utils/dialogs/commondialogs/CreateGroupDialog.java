@@ -188,6 +188,7 @@ public class CreateGroupDialog extends DialogFragment {
                         } else {
                             fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(teacherDocument -> {
 
+                                /*
                                 Group group = new Group(
                                         fAuth.getUid(),
                                         (String) teacherDocument.get("FullName"),
@@ -197,7 +198,7 @@ public class CreateGroupDialog extends DialogFragment {
                                         participants);
 
                                     group.createAndCommit(fStore, context);
-
+                                */
                             });
                         }
                     }

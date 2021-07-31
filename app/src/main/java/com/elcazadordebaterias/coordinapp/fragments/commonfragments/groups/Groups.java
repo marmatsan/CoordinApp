@@ -16,6 +16,7 @@ import com.elcazadordebaterias.coordinapp.adapters.tablayouts.GroupsFragmentAdap
 
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.CreateGroupDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateAutomaticDialog;
 import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -106,8 +107,8 @@ public class Groups extends Fragment {
         });
 
         createAutomaticGroup.setOnClickListener(v -> {
-            // CreateAutomaticDialog dialog = new CreateAutomaticDialog(selectedCourse, selectedSubject);
-            // dialog.show(getParentFragmentManager(), "dialog");
+            CreateAutomaticDialog dialog = new CreateAutomaticDialog(selectedCourse, selectedSubject);
+            dialog.show(getParentFragmentManager(), "dialog");
         });
 
         return view;

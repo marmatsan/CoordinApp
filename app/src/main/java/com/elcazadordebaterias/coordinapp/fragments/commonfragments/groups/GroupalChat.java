@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups;
 
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,14 +94,32 @@ public class GroupalChat extends Fragment {
 
                     if (error != null) {
                         return;
+                    } else if (value == null) {
+                        return;
                     }
 
                     groupsList.clear();
 
-                    if (userType == UserType.TYPE_STUDENT) {
-                        groupsCollRef.whereArrayContains("participantsIds", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> populateGroups(queryDocumentSnapshots));
-                    } else if (userType == UserType.TYPE_TEACHER){
-                        groupsCollRef.whereEqualTo("coordinatorId", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> populateGroups(queryDocumentSnapshots));
+                    for (QueryDocumentSnapshot document : value) {
+                        Group group = document.toObject(Group.class);
+
+                        if(group.getParticipantsIds().contains(fAuth.getUid())){
+                            ArrayList<String> participantsNames = new ArrayList<String>();
+
+                            for (GroupParticipant participant : group.getParticipants()) {
+                                participantsNames.add(participant.getParticipantFullName());
+                            }
+
+                            groupsList.add(new GroupCard(group.getName(), document.getId(), group.getCourseName(), group.getSubjectName(), participantsNames));
+                        }
+                    }
+
+                    groupsAdapter.notifyDataSetChanged();
+
+                    if (groupsList.isEmpty()){
+                        noGroups.setVisibility(View.VISIBLE);
+                    } else {
+                        noGroups.setVisibility(View.GONE);
                     }
 
                 });
@@ -108,24 +127,4 @@ public class GroupalChat extends Fragment {
         return view;
     }
 
-    private void populateGroups(QuerySnapshot queryDocumentSnapshots) {
-        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-            Group group = document.toObject(Group.class);
-            ArrayList<String> participantsNames = new ArrayList<String>();
-
-            for (GroupParticipant participant : group.getParticipants()) {
-                participantsNames.add(participant.getParticipantFullName());
-            }
-
-            groupsList.add(new GroupCard(group.getName(), document.getId(), group.getCourseName(), group.getSubjectName(), participantsNames));
-        }
-
-        if (groupsList.isEmpty()){
-            noGroups.setVisibility(View.VISIBLE);
-        } else {
-            noGroups.setVisibility(View.GONE);
-        }
-
-        groupsAdapter.notifyDataSetChanged();
-    }
 }

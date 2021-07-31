@@ -40,7 +40,8 @@ public class Group {
     }
 
 
-    public Group(String coordinatorId, String coordinatorName, String courseName, String subjectName, ArrayList<String> participantsIds, ArrayList<GroupParticipant> participants) {
+    public Group(String name, String coordinatorId, String coordinatorName, String courseName, String subjectName, ArrayList<String> participantsIds, ArrayList<GroupParticipant> participants) {
+        this.name = name;
         this.coordinatorId = coordinatorId;
         this.coordinatorName = coordinatorName;
         this.courseName = courseName;
@@ -78,55 +79,4 @@ public class Group {
         return participants;
     }
 
-
-    // Set the name of the group by searching the max identifier from an array of group Names
-    public void setGroupName(ArrayList<String> groupsNames) {
-        if (groupsNames.isEmpty()) {
-            this.name = "Grupo 1";
-        } else {
-            ArrayList<Integer> numbers = new ArrayList<Integer>();
-
-            for (String identifier : groupsNames) {
-                String numberOnly = identifier.replaceAll("[^0-9]", "");
-                numbers.add(Integer.parseInt(numberOnly));
-            }
-
-            int maxNumber = Collections.max(numbers);
-            int newGroupNumber = maxNumber + 1;
-
-            this.name = "Grupo " + newGroupNumber;
-        }
-    }
-
-    public void createAndCommit(FirebaseFirestore fStore, Context context) {
-
-        CollectionReference groupsCollRef = fStore.collection("CoursesOrganization")
-                .document(getCourseName())
-                .collection("Subjects")
-                .document(getSubjectName())
-                .collection("Groups");
-
-        groupsCollRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
-            ArrayList<String> groupsNames = new ArrayList<String>();
-
-            for (DocumentSnapshot document : queryDocumentSnapshots) {
-                Group group = document.toObject(Group.class);
-                if (group.getName() != null) {
-                    groupsNames.add(group.getName());
-                }
-            }
-
-            setGroupName(groupsNames);
-
-            groupsCollRef.add(this).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Toast.makeText(context, "Grupo creado correctamente", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(context, "Error al crear el grupo", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-        });
-
-    }
 }
