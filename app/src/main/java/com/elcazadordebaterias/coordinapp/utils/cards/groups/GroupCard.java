@@ -1,5 +1,7 @@
 package com.elcazadordebaterias.coordinapp.utils.cards.groups;
 
+import com.google.firebase.firestore.CollectionReference;
+
 import java.util.ArrayList;
 
 /**
@@ -16,13 +18,15 @@ public class GroupCard {
     private String courseName;
     private String subjectName;
     private ArrayList<String> participantNames;
+    private String collectionId;
 
-    public GroupCard(String groupName, String groupId, String courseName, String subjectName, ArrayList<String> participantNames) {
+    public GroupCard(String groupName, String groupId, String courseName, String subjectName, ArrayList<String> participantNames, String collectionId) {
         this.groupName = groupName;
         this.groupId = groupId;
         this.courseName = courseName;
         this.subjectName = subjectName;
         this.participantNames = participantNames;
+        this.collectionId = collectionId;
     }
 
     public String getGroupName() {
@@ -53,4 +57,7 @@ public class GroupCard {
         return participantNames;
     }
 
+    public String getCollectionId() {
+        return collectionId;
+    }
 }

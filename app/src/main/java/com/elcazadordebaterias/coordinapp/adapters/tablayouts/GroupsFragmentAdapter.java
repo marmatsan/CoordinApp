@@ -33,7 +33,7 @@ public class GroupsFragmentAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 1:
-                return new SingleChat();
+                return new SingleChat(userType, selectedCourse, selectedSubject);
             default:
                 return new GroupalChat(userType, selectedCourse, selectedSubject);
         }

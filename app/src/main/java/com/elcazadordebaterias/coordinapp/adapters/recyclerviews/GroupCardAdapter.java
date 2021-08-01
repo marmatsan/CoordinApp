@@ -90,10 +90,8 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
                     .document(groupCard.getCourseName())
                     .collection("Subjects")
                     .document(groupCard.getSubjectName())
-                    .collection("Groups")
-                    .document(groupCard.getGroupId())
-                    .delete().addOnSuccessListener(aVoid -> {
-            });
+                    .collection(groupCard.getCollectionId())
+                    .document(groupCard.getGroupId()).delete();
         });
 
         holder.view.setOnClickListener(v -> {

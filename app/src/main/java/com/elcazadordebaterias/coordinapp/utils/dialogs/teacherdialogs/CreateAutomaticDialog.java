@@ -3,6 +3,7 @@ package com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -69,6 +70,12 @@ public class CreateAutomaticDialog extends DialogFragment {
     // Context
     Context context;
 
+    // Custom error message
+    String customErrorMessage;
+
+    // Reference to the subject of the selected course
+    DocumentReference subjectRef;
+
     public CreateAutomaticDialog(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
@@ -81,6 +88,12 @@ public class CreateAutomaticDialog extends DialogFragment {
 
         fStore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
+
+        subjectRef = fStore
+                .collection("CoursesOrganization")
+                .document(selectedCourse)
+                .collection("Subjects")
+                .document(selectedSubject);
     }
 
     @NonNull
@@ -130,74 +143,60 @@ public class CreateAutomaticDialog extends DialogFragment {
 
             positiveButton.setOnClickListener(view1 -> {
 
-                ERROR_CODE externalError = ERROR_CODE.NO_ERROR;
+                COMPLETE_OP_CODE completeExternalCode = COMPLETE_OP_CODE.NO_ERROR;
 
                 if (checkedRadioButtonId == View.NO_ID) {
-                    externalError = ERROR_CODE.NO_OPTION_SELECTED;
-                    displayError(externalError, null);
+                    completeExternalCode = COMPLETE_OP_CODE.NO_OPTION_SELECTED;
                 } else if (numberInput.getText().toString().isEmpty()) {
-                    externalError = ERROR_CODE.NO_INPUT_NUMBER;
-                    displayError(externalError, null);
+                    completeExternalCode = COMPLETE_OP_CODE.NO_INPUT_NUMBER;
                 } else {
 
                     inputNumber = Integer.parseInt(numberInput.getText().toString());
 
                     if (inputNumber < 0) {
-                        externalError = ERROR_CODE.INPUT_NUMBER_NEGATIVE;
-                        displayError(externalError, null);
+                        completeExternalCode = COMPLETE_OP_CODE.INPUT_NUMBER_NEGATIVE;
                     } else if (inputNumber == 0) {
-                        externalError = ERROR_CODE.INPUT_NUMBER_ZERO;
-                        displayError(externalError, null);
+                        completeExternalCode = COMPLETE_OP_CODE.INPUT_NUMBER_ZERO;
                     } else {
-                        fStore.collection("CoursesOrganization").document(selectedCourse)
-                                .collection("Subjects").document(selectedSubject)
-                                .get().addOnSuccessListener(documentSnapshot -> {
-                                    Subject subject = documentSnapshot.toObject(Subject.class);
+                        subjectRef.get().addOnSuccessListener(documentSnapshot -> {
+                            COMPLETE_OP_CODE internalError = COMPLETE_OP_CODE.NO_ERROR;
 
-                                    ArrayList<String> studentIDs = subject.getStudentIDs();
-                                    Collections.shuffle(studentIDs);
+                            Subject subject = documentSnapshot.toObject(Subject.class);
+                            ArrayList<String> studentIDs = subject.getStudentIDs();
 
-                                    ERROR_CODE internalError =  ERROR_CODE.NO_ERROR;
-                                    String customErrorMessage = null;
-                                    SELECTED_MODE mode = getSelectedMode();
+                            Collections.shuffle(studentIDs);
 
-                                    if (mode == SELECTED_MODE.STUDENTS_PER_GROUP){
-                                        int numGroups = studentIDs.size() / inputNumber;
-                                        int reminder = studentIDs.size() % inputNumber;
+                            SELECTED_MODE mode = getSelectedMode();
 
-                                       if (numGroups < 1){
-                                           internalError = ERROR_CODE.ZERO_GROUPS;
-                                           displayError(internalError, null);
-                                        } else {
-                                            boolean chechBoxIsChecked = checkBox.isChecked();
+                            if (mode == SELECTED_MODE.STUDENTS_PER_GROUP) {
 
-                                            if (reminder != 0 && !chechBoxIsChecked){
-                                                checkBox.setVisibility(View.VISIBLE);
-                                                internalError = ERROR_CODE.PENDING_STUDENTS;
+                                int studentsPerGroup = inputNumber;
+                                int numGroups = studentIDs.size() / inputNumber;
+                                int reminder = studentIDs.size() % inputNumber;
 
-                                                if (reminder > 1){
-                                                    customErrorMessage = "No se puede crear un group de exactamente " + inputNumber + " alumnos." + reminder + "alumnos" +
-                                                            "se qudarán sin grupo. Si desea incluirlos en un grupo de un tamaño más grande a " + inputNumber + " alumnos, marque " +
-                                                            "la casilla";
-                                                } else {
-                                                    customErrorMessage = "No se puede crear un group de exactamente " + inputNumber + " alumnos." + reminder + "alumno" +
-                                                            "se qudará sin grupo. Si desea incluirlo en un grupo de un tamaño más grande a " + inputNumber + " alumnos, marque " +
-                                                            "la casilla";
-                                                }
-                                                displayError(internalError, customErrorMessage);
+                                if (numGroups < 1) {
+                                    internalError = COMPLETE_OP_CODE.ZERO_GROUPS;
+                                } else {
+                                    boolean checkBoxIsChecked = checkBox.isChecked();
 
-                                            } else if (reminder == 0 || chechBoxIsChecked) {
-                                                createGroupsBatch(internalError, numGroups, reminder, studentIDs);
-                                                dialog.dismiss();
-                                            }
-                                        }
+                                    if (reminder != 0 && !checkBoxIsChecked) {
+                                        checkBox.setVisibility(View.VISIBLE);
+                                        internalError = COMPLETE_OP_CODE.PENDING_STUDENTS;
+                                        setCustomErrorMessage(reminder);
 
-
-                                    } else if (mode == SELECTED_MODE.NUMBER_OF_GROUPS) {
-
+                                    } else if ((reminder != 0 && checkBoxIsChecked) || reminder == 0) {
+                                        createGroupsBatch(studentsPerGroup, numGroups, reminder, studentIDs);
+                                        dialog.dismiss();
                                     }
 
-                                });
+                                }
+
+
+                            } else if (mode == SELECTED_MODE.NUMBER_OF_GROUPS) {
+                                // TODO
+                            }
+
+                        });
                     }
 
                 }
@@ -208,47 +207,54 @@ public class CreateAutomaticDialog extends DialogFragment {
         return dialog;
     }
 
-    private void createGroupsBatch(ERROR_CODE error, int numGroups, int reminder, ArrayList<String> studentIDs) {
+    private void createGroupsBatch(int studentsPerGroup, int numGroups, int reminder, ArrayList<String> studentIDs) {
+         // Log.d("DEBUGGING", "numgroups: " + numGroups + ", reminder: " + reminder);
+         SELECTED_MODE selectedMode = getSelectedMode();
 
-        if (error == ERROR_CODE.NO_ERROR) {
-            ArrayList<List<String>> subLists = new ArrayList<List<String>>();
+        CollectionReference groupsCollRef;
 
-            for (int i = 0; i < numGroups; i++) {
-                List<String> subList = studentIDs.subList(i * numGroups, i * numGroups + numGroups);
-                subLists.add(subList);
-            }
+         if (selectedMode == SELECTED_MODE.STUDENTS_PER_GROUP) {
+             ArrayList<List<String>> subLists = new ArrayList<List<String>>();
 
-            if (reminder != 0) {
-                List<String> lastList = subLists.get(subLists.size() - 1);
-                lastList.add(studentIDs.get(studentIDs.size() - 1));
-            }
+             if (numGroups == studentIDs.size()) { // We want to create individual chats of all the students
+                 groupsCollRef = subjectRef.collection("IndividualGroups");
 
-            // Search for the maximum identifier of the groups and create them
-            CollectionReference groupsCollRef = fStore.collection("CoursesOrganization")
-                    .document(selectedCourse)
-                    .collection("Subjects")
-                    .document(selectedSubject)
-                    .collection("Groups");
+                 for (int i = 0; i < numGroups; i++) {
+                     List<String> subList = new ArrayList<String>();
+                     subList.add(studentIDs.get(i));
+                     subLists.add(subList);
+                 }
 
-            groupsCollRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
-                ArrayList<String> groupsNames = new ArrayList<String>();
+             } else {
+                 groupsCollRef = subjectRef.collection("CollectiveGroups");
 
-                for (DocumentSnapshot document : queryDocumentSnapshots) {
-                    Group group = document.toObject(Group.class);
-                    if (group.getName() != null) {
-                        groupsNames.add(group.getName());
-                    }
-                }
+                 for (int i = 0; i < numGroups; i++) {
+                     List<String> subList = studentIDs.subList(i * studentsPerGroup , i * studentsPerGroup + (studentsPerGroup - 1));
+                     subLists.add(subList);
+                 }
 
-                int maxIdentifier = getMaxGroupIdentifier(groupsNames);
+             }
 
-                // Create the groups
-                for (int i = 0; i < subLists.size(); i++) {
-                    createGroup(groupsCollRef, subLists.get(i), maxIdentifier + 1 + i);
-                }
+             if (reminder != 0) {
+                 List<String> lastList = subLists.get(subLists.size() - 1);
+                 lastList.add(studentIDs.get(studentIDs.size() - 1));
+             }
 
-            });
-        }
+             groupsCollRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+
+                 int maxIdentifier = Group.getMaxGroupIdentifier(queryDocumentSnapshots);
+
+                 // Create the groups
+                 for (int i = 0; i < subLists.size(); i++) {
+                     createGroup(groupsCollRef, subLists.get(i), maxIdentifier + 1 + i);
+                 }
+
+             });
+
+         } else if (selectedMode == SELECTED_MODE.NUMBER_OF_GROUPS){
+             // TODO
+         }
+
     }
 
     private void createGroup(CollectionReference groupsCollRef, List<String> studentIDs, int identifier) {
@@ -276,7 +282,8 @@ public class CreateAutomaticDialog extends DialogFragment {
                             selectedCourse,
                             selectedSubject,
                             participantsIds,
-                            participants);
+                            participants,
+                            groupsCollRef.getId());
 
                     groupsCollRef.add(group);
 
@@ -286,7 +293,7 @@ public class CreateAutomaticDialog extends DialogFragment {
         });
     }
 
-    private enum ERROR_CODE {
+    private enum COMPLETE_OP_CODE {
         NO_ERROR,
         NO_OPTION_SELECTED,
         NO_INPUT_NUMBER,
@@ -297,30 +304,30 @@ public class CreateAutomaticDialog extends DialogFragment {
     }
 
     private enum SELECTED_MODE {
-        STUDENTS_PER_GROUP, NUMBER_OF_GROUPS
+        STUDENTS_PER_GROUP, NUMBER_OF_GROUPS, NO_MODE_SELECTED
     }
 
-    private String getErrorMessage(ERROR_CODE error, String customErrorMessage) {
+    private String getErrorMessage(COMPLETE_OP_CODE completeCode) {
         String errorMessage = null;
         SELECTED_MODE mode = getSelectedMode();
 
-        if (error == ERROR_CODE.NO_ERROR) {
+        if (completeCode == COMPLETE_OP_CODE.NO_ERROR) {
             errorMessage = "Todo correcto";
-        } else if (error == ERROR_CODE.NO_OPTION_SELECTED) {
+        } else if (completeCode == COMPLETE_OP_CODE.NO_OPTION_SELECTED) {
             errorMessage = "No se ha seleccionado ninún modo de creación de grupos";
-        } else if (error == ERROR_CODE.NO_INPUT_NUMBER) {
+        } else if (completeCode == COMPLETE_OP_CODE.NO_INPUT_NUMBER) {
             errorMessage = "No se ha introducido ningún número. Por favor, introduzca un número válido";
-        } else if (error == ERROR_CODE.INPUT_NUMBER_NEGATIVE) {
+        } else if (completeCode == COMPLETE_OP_CODE.INPUT_NUMBER_NEGATIVE) {
             errorMessage = "No puedes introducir un número negativo. Introduce un número mayor que 0.";
-        } else if (error == ERROR_CODE.INPUT_NUMBER_ZERO) {
+        } else if (completeCode == COMPLETE_OP_CODE.INPUT_NUMBER_ZERO) {
             if (mode == SELECTED_MODE.STUDENTS_PER_GROUP) {
                 errorMessage = "No puedes crear grupos de 0 alumnos. Introduce un número mayor que 0.";
             } else if (mode == SELECTED_MODE.NUMBER_OF_GROUPS) {
                 errorMessage = "Tienes que crear al menos un grupo en este modo de creación de grupos.";
             }
-        } else if (error == ERROR_CODE.ZERO_GROUPS) {
+        } else if (completeCode == COMPLETE_OP_CODE.ZERO_GROUPS) {
             errorMessage = "El tamaño del grupo deseado es más grande que el número total de alumnos. Seleccione un número más pequeño";
-        } else if (error == ERROR_CODE.PENDING_STUDENTS && customErrorMessage != null){
+        } else if (completeCode == COMPLETE_OP_CODE.PENDING_STUDENTS && customErrorMessage != null) {
             errorMessage = customErrorMessage;
         } else {
             errorMessage = "Error desconocido";
@@ -329,38 +336,35 @@ public class CreateAutomaticDialog extends DialogFragment {
         return errorMessage;
     }
 
-    private void displayError(ERROR_CODE error, String customErrorMessage){
-        String errorMessage = getErrorMessage(error, customErrorMessage);
-        if (errorMessage != null){
+    private void displayError(COMPLETE_OP_CODE completeCode) {
+        String errorMessage = getErrorMessage(completeCode);
+        if (errorMessage != null) {
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
         }
     }
 
-    private SELECTED_MODE getSelectedMode(){
-        SELECTED_MODE mode = null;
-        if (checkedRadioButtonId == R.id.radio_button_1){
+    private SELECTED_MODE getSelectedMode() {
+        SELECTED_MODE mode;
+        if (checkedRadioButtonId == R.id.radio_button_1) {
             mode = SELECTED_MODE.STUDENTS_PER_GROUP;
         } else if (checkedRadioButtonId == R.id.radio_button_2) {
             mode = SELECTED_MODE.NUMBER_OF_GROUPS;
+        } else {
+            mode = SELECTED_MODE.NO_MODE_SELECTED;
         }
         return mode;
     }
 
-    private int getMaxGroupIdentifier(ArrayList<String> groupsNames){
-        int maxGroupIdentifier = 0;
-
-        if(!groupsNames.isEmpty()) {
-            ArrayList<Integer> numbers = new ArrayList<Integer>();
-
-            for (String identifier : groupsNames) {
-                String numberOnly = identifier.replaceAll("[^0-9]", "");
-                numbers.add(Integer.parseInt(numberOnly));
-            }
-
-            maxGroupIdentifier = Collections.max(numbers);
+    private void setCustomErrorMessage(int reminder){
+        if (reminder > 1) {
+            customErrorMessage = "No se puede crear un group de exactamente " + inputNumber + " alumnos." + reminder + "alumnos" +
+                    "se qudarán sin grupo. Si desea incluirlos en un grupo de un tamaño más grande a " + inputNumber + " alumnos, marque " +
+                    "la casilla";
+        } else {
+            customErrorMessage = "No se puede crear un group de exactamente " + inputNumber + " alumnos." + reminder + "alumno" +
+                    "se qudará sin grupo. Si desea incluirlo en un grupo de un tamaño más grande a " + inputNumber + " alumnos, marque " +
+                    "la casilla";
         }
-
-        return maxGroupIdentifier;
     }
 
 }

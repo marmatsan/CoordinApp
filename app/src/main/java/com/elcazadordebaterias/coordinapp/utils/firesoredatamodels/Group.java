@@ -12,6 +12,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,12 +36,13 @@ public class Group {
     private ArrayList<String> participantsIds;
     private ArrayList<GroupParticipant> participants;
 
+    private String collectionId;
+
     public Group() {
 
     }
 
-
-    public Group(String name, String coordinatorId, String coordinatorName, String courseName, String subjectName, ArrayList<String> participantsIds, ArrayList<GroupParticipant> participants) {
+    public Group(String name, String coordinatorId, String coordinatorName, String courseName, String subjectName, ArrayList<String> participantsIds, ArrayList<GroupParticipant> participants, String collectionId) {
         this.name = name;
         this.coordinatorId = coordinatorId;
         this.coordinatorName = coordinatorName;
@@ -48,6 +50,7 @@ public class Group {
         this.subjectName = subjectName;
         this.participantsIds = participantsIds;
         this.participants = participants;
+        this.collectionId = collectionId;
     }
 
     public String getName() {
@@ -77,6 +80,36 @@ public class Group {
 
     public ArrayList<GroupParticipant> getParticipants() {
         return participants;
+    }
+
+    public String getCollectionId() {
+        return collectionId;
+    }
+
+    public static int getMaxGroupIdentifier(QuerySnapshot queryDocumentSnapshots) {
+        ArrayList<String> groupsNames = new ArrayList<String>();
+
+        for (DocumentSnapshot document : queryDocumentSnapshots) {
+            Group group = document.toObject(Group.class);
+            if (group.getName() != null) {
+                groupsNames.add(group.getName());
+            }
+        }
+
+        int maxGroupIdentifier = 0;
+
+        if (!groupsNames.isEmpty()) {
+            ArrayList<Integer> numbers = new ArrayList<Integer>();
+
+            for (String identifier : groupsNames) {
+                String numberOnly = identifier.replaceAll("[^0-9]", "");
+                numbers.add(Integer.parseInt(numberOnly));
+            }
+
+            maxGroupIdentifier = Collections.max(numbers);
+        }
+
+        return maxGroupIdentifier;
     }
 
 }

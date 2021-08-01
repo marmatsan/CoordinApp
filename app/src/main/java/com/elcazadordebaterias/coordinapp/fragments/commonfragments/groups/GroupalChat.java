@@ -86,7 +86,7 @@ public class GroupalChat extends Fragment {
         CollectionReference groupsCollRef = fStore
                 .collection("CoursesOrganization").document(selectedCourse)
                 .collection("Subjects").document(selectedSubject)
-                .collection("Groups");
+                .collection("CollectiveGroups");
 
         groupsCollRef
                 .orderBy("name", Query.Direction.ASCENDING)
@@ -110,7 +110,7 @@ public class GroupalChat extends Fragment {
                                 participantsNames.add(participant.getParticipantFullName());
                             }
 
-                            groupsList.add(new GroupCard(group.getName(), document.getId(), group.getCourseName(), group.getSubjectName(), participantsNames));
+                            groupsList.add(new GroupCard(group.getName(), document.getId(), group.getCourseName(), group.getSubjectName(), participantsNames, group.getCollectionId()));
                         }
                     }
 

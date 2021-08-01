@@ -4,62 +4,117 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupCardAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SingleChat#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+
 public class SingleChat extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private FirebaseFirestore fStore;
+    private FirebaseAuth fAuth;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ArrayList<GroupCard> groupsList;
+    private GroupCardAdapter groupsAdapter;
 
-    public SingleChat() {
-        // Required empty public constructor
-    }
+    private int userType;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GroupsFragment_Teacher_SingleChat.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SingleChat newInstance(String param1, String param2) {
-        SingleChat fragment = new SingleChat();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    private String selectedCourse;
+    private String selectedSubject;
+
+    private TextView noGroups;
+
+    public SingleChat(int userType, String selectedCourse, String selectedSubject) {
+        this.userType = userType;
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        fStore = FirebaseFirestore.getInstance();
+        fAuth = FirebaseAuth.getInstance();
+
+        groupsList = new ArrayList<GroupCard>();
+        groupsAdapter = new GroupCardAdapter(groupsList, getContext(), userType);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_groups_singlechat, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_groups_singlechat, container, false);
+
+        // Views
+        RecyclerView recyclerviewGroups = view.findViewById(R.id.recyclerviewGroups);
+        noGroups = view.findViewById(R.id.noGroups);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+
+        recyclerviewGroups.setAdapter(groupsAdapter);
+        recyclerviewGroups.setLayoutManager(layoutManager);
+
+        CollectionReference groupsCollRef = fStore
+                .collection("CoursesOrganization").document(selectedCourse)
+                .collection("Subjects").document(selectedSubject)
+                .collection("IndividualGroups");
+
+        groupsCollRef
+                .orderBy("name", Query.Direction.ASCENDING)
+                .addSnapshotListener((value, error) -> {
+
+                    if (error != null) {
+                        return;
+                    } else if (value == null) {
+                        return;
+                    }
+
+                    groupsList.clear();
+
+                    for (QueryDocumentSnapshot document : value) {
+                        Group group = document.toObject(Group.class);
+
+                        if(group.getParticipantsIds().contains(fAuth.getUid())){
+                            ArrayList<String> participantsNames = new ArrayList<String>();
+
+                            for (GroupParticipant participant : group.getParticipants()) {
+                                participantsNames.add(participant.getParticipantFullName());
+                            }
+
+                            groupsList.add(new GroupCard(group.getName(), document.getId(), group.getCourseName(), group.getSubjectName(), participantsNames, group.getCollectionId()));
+                        }
+                    }
+
+                    groupsAdapter.notifyDataSetChanged();
+
+                    if (groupsList.isEmpty() && userType == UserType.TYPE_STUDENT){
+                        noGroups.setVisibility(View.GONE);
+                    } else if (groupsList.isEmpty() && userType == UserType.TYPE_TEACHER) {
+                        noGroups.setText(R.string.no_individual_chats_teacher);
+                        noGroups.setVisibility(View.VISIBLE);
+                    } else if (!groupsList.isEmpty()) {
+                        noGroups.setVisibility(View.GONE);
+                    }
+
+                });
+
+        return view;
     }
+
 }
