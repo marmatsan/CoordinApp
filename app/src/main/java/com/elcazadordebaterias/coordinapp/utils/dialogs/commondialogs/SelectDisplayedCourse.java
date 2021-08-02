@@ -2,6 +2,7 @@ package com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,10 +25,7 @@ import java.util.HashMap;
 
 public class SelectDisplayedCourse extends DialogFragment implements CourseExpandableListAdapter.OnChildClick {
 
-    private FirebaseFirestore fStore;
-    private Context context;
     private HashMap<String, ArrayList<String>> detail;
-
     private onSelectedCourse onSelectedCourse;
 
     public SelectDisplayedCourse(HashMap<String, ArrayList<String>> detail){
@@ -42,7 +40,6 @@ public class SelectDisplayedCourse extends DialogFragment implements CourseExpan
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement onSelectedCourse");
         }
-        this.context = context;
     }
 
     @NonNull
@@ -59,10 +56,7 @@ public class SelectDisplayedCourse extends DialogFragment implements CourseExpan
         CourseExpandableListAdapter adapter = new CourseExpandableListAdapter(detail, this);
         expandableListView.setAdapter(adapter);
 
-        builder.setView(view).setTitle("Selecciona el curso/asignatura del que quieres mostrar información")
-                .setPositiveButton("Vale", (dialogInterface, i) -> {
-                    // Just closes the dialog
-                });
+        builder.setView(view).setTitle("Selecciona el curso/asignatura del que quieres mostrar información");
 
         return builder.create();
     }
@@ -70,9 +64,7 @@ public class SelectDisplayedCourse extends DialogFragment implements CourseExpan
     // Get selected course and selected subject
     @Override
     public void onClick(String selectedCourse, String selectedSubject) {
-        onSelectedCourse.   onSelectedCourseChange(selectedCourse, selectedSubject);
-        Toast.makeText(context, "From fragment: " + selectedCourse + " - " + selectedSubject, Toast.LENGTH_SHORT).show();
-
+        onSelectedCourse.onSelectedCourseChange(selectedCourse, selectedSubject);
     }
 
     public interface onSelectedCourse {

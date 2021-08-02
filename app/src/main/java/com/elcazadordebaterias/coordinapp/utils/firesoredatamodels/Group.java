@@ -8,16 +8,20 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Class that represents the data of the group an user is in FireStore. Used when creating a new group,
@@ -112,4 +116,42 @@ public class Group {
         return maxGroupIdentifier;
     }
 
+    /*
+    private void createGroup(CollectionReference groupsCollRef, List<String> studentIDs, int identifier) {
+
+        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
+
+        ArrayList<String> participantsIds = new ArrayList<String>(studentIDs);
+        ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
+
+
+        fStore.collection("Students").whereIn(FieldPath.documentId(), participantsIds).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                participants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
+            }
+
+            fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    participants.add(new GroupParticipant((String) documentSnapshot.get("FullName"), documentSnapshot.getId()));
+                    participantsIds.add(fAuth.getUid());
+
+                    Group group = new Group(
+                            "Grupo " + identifier,
+                            fAuth.getUid(),
+                            (String) documentSnapshot.get("FullName"),
+                            selectedCourse,
+                            selectedSubject,
+                            participantsIds,
+                            participants,
+                            groupsCollRef.getId());
+
+                    groupsCollRef.add(group);
+
+                }
+            });
+
+        });
+    }
+    */
 }

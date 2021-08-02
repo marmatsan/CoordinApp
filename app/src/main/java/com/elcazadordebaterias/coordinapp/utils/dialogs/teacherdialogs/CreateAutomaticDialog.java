@@ -172,34 +172,34 @@ public class CreateAutomaticDialog extends DialogFragment {
 
                             int studentsPerGroup = 0;
                             int numGroups = 0;
-                            int reminder = 0;
+                            int remainder = 0;
 
                             if (mode == SELECTED_MODE.STUDENTS_PER_GROUP) {
 
                                 studentsPerGroup = inputNumber;
                                 numGroups = studentIDs.size() / studentsPerGroup;
-                                reminder = studentIDs.size() % studentsPerGroup;
+                                remainder = studentIDs.size() % studentsPerGroup;
 
                             } else if (mode == SELECTED_MODE.NUMBER_OF_GROUPS) {
 
                                 numGroups = inputNumber;
                                 studentsPerGroup = studentIDs.size() / numGroups;
-                                reminder = studentIDs.size() % numGroups;
+                                remainder = studentIDs.size() % numGroups;
 
                             }
 
                             if (numGroups < 1) {
                                 completeInternalCode = COMPLETE_OP_CODE.ZERO_GROUPS;
                             } else {
-                                if (reminder != 0 && checkBox.getVisibility() == View.GONE) {
+                                if (remainder != 0 && checkBox.getVisibility() == View.GONE) {
                                     completeInternalCode = COMPLETE_OP_CODE.PENDING_STUDENTS;
                                     checkBox.setVisibility(View.VISIBLE);
-                                    setCustomErrorMessage(reminder);
+                                    setCustomErrorMessage(remainder);
                                 }
                             }
 
                             if (completeInternalCode == COMPLETE_OP_CODE.NO_ERROR) {
-                                createGroupsBatch(studentsPerGroup, numGroups, reminder, studentIDs);
+                                createGroupsBatch(studentsPerGroup, numGroups, remainder, studentIDs);
                                 dialog.dismiss();
                             }
 
@@ -216,7 +216,7 @@ public class CreateAutomaticDialog extends DialogFragment {
         return dialog;
     }
 
-    private void createGroupsBatch(int studentsPerGroup, int numGroups, int reminder, ArrayList<String> studentIDs) {
+    private void createGroupsBatch(int studentsPerGroup, int numGroups, int remainder, ArrayList<String> studentIDs) {
         CollectionReference groupsCollRef;
         ArrayList<List<String>> subLists = new ArrayList<List<String>>();
 
@@ -231,15 +231,27 @@ public class CreateAutomaticDialog extends DialogFragment {
             subLists.add(subList);
         }
 
-        if (checkBox.isChecked()) { // Add the reminder students to a group greater than the specified group
-            List<String> lastList = new ArrayList<String>(subLists.get(subLists.size() - 1));
-            lastList.add(studentIDs.get(studentIDs.size() - 1));
-            subLists.remove(subLists.get(subLists.size() - 1));
-            subLists.add(lastList);
-        } else { // Add the reminder students to a separate group
-            ArrayList<String> lastList = new ArrayList<String>();
-            lastList.add(studentIDs.get(studentIDs.size() - 1));
-            subLists.add(lastList);
+        if (remainder != 0) {
+            if (checkBox.isChecked()) { // Add the remainder students to a group greater than the specified group
+                List<String> lastList = new ArrayList<String>(subLists.get(subLists.size() - 1)); // Copy the last list
+                subLists.remove(subLists.size() - 1);
+
+                for (int i = 0; i < remainder; i++) {
+                    lastList.add(studentIDs.get(studentIDs.size() - i - 1));
+                }
+
+                subLists.add(lastList);
+
+            } else { // Add the remainder students to a separate group
+                List<String> lastList = new ArrayList<String>();
+
+                for (int i = 0; i < remainder; i++) {
+                    lastList.add(studentIDs.get(studentIDs.size() - i - 1));
+                }
+
+                subLists.add(lastList);
+
+            }
         }
 
         groupsCollRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
@@ -350,11 +362,11 @@ public class CreateAutomaticDialog extends DialogFragment {
         return mode;
     }
 
-    private void setCustomErrorMessage(int reminder) {
-        if (reminder > 1) {
-            customErrorMessage = "No se puede crear un grupo de exactamente " + inputNumber + " alumnos. " + reminder + "alumnos " +
+    private void setCustomErrorMessage(int remainder) {
+        if (remainder > 1) {
+            customErrorMessage = "No se puede crear un grupo de exactamente " + inputNumber + " alumnos. " + remainder + "alumnos " +
                     "se quedarán sin grupo. Si desea incluirlos en un grupo de un tamaño más grande a " + inputNumber + " alumnos, marque " +
-                    "la casilla. De lo contrario, se creará un grupo a parte de " + reminder + " alumnos.";
+                    "la casilla. De lo contrario, se creará un grupo a parte de " + remainder + " alumnos.";
         } else {
             customErrorMessage = "No se puede crear un grupo de exactamente " + inputNumber + " alumnos. Un alumno " +
                     "se quedará sin grupo. Si desea incluirlo en un grupo de un tamaño más grande a " + inputNumber + " alumnos, marque " +

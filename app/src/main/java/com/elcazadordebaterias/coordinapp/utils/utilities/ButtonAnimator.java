@@ -52,7 +52,7 @@ public class ButtonAnimator {
             }
         } else {
             for (FloatingActionButton button : buttons){
-                button.setVisibility(View.INVISIBLE);
+                button.setVisibility(View.GONE);
             }
         }
     }
