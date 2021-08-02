@@ -103,12 +103,9 @@ public class SingleChat extends Fragment {
 
                     groupsAdapter.notifyDataSetChanged();
 
-                    if (groupsList.isEmpty() && userType == UserType.TYPE_STUDENT){
-                        noGroups.setVisibility(View.GONE);
-                    } else if (groupsList.isEmpty() && userType == UserType.TYPE_TEACHER) {
-                        noGroups.setText(R.string.no_individual_chats_teacher);
+                    if (userType == UserType.TYPE_TEACHER && groupsList.isEmpty()) {
                         noGroups.setVisibility(View.VISIBLE);
-                    } else if (!groupsList.isEmpty()) {
+                    } else {
                         noGroups.setVisibility(View.GONE);
                     }
 

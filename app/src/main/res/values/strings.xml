@@ -137,5 +137,6 @@
     <string name="_2_introduce_el_n_mero_de_grupos">2. Introduce el número de grupos</string>
     <string name="este_texto_depende_de_a_quien_se_le_est_mostrando_el_fragmento">Este texto depende de a quien se le esté mostrando el fragmento</string>
     <string name="no_individual_chats_teacher">Todavía no tienes ningún chat individual. Espera a que un alumno te escriba o crea uno usando el botón +</string>
+    <string name="todav_a_no_tienes_ning_n_grupo_individual_creado_puedes_esperar_a_que_un_alumno_te_hable_para_que_aparezca_o_pulsar_el_bot_n_para_crear_uno">Todavía no tienes ningún grupo individual creado. Puedes esperar a que un alumno te hable para que aparezca o pulsar el botón + para crear uno.</string>
 
 </resources>

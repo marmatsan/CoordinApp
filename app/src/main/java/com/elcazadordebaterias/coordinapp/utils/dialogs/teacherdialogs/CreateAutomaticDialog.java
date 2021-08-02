@@ -134,7 +134,7 @@ public class CreateAutomaticDialog extends DialogFragment {
                 .setTitle("Menú de creación de grupos")
                 .setNegativeButton("Cancelar", (dialogInterface, i) -> {
                     // Just closes the dialog
-                }).setPositiveButton("Solicitar", null);
+                }).setPositiveButton("Crear grupos", null);
 
         AlertDialog dialog = builder.create();
         dialog.setOnShowListener(dialogInterface -> {
@@ -144,6 +144,7 @@ public class CreateAutomaticDialog extends DialogFragment {
             positiveButton.setOnClickListener(view1 -> {
 
                 COMPLETE_OP_CODE completeExternalCode = COMPLETE_OP_CODE.NO_ERROR;
+                boolean displayExternalError = true;
 
                 if (checkedRadioButtonId == View.NO_ID) {
                     completeExternalCode = COMPLETE_OP_CODE.NO_OPTION_SELECTED;
@@ -158,8 +159,9 @@ public class CreateAutomaticDialog extends DialogFragment {
                     } else if (inputNumber == 0) {
                         completeExternalCode = COMPLETE_OP_CODE.INPUT_NUMBER_ZERO;
                     } else {
+                        displayExternalError = false;
                         subjectRef.get().addOnSuccessListener(documentSnapshot -> {
-                            COMPLETE_OP_CODE internalError = COMPLETE_OP_CODE.NO_ERROR;
+                            COMPLETE_OP_CODE completeInternalCode = COMPLETE_OP_CODE.NO_ERROR;
 
                             Subject subject = documentSnapshot.toObject(Subject.class);
                             ArrayList<String> studentIDs = subject.getStudentIDs();
@@ -168,39 +170,46 @@ public class CreateAutomaticDialog extends DialogFragment {
 
                             SELECTED_MODE mode = getSelectedMode();
 
+                            int studentsPerGroup = 0;
+                            int numGroups = 0;
+                            int reminder = 0;
+
                             if (mode == SELECTED_MODE.STUDENTS_PER_GROUP) {
 
-                                int studentsPerGroup = inputNumber;
-                                int numGroups = studentIDs.size() / inputNumber;
-                                int reminder = studentIDs.size() % inputNumber;
-
-                                if (numGroups < 1) {
-                                    internalError = COMPLETE_OP_CODE.ZERO_GROUPS;
-                                } else {
-                                    boolean checkBoxIsChecked = checkBox.isChecked();
-
-                                    if (reminder != 0 && !checkBoxIsChecked) {
-                                        checkBox.setVisibility(View.VISIBLE);
-                                        internalError = COMPLETE_OP_CODE.PENDING_STUDENTS;
-                                        setCustomErrorMessage(reminder);
-
-                                    } else if ((reminder != 0 && checkBoxIsChecked) || reminder == 0) {
-                                        createGroupsBatch(studentsPerGroup, numGroups, reminder, studentIDs);
-                                        dialog.dismiss();
-                                    }
-
-                                }
-
+                                studentsPerGroup = inputNumber;
+                                numGroups = studentIDs.size() / studentsPerGroup;
+                                reminder = studentIDs.size() % studentsPerGroup;
 
                             } else if (mode == SELECTED_MODE.NUMBER_OF_GROUPS) {
-                                // TODO
+
+                                numGroups = inputNumber;
+                                studentsPerGroup = studentIDs.size() / numGroups;
+                                reminder = studentIDs.size() % numGroups;
+
                             }
 
+                            if (numGroups < 1) {
+                                completeInternalCode = COMPLETE_OP_CODE.ZERO_GROUPS;
+                            } else {
+                                if (reminder != 0 && checkBox.getVisibility() == View.GONE) {
+                                    completeInternalCode = COMPLETE_OP_CODE.PENDING_STUDENTS;
+                                    checkBox.setVisibility(View.VISIBLE);
+                                    setCustomErrorMessage(reminder);
+                                }
+                            }
+
+                            if (completeInternalCode == COMPLETE_OP_CODE.NO_ERROR) {
+                                createGroupsBatch(studentsPerGroup, numGroups, reminder, studentIDs);
+                                dialog.dismiss();
+                            }
+
+                            displayError(completeInternalCode);
                         });
                     }
-
                 }
-
+                if (displayExternalError) {
+                    displayError(completeExternalCode);
+                }
             });
         });
 
@@ -208,53 +217,41 @@ public class CreateAutomaticDialog extends DialogFragment {
     }
 
     private void createGroupsBatch(int studentsPerGroup, int numGroups, int reminder, ArrayList<String> studentIDs) {
-         // Log.d("DEBUGGING", "numgroups: " + numGroups + ", reminder: " + reminder);
-         SELECTED_MODE selectedMode = getSelectedMode();
-
         CollectionReference groupsCollRef;
+        ArrayList<List<String>> subLists = new ArrayList<List<String>>();
 
-         if (selectedMode == SELECTED_MODE.STUDENTS_PER_GROUP) {
-             ArrayList<List<String>> subLists = new ArrayList<List<String>>();
+        if (numGroups == studentIDs.size()) { // We want to create individual chats of all the students
+            groupsCollRef = subjectRef.collection("IndividualGroups");
+        } else {
+            groupsCollRef = subjectRef.collection("CollectiveGroups");
+        }
 
-             if (numGroups == studentIDs.size()) { // We want to create individual chats of all the students
-                 groupsCollRef = subjectRef.collection("IndividualGroups");
+        for (int i = 0; i < numGroups; i++) {
+            List<String> subList = studentIDs.subList(i * studentsPerGroup, i * studentsPerGroup + studentsPerGroup);
+            subLists.add(subList);
+        }
 
-                 for (int i = 0; i < numGroups; i++) {
-                     List<String> subList = new ArrayList<String>();
-                     subList.add(studentIDs.get(i));
-                     subLists.add(subList);
-                 }
+        if (checkBox.isChecked()) { // Add the reminder students to a group greater than the specified group
+            List<String> lastList = new ArrayList<String>(subLists.get(subLists.size() - 1));
+            lastList.add(studentIDs.get(studentIDs.size() - 1));
+            subLists.remove(subLists.get(subLists.size() - 1));
+            subLists.add(lastList);
+        } else { // Add the reminder students to a separate group
+            ArrayList<String> lastList = new ArrayList<String>();
+            lastList.add(studentIDs.get(studentIDs.size() - 1));
+            subLists.add(lastList);
+        }
 
-             } else {
-                 groupsCollRef = subjectRef.collection("CollectiveGroups");
+        groupsCollRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
 
-                 for (int i = 0; i < numGroups; i++) {
-                     List<String> subList = studentIDs.subList(i * studentsPerGroup , i * studentsPerGroup + (studentsPerGroup - 1));
-                     subLists.add(subList);
-                 }
+            int maxIdentifier = Group.getMaxGroupIdentifier(queryDocumentSnapshots);
 
-             }
+            // Create the groups
+            for (int i = 0; i < subLists.size(); i++) {
+                createGroup(groupsCollRef, subLists.get(i), maxIdentifier + 1 + i);
+            }
 
-             if (reminder != 0) {
-                 List<String> lastList = subLists.get(subLists.size() - 1);
-                 lastList.add(studentIDs.get(studentIDs.size() - 1));
-             }
-
-             groupsCollRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
-
-                 int maxIdentifier = Group.getMaxGroupIdentifier(queryDocumentSnapshots);
-
-                 // Create the groups
-                 for (int i = 0; i < subLists.size(); i++) {
-                     createGroup(groupsCollRef, subLists.get(i), maxIdentifier + 1 + i);
-                 }
-
-             });
-
-         } else if (selectedMode == SELECTED_MODE.NUMBER_OF_GROUPS){
-             // TODO
-         }
-
+        });
     }
 
     private void createGroup(CollectionReference groupsCollRef, List<String> studentIDs, int identifier) {
@@ -273,10 +270,8 @@ public class CreateAutomaticDialog extends DialogFragment {
                     participants.add(new GroupParticipant((String) documentSnapshot.get("FullName"), documentSnapshot.getId()));
                     participantsIds.add(fAuth.getUid());
 
-                    String name = "Grupo " + identifier;
-
                     Group group = new Group(
-                            name,
+                            "Grupo " + identifier,
                             fAuth.getUid(),
                             (String) documentSnapshot.get("FullName"),
                             selectedCourse,
@@ -326,7 +321,7 @@ public class CreateAutomaticDialog extends DialogFragment {
                 errorMessage = "Tienes que crear al menos un grupo en este modo de creación de grupos.";
             }
         } else if (completeCode == COMPLETE_OP_CODE.ZERO_GROUPS) {
-            errorMessage = "El tamaño del grupo deseado es más grande que el número total de alumnos. Seleccione un número más pequeño";
+            errorMessage = "El número de alumnos por grupo deseado excede el número de alumnos en la asignatura. Seleccione un número más pequeño";
         } else if (completeCode == COMPLETE_OP_CODE.PENDING_STUDENTS && customErrorMessage != null) {
             errorMessage = customErrorMessage;
         } else {
@@ -355,15 +350,15 @@ public class CreateAutomaticDialog extends DialogFragment {
         return mode;
     }
 
-    private void setCustomErrorMessage(int reminder){
+    private void setCustomErrorMessage(int reminder) {
         if (reminder > 1) {
-            customErrorMessage = "No se puede crear un group de exactamente " + inputNumber + " alumnos." + reminder + "alumnos" +
-                    "se qudarán sin grupo. Si desea incluirlos en un grupo de un tamaño más grande a " + inputNumber + " alumnos, marque " +
-                    "la casilla";
+            customErrorMessage = "No se puede crear un grupo de exactamente " + inputNumber + " alumnos. " + reminder + "alumnos " +
+                    "se quedarán sin grupo. Si desea incluirlos en un grupo de un tamaño más grande a " + inputNumber + " alumnos, marque " +
+                    "la casilla. De lo contrario, se creará un grupo a parte de " + reminder + " alumnos.";
         } else {
-            customErrorMessage = "No se puede crear un group de exactamente " + inputNumber + " alumnos." + reminder + "alumno" +
-                    "se qudará sin grupo. Si desea incluirlo en un grupo de un tamaño más grande a " + inputNumber + " alumnos, marque " +
-                    "la casilla";
+            customErrorMessage = "No se puede crear un grupo de exactamente " + inputNumber + " alumnos. Un alumno " +
+                    "se quedará sin grupo. Si desea incluirlo en un grupo de un tamaño más grande a " + inputNumber + " alumnos, marque " +
+                    "la casilla. De lo contrario, se creará un grupo a parte con el alumno restante.";
         }
     }
 
