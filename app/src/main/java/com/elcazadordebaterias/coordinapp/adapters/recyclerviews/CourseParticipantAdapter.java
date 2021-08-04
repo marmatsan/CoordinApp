@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.courses;
+package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,17 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseParticipantCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;
 
 import java.util.List;
 
-/**
- * Adapter to be used in a list made of {@link CourseParticipantCard}. The mentioned list is displayed
- * when we expand a {@link com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseSubjectCard}, and
- * it shows all the participants of the subject (teacher and students).
- *
- * @author Martín Mateos Sánchez
- */
 public class CourseParticipantAdapter extends RecyclerView.Adapter<CourseParticipantAdapter.CourseParticipantViewHolder> {
 
     private List<CourseParticipantCard> courseParticipantList;

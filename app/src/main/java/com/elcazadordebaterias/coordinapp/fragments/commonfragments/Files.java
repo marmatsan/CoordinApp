@@ -7,17 +7,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.courses.CourseParticipantAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.courses.CourseParticipantCard;
-import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.CourseParticipantAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 

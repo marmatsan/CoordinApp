@@ -1,7 +1,5 @@
 package com.elcazadordebaterias.coordinapp.utils.cards.groups;
 
-import com.google.firebase.firestore.CollectionReference;
-
 import java.util.ArrayList;
 
 /**
