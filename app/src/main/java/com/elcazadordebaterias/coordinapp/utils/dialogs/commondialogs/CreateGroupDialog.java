@@ -29,6 +29,7 @@ import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -173,33 +174,37 @@ public class CreateGroupDialog extends DialogFragment {
                     } else if (userType == UserType.TYPE_TEACHER) { // Directly create the group
 
                         ArrayList<String> studentsIDs = new ArrayList<String>();
-                        ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
 
                         // Add all selected students to the petition.
                         for (SelectParticipantItem item : participantsList) {
                             if (item.isSelected()) {
-                                participants.add(new GroupParticipant(item.getParticipantName(), item.getParticipantId()));
                                 studentsIDs.add(item.getParticipantId());
                             }
                         }
 
-                        if (participants.size() <= 1) {
+                        if (studentsIDs.size() < 1) {
                             Toast.makeText(context, "Debes agregar al menos a un miembro más al grupo", Toast.LENGTH_SHORT).show();
                         } else {
-                            fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(teacherDocument -> {
 
-                                /*
-                                Group group = new Group(
-                                        fAuth.getUid(),
-                                        (String) teacherDocument.get("FullName"),
-                                        selectedCourse,
-                                        selectedSubject,
-                                        studentsIDs,
-                                        participants);
+                            DocumentReference subjectRef =  fStore
+                                    .collection("CoursesOrganization")
+                                    .document(selectedCourse)
+                                    .collection("Subjects")
+                                    .document(selectedSubject);
 
-                                    group.createAndCommit(fStore, context);
-                                */
+                            CollectionReference collectionRef;
+
+                            if (studentsIDs.size() == 1) {
+                                collectionRef = subjectRef.collection("IndividualGroups");
+                            } else {
+                                collectionRef = subjectRef.collection("CollectiveGroups");
+                            }
+
+                            collectionRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+                                int maxIdentifier = Group.getMaxGroupIdentifier(queryDocumentSnapshots);
+                                Group.createGroup(collectionRef, selectedCourse, selectedSubject, studentsIDs, maxIdentifier + 1);
                             });
+
                         }
                     }
                 });
@@ -209,8 +214,10 @@ public class CreateGroupDialog extends DialogFragment {
 
     private void populateParticipants(){
         fStore
-                .collection("CoursesOrganization").document(selectedCourse)
-                .collection("Subjects").document(selectedSubject).get()
+                .collection("CoursesOrganization")
+                .document(selectedCourse)
+                .collection("Subjects")
+                .document(selectedSubject).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     Subject subject = documentSnapshot.toObject(Subject.class);
                     ArrayList<String> studentsIDs = subject.getStudentIDs();

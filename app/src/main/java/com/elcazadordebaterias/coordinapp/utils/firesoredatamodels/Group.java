@@ -116,8 +116,7 @@ public class Group {
         return maxGroupIdentifier;
     }
 
-    /*
-    private void createGroup(CollectionReference groupsCollRef, List<String> studentIDs, int identifier) {
+    public static void createGroup(CollectionReference groupsCollRef, String selectedCourse, String selectedSubject, List<String> studentIDs, int identifier) {
 
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
@@ -153,5 +152,4 @@ public class Group {
 
         });
     }
-    */
 }

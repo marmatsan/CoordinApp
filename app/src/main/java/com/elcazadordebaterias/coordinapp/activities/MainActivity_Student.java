@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Files;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Interactivity;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Groups;
 import com.elcazadordebaterias.coordinapp.fragments.student.home.Home;
@@ -104,7 +105,7 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
         } else if (itemId == R.id.nav_student_home) {
             selectedFragment = new Home(selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_student_files) {
-            selectedFragment = new EmptyFragment();
+            selectedFragment = new Files(UserType.TYPE_STUDENT, selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_student_profile) {
             selectedFragment = new EmptyFragment();
         } else {

@@ -25,15 +25,19 @@ import java.util.ArrayList;
  */
 public class CourseCardAdapter extends RecyclerView.Adapter<CourseCardAdapter.CourseCardViewHolder> {
 
-    private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
-    private SparseBooleanArray expandState = new SparseBooleanArray();
+    private final RecyclerView.RecycledViewPool viewPool;
+    private SparseBooleanArray expandState;
     private ArrayList<CourseCard> mCoursesList;
 
     public CourseCardAdapter(ArrayList<CourseCard> coursesList) {
         this.mCoursesList = coursesList;
+        viewPool = new RecyclerView.RecycledViewPool();
+        expandState = new SparseBooleanArray();
+
         for (int i = 0; i < coursesList.size(); i++) {
             expandState.append(i, false);
         }
+
     }
 
     @Override

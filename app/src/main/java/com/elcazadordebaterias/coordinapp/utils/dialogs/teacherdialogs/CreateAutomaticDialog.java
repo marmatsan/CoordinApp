@@ -260,42 +260,8 @@ public class CreateAutomaticDialog extends DialogFragment {
 
             // Create the groups
             for (int i = 0; i < subLists.size(); i++) {
-                createGroup(groupsCollRef, subLists.get(i), maxIdentifier + 1 + i);
+                Group.createGroup(groupsCollRef, selectedCourse, selectedSubject, subLists.get(i), maxIdentifier + 1 + i);
             }
-
-        });
-    }
-
-    private void createGroup(CollectionReference groupsCollRef, List<String> studentIDs, int identifier) {
-
-        ArrayList<String> participantsIds = new ArrayList<String>(studentIDs);
-
-        ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
-
-        fStore.collection("Students").whereIn(FieldPath.documentId(), participantsIds).get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                participants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
-            }
-
-            fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
-                    participants.add(new GroupParticipant((String) documentSnapshot.get("FullName"), documentSnapshot.getId()));
-                    participantsIds.add(fAuth.getUid());
-
-                    Group group = new Group(
-                            "Grupo " + identifier,
-                            fAuth.getUid(),
-                            (String) documentSnapshot.get("FullName"),
-                            selectedCourse,
-                            selectedSubject,
-                            participantsIds,
-                            participants,
-                            groupsCollRef.getId());
-
-                    groupsCollRef.add(group);
-
-                }
-            });
 
         });
     }

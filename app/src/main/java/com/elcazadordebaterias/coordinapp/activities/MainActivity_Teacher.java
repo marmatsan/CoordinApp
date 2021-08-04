@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Files;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Interactivity;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Groups;
@@ -36,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,7 +119,7 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
         } else if (itemId == R.id.nav_teacher_groups) {
             selectedFragment = new Groups(UserType.TYPE_TEACHER, selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_teacher_files) {
-            selectedFragment = new EmptyFragment();
+            selectedFragment = new Files(UserType.TYPE_TEACHER, selectedCourse, selectedSubject);
         } else {
             selectedFragment = new Administration(selectedCourse, selectedSubject);
         }
