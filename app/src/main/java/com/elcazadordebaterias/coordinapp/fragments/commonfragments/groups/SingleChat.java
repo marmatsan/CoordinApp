@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupCardAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;

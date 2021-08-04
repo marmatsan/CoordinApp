@@ -1,19 +1,30 @@
 package com.elcazadordebaterias.coordinapp.fragments.commonfragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.CourseParticipantAdapter;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.files.FilesContainerCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.files.FileCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.files.FilesContainerCard;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.StorageFileReference;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -22,10 +33,6 @@ public class Files extends Fragment {
     // Firestore
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
-
-    // List of courses
-    ArrayList<CourseParticipantCard> participants;
-    CourseParticipantAdapter courseParticipantAdapter;
 
     // Type of user who called this fragment
     private final int userType;
@@ -45,9 +52,6 @@ public class Files extends Fragment {
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
-
-        participants = new ArrayList<CourseParticipantCard>();
-        courseParticipantAdapter = new CourseParticipantAdapter(participants);
     }
 
     @Override
@@ -57,20 +61,51 @@ public class Files extends Fragment {
         TextView noFiles = view.findViewById(R.id.noFiles);
         RecyclerView filesContainer = view.findViewById(R.id.filesContainer);
 
-        /*
-        if (selectedCourse == null || selectedSubject == null) {
-            noCourseSelected.setVisibility(View.VISIBLE);
-            coursesRecyclerView.setVisibility(View.GONE);
-        } else {
-            noCourseSelected.setVisibility(View.GONE);
-            coursesRecyclerView.setVisibility(View.VISIBLE);
-        }
+        ArrayList<FilesContainerCard> groupsList = new ArrayList<FilesContainerCard>();
+        FilesContainerCardAdapter adapter = new FilesContainerCardAdapter(groupsList, getContext());
 
         LinearLayoutManager coursesLayoutManager = new LinearLayoutManager(getContext());
 
-        coursesRecyclerView.setAdapter(courseParticipantAdapter);
-        coursesRecyclerView.setLayoutManager(coursesLayoutManager);
-        */
+        filesContainer.setAdapter(adapter);
+        filesContainer.setLayoutManager(coursesLayoutManager);
+
+        CollectionReference collectionRef = fStore
+                .collection("CoursesOrganization")
+                .document(selectedCourse)
+                .collection("Subjects")
+                .document(selectedSubject)
+                .collection("CollectiveGroups");
+
+        Query getGroups = collectionRef.whereArrayContains("participantsIds", fAuth.getUid());
+
+        getGroups.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (DocumentSnapshot document : queryDocumentSnapshots) {
+                String groupName = (String) document.get("name");
+                ArrayList<FileCard> filesList = new ArrayList<FileCard>();
+
+                groupsList.add(new FilesContainerCard(groupName, filesList));
+
+                collectionRef
+                        .document(document.getId())
+                        .collection("Storage")
+                        .get().addOnSuccessListener(queryDocumentSnapshots1 -> {
+                          for (DocumentSnapshot document1 : queryDocumentSnapshots1){
+                              StorageFileReference storageRef = document1.toObject(StorageFileReference.class);
+
+                              filesList.add(new FileCard(
+                                      R.drawable.ic_baseline_insert_drive_file_24,
+                                      storageRef.getFileName(),
+                                      storageRef.getUploaderName(),
+                                      storageRef.getUploadedDate(),
+                                      storageRef.getDownloadLink()
+                              ));
+
+                          }
+                        });
+                adapter.notifyDataSetChanged();
+            }
+
+        });
 
         return view;
     }

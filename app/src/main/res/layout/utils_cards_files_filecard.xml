@@ -27,13 +27,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+        <TextView
+            android:id="@+id/fileName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/file_name"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/fileRepresentativeImage"
+            app:layout_constraintTop_toBottomOf="@+id/uploaderName" />
+
         <TextView
             android:id="@+id/uploaderName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/role_of_the_participant"
+            android:text="@string/uploader_name"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/fileRepresentativeImage"
             app:layout_constraintTop_toTopOf="parent" />
@@ -44,9 +56,22 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/name_of_the_participant"
+            android:text="@string/uploaded_date"
             app:layout_constraintStart_toEndOf="@+id/fileRepresentativeImage"
-            app:layout_constraintTop_toBottomOf="@+id/uploaderName" />
+            app:layout_constraintTop_toBottomOf="@+id/fileName" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/downloadButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/descargar"
+            app:icon="@drawable/ic_baseline_cloud_download_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fileRepresentativeImage"
+            app:layout_constraintTop_toBottomOf="@+id/uploadedDate" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

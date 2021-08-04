@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.utils.cards.groups;
+package com.elcazadordebaterias.coordinapp.utils.cards;
 
 import java.util.ArrayList;
 

@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.MessagesListAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
-import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.StorageFileReference;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,14 +46,13 @@ import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
-/**
- * Activity that represents a chat room. It is launched when we click on one {@link com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard},
- *
- * @author Martín Mateos Sánchez
- * @see com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard
- */
 public class ChatActivity extends AppCompatActivity {
 
     // Firestore
@@ -112,7 +111,7 @@ public class ChatActivity extends AppCompatActivity {
         DocumentReference groupRef = fStore
                 .collection("CoursesOrganization").document(card.getCourseName())
                 .collection("Subjects").document(card.getSubjectName())
-                .collection("Groups").document(card.getGroupId());
+                .collection(card.getCollectionId()).document(card.getGroupId());
 
         chatroomRef = groupRef.collection("ChatRoom");
         storageRef = groupRef.collection("Storage");
@@ -165,8 +164,10 @@ public class ChatActivity extends AppCompatActivity {
 
         fStore.collection(collectionPath).document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
             String fullName = (String) documentSnapshot.get("FullName");
-            String messageTitle = null;
-            String message = null;
+
+            String messageTitle;
+            String message;
+
             if(fileRef == null){
                 messageTitle = fullName;
                 message = messageInputText;
@@ -174,6 +175,7 @@ public class ChatActivity extends AppCompatActivity {
                 messageTitle = "Archivo subido";
                 message = fullName + " ha subido el archivo " + fileRef.getFileName() + ". Puedes encontrarlo en la pestaña Archivos o descargarlo haciendo click en el siguiente link.";
             }
+
             ChatMessageCard messageCard = new ChatMessageCard(messageTitle, fAuth.getUid(), message, Timestamp.now().toDate(), fileRef);
             chatroomRef.add(messageCard).addOnSuccessListener(documentReference -> messageInput.getText().clear());
         });
@@ -221,10 +223,25 @@ public class ChatActivity extends AppCompatActivity {
                 Toast.makeText(this, "Archivo subido", Toast.LENGTH_SHORT).show();
 
                 fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    StorageFileReference fileReference = new StorageFileReference(fileNameWithExtension, uri.toString());
-                    storageRef.add(fileReference).addOnSuccessListener(documentReference -> {
-                        sendMessage(null, fileReference);
-                    });
+                    Calendar calendar = Calendar.getInstance(); // Returns instance with current date and time set
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); // TODO: Change
+                    String uploadedTime = formatter.format(calendar.getTime());
+
+                    if (userType == UserType.TYPE_STUDENT) {
+                        fStore.collection("Students").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
+                            StorageFileReference fileReference = new StorageFileReference((String) documentSnapshot.get("FullName"), fileNameWithExtension, uploadedTime, uri.toString());
+                            storageRef.add(fileReference).addOnSuccessListener(documentReference -> {
+                                sendMessage(null, fileReference);
+                            });
+                        });
+                    } else if (userType == UserType.TYPE_TEACHER) {
+                        fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
+                            StorageFileReference fileReference = new StorageFileReference((String) documentSnapshot.get("FullName"), fileNameWithExtension, uploadedTime, uri.toString());
+                            storageRef.add(fileReference).addOnSuccessListener(documentReference -> {
+                                sendMessage(null, fileReference);
+                            });
+                        });
+                    }
                 });
 
             });

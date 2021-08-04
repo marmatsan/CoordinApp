@@ -1,5 +1,6 @@
 package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.files;
 
+import android.content.Context;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +23,9 @@ public class FilesContainerCardAdapter extends RecyclerView.Adapter<FilesContain
     private ArrayList<FilesContainerCard> groupsList;
     private final RecyclerView.RecycledViewPool viewPool;
     private SparseBooleanArray expandState;
+    private Context context;
 
-    public FilesContainerCardAdapter(ArrayList<FilesContainerCard> coursesList) {
+    public FilesContainerCardAdapter(ArrayList<FilesContainerCard> coursesList, Context context) {
         this.groupsList = coursesList;
 
         viewPool = new RecyclerView.RecycledViewPool();
@@ -32,6 +34,8 @@ public class FilesContainerCardAdapter extends RecyclerView.Adapter<FilesContain
         for (int i = 0; i < coursesList.size(); i++) {
             expandState.append(i, false);
         }
+
+        this.context = context;
 
     }
 
@@ -58,7 +62,7 @@ public class FilesContainerCardAdapter extends RecyclerView.Adapter<FilesContain
         LinearLayoutManager layoutManager = new LinearLayoutManager(viewHolder.filesRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
 
         layoutManager.setInitialPrefetchItemCount(filesContainerCard.getFilesList().size());
-        FilesCardListAdapter filesListAdapter = new FilesCardListAdapter(filesContainerCard.getFilesList());
+        FilesCardListAdapter filesListAdapter = new FilesCardListAdapter(filesContainerCard.getFilesList(), context);
 
         viewHolder.filesRecyclerView.setLayoutManager(layoutManager);
         viewHolder.filesRecyclerView.setAdapter(filesListAdapter);
@@ -67,14 +71,14 @@ public class FilesContainerCardAdapter extends RecyclerView.Adapter<FilesContain
         final boolean isExpanded = expandState.get(position); //Check if the view is expanded
         viewHolder.expandableView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
 
-        viewHolder.expandableView.setOnClickListener(view -> {
+        viewHolder.expandFilesButton.setOnClickListener(view -> {
             if (viewHolder.expandableView.getVisibility() == View.VISIBLE){
                 viewHolder.expandableView.setVisibility(View.GONE);
-                viewHolder.expandFilesList.setText(R.string.expandir);
+                viewHolder.expandFilesButton.setText(R.string.expandir);
                 expandState.put(position, false);
             }else{
                 viewHolder.expandableView.setVisibility(View.VISIBLE);
-                viewHolder.expandFilesList.setText(R.string.colapsar);
+                viewHolder.expandFilesButton.setText(R.string.colapsar);
                 expandState.put(position, true);
             }
         });
@@ -89,7 +93,7 @@ public class FilesContainerCardAdapter extends RecyclerView.Adapter<FilesContain
     static class FilesContainerCardViewHolder extends RecyclerView.ViewHolder {
 
         TextView groupName;
-        MaterialButton expandFilesList;
+        MaterialButton expandFilesButton;
         ConstraintLayout expandableView;
         RecyclerView filesRecyclerView;
 
@@ -97,7 +101,7 @@ public class FilesContainerCardAdapter extends RecyclerView.Adapter<FilesContain
             super(itemView);
 
             groupName = itemView.findViewById(R.id.groupName);
-            expandFilesList = itemView.findViewById(R.id.expandFilesList);
+            expandFilesButton = itemView.findViewById(R.id.expandFilesButton);
             expandableView = itemView.findViewById(R.id.expandableView);
             filesRecyclerView = itemView.findViewById(R.id.filesRecyclerView);
 

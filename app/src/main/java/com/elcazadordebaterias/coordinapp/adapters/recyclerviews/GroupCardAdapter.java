@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
-import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,15 +23,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-/**
- * Adapter to be used in a list made of {@link GroupCard}. The mentioned list is displayed
- * when we expand a {@link com.elcazadordebaterias.coordinapp.utils.cards.groups.CourseSubjectCard}, and
- * it shows all the groups the logged user is in in the selected subject. When clicked in one of the {@link GroupCard}
- * in the mentioned list, the {@link com.elcazadordebaterias.coordinapp.activities.ChatActivity} is launched, opening
- * the associated chat room of this group.
- *
- * @author Martín Mateos Sánchez
- */
 public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.GroupCardViewHolder> {
 
     ArrayList<GroupCard> groupsList;
