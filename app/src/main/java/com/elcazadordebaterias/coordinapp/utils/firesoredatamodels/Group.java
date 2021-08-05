@@ -90,6 +90,16 @@ public class Group {
         return collectionId;
     }
 
+    public ArrayList<String> getParticipantNames(){
+        ArrayList<String> participantsNames = new ArrayList<String>();
+
+        for (GroupParticipant participant : getParticipants()){
+            participantsNames.add(participant.getParticipantFullName());
+        }
+
+        return participantsNames;
+    }
+
     public static int getMaxGroupIdentifier(QuerySnapshot queryDocumentSnapshots) {
         ArrayList<String> groupsNames = new ArrayList<String>();
 
