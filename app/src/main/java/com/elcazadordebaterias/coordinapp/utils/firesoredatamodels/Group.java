@@ -65,7 +65,6 @@ public class Group {
         return coordinatorId;
     }
 
-
     public String getCoordinatorName() {
         return coordinatorName;
     }
@@ -130,12 +129,13 @@ public class Group {
                 participants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
             }
 
+            // Create group with the teacher
             fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
                     participants.add(new GroupParticipant((String) documentSnapshot.get("FullName"), documentSnapshot.getId()));
-                    participantsIds.add(fAuth.getUid());
+                    participantsIds.add(documentSnapshot.getId());
 
-                    Group group = new Group(
+                    Group studentsAndTeacherGroup = new Group(
                             "Grupo " + identifier,
                             fAuth.getUid(),
                             (String) documentSnapshot.get("FullName"),
@@ -145,7 +145,7 @@ public class Group {
                             participants,
                             groupsCollRef.getId());
 
-                    groupsCollRef.add(group);
+                    groupsCollRef.add(studentsAndTeacherGroup);
 
                 }
             });

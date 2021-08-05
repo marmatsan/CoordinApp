@@ -10,7 +10,7 @@
         android:id="@+id/nav_teacher_groups"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_chat_24"
-        android:title="@string/Grupos_Chat" />
+        android:title="@string/grupos" />
 
     <item
         android:id="@+id/nav_teacher_files"

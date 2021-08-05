@@ -16,7 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Files;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.files.Files;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Interactivity;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Groups;

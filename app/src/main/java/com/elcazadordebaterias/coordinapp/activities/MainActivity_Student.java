@@ -2,7 +2,6 @@ package com.elcazadordebaterias.coordinapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Files;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.files.Files;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Interactivity;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Groups;
 import com.elcazadordebaterias.coordinapp.fragments.student.home.Home;

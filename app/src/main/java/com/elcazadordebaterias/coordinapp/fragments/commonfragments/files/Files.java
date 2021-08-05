@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.commonfragments;
+package com.elcazadordebaterias.coordinapp.fragments.commonfragments.files;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -62,11 +62,11 @@ public class Files extends Fragment {
         RecyclerView filesContainer = view.findViewById(R.id.filesContainer);
 
         ArrayList<FilesContainerCard> groupsList = new ArrayList<FilesContainerCard>();
-        FilesContainerCardAdapter adapter = new FilesContainerCardAdapter(groupsList, getContext());
+        FilesContainerCardAdapter filesContainersAdapter = new FilesContainerCardAdapter(groupsList, getContext());
 
         LinearLayoutManager coursesLayoutManager = new LinearLayoutManager(getContext());
 
-        filesContainer.setAdapter(adapter);
+        filesContainer.setAdapter(filesContainersAdapter);
         filesContainer.setLayoutManager(coursesLayoutManager);
 
         CollectionReference collectionRef = fStore
@@ -83,13 +83,11 @@ public class Files extends Fragment {
                 String groupName = (String) document.get("name");
                 ArrayList<FileCard> filesList = new ArrayList<FileCard>();
 
-                groupsList.add(new FilesContainerCard(groupName, filesList));
-
                 collectionRef
                         .document(document.getId())
                         .collection("Storage")
                         .get().addOnSuccessListener(queryDocumentSnapshots1 -> {
-                          for (DocumentSnapshot document1 : queryDocumentSnapshots1){
+                    for (DocumentSnapshot document1 : queryDocumentSnapshots1){
                               StorageFileReference storageRef = document1.toObject(StorageFileReference.class);
 
                               filesList.add(new FileCard(
@@ -99,12 +97,12 @@ public class Files extends Fragment {
                                       storageRef.getUploadedDate(),
                                       storageRef.getDownloadLink()
                               ));
-
+                            Log.d("DEBUGGING", "Got file");
                           }
-                        });
-                adapter.notifyDataSetChanged();
+                    groupsList.add(new FilesContainerCard(groupName, filesList));
+                });
             }
-
+            filesContainersAdapter.notifyDataSetChanged();
         });
 
         return view;
