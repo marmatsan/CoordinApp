@@ -16,11 +16,15 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
 import com.elcazadordebaterias.coordinapp.utils.cards.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -79,22 +83,66 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
         });
 
         holder.deleteGroup.setOnClickListener(v -> {
+            if (groupCard.getIdentifier2() == Group.ISGROUPAL){
 
-            DocumentReference groupReference = fStore // Reference to the group containing the collection with the groups
-                    .collection("CoursesOrganization")
-                    .document(groupCard.getCourseName())
-                    .collection("Subjects")
-                    .document(groupCard.getSubjectName())
-                    .collection(groupCard.getCollectionId())
-                    .document(groupCard.getGroupId());
+                DocumentReference groupParentRef = fStore // Reference to the group containing the collection with the groups
+                        .collection("CoursesOrganization")
+                        .document(groupCard.getCourseName())
+                        .collection("Subjects")
+                        .document(groupCard.getSubjectName())
+                        .collection(groupCard.getCollectionId())
+                        .document(groupCard.getGroupId());
 
-            groupReference.collection("Groups").get().addOnSuccessListener(queryDocumentSnapshots -> {
-                for (DocumentSnapshot document : queryDocumentSnapshots){
-                    document.getReference().delete(); // Delete both groups. The one with the teacher and the one with the students
-                }
-                groupReference.delete();
-            });
+                CollectionReference groupsCollRef =  groupParentRef.collection("Groups");
 
+                groupsCollRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot groupDocument : queryDocumentSnapshots) {
+                        DocumentReference groupRef = groupDocument.getReference();
+
+                        groupRef.collection("ChatRoom").get().addOnSuccessListener(queryDocumentSnapshots1 -> { // Delete all chats in chatRoom
+                            for (DocumentSnapshot chatMessageDoc : queryDocumentSnapshots1){
+                                chatMessageDoc.getReference().delete();
+                            }
+
+                            groupRef.collection("Storage").get().addOnSuccessListener(queryDocumentSnapshots2 -> { // Delete all files from storage
+                                for (DocumentSnapshot storageDoc : queryDocumentSnapshots2){
+                                    storageDoc.getReference().delete();
+                                }
+                                // After deleting all data from the group with only students and with the teacher, delete those groups
+                                // and delete the file containing both groups
+                                groupRef.delete();
+                                groupParentRef.delete();
+                            });
+                        });
+                    }
+                });
+            } else if (groupCard.getIdentifier2() == Group.ISINDIVIDUAL){
+                DocumentReference individualGroupRef = fStore // Reference to the group containing the collection with the groups
+                        .collection("CoursesOrganization")
+                        .document(groupCard.getCourseName())
+                        .collection("Subjects")
+                        .document(groupCard.getSubjectName())
+                        .collection(groupCard.getCollectionId())
+                        .document(groupCard.getGroupId());
+
+                CollectionReference chatRoomCollRef = individualGroupRef.collection("ChatRoom");
+                CollectionReference storageCollRef = individualGroupRef.collection("Storage");
+
+                chatRoomCollRef.get().addOnSuccessListener(queryDocumentSnapshots1 -> { // Delete all chats in chatRoom
+                    for (DocumentSnapshot chatMessageDoc : queryDocumentSnapshots1){
+                        chatMessageDoc.getReference().delete();
+                    }
+
+                    storageCollRef.get().addOnSuccessListener(queryDocumentSnapshots2 -> { // Delete all files from storage
+                        for (DocumentSnapshot storageDoc : queryDocumentSnapshots2){
+                            storageDoc.getReference().delete();
+                        }
+                        // After deleting all data from the group with only students and with the teacher, delete those groups
+                        // and delete the file containing both groups
+                        individualGroupRef.delete();
+                    });
+                });
+            }
         });
 
         holder.view.setOnClickListener(v -> {

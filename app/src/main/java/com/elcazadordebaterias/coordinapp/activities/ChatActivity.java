@@ -28,6 +28,7 @@ import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.MessagesListAda
 import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.StorageFileReference;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
@@ -77,7 +78,7 @@ public class ChatActivity extends AppCompatActivity {
     private MessagesListAdapter messageAdapter;
 
     // Card with all the information
-    GroupCard card;
+    private GroupCard card;
 
     private int userType;
 
@@ -109,12 +110,26 @@ public class ChatActivity extends AppCompatActivity {
 
         // Reference to the collection of the messages
         DocumentReference groupRef = fStore
-                .collection("CoursesOrganization").document(card.getCourseName())
-                .collection("Subjects").document(card.getSubjectName())
-                .collection(card.getCollectionId()).document(card.getGroupId());
+                .collection("CoursesOrganization")
+                .document(card.getCourseName())
+                .collection("Subjects")
+                .document(card.getSubjectName())
+                .collection(card.getCollectionId())
+                .document(card.getGroupId());
 
-        chatroomRef = groupRef.collection("ChatRoom");
-        storageRef = groupRef.collection("Storage");
+
+        if (card.getIdentifier1() == Group.WITH_TEACHER) {
+            if (card.getIdentifier2() == Group.ISGROUPAL) {
+                chatroomRef = groupRef.collection("Groups").document("StudentsAndTeacherGroup").collection("ChatRoom");
+                storageRef = groupRef.collection("Groups").document("StudentsAndTeacherGroup").collection("Storage");
+            } else { // Is an individual chat
+                chatroomRef = groupRef.collection("ChatRoom");
+                storageRef = groupRef.collection("Storage");
+            }
+        } else { // Is a chat with only students
+            chatroomRef = groupRef.collection("Groups").document("OnlyStudentsGroup").collection("ChatRoom");
+            storageRef = groupRef.collection("Groups").document("OnlyStudentsGroup").collection("Storage");
+        }
 
         // Recyclerview setup
         RecyclerView messageListContainer = findViewById(R.id.messageListContainer);

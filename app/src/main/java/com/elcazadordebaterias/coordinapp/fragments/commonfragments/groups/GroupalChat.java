@@ -82,13 +82,8 @@ public class GroupalChat extends Fragment {
         recyclerviewGroups.setAdapter(groupsAdapter);
         recyclerviewGroups.setLayoutManager(layoutManager);
 
-        fStore
-                .collection("CoursesOrganization")
-                .document(selectedCourse)
-                .collection("Subjects")
-                .document(selectedSubject)
-                .collection("CollectiveGroups")
-                .whereArrayContains("allParticipantsIDs", fAuth.getUid())
+        fStore.collectionGroup("Groups")
+                .whereArrayContains("participantsIds", fAuth.getUid())
                 .addSnapshotListener((queryDocumentsSnapshots, error) -> {
 
                     if (error != null) {
@@ -98,32 +93,25 @@ public class GroupalChat extends Fragment {
                     }
 
                     groupsList.clear();
-                    listChanged();
+                    if (queryDocumentsSnapshots.size() == 0) {
+                        listChanged();
+                    } else {
+                        for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
+                            Group group = groupDocument.toObject(Group.class);
 
-                    for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
-                        String groupName = (String) groupDocument.get("name");
-                        String groupDocumentID = groupDocument.getId(); // ID of this group of documents
+                            GroupCard groupCard = new GroupCard(
+                                    group.getName(),
+                                    group.getParentID(),
+                                    selectedCourse,
+                                    selectedSubject,
+                                    group.getParticipantNames(),
+                                    group.getCollectionId(),
+                                    group.getIdentifier1(),
+                                    group.getIdentifier2());
 
-                        groupDocument.getReference().collection("Groups")
-                                .whereArrayContains("participantsIds", fAuth.getUid()) // It should return only one document (the one the teacher is in)
-                                .get().addOnSuccessListener(queryDocumentSnapshots -> {
-
-                            for (DocumentSnapshot groupDoc : queryDocumentSnapshots) {
-                                Group group = groupDoc.toObject(Group.class);
-
-                                GroupCard groupCard = new GroupCard(
-                                        groupName,
-                                        groupDocumentID,
-                                        selectedCourse,
-                                        selectedSubject,
-                                        group.getParticipantNames(),
-                                        "CollectiveGroups");
-
-                                groupsList.add(groupCard);
-                                listChanged();
-
-                            }
-                        });
+                            groupsList.add(groupCard);
+                            listChanged();
+                        }
                     }
                 });
 

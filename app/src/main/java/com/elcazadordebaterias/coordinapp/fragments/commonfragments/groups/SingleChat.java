@@ -19,6 +19,7 @@ import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -70,48 +71,54 @@ public class SingleChat extends Fragment {
         recyclerviewGroups.setAdapter(groupsAdapter);
         recyclerviewGroups.setLayoutManager(layoutManager);
 
-        CollectionReference groupsCollRef = fStore
-                .collection("CoursesOrganization").document(selectedCourse)
-                .collection("Subjects").document(selectedSubject)
-                .collection("IndividualGroups");
-
-        groupsCollRef
-                .orderBy("name", Query.Direction.ASCENDING)
-                .addSnapshotListener((value, error) -> {
+        fStore
+                .collection("CoursesOrganization")
+                .document(selectedCourse)
+                .collection("Subjects")
+                .document(selectedSubject)
+                .collection("IndividualGroups")
+                .addSnapshotListener((queryDocumentsSnapshots, error) -> {
 
                     if (error != null) {
                         return;
-                    } else if (value == null) {
+                    } else if (queryDocumentsSnapshots == null) {
                         return;
                     }
 
                     groupsList.clear();
+                    if (queryDocumentsSnapshots.size() == 0) {
+                        listChanged();
+                    } else {
+                        for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
+                            Group group = groupDocument.toObject(Group.class);
 
-                    for (QueryDocumentSnapshot document : value) {
-                        Group group = document.toObject(Group.class);
+                            GroupCard groupCard = new GroupCard(
+                                    group.getName(),
+                                    group.getParentID(),
+                                    selectedCourse,
+                                    selectedSubject,
+                                    group.getParticipantNames(),
+                                    group.getCollectionId(),
+                                    group.getIdentifier1(),
+                                    group.getIdentifier2());
 
-                        if(group.getParticipantsIds().contains(fAuth.getUid())){
-                            ArrayList<String> participantsNames = new ArrayList<String>();
-
-                            for (GroupParticipant participant : group.getParticipants()) {
-                                participantsNames.add(participant.getParticipantFullName());
-                            }
-
-                            groupsList.add(new GroupCard(group.getName(), document.getId(), group.getCourseName(), group.getSubjectName(), participantsNames, group.getCollectionId()));
+                            groupsList.add(groupCard);
+                            listChanged();
                         }
                     }
-
-                    groupsAdapter.notifyDataSetChanged();
-
-                    if (userType == UserType.TYPE_TEACHER && groupsList.isEmpty()) {
-                        noGroups.setVisibility(View.VISIBLE);
-                    } else {
-                        noGroups.setVisibility(View.GONE);
-                    }
-
                 });
 
         return view;
+    }
+
+    private void listChanged() {
+        groupsAdapter.notifyDataSetChanged();
+
+        if (groupsList.isEmpty()) {
+            noGroups.setVisibility(View.VISIBLE);
+        } else {
+            noGroups.setVisibility(View.GONE);
+        }
     }
 
 }
