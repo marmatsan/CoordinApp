@@ -6,14 +6,16 @@ public class GroupDocument {
 
     private String name;
     private ArrayList<String> allParticipantsIDs;
+    private ArrayList<Group> groups;
 
     public GroupDocument(){
 
     }
 
-    public GroupDocument(String name, ArrayList<String> allParticipantsIDs){
+    public GroupDocument(String name, ArrayList<String> allParticipantsIDs, ArrayList<Group> groups){
         this.name = name;
         this.allParticipantsIDs = allParticipantsIDs;
+        this.groups = groups;
     }
 
     public String getName() {
@@ -22,5 +24,9 @@ public class GroupDocument {
 
     public ArrayList<String> getAllParticipantsIDs() {
         return allParticipantsIDs;
+    }
+
+    public ArrayList<Group> getGroups() {
+        return groups;
     }
 }

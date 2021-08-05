@@ -1,17 +1,17 @@
 package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
 
-public class StorageFileReference {
+public class StorageFile {
 
     private String uploaderName;
     private String fileName;
     private String uploadedDate;
     private String downloadLink;
 
-    public StorageFileReference(){
+    public StorageFile(){
 
     }
 
-    public StorageFileReference(String uploaderName, String fileName, String uploadedDate, String downloadLink) {
+    public StorageFile(String uploaderName, String fileName, String uploadedDate, String downloadLink) {
         this.uploaderName = uploaderName;
         this.fileName = fileName;
         this.uploadedDate = uploadedDate;

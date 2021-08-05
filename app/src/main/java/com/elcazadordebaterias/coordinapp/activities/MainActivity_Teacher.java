@@ -2,7 +2,6 @@ package com.elcazadordebaterias.coordinapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.files.Files;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.files.Files;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Interactivity;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Groups;
@@ -109,7 +108,7 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
         } else if (itemId == R.id.nav_teacher_groups) {
             selectedFragment = new Groups(UserType.TYPE_TEACHER, selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_teacher_files) {
-            selectedFragment = new Files(UserType.TYPE_TEACHER, selectedCourse, selectedSubject);
+            selectedFragment = new Files(selectedCourse, selectedSubject);
         } else {
             selectedFragment = new Administration(selectedCourse, selectedSubject);
         }

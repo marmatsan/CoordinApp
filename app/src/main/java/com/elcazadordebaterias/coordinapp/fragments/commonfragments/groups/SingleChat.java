@@ -94,13 +94,12 @@ public class SingleChat extends Fragment {
 
                             GroupCard groupCard = new GroupCard(
                                     group.getName(),
-                                    group.getParentID(),
+                                    groupDocument.getId(),
                                     selectedCourse,
                                     selectedSubject,
+                                    group.getHasTeacher(),
                                     group.getParticipantNames(),
-                                    group.getCollectionId(),
-                                    group.getIdentifier1(),
-                                    group.getIdentifier2());
+                                    group.getCollectionId());
 
                             groupsList.add(groupCard);
                             listChanged();

@@ -143,5 +143,6 @@
     <string name="uploaded_date">Uploaded date</string>
     <string name="descargar">Descargar</string>
     <string name="file_name">File name</string>
+    <string name="todav_a_no_se_ha_enviado_ning_n_archivo_los_archivos_aparecer_n_aqu">Todavía no se ha enviado ningún archivo. Los archivos aparecerán aquí</string>
 
 </resources>

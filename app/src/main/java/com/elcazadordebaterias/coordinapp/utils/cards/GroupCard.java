@@ -12,24 +12,23 @@ import java.util.ArrayList;
 public class GroupCard {
 
     private String groupName;
-    private String groupId; // The id of the document for this group in Firebase. It contain a collection called "Groups", where the actual groups are, or the id of the group if it is in the IndividualGroups folder
+    private String groupId; // The id of the document for this group in Firebase
     private String courseName;
     private String subjectName;
+
+    private boolean hasTeacher;
+
     private ArrayList<String> participantNames;
     private String collectionId;
 
-    private int identifier1;
-    private int identifier2;
-
-    public GroupCard(String groupName, String groupId, String courseName, String subjectName, ArrayList<String> participantNames, String collectionId, int identifier1, int identifier2) {
+    public GroupCard(String groupName, String groupId, String courseName, String subjectName, boolean hasTeacher, ArrayList<String> participantNames, String collectionId) {
         this.groupName = groupName;
         this.groupId = groupId;
         this.courseName = courseName;
         this.subjectName = subjectName;
+        this.hasTeacher = hasTeacher;
         this.participantNames = participantNames;
         this.collectionId = collectionId;
-        this.identifier1 = identifier1;
-        this.identifier2 = identifier2;
     }
 
     public String getGroupName() {
@@ -56,6 +55,10 @@ public class GroupCard {
         this.subjectName = subjectName;
     }
 
+    public boolean getHasTeacher() {
+        return hasTeacher;
+    }
+
     public ArrayList<String> getParticipantNames() {
         return participantNames;
     }
@@ -64,11 +67,4 @@ public class GroupCard {
         return collectionId;
     }
 
-    public int getIdentifier1() {
-        return identifier1;
-    }
-
-    public int getIdentifier2() {
-        return identifier2;
-    }
 }

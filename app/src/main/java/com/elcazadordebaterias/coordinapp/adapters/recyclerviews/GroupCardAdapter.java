@@ -83,66 +83,39 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
         });
 
         holder.deleteGroup.setOnClickListener(v -> {
-            if (groupCard.getIdentifier2() == Group.ISGROUPAL){
 
-                DocumentReference groupParentRef = fStore // Reference to the group containing the collection with the groups
-                        .collection("CoursesOrganization")
-                        .document(groupCard.getCourseName())
-                        .collection("Subjects")
-                        .document(groupCard.getSubjectName())
-                        .collection(groupCard.getCollectionId())
-                        .document(groupCard.getGroupId());
+            DocumentReference groupRef =  fStore
+                    .collection("CoursesOrganization")
+                    .document(groupCard.getCourseName())
+                    .collection("Subjects")
+                    .document(groupCard.getSubjectName())
+                    .collection(groupCard.getCollectionId())
+                    .document(groupCard.getGroupId());
 
-                CollectionReference groupsCollRef =  groupParentRef.collection("Groups");
+            groupRef.collection("ChatRoomWithoutTeacher").get().addOnSuccessListener(queryDocumentSnapshots -> {
+                for (DocumentSnapshot document : queryDocumentSnapshots){
+                    document.getReference().delete();
+                }
 
-                groupsCollRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (DocumentSnapshot groupDocument : queryDocumentSnapshots) {
-                        DocumentReference groupRef = groupDocument.getReference();
-
-                        groupRef.collection("ChatRoom").get().addOnSuccessListener(queryDocumentSnapshots1 -> { // Delete all chats in chatRoom
-                            for (DocumentSnapshot chatMessageDoc : queryDocumentSnapshots1){
-                                chatMessageDoc.getReference().delete();
-                            }
-
-                            groupRef.collection("Storage").get().addOnSuccessListener(queryDocumentSnapshots2 -> { // Delete all files from storage
-                                for (DocumentSnapshot storageDoc : queryDocumentSnapshots2){
-                                    storageDoc.getReference().delete();
-                                }
-                                // After deleting all data from the group with only students and with the teacher, delete those groups
-                                // and delete the file containing both groups
-                                groupRef.delete();
-                                groupParentRef.delete();
-                            });
-                        });
-                    }
-                });
-            } else if (groupCard.getIdentifier2() == Group.ISINDIVIDUAL){
-                DocumentReference individualGroupRef = fStore // Reference to the group containing the collection with the groups
-                        .collection("CoursesOrganization")
-                        .document(groupCard.getCourseName())
-                        .collection("Subjects")
-                        .document(groupCard.getSubjectName())
-                        .collection(groupCard.getCollectionId())
-                        .document(groupCard.getGroupId());
-
-                CollectionReference chatRoomCollRef = individualGroupRef.collection("ChatRoom");
-                CollectionReference storageCollRef = individualGroupRef.collection("Storage");
-
-                chatRoomCollRef.get().addOnSuccessListener(queryDocumentSnapshots1 -> { // Delete all chats in chatRoom
-                    for (DocumentSnapshot chatMessageDoc : queryDocumentSnapshots1){
-                        chatMessageDoc.getReference().delete();
+                groupRef.collection("StorageWithoutTeacher").get().addOnSuccessListener(queryDocumentSnapshots1 -> {
+                    for (DocumentSnapshot document : queryDocumentSnapshots1){
+                        document.getReference().delete();
                     }
 
-                    storageCollRef.get().addOnSuccessListener(queryDocumentSnapshots2 -> { // Delete all files from storage
-                        for (DocumentSnapshot storageDoc : queryDocumentSnapshots2){
-                            storageDoc.getReference().delete();
+                    groupRef.collection("ChatRoomWithTeacher").get().addOnSuccessListener(queryDocumentSnapshots11 -> {
+                        for (DocumentSnapshot document : queryDocumentSnapshots11){
+                            document.getReference().delete();
                         }
-                        // After deleting all data from the group with only students and with the teacher, delete those groups
-                        // and delete the file containing both groups
-                        individualGroupRef.delete();
+                    });
+
+                    groupRef.collection("StorageWithTeacher").get().addOnSuccessListener(queryDocumentSnapshots112 -> {
+                        for (DocumentSnapshot document : queryDocumentSnapshots112){
+                            document.getReference().delete();
+                        }
+                        groupRef.delete();
                     });
                 });
-            }
+            });
         });
 
         holder.view.setOnClickListener(v -> {
@@ -177,5 +150,6 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
             deleteGroup = view.findViewById(R.id.deleteGroup);
         }
     }
+
 }
 

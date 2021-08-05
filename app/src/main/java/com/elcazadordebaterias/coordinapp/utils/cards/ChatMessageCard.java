@@ -1,6 +1,6 @@
 package com.elcazadordebaterias.coordinapp.utils.cards;
 
-import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.StorageFileReference;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.StorageFile;
 
 import java.util.Date;
 
@@ -10,13 +10,13 @@ public class ChatMessageCard {
     private String senderId;
     private String message;
     private Date date;
-    private StorageFileReference fileRef;
+    private StorageFile fileRef;
 
     public ChatMessageCard(){
 
     }
 
-    public ChatMessageCard(String messageTitle, String senderId, String message, Date date, StorageFileReference fileRef) {
+    public ChatMessageCard(String messageTitle, String senderId, String message, Date date, StorageFile fileRef) {
         this.messageTitle = messageTitle;
         this.senderId = senderId;
         this.message = message;
@@ -40,7 +40,7 @@ public class ChatMessageCard {
         return date;
     }
 
-    public StorageFileReference getFileRef() {
+    public StorageFile getFileRef() {
         return fileRef;
     }
 }

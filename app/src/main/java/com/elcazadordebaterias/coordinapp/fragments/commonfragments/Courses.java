@@ -2,6 +2,7 @@ package com.elcazadordebaterias.coordinapp.fragments.commonfragments;
 
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,8 +87,10 @@ public class Courses extends Fragment {
     }
 
     private void populateParticipantsList() {
-        fStore.collection("CoursesOrganization").document(selectedCourse)
-                .collection("Subjects").document(selectedSubject)
+        fStore.collection("CoursesOrganization")
+                .document(selectedCourse)
+                .collection("Subjects")
+                .document(selectedSubject)
                 .get().addOnSuccessListener(documentSnapshot -> {
                     Subject subject = documentSnapshot.toObject(Subject.class);
                     ArrayList<String> studentIds = subject.getStudentIDs();

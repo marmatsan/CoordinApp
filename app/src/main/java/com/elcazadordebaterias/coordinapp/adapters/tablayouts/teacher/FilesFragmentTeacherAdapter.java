@@ -1,27 +1,22 @@
-package com.elcazadordebaterias.coordinapp.adapters.tablayouts.student;
+package com.elcazadordebaterias.coordinapp.adapters.tablayouts.teacher;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Petitions;
-import com.elcazadordebaterias.coordinapp.fragments.student.Home;
+import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Courses;
+import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Petitions;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.files.GroupalFiles;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.files.IndividualFiles;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 
-/**
- * Adapter to handle the pages of the viewpager attached at the
- * {@link Home} fragment.
- *
- *
- * @author Martín Mateos Sánchez
- */
-public class HomeFragmentStudentAdapter extends FragmentStateAdapter {
+public class FilesFragmentTeacherAdapter extends FragmentStateAdapter {
 
     private String selectedCourse;
     private String selectedSubject;
 
-    public HomeFragmentStudentAdapter(Fragment fragment, String selectedCourse, String selectedSubject) {
+    public FilesFragmentTeacherAdapter(Fragment fragment, String selectedCourse, String selectedSubject) {
         super(fragment);
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
@@ -32,9 +27,9 @@ public class HomeFragmentStudentAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 1:
-                return new Petitions(UserType.TYPE_STUDENT, selectedCourse, selectedSubject);
+                return new IndividualFiles(selectedCourse, selectedSubject);
             default:
-                return new Courses(UserType.TYPE_STUDENT, selectedCourse, selectedSubject); // TODO: Change
+                return new GroupalFiles(selectedCourse, selectedSubject);
         }
     }
 
@@ -42,5 +37,4 @@ public class HomeFragmentStudentAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return 2; // To be changed if the number of tabs increases
     }
-
 }

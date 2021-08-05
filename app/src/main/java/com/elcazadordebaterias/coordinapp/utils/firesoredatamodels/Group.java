@@ -33,64 +33,33 @@ import java.util.List;
  */
 public class Group {
 
-    // Identifier 1
-    public static final int WITH_TEACHER = 0;
-    public static final int ONLY_STUDENTS = 1;
-
-    // Identifier 2
-    // If a group is of type WITH_TEACHER, it can be groupal or individual (just the teacher and the student)
-    public static final int ISGROUPAL = 0;
-    public static final int ISINDIVIDUAL = 1;
-
-    private String parentID; // ID for the group. If ISGROUPAL, it is the ID of the parent document containing the "Groups collection" with the chats.
-                             // If ISINDIVIDUAL, it is the ID of the own document
-
     private String name; // The name of the group
-    private String coordinatorId; // The id of the teacher that created the group
-    private String coordinatorName; // The name of the teacher that created the group
     private String courseName;     // The name of this group
     private String subjectName;
+
+    private boolean hasTeacher;
 
     private ArrayList<String> participantsIds;
     private ArrayList<GroupParticipant> participants;
 
     private String collectionId;
 
-    private int identifier1;
-    private int identifier2;
-
     public Group() {
 
     }
 
-    public Group(String parentID, String name, String coordinatorId, String coordinatorName, String courseName, String subjectName, ArrayList<String> participantsIds, ArrayList<GroupParticipant> participants, String collectionId, int identifier1, int identifier2) {
-        this.parentID = parentID;
+    public Group(String name, String courseName, String subjectName, boolean hasTeacher, ArrayList<String> participantsIds, ArrayList<GroupParticipant> participants, String collectionId) {
         this.name = name;
-        this.coordinatorId = coordinatorId;
-        this.coordinatorName = coordinatorName;
         this.courseName = courseName;
         this.subjectName = subjectName;
+        this.hasTeacher = hasTeacher;
         this.participantsIds = participantsIds;
         this.participants = participants;
         this.collectionId = collectionId;
-        this.identifier1 = identifier1;
-        this.identifier2 = identifier2;
-    }
-
-    public String getParentID() {
-        return parentID;
     }
 
     public String getName() {
         return name;
-    }
-
-    public String getCoordinatorId() {
-        return coordinatorId;
-    }
-
-    public String getCoordinatorName() {
-        return coordinatorName;
     }
 
     public String getCourseName() {
@@ -99,6 +68,10 @@ public class Group {
 
     public String getSubjectName() {
         return subjectName;
+    }
+
+    public boolean getHasTeacher() {
+        return hasTeacher;
     }
 
     public ArrayList<String> getParticipantsIds() {
@@ -111,14 +84,6 @@ public class Group {
 
     public String getCollectionId() {
         return collectionId;
-    }
-
-    public int getIdentifier1() {
-        return identifier1;
-    }
-
-    public int getIdentifier2() {
-        return identifier2;
     }
 
     public ArrayList<String> getParticipantNames() {
@@ -164,96 +129,53 @@ public class Group {
 
         ArrayList<String> onlyStudentsIDs = new ArrayList<String>(studentIDs);
 
-        if (onlyStudentsIDs.size() == 1) { // The group has multiple students. We want to create them in the IndividualGroups collection
-            fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(teacherInfo -> {
-                ArrayList<GroupParticipant> studentsAndTeacherParticipants = new ArrayList<GroupParticipant>();
-                ArrayList<String> studentsAndTeacherIDs = new ArrayList<String>(onlyStudentsIDs);
+        fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(teacherInfo -> {
+            ArrayList<GroupParticipant> studentsAndTeacherParticipants = new ArrayList<GroupParticipant>();
+            ArrayList<String> studentsAndTeacherIDs = new ArrayList<String>(onlyStudentsIDs);
 
-                studentsAndTeacherParticipants.add(new GroupParticipant((String) teacherInfo.get("FullName"), teacherInfo.getId()));
-                studentsAndTeacherIDs.add(teacherInfo.getId());
+            studentsAndTeacherParticipants.add(new GroupParticipant((String) teacherInfo.get("FullName"), teacherInfo.getId()));
+            studentsAndTeacherIDs.add(teacherInfo.getId());
 
-                fStore.collection("Students").whereIn(FieldPath.documentId(), onlyStudentsIDs).get().addOnSuccessListener(queryDocumentSnapshots -> {
-                    ArrayList<GroupParticipant> onlyStudentsParticipants = new ArrayList<GroupParticipant>();
+            fStore.collection("Students").whereIn(FieldPath.documentId(), onlyStudentsIDs).get().addOnSuccessListener(queryDocumentSnapshots -> {
+                ArrayList<GroupParticipant> onlyStudentsParticipants = new ArrayList<GroupParticipant>();
 
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        onlyStudentsParticipants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
-                    }
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    onlyStudentsParticipants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
+                }
 
-                    studentsAndTeacherParticipants.addAll(onlyStudentsParticipants);
+                studentsAndTeacherParticipants.addAll(onlyStudentsParticipants);
 
-                    Group studentsAndTeacherGroup = new Group(
-                            "",
+                Group studentsAndTeacherGroup = new Group(
+                        "Grupo " + identifier,
+                        selectedCourse,
+                        selectedSubject,
+                        true,
+                        studentsAndTeacherIDs,
+                        studentsAndTeacherParticipants,
+                        groupsCollRef.getId()
+                );
+
+                if (onlyStudentsIDs.size() == 1) {
+                    groupsCollRef.add(studentsAndTeacherGroup);
+                } else {
+                    ArrayList<Group> groups = new ArrayList<Group>();
+                    Group onlyStudentsGroup = new Group(
                             "Grupo " + identifier,
-                            teacherInfo.getId(),
-                            (String) teacherInfo.get("FullName"),
                             selectedCourse,
                             selectedSubject,
-                            studentsAndTeacherIDs,
-                            studentsAndTeacherParticipants,
-                            groupsCollRef.getId(),
-                            Group.WITH_TEACHER,
-                            Group.ISINDIVIDUAL
+                            false,
+                            onlyStudentsIDs,
+                            onlyStudentsParticipants,
+                            groupsCollRef.getId()
                     );
+                    groups.add(studentsAndTeacherGroup);
+                    groups.add(onlyStudentsGroup);
 
-                    groupsCollRef.add(studentsAndTeacherGroup).addOnSuccessListener(documentReference -> {
-                        documentReference.update("parentID", documentReference.getId());
-                    });
+                    GroupDocument collectiveGroupCollection = new GroupDocument("Grupo " + identifier, studentsAndTeacherIDs, groups);
 
-                });
+                    groupsCollRef.add(collectiveGroupCollection);
+                }
             });
-        } else { // The group has multiple students. We want to create them in the CollectiveGroups collection
-            fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(teacherInfo -> {
-                ArrayList<GroupParticipant> studentsAndTeacherParticipants = new ArrayList<GroupParticipant>();
-                ArrayList<String> studentsAndTeacherIDs = new ArrayList<String>(onlyStudentsIDs);
-
-                studentsAndTeacherParticipants.add(new GroupParticipant((String) teacherInfo.get("FullName"), teacherInfo.getId()));
-                studentsAndTeacherIDs.add(teacherInfo.getId());
-
-                fStore.collection("Students").whereIn(FieldPath.documentId(), onlyStudentsIDs).get().addOnSuccessListener(queryDocumentSnapshots -> {
-                    ArrayList<GroupParticipant> onlyStudentsParticipants = new ArrayList<GroupParticipant>();
-
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        onlyStudentsParticipants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
-                    }
-
-                    studentsAndTeacherParticipants.addAll(onlyStudentsParticipants);
-
-                    GroupDocument collectiveGroupCollection = new GroupDocument("Grupo " + identifier, studentsAndTeacherIDs);
-
-                    groupsCollRef.add(collectiveGroupCollection).addOnSuccessListener(documentReference -> {
-                        Group studentsAndTeacherGroup = new Group(
-                                documentReference.getId(),
-                                "Grupo " + identifier,
-                                teacherInfo.getId(),
-                                (String) teacherInfo.get("FullName"),
-                                selectedCourse,
-                                selectedSubject,
-                                studentsAndTeacherIDs,
-                                studentsAndTeacherParticipants,
-                                groupsCollRef.getId(),
-                                Group.WITH_TEACHER,
-                                Group.ISGROUPAL
-                        );
-
-                        Group onlyStudentsGroup = new Group(
-                                documentReference.getId(),
-                                "Grupo " + identifier,
-                                teacherInfo.getId(),
-                                (String) teacherInfo.get("FullName"),
-                                selectedCourse,
-                                selectedSubject,
-                                onlyStudentsIDs,
-                                onlyStudentsParticipants,
-                                groupsCollRef.getId(),
-                                Group.ONLY_STUDENTS,
-                                Group.ISGROUPAL
-                        );
-
-                        documentReference.collection("Groups").document("StudentsAndTeacherGroup").set(studentsAndTeacherGroup);
-                        documentReference.collection("Groups").document("OnlyStudentsGroup").set(onlyStudentsGroup);
-                    });
-                });
-            });
-        }
+        });
     }
 }

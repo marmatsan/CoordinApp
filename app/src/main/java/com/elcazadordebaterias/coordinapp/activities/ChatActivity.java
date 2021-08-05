@@ -1,23 +1,15 @@
 package com.elcazadordebaterias.coordinapp.activities;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
-import android.util.Log;
-import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,30 +21,23 @@ import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
-import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.StorageFileReference;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.StorageFile;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -117,18 +102,17 @@ public class ChatActivity extends AppCompatActivity {
                 .collection(card.getCollectionId())
                 .document(card.getGroupId());
 
-
-        if (card.getIdentifier1() == Group.WITH_TEACHER) {
-            if (card.getIdentifier2() == Group.ISGROUPAL) {
-                chatroomRef = groupRef.collection("Groups").document("StudentsAndTeacherGroup").collection("ChatRoom");
-                storageRef = groupRef.collection("Groups").document("StudentsAndTeacherGroup").collection("Storage");
-            } else { // Is an individual chat
-                chatroomRef = groupRef.collection("ChatRoom");
-                storageRef = groupRef.collection("Storage");
+        if (card.getCollectionId().equals("CollectiveGroups")){
+            if (card.getHasTeacher()) {
+                chatroomRef = groupRef.collection("ChatRoomWithTeacher");
+                storageRef = groupRef.collection("StorageWithTeacher");
+            } else {
+                chatroomRef = groupRef.collection("ChatRoomWithoutTeacher");
+                storageRef = groupRef.collection("StorageWithoutTeacher");
             }
-        } else { // Is a chat with only students
-            chatroomRef = groupRef.collection("Groups").document("OnlyStudentsGroup").collection("ChatRoom");
-            storageRef = groupRef.collection("Groups").document("OnlyStudentsGroup").collection("Storage");
+        } else { //card.getCollectionId().equals("IndividualGroups")
+            chatroomRef = groupRef.collection("ChatRoom");
+            storageRef = groupRef.collection("Storage");
         }
 
         // Recyclerview setup
@@ -168,7 +152,7 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    private void sendMessage(String messageInputText, StorageFileReference fileRef) {
+    private void sendMessage(String messageInputText, StorageFile fileRef) {
         String collectionPath = null;
 
         if (userType == UserType.TYPE_STUDENT) {
@@ -244,14 +228,14 @@ public class ChatActivity extends AppCompatActivity {
 
                     if (userType == UserType.TYPE_STUDENT) {
                         fStore.collection("Students").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
-                            StorageFileReference fileReference = new StorageFileReference((String) documentSnapshot.get("FullName"), fileNameWithExtension, uploadedTime, uri.toString());
+                            StorageFile fileReference = new StorageFile((String) documentSnapshot.get("FullName"), fileNameWithExtension, uploadedTime, uri.toString());
                             storageRef.add(fileReference).addOnSuccessListener(documentReference -> {
                                 sendMessage(null, fileReference);
                             });
                         });
                     } else if (userType == UserType.TYPE_TEACHER) {
                         fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
-                            StorageFileReference fileReference = new StorageFileReference((String) documentSnapshot.get("FullName"), fileNameWithExtension, uploadedTime, uri.toString());
+                            StorageFile fileReference = new StorageFile((String) documentSnapshot.get("FullName"), fileNameWithExtension, uploadedTime, uri.toString());
                             storageRef.add(fileReference).addOnSuccessListener(documentReference -> {
                                 sendMessage(null, fileReference);
                             });

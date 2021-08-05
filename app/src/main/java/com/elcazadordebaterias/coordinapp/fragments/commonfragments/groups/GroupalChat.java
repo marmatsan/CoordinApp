@@ -18,18 +18,23 @@ import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupCardAdapte
 import com.elcazadordebaterias.coordinapp.utils.cards.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SnapshotMetadata;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,8 +51,8 @@ public class GroupalChat extends Fragment {
 
     private int userType;
 
-    private String selectedCourse;
-    private String selectedSubject;
+    private final String selectedCourse;
+    private final String selectedSubject;
 
     private TextView noGroups;
 
@@ -82,8 +87,12 @@ public class GroupalChat extends Fragment {
         recyclerviewGroups.setAdapter(groupsAdapter);
         recyclerviewGroups.setLayoutManager(layoutManager);
 
-        fStore.collectionGroup("Groups")
-                .whereArrayContains("participantsIds", fAuth.getUid())
+        fStore
+                .collection("CoursesOrganization")
+                .document(selectedCourse)
+                .collection("Subjects")
+                .document(selectedSubject)
+                .collection("CollectiveGroups")
                 .addSnapshotListener((queryDocumentsSnapshots, error) -> {
 
                     if (error != null) {
@@ -93,28 +102,25 @@ public class GroupalChat extends Fragment {
                     }
 
                     groupsList.clear();
-                    if (queryDocumentsSnapshots.size() == 0) {
-                        listChanged();
-                    } else {
                         for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
-                            Group group = groupDocument.toObject(Group.class);
+                            GroupDocument group = groupDocument.toObject(GroupDocument.class);
 
-                            GroupCard groupCard = new GroupCard(
-                                    group.getName(),
-                                    group.getParentID(),
-                                    selectedCourse,
-                                    selectedSubject,
-                                    group.getParticipantNames(),
-                                    group.getCollectionId(),
-                                    group.getIdentifier1(),
-                                    group.getIdentifier2());
-
-                            groupsList.add(groupCard);
-                            listChanged();
+                            for (Group groupDoc : group.getGroups()) {
+                                if (groupDoc.getParticipantsIds().contains(fAuth.getUid())){
+                                    GroupCard groupCard = new GroupCard(
+                                            groupDoc.getName(),
+                                            groupDocument.getId(),
+                                            selectedCourse,
+                                            selectedSubject,
+                                            groupDoc.getHasTeacher(),
+                                            groupDoc.getParticipantNames(),
+                                            groupDoc.getCollectionId());
+                                    groupsList.add(groupCard);
+                                }
+                            }
                         }
-                    }
+                    listChanged();
                 });
-
         return view;
     }
 

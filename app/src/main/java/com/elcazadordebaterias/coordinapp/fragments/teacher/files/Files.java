@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.student.home;
+package com.elcazadordebaterias.coordinapp.fragments.teacher.files;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,63 +11,76 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.tablayouts.student.HomeFragmentStudentAdapter;
+import com.elcazadordebaterias.coordinapp.adapters.tablayouts.teacher.FilesFragmentTeacherAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-/**
- * The fragment representing the Home Tab of the student.
- *
- * @author Martín Mateos Sánchez
- */
-public class Home extends Fragment {
+public class Files extends Fragment {
 
-    private HomeFragmentStudentAdapter optionsAdapter;
+    // Firebase
+    FirebaseFirestore fStore;
+    FirebaseAuth fAuth;
 
-    private ViewPager2 viewpager;
+    // Views
     private TabLayout tablayout;
+    private ViewPager2 viewpager;
+
+    // Adapter
+    private FilesFragmentTeacherAdapter optionsAdapter;
+
+    private int userType;
 
     private String selectedCourse;
     private String selectedSubject;
 
+    public Files(){
 
-    public Home(String selectedCourse, String selectedSubject){
+    }
+
+    public Files(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
+        this.userType = userType;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fStore = FirebaseFirestore.getInstance();
+        fAuth = FirebaseAuth.getInstance();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home_student, container, false);
-
+        View view = inflater.inflate(R.layout.fragments_teacher_files, container, false);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         tablayout = view.findViewById(R.id.tabLayout);
-        tablayout.setInlineLabel(false);
-        viewpager = view.findViewById(R.id.fragment_container_student_home);
+        viewpager = view.findViewById(R.id.fragmentContainer);
 
-        optionsAdapter = new HomeFragmentStudentAdapter(this, selectedCourse, selectedSubject);
+        tablayout.setInlineLabel(false);
+
+        optionsAdapter = new FilesFragmentTeacherAdapter(this, selectedCourse, selectedSubject);
         viewpager.setAdapter(optionsAdapter);
 
         new TabLayoutMediator(tablayout, viewpager, (tab, position) -> {
-            switch (position){
+            switch (position) {
                 case 0:
-                    tab.setText("Cursos");
-                    tab.setIcon(R.drawable.ic_baseline_folder_24);
+                    tab.setText("Grupales");
+                    tab.setIcon(R.drawable.ic_group);
                     break;
                 case 1:
-                    tab.setText("Peticiones");
-                    tab.setIcon(R.drawable.ic_baseline_notifications_none_24);
+                    tab.setText("Individuales");
+                    tab.setIcon(R.drawable.ic_baseline_person_24);
                     break;
             }
         }).attach();
     }
+
 }
