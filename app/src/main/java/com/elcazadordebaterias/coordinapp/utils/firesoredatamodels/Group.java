@@ -94,9 +94,9 @@ public class Group {
         ArrayList<String> groupsNames = new ArrayList<String>();
 
         for (DocumentSnapshot document : queryDocumentSnapshots) {
-            Group group = document.toObject(Group.class);
-            if (group.getName() != null) {
-                groupsNames.add(group.getName());
+            GroupDocument groupDocument = document.toObject(GroupDocument.class);
+            if (groupDocument.getName() != null) {
+                groupsNames.add(groupDocument.getName());
             }
         }
 
@@ -159,13 +159,12 @@ public class Group {
                         onlyStudentsParticipants,
                         groupsCollRef.getId());
 
-                GroupDocument collectiveGroupCollection = new GroupDocument(studentsAndTeacherIDs);
+                GroupDocument collectiveGroupCollection = new GroupDocument("Grupo " + identifier, studentsAndTeacherIDs);
 
-                groupsCollRef.document("Grupo " + identifier).set(collectiveGroupCollection).addOnSuccessListener(unused -> {
-                    groupsCollRef.document("Grupo " + identifier).collection("Groups").add(studentsAndTeacherGroup);
-                    groupsCollRef.document("Grupo " + identifier).collection("Groups").add(onlyStudentsGroup);
+                groupsCollRef.add(collectiveGroupCollection).addOnSuccessListener(documentReference -> {
+                    documentReference.collection("Groups").add(studentsAndTeacherGroup);
+                    documentReference.collection("Groups").add(onlyStudentsGroup);
                 });
-
             });
         });
     }

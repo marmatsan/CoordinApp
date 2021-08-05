@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class GroupCard {
 
     private String groupName;
-    private String groupId; // The id of the document for this group in Firebase
+    private String groupId; // The id of the document for this group in Firebase. It contain a collection called "Groups", where the actual groups are.
     private String courseName;
     private String subjectName;
     private ArrayList<String> participantNames;

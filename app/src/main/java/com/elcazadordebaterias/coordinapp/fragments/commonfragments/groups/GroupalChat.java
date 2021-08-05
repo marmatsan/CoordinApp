@@ -88,27 +88,34 @@ public class GroupalChat extends Fragment {
         collectionRef
                 .whereArrayContains("allParticipantsIDs", fAuth.getUid())
                 .addSnapshotListener((queryDocumentsSnapshots, error) -> {
+
                     if (error != null) {
                         return;
                     } else if (queryDocumentsSnapshots == null) {
                         return;
                     }
-
+                    Log.d("DEBUGGING", "Retrieved documents: "+queryDocumentsSnapshots.size());
+                    Log.d("DEBUGGING", "Size before cleaning: "+groupsList.size());
                     groupsList.clear();
+                    Log.d("DEBUGGING", "Size after cleaning: "+groupsList.size());
 
-                    // Each of the documents containing a group
-                    for (QueryDocumentSnapshot document : queryDocumentsSnapshots) {
+                    // Each of the groups the user is in
+                    for (QueryDocumentSnapshot groupDocument : queryDocumentsSnapshots) {
                         if (userType == UserType.TYPE_TEACHER) {
-                            document.getReference().collection("Groups")
+                            groupDocument.getReference().collection("Groups")
                                     .whereArrayContains("participantsIds", fAuth.getUid())
                                     .get().addOnSuccessListener(queryDocumentSnapshots -> {
-                                for (QueryDocumentSnapshot groupDocument : queryDocumentSnapshots) {
-                                    Group group = groupDocument.toObject(Group.class);
+                                Log.d("DEBUGGING", "Size of groups the user is in: "+queryDocumentSnapshots.size());
+
+                                // Each of the groups inside the "Groups" collection (with and without teacher). For the teacher, this query should only return one document.
+                                for (QueryDocumentSnapshot individualGroupDocument : queryDocumentSnapshots) {
+                                    Group group = individualGroupDocument.toObject(Group.class);
                                     ArrayList<String> participantsNames = new ArrayList<String>();
 
                                     for (GroupParticipant participant : group.getParticipants()) {
                                         participantsNames.add(participant.getParticipantFullName());
                                     }
+
                                     groupsList.add(new GroupCard(
                                             group.getName(),
                                             groupDocument.getId(),
@@ -116,8 +123,8 @@ public class GroupalChat extends Fragment {
                                             group.getSubjectName(),
                                             participantsNames,
                                             group.getCollectionId()));
-
                                 }
+                                Log.d("DEBUGGING", "EVENT");
                                 groupsAdapter.notifyDataSetChanged();
 
                                 if (groupsList.isEmpty()){
