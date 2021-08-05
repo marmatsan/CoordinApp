@@ -16,13 +16,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.GroupCard;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -77,54 +80,56 @@ public class GroupalChat extends Fragment {
         recyclerviewGroups.setAdapter(groupsAdapter);
         recyclerviewGroups.setLayoutManager(layoutManager);
 
-        CollectionReference groupsCollRef = fStore
+        CollectionReference collectionRef = fStore
                 .collection("CoursesOrganization").document(selectedCourse)
                 .collection("Subjects").document(selectedSubject)
                 .collection("CollectiveGroups");
 
-        groupsCollRef
-                .orderBy("name", Query.Direction.ASCENDING)
-                .addSnapshotListener((value, error) -> {
-
+        collectionRef
+                .whereArrayContains("allParticipantsIDs", fAuth.getUid())
+                .addSnapshotListener((queryDocumentsSnapshots, error) -> {
                     if (error != null) {
                         return;
-                    } else if (value == null) {
+                    } else if (queryDocumentsSnapshots == null) {
                         return;
                     }
 
                     groupsList.clear();
 
-                    for (QueryDocumentSnapshot document : value) {
-                        Group group = document.toObject(Group.class);
+                    // Each of the documents containing a group
+                    for (QueryDocumentSnapshot document : queryDocumentsSnapshots) {
+                        if (userType == UserType.TYPE_TEACHER) {
+                            document.getReference().collection("Groups")
+                                    .whereArrayContains("participantsIds", fAuth.getUid())
+                                    .get().addOnSuccessListener(queryDocumentSnapshots -> {
+                                for (QueryDocumentSnapshot groupDocument : queryDocumentSnapshots) {
+                                    Group group = groupDocument.toObject(Group.class);
+                                    ArrayList<String> participantsNames = new ArrayList<String>();
 
-                        if(group.getParticipantsIds().contains(fAuth.getUid())){
-                            ArrayList<String> participantsNames = new ArrayList<String>();
+                                    for (GroupParticipant participant : group.getParticipants()) {
+                                        participantsNames.add(participant.getParticipantFullName());
+                                    }
+                                    groupsList.add(new GroupCard(
+                                            group.getName(),
+                                            groupDocument.getId(),
+                                            group.getCourseName(),
+                                            group.getSubjectName(),
+                                            participantsNames,
+                                            group.getCollectionId()));
 
-                            for (GroupParticipant participant : group.getParticipants()) {
-                                participantsNames.add(participant.getParticipantFullName());
-                            }
+                                }
+                                groupsAdapter.notifyDataSetChanged();
 
-                            groupsList.add(new GroupCard(
-                                    group.getName(),
-                                    document.getId(),
-                                    group.getCourseName(),
-                                    group.getSubjectName(),
-                                    participantsNames,
-                                    group.getCollectionId())
-                            );
+                                if (groupsList.isEmpty()){
+                                    noGroups.setVisibility(View.VISIBLE);
+                                } else {
+                                    noGroups.setVisibility(View.GONE);
+                                }
+
+                            });
                         }
                     }
-
-                    groupsAdapter.notifyDataSetChanged();
-
-                    if (groupsList.isEmpty()){
-                        noGroups.setVisibility(View.VISIBLE);
-                    } else {
-                        noGroups.setVisibility(View.GONE);
-                    }
-
                 });
-
         return view;
     }
 

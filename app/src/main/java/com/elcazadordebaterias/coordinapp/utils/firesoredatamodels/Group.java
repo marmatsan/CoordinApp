@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -120,36 +121,52 @@ public class Group {
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
 
-        ArrayList<String> participantsIds = new ArrayList<String>(studentIDs);
-        ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
+        ArrayList<String> onlyStudentsIDs = new ArrayList<String>(studentIDs);
 
+        fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(teacherInfo -> {
+            ArrayList<GroupParticipant> studentsAndTeacherParticipants = new ArrayList<GroupParticipant>();
+            ArrayList<String> studentsAndTeacherIDs = new ArrayList<String>(onlyStudentsIDs);
 
-        fStore.collection("Students").whereIn(FieldPath.documentId(), participantsIds).get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                participants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
-            }
+            studentsAndTeacherParticipants.add(new GroupParticipant((String) teacherInfo.get("FullName"), teacherInfo.getId()));
+            studentsAndTeacherIDs.add(teacherInfo.getId());
 
-            // Create group with the teacher
-            fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
-                    participants.add(new GroupParticipant((String) documentSnapshot.get("FullName"), documentSnapshot.getId()));
-                    participantsIds.add(documentSnapshot.getId());
+            fStore.collection("Students").whereIn(FieldPath.documentId(), onlyStudentsIDs).get().addOnSuccessListener(queryDocumentSnapshots -> {
+                ArrayList<GroupParticipant> onlyStudentsParticipants = new ArrayList<GroupParticipant>();
 
-                    Group studentsAndTeacherGroup = new Group(
-                            "Grupo " + identifier,
-                            fAuth.getUid(),
-                            (String) documentSnapshot.get("FullName"),
-                            selectedCourse,
-                            selectedSubject,
-                            participantsIds,
-                            participants,
-                            groupsCollRef.getId());
-
-                    groupsCollRef.add(studentsAndTeacherGroup);
-
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    onlyStudentsParticipants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
                 }
-            });
 
+                studentsAndTeacherParticipants.addAll(onlyStudentsParticipants);
+
+                Group studentsAndTeacherGroup = new Group(
+                        "Grupo " + identifier,
+                        teacherInfo.getId(),
+                        (String) teacherInfo.get("FullName"),
+                        selectedCourse,
+                        selectedSubject,
+                        studentsAndTeacherIDs,
+                        studentsAndTeacherParticipants,
+                        groupsCollRef.getId());
+
+                Group onlyStudentsGroup = new Group(
+                        "Grupo " + identifier,
+                        fAuth.getUid(),
+                        teacherInfo.getId(),
+                        selectedCourse,
+                        selectedSubject,
+                        onlyStudentsIDs,
+                        onlyStudentsParticipants,
+                        groupsCollRef.getId());
+
+                GroupDocument collectiveGroupCollection = new GroupDocument(studentsAndTeacherIDs);
+
+                groupsCollRef.document("Grupo " + identifier).set(collectiveGroupCollection).addOnSuccessListener(unused -> {
+                    groupsCollRef.document("Grupo " + identifier).collection("Groups").add(studentsAndTeacherGroup);
+                    groupsCollRef.document("Grupo " + identifier).collection("Groups").add(onlyStudentsGroup);
+                });
+
+            });
         });
     }
 }
