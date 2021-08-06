@@ -146,7 +146,7 @@ public class Group {
                 studentsAndTeacherParticipants.addAll(onlyStudentsParticipants);
 
                 Group studentsAndTeacherGroup = new Group(
-                        "Grupo " + identifier,
+                        "Grupo " + identifier + " - Con profesor",
                         selectedCourse,
                         selectedSubject,
                         true,
@@ -160,7 +160,7 @@ public class Group {
                 } else {
                     ArrayList<Group> groups = new ArrayList<Group>();
                     Group onlyStudentsGroup = new Group(
-                            "Grupo " + identifier,
+                            "Grupo " + identifier + " - Sólo alumnos",
                             selectedCourse,
                             selectedSubject,
                             false,

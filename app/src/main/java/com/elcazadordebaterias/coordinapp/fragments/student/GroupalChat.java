@@ -1,8 +1,6 @@
-package com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups;
+package com.elcazadordebaterias.coordinapp.fragments.student;
 
 import android.os.Bundle;
-import android.os.UserHandle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,27 +12,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupCardAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.GroupCard;
-import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.studentgroups.GroupsContainerCardAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupsContainerCard;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.CreateGroupDialog;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupDocument;
-import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SnapshotMetadata;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,13 +35,15 @@ public class GroupalChat extends Fragment {
     private FirebaseFirestore fStore;
     private FirebaseAuth fAuth;
 
-    private ArrayList<GroupCard> groupsList;
-    private GroupCardAdapter groupsAdapter;
+    private ArrayList<GroupsContainerCard> groupsList;
+    private GroupsContainerCardAdapter groupsAdapter;
 
     private int userType;
 
     private final String selectedCourse;
     private final String selectedSubject;
+
+    private FloatingActionButton requestGroup;
 
     private TextView noGroups;
 
@@ -69,17 +60,23 @@ public class GroupalChat extends Fragment {
         fStore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
 
-        groupsList = new ArrayList<GroupCard>();
-        groupsAdapter = new GroupCardAdapter(groupsList, getContext(), userType);
-
+        groupsList = new ArrayList<GroupsContainerCard>();
+        groupsAdapter = new GroupsContainerCardAdapter(groupsList, getContext(), userType);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_groups_groupalchat, container, false);
+        View view = inflater.inflate(R.layout.fragment_student_groups_groupalchat, container, false);
 
         // Views
-        RecyclerView recyclerviewGroups = view.findViewById(R.id.recyclerviewGroups);
+        RecyclerView recyclerviewGroups = view.findViewById(R.id.groupalFilesContainer);
+        requestGroup = view.findViewById(R.id.requestGroup);
+
+        requestGroup.setOnClickListener(v -> {
+            CreateGroupDialog dialog = new CreateGroupDialog(userType, selectedCourse, selectedSubject);
+            dialog.show(getParentFragmentManager(), "dialog");
+        });
+
         noGroups = view.findViewById(R.id.noGroups);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -102,25 +99,31 @@ public class GroupalChat extends Fragment {
                     }
 
                     groupsList.clear();
-                        for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
-                            GroupDocument group = groupDocument.toObject(GroupDocument.class);
 
-                            for (Group groupDoc : group.getGroups()) {
-                                if (groupDoc.getParticipantsIds().contains(fAuth.getUid())){
-                                    GroupCard groupCard = new GroupCard(
-                                            groupDoc.getName(),
-                                            groupDocument.getId(),
-                                            selectedCourse,
-                                            selectedSubject,
-                                            groupDoc.getHasTeacher(),
-                                            groupDoc.getParticipantNames(),
-                                            groupDoc.getCollectionId());
-                                    groupsList.add(groupCard);
-                                }
+                    for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
+                        GroupDocument group = groupDocument.toObject(GroupDocument.class);
+
+                        String groupName = group.getName();
+                        ArrayList<GroupCard> groupList = new ArrayList<GroupCard>();
+
+                        for (Group groupDoc : group.getGroups()) {
+                            if (groupDoc.getParticipantsIds().contains(fAuth.getUid())) {
+                                GroupCard groupCard = new GroupCard(
+                                        groupDoc.getName(),
+                                        groupDocument.getId(),
+                                        selectedCourse,
+                                        selectedSubject,
+                                        groupDoc.getHasTeacher(),
+                                        groupDoc.getParticipantNames(),
+                                        groupDoc.getCollectionId());
+                                groupList.add(groupCard);
                             }
                         }
+                        groupsList.add(new GroupsContainerCard(groupName, groupList));
+                    }
                     listChanged();
                 });
+
         return view;
     }
 

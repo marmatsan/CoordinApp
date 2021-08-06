@@ -19,7 +19,7 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.files.Files;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Interactivity;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Groups;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.groups.Groups;
 import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.SelectDisplayedCourse;

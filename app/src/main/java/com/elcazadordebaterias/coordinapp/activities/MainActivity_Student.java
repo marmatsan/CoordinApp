@@ -17,7 +17,8 @@ import androidx.fragment.app.Fragment;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Interactivity;
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Groups;
+import com.elcazadordebaterias.coordinapp.fragments.student.GroupalChat;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.groups.Groups;
 import com.elcazadordebaterias.coordinapp.fragments.student.Home;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.SelectDisplayedCourse;
@@ -99,7 +100,7 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
         if (itemId == R.id.nav_student_interactivity) {
             selectedFragment = new Interactivity(UserType.TYPE_STUDENT, selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_student_groups) {
-            selectedFragment = new Groups(UserType.TYPE_STUDENT, selectedCourse, selectedSubject);
+            selectedFragment = new GroupalChat(UserType.TYPE_STUDENT, selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_student_home) {
             selectedFragment = new Home(selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_student_files) {

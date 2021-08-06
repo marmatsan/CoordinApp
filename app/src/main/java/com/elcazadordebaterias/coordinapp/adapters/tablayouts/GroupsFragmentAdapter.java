@@ -1,14 +1,12 @@
 package com.elcazadordebaterias.coordinapp.adapters.tablayouts;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.Groups;
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.GroupalChat;
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups.SingleChat;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.groups.Groups;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.groups.GroupalChat;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.groups.SingleChat;
 
 /**
  * Adapter to handle the pages of the viewpager attached at the

@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups;
+package com.elcazadordebaterias.coordinapp.fragments.teacher.groups;
 
 import android.os.Bundle;
 
@@ -90,16 +90,9 @@ public class Groups extends Fragment {
 
         buttonAnimator = new ButtonAnimator(getContext(), createGroup, buttons);
 
-        if (userType == UserType.TYPE_STUDENT) {
-            createGroup.setOnClickListener(v -> {
-                CreateGroupDialog dialog = new CreateGroupDialog(userType, selectedCourse, selectedSubject);
-                dialog.show(getParentFragmentManager(), "dialog");
-            });
-        } else if (userType == UserType.TYPE_TEACHER) {
-            createGroup.setOnClickListener(v -> {
-                buttonAnimator.onButtonClicked();
-            });
-        }
+        createGroup.setOnClickListener(v -> {
+            buttonAnimator.onButtonClicked();
+        });
 
         createManualGroup.setOnClickListener(v -> {
             CreateGroupDialog dialog = new CreateGroupDialog(userType, selectedCourse, selectedSubject);

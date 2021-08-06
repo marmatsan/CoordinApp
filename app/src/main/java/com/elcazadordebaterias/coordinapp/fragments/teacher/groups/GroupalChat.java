@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.fragments.commonfragments.groups;
+package com.elcazadordebaterias.coordinapp.fragments.teacher.groups;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,20 +13,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupCardAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.GroupCard;
-import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
-import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupDocument;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-public class SingleChat extends Fragment {
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link GroupalChat} factory method to
+ * create an instance of this fragment.
+ */
+public class GroupalChat extends Fragment {
 
     private FirebaseFirestore fStore;
     private FirebaseAuth fAuth;
@@ -36,12 +37,12 @@ public class SingleChat extends Fragment {
 
     private int userType;
 
-    private String selectedCourse;
-    private String selectedSubject;
+    private final String selectedCourse;
+    private final String selectedSubject;
 
     private TextView noGroups;
 
-    public SingleChat(int userType, String selectedCourse, String selectedSubject) {
+    public GroupalChat(int userType, String selectedCourse, String selectedSubject) {
         this.userType = userType;
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
@@ -60,7 +61,7 @@ public class SingleChat extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_groups_singlechat, container, false);
+        View view = inflater.inflate(R.layout.fragment_groups_groupalchat, container, false);
 
         // Views
         RecyclerView recyclerviewGroups = view.findViewById(R.id.recyclerviewGroups);
@@ -76,7 +77,7 @@ public class SingleChat extends Fragment {
                 .document(selectedCourse)
                 .collection("Subjects")
                 .document(selectedSubject)
-                .collection("IndividualGroups")
+                .collection("CollectiveGroups")
                 .addSnapshotListener((queryDocumentsSnapshots, error) -> {
 
                     if (error != null) {
@@ -86,25 +87,25 @@ public class SingleChat extends Fragment {
                     }
 
                     groupsList.clear();
-                    if (queryDocumentsSnapshots.size() == 0) {
-                        listChanged();
-                    } else {
-                        for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
-                            Group group = groupDocument.toObject(Group.class);
 
-                            GroupCard groupCard = new GroupCard(
-                                    group.getName(),
-                                    groupDocument.getId(),
-                                    selectedCourse,
-                                    selectedSubject,
-                                    group.getHasTeacher(),
-                                    group.getParticipantNames(),
-                                    group.getCollectionId());
+                    for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
+                        GroupDocument group = groupDocument.toObject(GroupDocument.class);
 
-                            groupsList.add(groupCard);
-                            listChanged();
+                        for (Group groupDoc : group.getGroups()) {
+                            if (groupDoc.getParticipantsIds().contains(fAuth.getUid())) {
+                                GroupCard groupCard = new GroupCard(
+                                        groupDoc.getName(),
+                                        groupDocument.getId(),
+                                        selectedCourse,
+                                        selectedSubject,
+                                        groupDoc.getHasTeacher(),
+                                        groupDoc.getParticipantNames(),
+                                        groupDoc.getCollectionId());
+                                groupsList.add(groupCard);
+                            }
                         }
                     }
+                    listChanged();
                 });
 
         return view;
