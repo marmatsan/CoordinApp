@@ -18,6 +18,7 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Interactivity;
 import com.elcazadordebaterias.coordinapp.fragments.student.GroupalChat;
+import com.elcazadordebaterias.coordinapp.fragments.student.StudentFiles;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.groups.Groups;
 import com.elcazadordebaterias.coordinapp.fragments.student.Home;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
@@ -104,9 +105,7 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
         } else if (itemId == R.id.nav_student_home) {
             selectedFragment = new Home(selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_student_files) {
-            selectedFragment = new EmptyFragment();
-        } else if (itemId == R.id.nav_student_profile) {
-            selectedFragment = new EmptyFragment();
+            selectedFragment = new StudentFiles(selectedCourse, selectedSubject);
         } else {
             selectedFragment = new Home(selectedCourse, selectedSubject);
         }
@@ -153,8 +152,10 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
     }
 
     public void populateCoursesListAndShow(HashMap<String, ArrayList<String>> detail, SelectDisplayedCourse dialog) {
-        fStore.collection("CoursesOrganization")
-                .whereArrayContains("allParticipantsIDs", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> {
+        fStore
+                .collection("CoursesOrganization")
+                .whereArrayContains("allParticipantsIDs", fAuth.getUid())
+                .get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                 ArrayList<String> subjectNames = new ArrayList<String>();
                 detail.put(document.getId(), subjectNames);

@@ -90,6 +90,7 @@ public class GroupalChat extends Fragment {
                 .collection("Subjects")
                 .document(selectedSubject)
                 .collection("CollectiveGroups")
+                .whereArrayContains("allParticipantsIDs", fAuth.getUid())
                 .addSnapshotListener((queryDocumentsSnapshots, error) -> {
 
                     if (error != null) {

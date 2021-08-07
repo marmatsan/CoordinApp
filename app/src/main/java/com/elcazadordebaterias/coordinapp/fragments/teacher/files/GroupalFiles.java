@@ -1,7 +1,6 @@
 package com.elcazadordebaterias.coordinapp.fragments.teacher.files;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +16,10 @@ import com.elcazadordebaterias.coordinapp.utils.cards.files.FileCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.files.FilesContainerCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.StorageFile;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class GroupalFiles extends Fragment {
 
@@ -73,8 +65,12 @@ public class GroupalFiles extends Fragment {
         filesContainer.setAdapter(filesContainersAdapter);
         filesContainer.setLayoutManager(coursesLayoutManager);
 
-        fStore.collectionGroup("Groups")
-                .whereArrayContains("participantsIds", fAuth.getUid())
+        fStore.collection("CoursesOrganization")
+                .document(selectedCourse)
+                .collection("Subjects")
+                .document(selectedSubject)
+                .collection("CollectiveGroups")
+                .whereArrayContains("allParticipantsIDs", fAuth.getUid())
                 .addSnapshotListener((queryDocumentsSnapshots, error) -> {
 
                     if (error != null) {
@@ -84,9 +80,9 @@ public class GroupalFiles extends Fragment {
                     }
                     groupsList.clear();
 
-                    for (DocumentSnapshot document : queryDocumentsSnapshots){ // Only StudentsAndTeacherGroups documents
+                    for (DocumentSnapshot document : queryDocumentsSnapshots){
                         String name = (String) document.get("name");
-                        document.getReference().collection("Storage").addSnapshotListener((queryDocumentsSnapshots1, error1) -> {
+                        document.getReference().collection("StorageWithTeacher").addSnapshotListener((queryDocumentsSnapshots1, error1) -> {
 
                             if (error1 != null) {
                                 return;
@@ -109,7 +105,7 @@ public class GroupalFiles extends Fragment {
                                     ));
                                 }
                                 groupsList.add(new FilesContainerCard(name, filesList));
-                                filesContainersAdapter.notifyDataSetChanged();
+                                listChanged();
                             }
                         });
                     }

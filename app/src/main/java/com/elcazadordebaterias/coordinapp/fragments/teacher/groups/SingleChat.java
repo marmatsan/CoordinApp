@@ -72,6 +72,7 @@ public class SingleChat extends Fragment {
                 .collection("Subjects")
                 .document(selectedSubject)
                 .collection("IndividualGroups")
+                .whereArrayContains("participantsIds", fAuth.getUid())
                 .addSnapshotListener((queryDocumentsSnapshots, error) -> {
 
                     if (error != null) {

@@ -57,8 +57,8 @@ public class Administration extends Fragment {
         new TabLayoutMediator(tablayout, viewpager, (tab, position) -> {
             switch (position){
                 case 0:
-                    tab.setText("Cursos"); // TODO: Change
-                    tab.setIcon(R.drawable.ic_baseline_folder_24);
+                    tab.setText("Estadísticas");
+                    tab.setIcon(R.drawable.ic_baseline_pie_chart_24);
                     break;
                 case 1:
                     tab.setText("Peticiones");
@@ -67,10 +67,6 @@ public class Administration extends Fragment {
                 case 2:
                     tab.setText("Fechas");
                     tab.setIcon(R.drawable.ic_baseline_calendar_today_24);
-                    break;
-                case 3:
-                    tab.setText("Estadísticas");
-                    tab.setIcon(R.drawable.ic_baseline_pie_chart_24);
                     break;
             }
         }).attach();
