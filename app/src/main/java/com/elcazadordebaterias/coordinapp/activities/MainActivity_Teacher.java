@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.files.Files;
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Interactivity;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.interactivity.Interactivity;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.groups.Groups;
 import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;
@@ -104,7 +104,7 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
         int itemId = item.getItemId();
 
         if (itemId == R.id.nav_teacher_interactivity) {
-            selectedFragment = new Interactivity(UserType.TYPE_TEACHER, selectedCourse, selectedSubject);
+            selectedFragment = new Interactivity(selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_teacher_groups) {
             selectedFragment = new Groups(UserType.TYPE_TEACHER, selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_teacher_files) {

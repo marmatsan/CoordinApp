@@ -16,10 +16,9 @@ import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Interactivity;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.interactivity.Interactivity;
 import com.elcazadordebaterias.coordinapp.fragments.student.GroupalChat;
 import com.elcazadordebaterias.coordinapp.fragments.student.StudentFiles;
-import com.elcazadordebaterias.coordinapp.fragments.teacher.groups.Groups;
 import com.elcazadordebaterias.coordinapp.fragments.student.Home;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.SelectDisplayedCourse;
@@ -99,7 +98,7 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
         int itemId = item.getItemId();
 
         if (itemId == R.id.nav_student_interactivity) {
-            selectedFragment = new Interactivity(UserType.TYPE_STUDENT, selectedCourse, selectedSubject);
+            selectedFragment = new Interactivity(selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_student_groups) {
             selectedFragment = new GroupalChat(UserType.TYPE_STUDENT, selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_student_home) {

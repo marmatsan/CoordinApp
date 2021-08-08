@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.utils.utilities;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -32,6 +33,10 @@ public class ButtonAnimator {
         this.buttons = buttons;
 
         clicked = false;
+
+        for (FloatingActionButton button : buttons){
+            button.setVisibility(View.GONE);
+        }
 
         rotateOpen = AnimationUtils.loadAnimation(context, R.anim.rotate_open_anim);
         rotateClose = AnimationUtils.loadAnimation(context, R.anim.rotate_close_anim);

@@ -16,6 +16,7 @@ import com.elcazadordebaterias.coordinapp.adapters.tablayouts.GroupsFragmentAdap
 
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.CreateGroupDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.AdministrateGroupsDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateAutomaticDialog;
 import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -45,6 +46,7 @@ public class Groups extends Fragment {
     // Animator for the buttons
     ButtonAnimator buttonAnimator;
     FloatingActionButton createGroup;
+    FloatingActionButton administrateGroups;
     FloatingActionButton createAutomaticGroup;
     FloatingActionButton createManualGroup;
 
@@ -82,9 +84,11 @@ public class Groups extends Fragment {
         createGroup = view.findViewById(R.id.createGroup);
         ArrayList<FloatingActionButton> buttons = new ArrayList<FloatingActionButton>();
 
+        administrateGroups = view.findViewById(R.id.administrateGroups);
         createAutomaticGroup = view.findViewById(R.id.createAutomaticGroup);
         createManualGroup = view.findViewById(R.id.createManualGroup);
 
+        buttons.add(administrateGroups);
         buttons.add(createAutomaticGroup);
         buttons.add(createManualGroup);
 
@@ -94,13 +98,18 @@ public class Groups extends Fragment {
             buttonAnimator.onButtonClicked();
         });
 
-        createManualGroup.setOnClickListener(v -> {
-            CreateGroupDialog dialog = new CreateGroupDialog(userType, selectedCourse, selectedSubject);
+        administrateGroups.setOnClickListener(v -> {
+            AdministrateGroupsDialog dialog = new AdministrateGroupsDialog(selectedCourse, selectedSubject);
             dialog.show(getParentFragmentManager(), "dialog");
         });
 
         createAutomaticGroup.setOnClickListener(v -> {
             CreateAutomaticDialog dialog = new CreateAutomaticDialog(selectedCourse, selectedSubject);
+            dialog.show(getParentFragmentManager(), "dialog");
+        });
+
+        createManualGroup.setOnClickListener(v -> {
+            CreateGroupDialog dialog = new CreateGroupDialog(userType, selectedCourse, selectedSubject);
             dialog.show(getParentFragmentManager(), "dialog");
         });
 
