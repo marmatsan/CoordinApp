@@ -36,6 +36,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AdministrateGroupsDialog extends DialogFragment {
 
@@ -55,6 +56,12 @@ public class AdministrateGroupsDialog extends DialogFragment {
     private FirebaseAuth fAuth;
 
     private Context context;
+
+    // Reference to CollectiveGroups collection
+    CollectionReference groupCollRef;
+
+    // Reference to the current subject
+    DocumentReference subjectDocRef;
 
     public AdministrateGroupsDialog(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
@@ -90,25 +97,30 @@ public class AdministrateGroupsDialog extends DialogFragment {
         textView2 = view.findViewById(R.id.textView2);
         textView3 = view.findViewById(R.id.textView3);
 
-        textView2.setVisibility(View.GONE);
-        textView3.setVisibility(View.GONE);
-
         groupSpinner1 = view.findViewById(R.id.groupSpinner1);
         groupSpinner2 = view.findViewById(R.id.groupSpinner2);
 
-        groupSpinner2.setVisibility(View.GONE);
 
         participantsGroup1ListView = view.findViewById(R.id.participantsGroup1ListView);
         participantsGroup2ListView = view.findViewById(R.id.participantsGroup2ListView);
-
-        participantsGroup1ListView.setVisibility(View.GONE);
-        participantsGroup2ListView.setVisibility(View.GONE);
 
         participantsGroup1ListView.setAdapter(group1ParticipantsAdapter);
         participantsGroup2ListView.setAdapter(group2ParticipantsAdapter);
 
         interchangeButton = view.findViewById(R.id.interchangeButton);
-        interchangeButton.setVisibility(View.GONE);
+
+        groupCollRef = fStore
+                .collection("CoursesOrganization")
+                .document(selectedCourse)
+                .collection("Subjects")
+                .document(selectedSubject)
+                .collection("CollectiveGroups");
+
+        subjectDocRef = fStore
+                .collection("CoursesOrganization")
+                .document(selectedCourse)
+                .collection("Subjects")
+                .document(selectedSubject);
 
         interchangeButton.setOnClickListener(v -> {
 
@@ -167,12 +179,7 @@ public class AdministrateGroupsDialog extends DialogFragment {
         groupSpinner1.setAdapter(groups1ListAdapter);
         groupSpinner1.setSelection(0);
 
-        CollectionReference groupCollRef = fStore
-                .collection("CoursesOrganization")
-                .document(selectedCourse)
-                .collection("Subjects")
-                .document(selectedSubject)
-                .collection("CollectiveGroups");
+        HashMap<String, String> group1SpinnerIDs = new HashMap<String, String>();
 
         // Group 1 spinner
         groupCollRef
@@ -182,15 +189,19 @@ public class AdministrateGroupsDialog extends DialogFragment {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         GroupDocument group = document.toObject(GroupDocument.class);
                         groupSpinner1Names.add(group.getName());
+                        group1SpinnerIDs.put(group.getName(), document.getId());
                     }
                     groups1ListAdapter.notifyDataSetChanged();
                 });
+
 
         // Group 2 spinner
         ArrayAdapter<String> groups2ListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, groupSpinner2Names);
         groups2ListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         groupSpinner2.setAdapter(groups2ListAdapter);
         groupSpinner2.setSelection(0);
+
+        HashMap<String, String> group2SpinnerIDs = new HashMap<String, String>();
 
         // Group 1 spinner listener
         groupSpinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -206,11 +217,18 @@ public class AdministrateGroupsDialog extends DialogFragment {
                                 GroupDocument group = document.toObject(GroupDocument.class);
                                 if (!selectedGroupName.equals(group.getName())) {
                                     groupSpinner2Names.add(group.getName());
+                                    group2SpinnerIDs.put(group.getName(), document.getId());
                                 }
                             }
                             groups2ListAdapter.notifyDataSetChanged();
-                            textView2.setVisibility(View.VISIBLE);
-                            groupSpinner2.setVisibility(View.VISIBLE);
+
+                            groupCollRef
+                                    .document(group1SpinnerIDs.get(groupSpinner1.getSelectedItem()))
+                                    .get()
+                                    .addOnSuccessListener(documentSnapshot -> {
+                                        updateListViewList(documentSnapshot, participantsGroup1List, group1ParticipantsAdapter);
+                                    });
+
                         });
             }
 
@@ -224,61 +242,21 @@ public class AdministrateGroupsDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 groupCollRef
-                        .whereEqualTo("name", (String) groupSpinner1.getSelectedItem())
+                        .document(group1SpinnerIDs.get(groupSpinner1.getSelectedItem()))
                         .get()
-                        .addOnSuccessListener(queryDocumentSnapshots -> {
-                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) { // TODO: It only can contain one group, since group names have to be unique
-                                GroupDocument groupDocument = document.toObject(GroupDocument.class);
-                                ArrayList<Group> groupsList = groupDocument.getGroups();
-                                Group noTeacherGroup = null;
-
-                                for (Group group : groupsList) {
-                                    if (!group.getHasTeacher()) {
-                                        noTeacherGroup = group;
-                                    }
-                                }
-
-                                if (noTeacherGroup != null) {
-                                    ArrayList<GroupParticipant> participants = noTeacherGroup.getParticipants();
-                                    for (GroupParticipant participant : participants) {
-                                        SelectParticipantItem participantItem = new SelectParticipantItem(participant.getParticipantFullName(), participant.getParticipantId());
-                                        participantsGroup1List.add(participantItem);
-                                    }
-                                    group1ParticipantsAdapter.notifyDataSetChanged();
-                                    textView3.setVisibility(View.VISIBLE);
-                                    participantsGroup1ListView.setVisibility(View.VISIBLE);
-                                    interchangeButton.setVisibility(View.VISIBLE);
-
-                                    groupCollRef
-                                            .whereEqualTo("name", (String) groupSpinner2.getSelectedItem())
-                                            .get()
-                                            .addOnSuccessListener(queryDocumentSnapshots1 -> {
-                                                for (QueryDocumentSnapshot document1 : queryDocumentSnapshots1) { // TODO: It only can contain one group, since group names have to be unique
-                                                    GroupDocument groupDocument1 = document1.toObject(GroupDocument.class);
-                                                    ArrayList<Group> groupsList1 = groupDocument1.getGroups();
-                                                    Group noTeacherGroup1 = null;
-
-                                                    for (Group group : groupsList1) {
-                                                        if (!group.getHasTeacher()) {
-                                                            noTeacherGroup1 = group;
-                                                        }
-                                                    }
-
-                                                    if (noTeacherGroup1 != null) {
-                                                        ArrayList<GroupParticipant> participants1 = noTeacherGroup1.getParticipants();
-                                                        for (GroupParticipant participant : participants1) {
-                                                            SelectParticipantItem participantItem = new SelectParticipantItem(participant.getParticipantFullName(), participant.getParticipantId());
-                                                            participantsGroup2List.add(participantItem);
-                                                        }
-                                                        group2ParticipantsAdapter.notifyDataSetChanged();
-                                                        participantsGroup2ListView.setVisibility(View.VISIBLE);
-                                                    }
-                                                }
-                                            });
-                                }
-                            }
+                        .addOnSuccessListener(documentSnapshot -> {
+                            updateListViewList(documentSnapshot, participantsGroup1List, group1ParticipantsAdapter);
                         });
+
+                groupCollRef
+                        .document(group2SpinnerIDs.get(groupSpinner2.getSelectedItem()))
+                        .get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            updateListViewList(documentSnapshot, participantsGroup2List, group2ParticipantsAdapter);
+                        });
+
             }
+
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -294,82 +272,105 @@ public class AdministrateGroupsDialog extends DialogFragment {
                     String group1Name = (String) groupSpinner1.getSelectedItem();
                     String group2Name = (String) groupSpinner2.getSelectedItem();
 
-                    DocumentReference subjectDocRef = fStore
-                            .collection("CoursesOrganization")
-                            .document(selectedCourse)
-                            .collection("Subjects")
-                            .document(selectedSubject);
+                    String group1ID = group1SpinnerIDs.get(group1Name);
+                    String group2ID = group2SpinnerIDs.get(group2Name);
 
-
-                    // Reference to group 1
+                    // Update first group selected
                     groupCollRef
-                            .whereEqualTo("name", group1Name)
+                            .document(group1ID)
                             .get()
-                            .addOnSuccessListener(queryDocumentSnapshots -> {
-                                for (QueryDocumentSnapshot group1Document : queryDocumentSnapshots) { // Should return only one document
-                                    GroupDocument groupDocument = group1Document.toObject(GroupDocument.class);
-                                    Group groupWithTeacher = null;
-                                    Group groupWithoutTeacher = null;
+                            .addOnSuccessListener(documentSnapshot -> {
+                                updateGroup(documentSnapshot, participantsGroup1List);
+                            });
 
-                                    for (Group group : groupDocument.getGroups()) {
-                                        if (group.getHasTeacher()) {
-                                            groupWithTeacher = group;
-                                        } else {
-                                            groupWithoutTeacher = group;
-                                        }
-                                    }
-
-                                    if (groupWithTeacher != null && groupWithoutTeacher != null) {
-                                        ArrayList<Group> updatedGroups = new ArrayList<Group>();
-                                        updatedGroups.add(groupWithTeacher);
-
-                                        Group updatedGroupWithoutTeacher = new Group();
-
-                                        updatedGroupWithoutTeacher.setName(groupWithoutTeacher.getName());
-                                        updatedGroupWithoutTeacher.setCourseName(groupWithoutTeacher.getCourseName());
-                                        updatedGroupWithoutTeacher.setSubjectName(groupWithoutTeacher.getSubjectName());
-                                        updatedGroupWithoutTeacher.setHasTeacher(false);
-
-                                        ArrayList<String> participantsIDs = new ArrayList<String>();
-                                        ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
-
-                                        for (SelectParticipantItem item : participantsGroup1List) {
-                                            participantsIDs.add(item.getParticipantId());
-                                            participants.add(new GroupParticipant(item.getParticipantName(), item.getParticipantId()));
-                                        }
-
-                                        updatedGroupWithoutTeacher.setParticipantsIds(participantsIDs);
-                                        updatedGroupWithoutTeacher.setParticipants(participants);
-                                        updatedGroupWithoutTeacher.setCollectionId(groupWithoutTeacher.getCollectionId());
-
-                                        updatedGroups.add(updatedGroupWithoutTeacher);
-
-                                        subjectDocRef
-                                                .get()
-                                                .addOnSuccessListener(documentSnapshot1 -> {
-                                                    Subject subject = documentSnapshot1.toObject(Subject.class);
-
-                                                    ArrayList<String> updatedAllParticipantsIDs = new ArrayList<String>(participantsIDs);
-                                                    updatedAllParticipantsIDs.add(subject.getTeacherID());
-
-                                                    group1Document
-                                                            .getReference()
-                                                            .update("allParticipantsIDs", updatedAllParticipantsIDs)
-                                                            .addOnSuccessListener(unused -> {
-                                                                group1Document
-                                                                        .getReference()
-                                                                        .update("groups", updatedGroups)
-                                                                        .addOnSuccessListener(unused1 -> {
-// Reference to
-                                                                        });
-                                                            });
-                                                });
-                                    }
-                                }
+                    // Update second group selected
+                    groupCollRef
+                            .document(group2ID)
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                updateGroup(documentSnapshot, participantsGroup2List);
                             });
                 });
 
         return builder.create();
+    }
+
+    private void updateGroup(DocumentSnapshot documentSnapshot, ArrayList<SelectParticipantItem> participantsGroupList) {
+
+        subjectDocRef
+                .get()
+                .addOnSuccessListener(subjectDocument -> {
+                    Subject subject = subjectDocument.toObject(Subject.class);
+                    String teacherID = subject.getTeacherID();
+
+                    fStore
+                            .collection("Teachers")
+                            .document(teacherID)
+                            .get()
+                            .addOnSuccessListener(teacherDataDocument -> {
+                                String teacherName = (String) teacherDataDocument.get("FullName");
+
+                                // Update groups
+                                GroupDocument groupDocument = documentSnapshot.toObject(GroupDocument.class);
+                                ArrayList<Group> updatedGroups = new ArrayList<Group>();
+
+                                for (Group group : groupDocument.getGroups()) {
+                                    Group updatedGroup = new Group();
+
+                                    updatedGroup.setName(group.getName());
+                                    updatedGroup.setCourseName(group.getCourseName());
+                                    updatedGroup.setSubjectName(group.getSubjectName());
+                                    updatedGroup.setHasTeacher(group.getHasTeacher());
+
+                                    ArrayList<String> participantsIDs = new ArrayList<String>();
+                                    ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
+
+                                    for (SelectParticipantItem item : participantsGroupList) {
+                                        participantsIDs.add(item.getParticipantId());
+                                        participants.add(new GroupParticipant(item.getParticipantName(), item.getParticipantId()));
+                                    }
+
+                                    updatedGroup.setParticipantsIds(participantsIDs);
+                                    updatedGroup.setParticipants(participants);
+                                    updatedGroup.setCollectionId(group.getCollectionId());
+
+                                    updatedGroups.add(updatedGroup);
+                                }
+
+                                ArrayList<String> updatedAllParticipantsIDs = null;
+
+                                for (Group group : updatedGroups) {
+                                    if (group.getHasTeacher()) {
+                                        group.getParticipants().add(new GroupParticipant(teacherName, teacherID));
+                                        group.getParticipantsIds().add(teacherID);
+                                        updatedAllParticipantsIDs = group.getParticipantsIds();
+                                    }
+                                }
+
+                                documentSnapshot.getReference().update("allParticipantsIDs", updatedAllParticipantsIDs);
+                                documentSnapshot.getReference().update("groups", updatedGroups);
+
+                            });
+                });
+
+    }
+
+    private void updateListViewList(DocumentSnapshot documentSnapshot, ArrayList<SelectParticipantItem> participantsGroupList, SelectParticipantsListAdapter groupParticipantsAdapter) {
+        participantsGroupList.clear();
+        GroupDocument groupDocument = documentSnapshot.toObject(GroupDocument.class);
+        ArrayList<Group> groupsList = groupDocument.getGroups();
+
+        for (Group group : groupsList) {
+            if (!group.getHasTeacher()) {
+                ArrayList<GroupParticipant> participants = group.getParticipants();
+
+                for (GroupParticipant participant : participants) {
+                    SelectParticipantItem participantItem = new SelectParticipantItem(participant.getParticipantFullName(), participant.getParticipantId());
+                    participantsGroupList.add(participantItem);
+                }
+                groupParticipantsAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
 }
