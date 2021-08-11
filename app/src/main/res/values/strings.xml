@@ -144,5 +144,10 @@
     <string name="descargar">Descargar</string>
     <string name="file_name">File name</string>
     <string name="todav_a_no_se_ha_enviado_ning_n_archivo_los_archivos_aparecer_n_aqu">Todavía no se ha enviado ningún archivo. Los archivos aparecerán aquí</string>
+    <string name="a_n_no_hay_estad_sticas_de_ning_n_grupo_puedes_empezar_a_obtener_estad_sticas_creando_una_nueva_actividad_con_el_bot_n">Aún no hay estadísticas de ningún grupo. Puedes empezar a obtener estadísticas creando una nueva actividad con el botón +</string>
+    <string name="_1_selecciona_el_primer_grupo">1. Selecciona el primer grupo</string>
+    <string name="_2_selecciona_el_segundo_grupo">2. Selecciona el segundo grupo</string>
+    <string name="_3_selecciona_a_los_alumnos_que_quieres_mover_de_grupo">3. Selecciona a los alumnos que quieres mover de grupo</string>
+    <string name="intercambiar">Intercambiar</string>
 
 </resources>

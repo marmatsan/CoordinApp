@@ -16,8 +16,8 @@ import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
-import com.elcazadordebaterias.coordinapp.fragments.teacher.interactivity.Interactivity;
 import com.elcazadordebaterias.coordinapp.fragments.student.GroupalChat;
+import com.elcazadordebaterias.coordinapp.fragments.student.Interactivity;
 import com.elcazadordebaterias.coordinapp.fragments.student.StudentFiles;
 import com.elcazadordebaterias.coordinapp.fragments.student.Home;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;

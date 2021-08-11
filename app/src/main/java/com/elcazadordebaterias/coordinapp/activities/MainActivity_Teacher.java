@@ -75,7 +75,7 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
         fragmentContainer = findViewById(R.id.fragmentContainer);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
-        if (selectedCourse == null || selectedSubject == null){
+        if (selectedCourse == null || selectedSubject == null) {
             noCourseSelected.setVisibility(View.VISIBLE);
             fragmentContainer.setVisibility(View.GONE);
             bottomNavigationView.setVisibility(View.GONE);
@@ -83,7 +83,7 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
 
         fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> { // TODO: Maybe setting the title in asynchronous way may lead to error
             name = (String) documentSnapshot.getData().get("FullName");
-            toolbar.setTitle((String) documentSnapshot.getData().get("FullName")+ " | " + selectedCourse +"/"+ selectedSubject);
+            toolbar.setTitle((String) documentSnapshot.getData().get("FullName") + " | " + selectedCourse + "/" + selectedSubject);
         });
 
         setSupportActionBar(toolbar);
@@ -127,6 +127,7 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
         if (item.getItemId() == R.id.select_course_subject) {
             HashMap<String, ArrayList<String>> detail = new HashMap<String, ArrayList<String>>();
             SelectDisplayedCourse dialog = new SelectDisplayedCourse(detail);
@@ -149,28 +150,34 @@ public class MainActivity_Teacher extends AppCompatActivity implements SelectDis
         fragmentContainer.setVisibility(View.VISIBLE);
         bottomNavigationView.setVisibility(View.VISIBLE);
 
-        toolbar.setTitle((String) name+ " | " + selectedCourse +"/"+ selectedSubject);
+        toolbar.setTitle(name + " | " + selectedCourse + "/" + selectedSubject);
         navListener.onNavigationItemSelected(menuItem); // Update fragments with the new info
     }
 
     public void populateCoursesListAndShow(HashMap<String, ArrayList<String>> detail, SelectDisplayedCourse dialog) {
-        fStore.collection("CoursesOrganization")
-                .whereArrayContains("allParticipantsIDs", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                ArrayList<String> subjectNames = new ArrayList<String>();
-                detail.put(document.getId(), subjectNames);
+        fStore
+                .collection("CoursesOrganization")
+                .whereArrayContains("allParticipantsIDs", fAuth.getUid())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        ArrayList<String> subjectNames = new ArrayList<String>();
+                        detail.put(document.getId(), subjectNames);
 
-                fStore.collection("CoursesOrganization").document(document.getId())
-                        .collection("Subjects").whereEqualTo("teacherID", fAuth.getUid())
-                        .get().addOnSuccessListener(queryDocumentSnapshots1 -> {
-                    for (QueryDocumentSnapshot document1 : queryDocumentSnapshots1) {
-                        subjectNames.add(document1.getId());
+                        fStore.collection("CoursesOrganization")
+                                .document(document.getId())
+                                .collection("Subjects")
+                                .whereEqualTo("teacherID", fAuth.getUid())
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots1 -> {
+                                    for (QueryDocumentSnapshot document1 : queryDocumentSnapshots1) {
+                                        subjectNames.add(document1.getId());
+                                    }
+                                });
+
                     }
+                    dialog.show(getSupportFragmentManager(), "dialog");
                 });
-
-            }
-            dialog.show(getSupportFragmentManager(), "dialog");
-        });
     }
 
 }

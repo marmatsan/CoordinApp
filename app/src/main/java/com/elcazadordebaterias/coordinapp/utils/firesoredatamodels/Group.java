@@ -1,25 +1,14 @@
 package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
 
-import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
+
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.WriteBatch;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,6 +57,34 @@ public class Group {
 
     public String getSubjectName() {
         return subjectName;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+
+    public void setHasTeacher(boolean hasTeacher) {
+        this.hasTeacher = hasTeacher;
+    }
+
+    public void setParticipantsIds(ArrayList<String> participantsIds) {
+        this.participantsIds = participantsIds;
+    }
+
+    public void setParticipants(ArrayList<GroupParticipant> participants) {
+        this.participants = participants;
+    }
+
+    public void setCollectionId(String collectionId) {
+        this.collectionId = collectionId;
     }
 
     public boolean getHasTeacher() {

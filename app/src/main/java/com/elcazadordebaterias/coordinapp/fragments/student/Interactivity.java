@@ -15,11 +15,6 @@ import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.InputTextCar
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.InteractivityCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.MultichoiceCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.ReminderCard;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateInputTextCardDialog;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateMultichoiceCardDialog;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateReminderCardDialog;
-import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -46,7 +41,7 @@ public class Interactivity extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_interactivity, container, false);
+        View view = inflater.inflate(R.layout.fragment_student_interactivity, container, false);
 
         // Container for the interactivity cards
         RecyclerView interactivityCardsContainer = view.findViewById(R.id.interactivityCardsContainer);

@@ -11,12 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.InteractivityCardsAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.InputTextCard;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.InteractivityCard;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.MultichoiceCard;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.ReminderCard;
-import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.TestCardAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.TestCard;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateInputTextCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateMultichoiceCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateReminderCardDialog;
@@ -26,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Interactivity extends Fragment {
 
@@ -48,7 +45,7 @@ public class Interactivity extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_interactivity, container, false);
+        View view = inflater.inflate(R.layout.fragment_teacher_interactivity, container, false);
 
         // Buttons
         FloatingActionButton createInteractivityCard = view.findViewById(R.id.createInteractivityCard);
@@ -81,27 +78,33 @@ public class Interactivity extends Fragment {
             dialog.show(getParentFragmentManager(), "dialog");
         });
 
-        // Container for the interactivity cards
         RecyclerView interactivityCardsContainer = view.findViewById(R.id.interactivityCardsContainer);
 
-        ArrayList<InteractivityCard> cardsList = new ArrayList<InteractivityCard>();
-        cardsList.add(new InputTextCard("InputTextCard"));
+        ArrayList<TestCard> list = new ArrayList<TestCard>();
+        HashMap<String, ArrayList<String>> data = new HashMap<String, ArrayList<String>>();
+        ArrayList<String> strings = new ArrayList<String>();
 
-        ArrayList<String> questions = new ArrayList<String>();
-        questions.add("Napoleón");
-        questions.add("Sócrates");
-        questions.add("Benedicto IV");
+        strings.add("Respuesta");
+        strings.add("Respuesta");
+        strings.add("Respuesta");
+        strings.add("Respuesta");
+        strings.add("Respuesta");
+        strings.add("Respuesta");
 
-        cardsList.add(new MultichoiceCard("MulitchoiceCard", questions));
-        cardsList.add(new ReminderCard("ReminderCard", "Recordad que mañana hay examen de geografía e historia a las 11:00 PM"));
+        data.put("Alumno 1", strings);
+        data.put("Alumno 2", strings);
+        data.put("Alumno 3", strings);
 
-        InteractivityCardsAdapter adapter = new InteractivityCardsAdapter(cardsList);
+        list.add(new TestCard(data));
+        list.add(new TestCard(data));
+        list.add(new TestCard(data));
+
+        TestCardAdapter adapter = new TestCardAdapter(list);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
         interactivityCardsContainer.setAdapter(adapter);
         interactivityCardsContainer.setLayoutManager(layoutManager);
-
-        adapter.notifyDataSetChanged();
 
         return view;
     }

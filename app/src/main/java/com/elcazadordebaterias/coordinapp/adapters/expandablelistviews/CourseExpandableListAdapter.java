@@ -27,10 +27,17 @@ public class CourseExpandableListAdapter extends BaseExpandableListAdapter {
 
     private OnChildClick onChildClick;
 
-    public CourseExpandableListAdapter(HashMap<String, ArrayList<String>> expandableListDetail, OnChildClick onChildClick) {
-        this.data = expandableListDetail;
+    public CourseExpandableListAdapter(HashMap<String, ArrayList<String>> data, OnChildClick onChildClick) {
+        this.data = data;
         this.keySet = new ArrayList<String>();
         this.onChildClick = onChildClick;
+
+        keySet.addAll(data.keySet());
+    }
+
+    public CourseExpandableListAdapter(HashMap<String, ArrayList<String>> data) {
+        this.data = data;
+        this.keySet = new ArrayList<String>();
 
         keySet.addAll(data.keySet());
     }

@@ -76,7 +76,7 @@
         app:layout_constraintBottom_toTopOf="@+id/createManualGroup"
         app:layout_constraintEnd_toEndOf="@+id/createManualGroup"
         app:layout_constraintStart_toStartOf="@+id/createManualGroup"
-        app:srcCompat="@drawable/ic_robot" />
+        app:srcCompat="@drawable/ic_dots" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/createManualGroup"
@@ -89,6 +89,6 @@
         app:layout_constraintBottom_toTopOf="@+id/createGroup"
         app:layout_constraintEnd_toEndOf="@+id/createGroup"
         app:layout_constraintStart_toStartOf="@+id/createGroup"
-        app:srcCompat="@drawable/ic_single" />
+        app:srcCompat="@drawable/ic_black_circle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

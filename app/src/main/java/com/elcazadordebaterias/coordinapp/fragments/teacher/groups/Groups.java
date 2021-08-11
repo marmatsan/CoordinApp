@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,12 +20,14 @@ import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.CreateGrou
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.AdministrateGroupsDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateAutomaticDialog;
 import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -99,8 +102,20 @@ public class Groups extends Fragment {
         });
 
         administrateGroups.setOnClickListener(v -> {
-            AdministrateGroupsDialog dialog = new AdministrateGroupsDialog(selectedCourse, selectedSubject);
-            dialog.show(getParentFragmentManager(), "dialog");
+            fStore
+                    .collection("CoursesOrganization")
+                    .document(selectedCourse)
+                    .collection("Subjects")
+                    .document(selectedSubject)
+                    .collection("CollectiveGroups")
+                    .get().addOnSuccessListener(queryDocumentSnapshots -> {
+                        if(queryDocumentSnapshots.size() < 2){
+                            Toast.makeText(getContext(), "Tiene que haber al menos dos grupos creados para usar esta opción", Toast.LENGTH_LONG).show();
+                        } else {
+                            AdministrateGroupsDialog dialog = new AdministrateGroupsDialog(selectedCourse, selectedSubject);
+                            dialog.show(getParentFragmentManager(), "dialog");
+                        }
+                    });
         });
 
         createAutomaticGroup.setOnClickListener(v -> {
