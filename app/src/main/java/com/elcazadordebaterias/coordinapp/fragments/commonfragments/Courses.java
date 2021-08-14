@@ -87,17 +87,22 @@ public class Courses extends Fragment {
     }
 
     private void populateParticipantsList() {
-        fStore.collection("CoursesOrganization")
+        fStore
+                .collection("CoursesOrganization")
                 .document(selectedCourse)
                 .collection("Subjects")
                 .document(selectedSubject)
-                .get().addOnSuccessListener(documentSnapshot -> {
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
                     Subject subject = documentSnapshot.toObject(Subject.class);
                     ArrayList<String> studentIds = subject.getStudentIDs();
                     String teacherId = subject.getTeacherID();
 
-                    fStore.collection("Students").whereIn(FieldPath.documentId(), studentIds)
-                            .get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    fStore
+                            .collection("Students")
+                            .whereIn(FieldPath.documentId(), studentIds)
+                            .get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
                                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                                     participants.add(new CourseParticipantCard("Estudiante", (String) document.get("FullName"), (String) document.get("UserEmail")));
                                 }

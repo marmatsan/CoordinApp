@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.TestCardAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.TestCard;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateInputTextCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateMultichoiceCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateReminderCardDialog;
@@ -77,34 +75,6 @@ public class Interactivity extends Fragment {
             CreateReminderCardDialog dialog = new CreateReminderCardDialog();
             dialog.show(getParentFragmentManager(), "dialog");
         });
-
-        RecyclerView interactivityCardsContainer = view.findViewById(R.id.interactivityCardsContainer);
-
-        ArrayList<TestCard> list = new ArrayList<TestCard>();
-        HashMap<String, ArrayList<String>> data = new HashMap<String, ArrayList<String>>();
-        ArrayList<String> strings = new ArrayList<String>();
-
-        strings.add("Respuesta");
-        strings.add("Respuesta");
-        strings.add("Respuesta");
-        strings.add("Respuesta");
-        strings.add("Respuesta");
-        strings.add("Respuesta");
-
-        data.put("Alumno 1", strings);
-        data.put("Alumno 2", strings);
-        data.put("Alumno 3", strings);
-
-        list.add(new TestCard(data));
-        list.add(new TestCard(data));
-        list.add(new TestCard(data));
-
-        TestCardAdapter adapter = new TestCardAdapter(list);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-
-        interactivityCardsContainer.setAdapter(adapter);
-        interactivityCardsContainer.setLayoutManager(layoutManager);
 
         return view;
     }

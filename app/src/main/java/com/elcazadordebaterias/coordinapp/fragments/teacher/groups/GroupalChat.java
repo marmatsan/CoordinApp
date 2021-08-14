@@ -104,6 +104,7 @@ public class GroupalChat extends Fragment {
                                 groupsList.add(groupCard);
                             }
                         }
+
                     }
                     listChanged();
                 });

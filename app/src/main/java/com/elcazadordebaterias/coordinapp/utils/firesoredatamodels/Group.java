@@ -162,6 +162,8 @@ public class Group {
 
                 studentsAndTeacherParticipants.addAll(onlyStudentsParticipants);
 
+                ArrayList<Group> groups = new ArrayList<Group>();
+
                 Group studentsAndTeacherGroup = new Group(
                         "Grupo " + identifier + " - Con profesor",
                         selectedCourse,
@@ -171,11 +173,9 @@ public class Group {
                         studentsAndTeacherParticipants,
                         groupsCollRef.getId()
                 );
+                groups.add(studentsAndTeacherGroup);
 
-                if (onlyStudentsIDs.size() == 1) {
-                    groupsCollRef.add(studentsAndTeacherGroup);
-                } else {
-                    ArrayList<Group> groups = new ArrayList<Group>();
+                if (onlyStudentsIDs.size() > 1) {
                     Group onlyStudentsGroup = new Group(
                             "Grupo " + identifier + " - Sólo alumnos",
                             selectedCourse,
@@ -185,13 +185,11 @@ public class Group {
                             onlyStudentsParticipants,
                             groupsCollRef.getId()
                     );
-                    groups.add(studentsAndTeacherGroup);
                     groups.add(onlyStudentsGroup);
-
-                    GroupDocument collectiveGroupCollection = new GroupDocument("Grupo " + identifier, studentsAndTeacherIDs, groups);
-
-                    groupsCollRef.add(collectiveGroupCollection);
                 }
+
+                GroupDocument collectiveGroupCollection = new GroupDocument("Grupo " + identifier, studentsAndTeacherIDs, groups);
+                groupsCollRef.add(collectiveGroupCollection);
             });
         });
     }
