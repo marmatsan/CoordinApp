@@ -16,6 +16,7 @@ import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupCardAdapte
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupDocument;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.IndividualGroupDocument;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -84,21 +85,23 @@ public class SingleChat extends Fragment {
 
                     groupsList.clear();
 
-                    for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
-                        GroupDocument group = groupDocument.toObject(GroupDocument.class);
+                    for (DocumentSnapshot groupDoc : queryDocumentsSnapshots) {
+                        IndividualGroupDocument groupDocument = groupDoc.toObject(IndividualGroupDocument.class);
 
-                        for (Group groupDoc : group.getGroups()) {
-                            if (groupDoc.getParticipantsIds().contains(fAuth.getUid())) {
-                                GroupCard groupCard = new GroupCard(
-                                        groupDoc.getName(),
-                                        groupDocument.getId(),
-                                        selectedCourse,
-                                        selectedSubject,
-                                        groupDoc.getHasTeacher(),
-                                        groupDoc.getParticipantNames(),
-                                        groupDoc.getCollectionId());
-                                groupsList.add(groupCard);
-                            }
+                        if (groupDocument.getHasVisibility()) {
+                            Group group = groupDocument.getGroup();
+
+                            GroupCard groupCard = new GroupCard(
+                                    group.getName(),
+                                    groupDoc.getId(),
+                                    selectedCourse,
+                                    selectedSubject,
+                                    group.getHasTeacher(),
+                                    group.getParticipantNames(),
+                                    group.getCollectionId()
+                            );
+
+                            groupsList.add(groupCard);
                         }
 
                     }

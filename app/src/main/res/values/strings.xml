@@ -153,5 +153,6 @@
     <string name="introducir_a_los_alumnos_restantes_debido_al_reparto_si_los_hay_en_un_grupo_de_un_tama_o_m_s_grande">Introducir a los alumnos restantes debido al reparto (si los hay) en un grupo de un tamaño más grande</string>
     <string name="errormessage">ErrorMessage</string>
     <string name="si_el_reparto_es_desigual_introducir_a_los_alumnos_restantes_en_un_grupo_de_un_tama_o_m_s_grande">Si el reparto es desigual, introducir a los alumnos restantes en un grupo de un tamaño más grande</string>
+    <string name="todav_a_no_hay_ning_n_grupo_creado_puedes_pedirle_al_profesor_que_cree_un_grupo_con_el_bot_n">Todavía no hay ningún grupo creado. Puedes pedirle al profesor que cree un grupo con el botón +</string>
 
 </resources>
