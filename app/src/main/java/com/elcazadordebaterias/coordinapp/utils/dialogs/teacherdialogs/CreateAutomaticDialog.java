@@ -38,11 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Dialog accessible only by the teacher to let the app create a group based on some rules.
- *
- * @author Martín Mateos Sánchez
- */
 public class CreateAutomaticDialog extends DialogFragment {
 
     // Selected course and subject
@@ -53,15 +48,14 @@ public class CreateAutomaticDialog extends DialogFragment {
     private RadioGroup radioGroup;
     private int checkedRadioButtonId;
 
-    // EditText
-    private EditText numberInput;
     private int inputNumber;
 
-    // Textview if we choose the second option
-    TextView textview2;
-
-    // Checkbox
-    CheckBox checkBox;
+    // Views to be shown
+    private TextView modeTitle;
+    private EditText numberInput;
+    private CheckBox checkBox;
+    private View separator;
+    private TextView errorMessageView;
 
     // Firestore
     FirebaseFirestore fStore;
@@ -107,8 +101,8 @@ public class CreateAutomaticDialog extends DialogFragment {
         // Views
         radioGroup = view.findViewById(R.id.radioGroup);
 
-        textview2 = view.findViewById(R.id.textview2);
-        textview2.setVisibility(View.GONE);
+        modeTitle = view.findViewById(R.id.modeTitle);
+        modeTitle.setVisibility(View.GONE);
 
         numberInput = view.findViewById(R.id.numberInput);
         numberInput.setVisibility(View.GONE);
@@ -116,18 +110,29 @@ public class CreateAutomaticDialog extends DialogFragment {
         checkBox = view.findViewById(R.id.checkBox);
         checkBox.setVisibility(View.GONE);
 
+        separator = view.findViewById(R.id.separator);
+        separator.setVisibility(View.GONE);
+
+        errorMessageView = view.findViewById(R.id.errorMessage);
+        errorMessageView.setVisibility(View.GONE);
+
         // RadioGroup configuration
         checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
 
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             checkedRadioButtonId = checkedId;
             if (checkedId == R.id.radio_button_1) {
-                textview2.setText(R.string._2_introduce_el_n_mero_de_alumnos_por_grupo);
+                modeTitle.setText(R.string._2_introduce_el_n_mero_de_alumnos_por_grupo);
+                separator.setVisibility(View.GONE);
+                errorMessageView.setVisibility(View.GONE);
             } else if (checkedId == R.id.radio_button_2) {
-                textview2.setText(R.string._2_introduce_el_n_mero_de_grupos);
+                modeTitle.setText(R.string._2_introduce_el_n_mero_de_grupos);
+                separator.setVisibility(View.GONE);
+                errorMessageView.setVisibility(View.GONE);
             }
-            textview2.setVisibility(View.VISIBLE);
+            modeTitle.setVisibility(View.VISIBLE);
             numberInput.setVisibility(View.VISIBLE);
+            checkBox.setVisibility(View.VISIBLE);
         });
 
         builder.setView(view)
@@ -160,51 +165,50 @@ public class CreateAutomaticDialog extends DialogFragment {
                         completeExternalCode = COMPLETE_OP_CODE.INPUT_NUMBER_ZERO;
                     } else {
                         displayExternalError = false;
-                        subjectRef.get().addOnSuccessListener(documentSnapshot -> {
-                            COMPLETE_OP_CODE completeInternalCode = COMPLETE_OP_CODE.NO_ERROR;
+                        subjectRef
+                                .get()
+                                .addOnSuccessListener(documentSnapshot -> {
+                                    COMPLETE_OP_CODE completeInternalCode = COMPLETE_OP_CODE.NO_ERROR;
 
-                            Subject subject = documentSnapshot.toObject(Subject.class);
-                            ArrayList<String> studentIDs = subject.getStudentIDs();
+                                    Subject subject = documentSnapshot.toObject(Subject.class);
+                                    ArrayList<String> studentIDs = subject.getStudentIDs();
 
-                            Collections.shuffle(studentIDs);
+                                    Collections.shuffle(studentIDs);
 
-                            SELECTED_MODE mode = getSelectedMode();
+                                    SELECTED_MODE mode = getSelectedMode();
 
-                            int studentsPerGroup = 0;
-                            int numGroups = 0;
-                            int remainder = 0;
+                                    int studentsPerGroup = 0;
+                                    int numGroups = 0;
+                                    int remainder = 0;
 
-                            if (mode == SELECTED_MODE.STUDENTS_PER_GROUP) {
+                                    if (mode == SELECTED_MODE.STUDENTS_PER_GROUP) {
 
-                                studentsPerGroup = inputNumber;
-                                numGroups = studentIDs.size() / studentsPerGroup;
-                                remainder = studentIDs.size() % studentsPerGroup;
+                                        studentsPerGroup = inputNumber;
+                                        numGroups = studentIDs.size() / studentsPerGroup;
+                                        remainder = studentIDs.size() % studentsPerGroup;
 
-                            } else if (mode == SELECTED_MODE.NUMBER_OF_GROUPS) {
+                                    } else if (mode == SELECTED_MODE.NUMBER_OF_GROUPS) {
 
-                                numGroups = inputNumber;
-                                studentsPerGroup = studentIDs.size() / numGroups;
-                                remainder = studentIDs.size() % numGroups;
+                                        numGroups = inputNumber;
+                                        studentsPerGroup = studentIDs.size() / numGroups;
+                                        remainder = studentIDs.size() % numGroups;
 
-                            }
+                                    }
 
-                            if (numGroups < 1) {
-                                completeInternalCode = COMPLETE_OP_CODE.ZERO_GROUPS;
-                            } else {
-                                if (remainder != 0 && checkBox.getVisibility() == View.GONE) {
-                                    completeInternalCode = COMPLETE_OP_CODE.PENDING_STUDENTS;
-                                    checkBox.setVisibility(View.VISIBLE);
-                                    setCustomErrorMessage(remainder);
-                                }
-                            }
+                                    if (numGroups < 1) {
+                                        completeInternalCode = COMPLETE_OP_CODE.ZERO_GROUPS;
+                                    } else if (numGroups > studentIDs.size()) {
+                                        completeInternalCode = COMPLETE_OP_CODE.MORE_GROUPS_THAN_STUDENTS;
+                                    }
 
-                            if (completeInternalCode == COMPLETE_OP_CODE.NO_ERROR) {
-                                createGroupsBatch(studentsPerGroup, numGroups, remainder, studentIDs);
-                                dialog.dismiss();
-                            }
+                                    if (completeInternalCode == COMPLETE_OP_CODE.NO_ERROR) {
+                                        createGroupsBatch(studentsPerGroup, numGroups, remainder, studentIDs);
+                                        dialog.dismiss();
+                                    } else {
+                                        displayError(completeInternalCode);
+                                    }
 
-                            displayError(completeInternalCode);
-                        });
+                                });
                     }
                 }
                 if (displayExternalError) {
@@ -254,16 +258,18 @@ public class CreateAutomaticDialog extends DialogFragment {
             }
         }
 
-        groupsCollRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+        groupsCollRef
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
 
-            int maxIdentifier = Group.getMaxGroupIdentifier(queryDocumentSnapshots);
+                    int maxIdentifier = Group.getMaxGroupIdentifier(queryDocumentSnapshots);
 
-            // Create the groups
-            for (int i = 0; i < subLists.size(); i++) {
-                Group.createGroup(groupsCollRef, selectedCourse, selectedSubject, subLists.get(i), maxIdentifier + 1 + i);
-            }
+                    // Create the groups
+                    for (int i = 0; i < subLists.size(); i++) {
+                        Group.createGroup(groupsCollRef, selectedCourse, selectedSubject, subLists.get(i), maxIdentifier + 1 + i, context);
+                    }
 
-        });
+                });
     }
 
     private enum COMPLETE_OP_CODE {
@@ -273,7 +279,7 @@ public class CreateAutomaticDialog extends DialogFragment {
         INPUT_NUMBER_NEGATIVE,
         INPUT_NUMBER_ZERO,
         ZERO_GROUPS,
-        PENDING_STUDENTS
+        MORE_GROUPS_THAN_STUDENTS
     }
 
     private enum SELECTED_MODE {
@@ -291,17 +297,17 @@ public class CreateAutomaticDialog extends DialogFragment {
         } else if (completeCode == COMPLETE_OP_CODE.NO_INPUT_NUMBER) {
             errorMessage = "No se ha introducido ningún número. Por favor, introduzca un número válido";
         } else if (completeCode == COMPLETE_OP_CODE.INPUT_NUMBER_NEGATIVE) {
-            errorMessage = "No puedes introducir un número negativo. Introduce un número mayor que 0.";
+            errorMessage = "No puedes introducir un número negativo. Introduce un número mayor que 0";
         } else if (completeCode == COMPLETE_OP_CODE.INPUT_NUMBER_ZERO) {
             if (mode == SELECTED_MODE.STUDENTS_PER_GROUP) {
-                errorMessage = "No puedes crear grupos de 0 alumnos. Introduce un número mayor que 0.";
+                errorMessage = "No puedes crear grupos de 0 alumnos. Introduce un número mayor que 0";
             } else if (mode == SELECTED_MODE.NUMBER_OF_GROUPS) {
-                errorMessage = "Tienes que crear al menos un grupo en este modo de creación de grupos.";
+                errorMessage = "Tienes que crear al menos un grupo";
             }
         } else if (completeCode == COMPLETE_OP_CODE.ZERO_GROUPS) {
-            errorMessage = "El número de alumnos por grupo deseado excede el número de alumnos en la asignatura. Seleccione un número más pequeño";
-        } else if (completeCode == COMPLETE_OP_CODE.PENDING_STUDENTS && customErrorMessage != null) {
-            errorMessage = customErrorMessage;
+            errorMessage = "El número de alumnos por grupo deseado excede el número de alumnos en la asignatura. Escoja un número más pequeño";
+        } else if (completeCode == COMPLETE_OP_CODE.MORE_GROUPS_THAN_STUDENTS) {
+            errorMessage = "No puedes crear más grupos que alumnos hay en la asignatura";
         } else {
             errorMessage = "Error desconocido";
         }
@@ -312,7 +318,9 @@ public class CreateAutomaticDialog extends DialogFragment {
     private void displayError(COMPLETE_OP_CODE completeCode) {
         String errorMessage = getErrorMessage(completeCode);
         if (errorMessage != null) {
-            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
+            separator.setVisibility(View.VISIBLE);
+            errorMessageView.setText(errorMessage);
+            errorMessageView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -326,18 +334,6 @@ public class CreateAutomaticDialog extends DialogFragment {
             mode = SELECTED_MODE.NO_MODE_SELECTED;
         }
         return mode;
-    }
-
-    private void setCustomErrorMessage(int remainder) {
-        if (remainder > 1) {
-            customErrorMessage = "No se puede crear un grupo de exactamente " + inputNumber + " alumnos. " + remainder + "alumnos " +
-                    "se quedarán sin grupo. Si desea incluirlos en un grupo de un tamaño más grande a " + inputNumber + " alumnos, marque " +
-                    "la casilla. De lo contrario, se creará un grupo a parte de " + remainder + " alumnos.";
-        } else {
-            customErrorMessage = "No se puede crear un grupo de exactamente " + inputNumber + " alumnos. Un alumno " +
-                    "se quedará sin grupo. Si desea incluirlo en un grupo de un tamaño más grande a " + inputNumber + " alumnos, marque " +
-                    "la casilla. De lo contrario, se creará un grupo a parte con el alumno restante.";
-        }
     }
 
 }

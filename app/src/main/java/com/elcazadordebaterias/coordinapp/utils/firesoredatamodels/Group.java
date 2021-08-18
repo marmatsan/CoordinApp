@@ -1,6 +1,10 @@
 package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
 
 
+import android.content.Context;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 
@@ -139,58 +143,91 @@ public class Group {
         return maxGroupIdentifier;
     }
 
-    public static void createGroup(CollectionReference groupsCollRef, String selectedCourse, String selectedSubject, List<String> studentIDs, int identifier) {
+    public static void createGroup(CollectionReference groupsCollRef, String selectedCourse, String selectedSubject, List<String> studentIDs, int identifier, Context context) {
 
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
 
         ArrayList<String> onlyStudentsIDs = new ArrayList<String>(studentIDs);
 
-        fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(teacherInfo -> {
-            ArrayList<GroupParticipant> studentsAndTeacherParticipants = new ArrayList<GroupParticipant>();
-            ArrayList<String> studentsAndTeacherIDs = new ArrayList<String>(onlyStudentsIDs);
+        fStore
+                .collection("Teachers")
+                .document(fAuth.getUid())
+                .get()
+                .addOnSuccessListener(teacherInfo -> {
+                    ArrayList<GroupParticipant> studentsAndTeacherParticipants = new ArrayList<GroupParticipant>();
+                    ArrayList<String> studentsAndTeacherIDs = new ArrayList<String>(onlyStudentsIDs);
 
-            studentsAndTeacherParticipants.add(new GroupParticipant((String) teacherInfo.get("FullName"), teacherInfo.getId()));
-            studentsAndTeacherIDs.add(teacherInfo.getId());
+                    studentsAndTeacherParticipants.add(new GroupParticipant((String) teacherInfo.get("FullName"), teacherInfo.getId()));
+                    studentsAndTeacherIDs.add(teacherInfo.getId());
 
-            fStore.collection("Students").whereIn(FieldPath.documentId(), onlyStudentsIDs).get().addOnSuccessListener(queryDocumentSnapshots -> {
-                ArrayList<GroupParticipant> onlyStudentsParticipants = new ArrayList<GroupParticipant>();
+                    fStore
+                            .collection("Students")
+                            .whereIn(FieldPath.documentId(), onlyStudentsIDs)
+                            .get()
+                            .addOnSuccessListener(studentsDocuments -> {
+                                ArrayList<GroupParticipant> onlyStudentsParticipants = new ArrayList<GroupParticipant>();
 
-                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    onlyStudentsParticipants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
-                }
+                                for (QueryDocumentSnapshot document : studentsDocuments) {
+                                    onlyStudentsParticipants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
+                                }
 
-                studentsAndTeacherParticipants.addAll(onlyStudentsParticipants);
+                                studentsAndTeacherParticipants.addAll(onlyStudentsParticipants);
 
-                ArrayList<Group> groups = new ArrayList<Group>();
+                                ArrayList<Group> groups = new ArrayList<Group>();
 
-                Group studentsAndTeacherGroup = new Group(
-                        "Grupo " + identifier + " - Con profesor",
-                        selectedCourse,
-                        selectedSubject,
-                        true,
-                        studentsAndTeacherIDs,
-                        studentsAndTeacherParticipants,
-                        groupsCollRef.getId()
-                );
-                groups.add(studentsAndTeacherGroup);
+                                Group studentsAndTeacherGroup = new Group(
+                                        "Grupo " + identifier + " - Con profesor",
+                                        selectedCourse,
+                                        selectedSubject,
+                                        true,
+                                        studentsAndTeacherIDs,
+                                        studentsAndTeacherParticipants,
+                                        groupsCollRef.getId()
+                                );
+                                groups.add(studentsAndTeacherGroup);
 
-                if (onlyStudentsIDs.size() > 1) {
-                    Group onlyStudentsGroup = new Group(
-                            "Grupo " + identifier + " - Sólo alumnos",
-                            selectedCourse,
-                            selectedSubject,
-                            false,
-                            onlyStudentsIDs,
-                            onlyStudentsParticipants,
-                            groupsCollRef.getId()
-                    );
-                    groups.add(onlyStudentsGroup);
-                }
+                                if (onlyStudentsIDs.size() > 1) {
+                                    Group onlyStudentsGroup = new Group(
+                                            "Grupo " + identifier + " - Sólo alumnos",
+                                            selectedCourse,
+                                            selectedSubject,
+                                            false,
+                                            onlyStudentsIDs,
+                                            onlyStudentsParticipants,
+                                            groupsCollRef.getId()
+                                    );
+                                    groups.add(onlyStudentsGroup);
+                                }
 
-                GroupDocument collectiveGroupCollection = new GroupDocument("Grupo " + identifier, studentsAndTeacherIDs, groups);
-                groupsCollRef.add(collectiveGroupCollection);
-            });
-        });
+                                GroupDocument newGroupDocument = new GroupDocument("Grupo " + identifier, studentsAndTeacherIDs, groups);
+
+                                groupsCollRef
+                                        .get()
+                                        .addOnSuccessListener(queryDocumentSnapshots1 -> { // Check if the group exists
+                                            boolean groupExists = false;
+                                            GroupDocument currentGroupDocument = null;
+
+                                            for (DocumentSnapshot groupDoc : queryDocumentSnapshots1) {
+                                                 currentGroupDocument = groupDoc.toObject(GroupDocument.class);
+
+                                                if (currentGroupDocument.getAllParticipantsIDs().equals(newGroupDocument.getAllParticipantsIDs())) {
+                                                    groupExists = true;
+                                                    break;
+                                                }
+
+                                            }
+
+                                            if (groupExists) {
+                                                if(groupsCollRef.getId().equals("IndividualGroups")) {
+
+                                                }
+                                                Toast.makeText(context, "Ya existe un grupo con los mismos miembros", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                groupsCollRef.add(newGroupDocument);
+                                            }
+                                        });
+                            });
+                });
     }
 }

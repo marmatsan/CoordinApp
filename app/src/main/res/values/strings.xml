@@ -149,5 +149,9 @@
     <string name="_2_selecciona_el_segundo_grupo">2. Selecciona el segundo grupo</string>
     <string name="_3_selecciona_a_los_alumnos_que_quieres_mover_de_grupo">3. Selecciona a los alumnos que quieres mover de grupo</string>
     <string name="intercambiar">Intercambiar</string>
+    <string name="incluir_a_los_alumnos_restantes_en_un_grupo_de_mayor_tama_o">Incluir a los alumnos restantes en un grupo de mayor tamaño</string>
+    <string name="introducir_a_los_alumnos_restantes_debido_al_reparto_si_los_hay_en_un_grupo_de_un_tama_o_m_s_grande">Introducir a los alumnos restantes debido al reparto (si los hay) en un grupo de un tamaño más grande</string>
+    <string name="errormessage">ErrorMessage</string>
+    <string name="si_el_reparto_es_desigual_introducir_a_los_alumnos_restantes_en_un_grupo_de_un_tama_o_m_s_grande">Si el reparto es desigual, introducir a los alumnos restantes en un grupo de un tamaño más grande</string>
 
 </resources>

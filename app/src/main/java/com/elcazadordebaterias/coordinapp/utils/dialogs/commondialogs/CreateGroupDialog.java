@@ -199,7 +199,7 @@ public class CreateGroupDialog extends DialogFragment {
 
                             collectionRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
                                 int maxIdentifier = Group.getMaxGroupIdentifier(queryDocumentSnapshots);
-                                Group.createGroup(collectionRef, selectedCourse, selectedSubject, studentsIDs, maxIdentifier + 1);
+                                Group.createGroup(collectionRef, selectedCourse, selectedSubject, studentsIDs, maxIdentifier + 1, context);
                             });
 
                         }
