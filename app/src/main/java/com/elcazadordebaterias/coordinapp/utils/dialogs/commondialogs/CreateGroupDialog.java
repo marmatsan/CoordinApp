@@ -38,9 +38,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-/**
- * @author Martín Mateos Sánchez
- */
 public class CreateGroupDialog extends DialogFragment {
 
     private FirebaseAuth fAuth;
@@ -79,7 +76,7 @@ public class CreateGroupDialog extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) { // TODO: Totally improve this class for errors
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -92,13 +89,13 @@ public class CreateGroupDialog extends DialogFragment {
         populateParticipants();
 
         String dialogTitle = null;
-        
+
         if (userType == UserType.TYPE_STUDENT) {
             dialogTitle = "Petición para crear un grupo";
-        } else if (userType == UserType.TYPE_TEACHER){
+        } else if (userType == UserType.TYPE_TEACHER) {
             dialogTitle = "Crear un único grupo";
         }
-        
+
         builder.setView(view).setTitle(dialogTitle)
                 .setNegativeButton("Cancelar", (dialogInterface, i) -> {
                     // Just closes the dialog
@@ -186,7 +183,7 @@ public class CreateGroupDialog extends DialogFragment {
                             Toast.makeText(context, "Debes agregar al menos a un miembro más al grupo", Toast.LENGTH_SHORT).show();
                         } else {
 
-                            DocumentReference subjectRef =  fStore
+                            DocumentReference subjectRef = fStore
                                     .collection("CoursesOrganization")
                                     .document(selectedCourse)
                                     .collection("Subjects")
@@ -212,19 +209,23 @@ public class CreateGroupDialog extends DialogFragment {
         return builder.create();
     }
 
-    private void populateParticipants(){
+    private void populateParticipants() {
         fStore
                 .collection("CoursesOrganization")
                 .document(selectedCourse)
                 .collection("Subjects")
-                .document(selectedSubject).get()
+                .document(selectedSubject)
+                .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     Subject subject = documentSnapshot.toObject(Subject.class);
                     ArrayList<String> studentsIDs = subject.getStudentIDs();
 
-                    fStore.collection("Students").whereIn(FieldPath.documentId(), studentsIDs)
-                            .get().addOnSuccessListener(queryDocumentSnapshots -> {
-                                for(QueryDocumentSnapshot document : queryDocumentSnapshots){
+                    fStore
+                            .collection("Students")
+                            .whereIn(FieldPath.documentId(), studentsIDs)
+                            .get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                                     participantsList.add(new SelectParticipantItem((String) document.get("FullName"), document.getId()));
                                 }
                                 participantsAdapter.notifyDataSetChanged();
