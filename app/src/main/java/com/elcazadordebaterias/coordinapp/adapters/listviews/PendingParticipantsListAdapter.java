@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.elcazadordebaterias.coordinapp.R;
+import com.elcazadordebaterias.coordinapp.utils.cards.PetitionCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionGroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionUser;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Adapter used to display the list of the participants that are going to make a group, and the status
  * of the petition, which is displayed as an image based on the status (pending, accepted or rejected).
- * The mentioned list can be displayed by clicking a button in {@link com.elcazadordebaterias.coordinapp.utils.cards.PetitionGroupCard}
+ * The mentioned list can be displayed by clicking a button in {@link PetitionCard}
  *
  * @author Martín Mateos Sánchez
  */

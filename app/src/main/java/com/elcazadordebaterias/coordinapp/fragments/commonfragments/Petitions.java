@@ -14,13 +14,12 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.PetitionGroupCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionGroupParticipant;
-import com.elcazadordebaterias.coordinapp.utils.cards.PetitionGroupCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.PetitionCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionUser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -36,7 +35,7 @@ public class Petitions extends Fragment {
 
     private final int userType;
 
-    private ArrayList<PetitionGroupCard> petitionsList;
+    private ArrayList<PetitionCard> petitionsList;
     private PetitionGroupCardAdapter petitionsAdapter;
 
     private TextView noPetitions;
@@ -54,8 +53,8 @@ public class Petitions extends Fragment {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
-        petitionsList = new ArrayList<PetitionGroupCard>();
-        petitionsAdapter = new PetitionGroupCardAdapter(petitionsList, getContext());
+        petitionsList = new ArrayList<PetitionCard>();
+        petitionsAdapter = new PetitionGroupCardAdapter(petitionsList, getContext(), userType);
     }
 
     @Override
@@ -70,10 +69,14 @@ public class Petitions extends Fragment {
         LinearLayoutManager petitionsLayoutManager = new LinearLayoutManager(getContext());
         petitionsContainer.setLayoutManager(petitionsLayoutManager);
 
-        CollectionReference groupsCollRef = fStore
+        CollectionReference petitionsCollRef = fStore
+                .collection("CoursesOrganization")
+                .document(selectedCourse)
+                .collection("Subjects")
+                .document(selectedSubject)
                 .collection("Petitions");
 
-        groupsCollRef
+        petitionsCollRef
                 .addSnapshotListener((value, error) -> {
 
                     if (error != null) {
@@ -83,9 +86,9 @@ public class Petitions extends Fragment {
                     petitionsList.clear();
 
                     if (userType == UserType.TYPE_STUDENT) {
-                        groupsCollRef.whereArrayContains("petitionUsersIds", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> populatePetitions(queryDocumentSnapshots));
+                        petitionsCollRef.whereArrayContains("petitionUsersIds", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> populatePetitions(queryDocumentSnapshots));
                     } else if (userType == UserType.TYPE_TEACHER){
-                        groupsCollRef.whereEqualTo("teacherId", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> populatePetitions(queryDocumentSnapshots));
+                        petitionsCollRef.whereEqualTo("teacherId", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> populatePetitions(queryDocumentSnapshots));
                     }
 
                 });
@@ -101,7 +104,8 @@ public class Petitions extends Fragment {
             for (PetitionUser user : petition.getPetitionUsersList()){
                 participantsList.add(new PetitionGroupParticipant(user.getUserFullName(), user.getPetitionStatus()));
             }
-            petitionsList.add(new PetitionGroupCard(document.getId(), petition.getRequesterId(), petition.getRequesterName(), petition.getCourse() + " / " + petition.getSubject(), participantsList));
+
+            petitionsList.add(new PetitionCard(selectedCourse, selectedSubject, document.getId(), petition.getRequesterId(), petition.getRequesterName(), participantsList));
         }
 
         if (petitionsList.isEmpty()){

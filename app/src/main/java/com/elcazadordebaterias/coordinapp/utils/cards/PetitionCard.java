@@ -13,20 +13,30 @@ import java.util.ArrayList;
  * @author Martín Mateos Sánchez
  */
 
-public class PetitionGroupCard {
+public class PetitionCard {
 
-    private String petitionId; // The id of the document of this card in FireStore
+    private String selectedCourse;
+    private String selectedSubject;
+    private String petitionId;
     private String requesterName;
     private String requesterId;
-    private String courseSubject;
     private ArrayList<PetitionGroupParticipant> participantsList;
 
-    public PetitionGroupCard(String petitionId, String requesterId, String requesterName, String courseSubject, ArrayList<PetitionGroupParticipant> participantsList){
+    public PetitionCard(String selectedCourse, String selectedSubject, String petitionId, String requesterId, String requesterName, ArrayList<PetitionGroupParticipant> participantsList){
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
         this.petitionId = petitionId;
         this.requesterName = requesterName;
         this.requesterId = requesterId;
-        this.courseSubject = courseSubject;
         this.participantsList = participantsList;
+    }
+
+    public String getSelectedCourse() {
+        return selectedCourse;
+    }
+
+    public String getSelectedSubject() {
+        return selectedSubject;
     }
 
     public String getPetitionId() {
@@ -39,10 +49,6 @@ public class PetitionGroupCard {
 
     public String getRequesterId() {
         return requesterId;
-    }
-
-    public String getCourseSubject() {
-        return courseSubject;
     }
 
     public ArrayList<PetitionGroupParticipant> getParticipantsList() {

@@ -29,17 +29,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/courseName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/name_of_the_course_name_of_the_subject"
-            android:textColor="@color/colorOnPrimary"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/requesterName" />
-
         <View
             android:id="@+id/view3"
             android:layout_width="match_parent"
@@ -58,7 +47,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/aceptar"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/courseName" />
+            app:layout_constraintTop_toBottomOf="@+id/requesterName" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/denyRequest"
@@ -68,7 +57,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/rechazar"
             app:layout_constraintStart_toEndOf="@+id/acceptRequest"
-            app:layout_constraintTop_toBottomOf="@+id/courseName" />
+            app:layout_constraintTop_toBottomOf="@+id/requesterName" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/displayParticipantsList"

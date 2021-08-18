@@ -21,6 +21,7 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.listviews.SelectParticipantsListAdapter;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionUser;
@@ -102,12 +103,10 @@ public class CreateGroupDialog extends DialogFragment {
                 })
                 .setPositiveButton("Crear", (dialogInterface, i) -> {
 
-                    if (userType == UserType.TYPE_STUDENT) {
+                    if (userType == UserType.TYPE_STUDENT) { // Create the petition to form a group
 
                         ArrayList<PetitionUser> petitionUsersList = new ArrayList<PetitionUser>();
                         ArrayList<String> petitionUsersIds = new ArrayList<String>();
-
-                        String requesterId = fAuth.getUid();
 
                         for (SelectParticipantItem item : participantsList) {
                             if (item.isSelected()) {
@@ -117,55 +116,106 @@ public class CreateGroupDialog extends DialogFragment {
                             }
                         }
 
-                        if (petitionUsersList.size() <= 1) {
+                        if (petitionUsersList.size() == 0) {
                             Toast.makeText(context, "Debes agregar al menos a un miembro más al grupo", Toast.LENGTH_SHORT).show();
                         } else {
 
-                            fStore.collection("Petitions").whereEqualTo("requesterId", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> {
+                            fStore
+                                    .collection("Students")
+                                    .document(fAuth.getUid())
+                                    .get()
+                                    .addOnSuccessListener(requesterDocument -> {
+                                        String requesterID = requesterDocument.getId();
+                                        String requesterName = (String) requesterDocument.get("FullName");
 
-                                for (QueryDocumentSnapshot petitionDoc : queryDocumentSnapshots) {
-                                    PetitionRequest petition = petitionDoc.toObject(PetitionRequest.class);
-                                    if (petition.getCourse().equals(selectedCourse)
-                                            && petition.getSubject().equals(selectedSubject)
-                                            && petition.getRequesterId().equals(fAuth.getUid())) {
-                                        Toast.makeText(context, "Ya has hecho una petición de esta asignatura. " +
-                                                "Espera a que el tutor la acepte o la rechace", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                }
+                                        petitionUsersList.add(new PetitionUser(
+                                                requesterID,
+                                                requesterName,
+                                                PetitionUser.STATUS_ACCEPTED)
+                                        );
+                                        petitionUsersIds.add(requesterID);
 
-                                fStore.collection("CoursesOrganization").document(selectedCourse)
-                                        .collection("Subjects").document(selectedSubject)
-                                        .get().addOnSuccessListener(subjectDocument -> {
-                                    Subject subject = subjectDocument.toObject(Subject.class);
-                                    String teacherID = subject.getTeacherID();
+                                        DocumentReference subjectDocRef = fStore
+                                                .collection("CoursesOrganization")
+                                                .document(selectedCourse)
+                                                .collection("Subjects")
+                                                .document(selectedSubject);
 
-                                    fStore.collection("Teachers").document(teacherID).get().addOnSuccessListener(teacherDocument -> {
-                                        String teacherName = (String) teacherDocument.get("FullName");
+                                        CollectionReference petitionsCollRef = subjectDocRef
+                                                .collection("Petitions");
 
-                                        fStore.collection("Students").document(requesterId)
-                                                .get().addOnSuccessListener(requesterDocument -> {
+                                        subjectDocRef // Check if the group that we are trying to make already exists
+                                                .get()
+                                                .addOnSuccessListener(documentSnapshot -> {
+                                                    Subject subject = documentSnapshot.toObject(Subject.class);
+                                                    String teacherID = subject.getTeacherID();
 
-                                            petitionUsersList.add(new PetitionUser(requesterId,
-                                                    (String) requesterDocument.getData().get("FullName"),
-                                                    PetitionUser.STATUS_ACCEPTED));
+                                                    ArrayList<String> allParticipantsIDs = new ArrayList<String>(petitionUsersIds);
+                                                    allParticipantsIDs.add(teacherID);
 
-                                            petitionUsersIds.add(requesterId);
+                                                    subjectDocRef
+                                                            .collection("CollectiveGroups")
+                                                            .get()
+                                                            .addOnSuccessListener(groupDocuments -> {
 
-                                            PetitionRequest petition = new PetitionRequest(selectedCourse,
-                                                    selectedSubject,
-                                                    requesterId,
-                                                    (String) requesterDocument.getData().get("FullName"),
-                                                    teacherID,
-                                                    teacherName,
-                                                    petitionUsersIds,
-                                                    petitionUsersList);
+                                                                boolean groupExists = false;
 
-                                            fStore.collection("Petitions").add(petition);
-                                        });
+                                                                for (DocumentSnapshot groupDoc : groupDocuments) {
+                                                                    GroupDocument groupDocument = groupDoc.toObject(GroupDocument.class);
+                                                                    if (groupDocument.getAllParticipantsIDs().equals(allParticipantsIDs)) {
+                                                                        groupExists = true;
+                                                                        break;
+                                                                    }
+                                                                }
+
+                                                                if (groupExists) {
+                                                                    Toast.makeText(context, "Ya estás en un grupo igual para el que estás intentando solicitar crear con esta petición", Toast.LENGTH_SHORT).show();
+                                                                } else {
+                                                                    petitionsCollRef
+                                                                            .get()
+                                                                            .addOnSuccessListener(petitionDocuments -> {
+
+                                                                                int numOfPetitions = 0;
+                                                                                boolean petitionExists = false;
+
+                                                                                for (DocumentSnapshot petitionDoc : petitionDocuments) {
+                                                                                    PetitionRequest petitionRequest = petitionDoc.toObject(PetitionRequest.class);
+                                                                                    if (petitionRequest.getRequesterId().equals(fAuth.getUid())) {
+                                                                                        numOfPetitions = numOfPetitions + 1;
+                                                                                    } else if (petitionRequest.getPetitionUsersIds().equals(petitionUsersIds)) {
+                                                                                        petitionExists = true;
+                                                                                        break;
+                                                                                    }
+                                                                                }
+                                                                                if (petitionExists) {
+                                                                                    Toast.makeText(context, "Ya has creado una petición igual a esta", Toast.LENGTH_SHORT).show();
+                                                                                } else {
+                                                                                    if (numOfPetitions >= 3) {
+                                                                                        Toast.makeText(context, "No puedes hacer más de tres peticiones de creación de grupo. " +
+                                                                                                "Espera a que el tutor acepte o rechace las peticiones que ya tienes", Toast.LENGTH_LONG).show();
+                                                                                    } else {
+
+                                                                                        PetitionRequest newPetition = new PetitionRequest(
+                                                                                                requesterID,
+                                                                                                requesterName,
+                                                                                                teacherID,
+                                                                                                petitionUsersIds,
+                                                                                                petitionUsersList
+                                                                                        );
+
+                                                                                        petitionsCollRef.add(newPetition);
+
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                }
+
+                                                            });
+
+                                                });
+
                                     });
-                                });
-                            });
+
                         }
 
                     } else if (userType == UserType.TYPE_TEACHER) { // Directly create the group
@@ -219,6 +269,7 @@ public class CreateGroupDialog extends DialogFragment {
                 .addOnSuccessListener(documentSnapshot -> {
                     Subject subject = documentSnapshot.toObject(Subject.class);
                     ArrayList<String> studentsIDs = subject.getStudentIDs();
+                    studentsIDs.remove(fAuth.getUid());
 
                     fStore
                             .collection("Students")
