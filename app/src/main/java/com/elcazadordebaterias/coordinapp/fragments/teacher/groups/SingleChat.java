@@ -91,7 +91,7 @@ public class SingleChat extends Fragment {
 
                         groupDoc
                                 .getReference()
-                                .collection("ChatRoom")
+                                .collection("ChatRoomWithTeacher")
                                 .get()
                                 .addOnSuccessListener(queryDocumentSnapshots -> {
                                     if (!queryDocumentSnapshots.isEmpty()){

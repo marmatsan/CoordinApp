@@ -80,7 +80,7 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
 
         holder.deleteGroup.setOnClickListener(v -> {
 
-            DocumentReference groupRef =  fStore
+            DocumentReference groupRef = fStore
                     .collection("CoursesOrganization")
                     .document(groupCard.getCourseName())
                     .collection("Subjects")
@@ -88,27 +88,26 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
                     .collection(groupCard.getCollectionId())
                     .document(groupCard.getGroupId());
 
-            groupRef.collection("ChatRoomWithoutTeacher").get().addOnSuccessListener(queryDocumentSnapshots -> {
-                for (DocumentSnapshot document : queryDocumentSnapshots){
+            groupRef.collection("ChatRoomWithTeacher").get().addOnSuccessListener(queryDocumentSnapshots11 -> {
+                for (DocumentSnapshot document : queryDocumentSnapshots11) {
                     document.getReference().delete();
                 }
 
-                groupRef.collection("StorageWithoutTeacher").get().addOnSuccessListener(queryDocumentSnapshots1 -> {
-                    for (DocumentSnapshot document : queryDocumentSnapshots1){
+                groupRef.collection("StorageWithTeacher").get().addOnSuccessListener(queryDocumentSnapshots112 -> {
+                    for (DocumentSnapshot document : queryDocumentSnapshots112) {
                         document.getReference().delete();
                     }
-
-                    groupRef.collection("ChatRoomWithTeacher").get().addOnSuccessListener(queryDocumentSnapshots11 -> {
-                        for (DocumentSnapshot document : queryDocumentSnapshots11){
+                    groupRef.collection("ChatRoomWithoutTeacher").get().addOnSuccessListener(queryDocumentSnapshots -> {
+                        for (DocumentSnapshot document : queryDocumentSnapshots) {
                             document.getReference().delete();
                         }
-                    });
 
-                    groupRef.collection("StorageWithTeacher").get().addOnSuccessListener(queryDocumentSnapshots112 -> {
-                        for (DocumentSnapshot document : queryDocumentSnapshots112){
-                            document.getReference().delete();
-                        }
-                        groupRef.delete();
+                        groupRef.collection("StorageWithoutTeacher").get().addOnSuccessListener(queryDocumentSnapshots1 -> {
+                            for (DocumentSnapshot document : queryDocumentSnapshots1) {
+                                document.getReference().delete();
+                            }
+                            groupRef.delete();
+                        });
                     });
                 });
             });

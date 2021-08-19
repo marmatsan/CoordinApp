@@ -86,7 +86,9 @@ public class ChatActivity extends AppCompatActivity {
         card = gson.fromJson(cardAsString, GroupCard.class);
 
         // Reference to Storage custom of this group
-        groupStorageRef = FirebaseStorage.getInstance().getReference()
+        groupStorageRef = FirebaseStorage
+                .getInstance()
+                .getReference()
                 .child(card.getCourseName() + "/" + card.getSubjectName() + "/" + card.getGroupName());
 
         // Get userType
@@ -101,17 +103,12 @@ public class ChatActivity extends AppCompatActivity {
                 .collection(card.getCollectionId())
                 .document(card.getGroupId());
 
-        if (card.getCollectionId().equals("CollectiveGroups")){
-            if (card.getHasTeacher()) {
-                chatroomRef = groupRef.collection("ChatRoomWithTeacher");
-                storageRef = groupRef.collection("StorageWithTeacher");
-            } else {
-                chatroomRef = groupRef.collection("ChatRoomWithoutTeacher");
-                storageRef = groupRef.collection("StorageWithoutTeacher");
-            }
-        } else { //card.getCollectionId().equals("IndividualGroups")
-            chatroomRef = groupRef.collection("ChatRoom");
-            storageRef = groupRef.collection("Storage");
+        if (card.getHasTeacher()) {
+            chatroomRef = groupRef.collection("ChatRoomWithTeacher");
+            storageRef = groupRef.collection("StorageWithTeacher");
+        } else {
+            chatroomRef = groupRef.collection("ChatRoomWithoutTeacher");
+            storageRef = groupRef.collection("StorageWithoutTeacher");
         }
 
         // Recyclerview setup
@@ -166,7 +163,7 @@ public class ChatActivity extends AppCompatActivity {
             String messageTitle;
             String message;
 
-            if(fileRef == null){
+            if (fileRef == null) {
                 messageTitle = fullName;
                 message = messageInputText;
             } else {
