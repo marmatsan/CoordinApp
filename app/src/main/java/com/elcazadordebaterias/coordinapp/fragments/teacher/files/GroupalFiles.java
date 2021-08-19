@@ -82,7 +82,8 @@ public class GroupalFiles extends Fragment {
 
                     for (DocumentSnapshot document : queryDocumentsSnapshots){
                         String name = (String) document.get("name");
-                        document.getReference().collection("StorageWithTeacher").addSnapshotListener((queryDocumentsSnapshots1, error1) -> {
+                        document.getReference().collection("StorageWithTeacher")
+                                .addSnapshotListener((queryDocumentsSnapshots1, error1) -> {
 
                             if (error1 != null) {
                                 return;

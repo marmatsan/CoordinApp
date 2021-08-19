@@ -157,5 +157,6 @@
     <string name="todav_a_no_hay_ning_n_grupo_creado_puedes_pedirle_al_profesor_que_cree_un_grupo_con_el_bot_n">Todavía no hay ningún grupo creado. Puedes pedirle al profesor que cree un grupo con el botón +</string>
     <string name="por_ahora_no_tienes_ninguna_petici_n_puedes_crear_una_petici_n_para_formar_un_grupo_en_la_pesta_a_grupos">Por ahora no tienes ninguna petición. Puedes crear una petición para formar un grupo en la pestaña Grupos</string>
     <string name="no_petition_teacher">Por ahora no tienes ninguna petición de creación de grupo por parte de los alumnos</string>
+    <string name="selecciona_dos_grupos_distintos">Selecciona dos grupos distintos</string>
 
 </resources>

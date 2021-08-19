@@ -39,6 +39,10 @@ import java.util.HashMap;
 public class AdministrateGroupsDialog extends DialogFragment {
 
     private TextView textView1, textView2, textView3;
+
+    private View separator;
+    private TextView errorMessage;
+
     private Spinner groupSpinner1, groupSpinner2;
 
     private MaterialButton interchangeButton;
@@ -98,6 +102,11 @@ public class AdministrateGroupsDialog extends DialogFragment {
         groupSpinner1 = view.findViewById(R.id.groupSpinner1);
         groupSpinner2 = view.findViewById(R.id.groupSpinner2);
 
+        separator = view.findViewById(R.id.separator);
+        errorMessage = view.findViewById(R.id.errorMessage);
+
+        separator.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.GONE);
 
         participantsGroup1ListView = view.findViewById(R.id.participantsGroup1ListView);
         participantsGroup2ListView = view.findViewById(R.id.participantsGroup2ListView);
@@ -171,15 +180,20 @@ public class AdministrateGroupsDialog extends DialogFragment {
         ArrayList<String> groupSpinner1Names = new ArrayList<String>();
         ArrayList<String> groupSpinner2Names = new ArrayList<String>();
 
-        // Course adapter
+        HashMap<String, String> group1SpinnerIDs = new HashMap<String, String>();
+        HashMap<String, String> group2SpinnerIDs = new HashMap<String, String>();
+
+        // Group 1 adapter
         ArrayAdapter<String> groups1ListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, groupSpinner1Names);
         groups1ListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         groupSpinner1.setAdapter(groups1ListAdapter);
-        groupSpinner1.setSelection(0);
 
-        HashMap<String, String> group1SpinnerIDs = new HashMap<String, String>();
+        // Group 2 spinner
+        ArrayAdapter<String> groups2ListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, groupSpinner2Names);
+        groups2ListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        groupSpinner2.setAdapter(groups2ListAdapter);
 
-        // Group 1 spinner
+        // Groups names
         groupCollRef
                 .whereArrayContains("allParticipantsIDs", fAuth.getUid())
                 .get()
@@ -187,47 +201,36 @@ public class AdministrateGroupsDialog extends DialogFragment {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         CollectiveGroupDocument group = document.toObject(CollectiveGroupDocument.class);
                         groupSpinner1Names.add(group.getName());
+                        groupSpinner2Names.add(group.getName());
+
                         group1SpinnerIDs.put(group.getName(), document.getId());
+                        group2SpinnerIDs.put(group.getName(), document.getId());
                     }
+                    groupSpinner1.setSelection(0);
+                    groupSpinner2.setSelection(1);
                     groups1ListAdapter.notifyDataSetChanged();
+                    groups2ListAdapter.notifyDataSetChanged();
                 });
-
-
-        // Group 2 spinner
-        ArrayAdapter<String> groups2ListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, groupSpinner2Names);
-        groups2ListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        groupSpinner2.setAdapter(groups2ListAdapter);
-        groupSpinner2.setSelection(0);
-
-        HashMap<String, String> group2SpinnerIDs = new HashMap<String, String>();
 
         // Group 1 spinner listener
         groupSpinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                groupSpinner2Names.clear();
                 String selectedGroupName = parent.getItemAtPosition(position).toString();
+
+                if (selectedGroupName.equals((String) groupSpinner2.getSelectedItem())) {
+                    showError();
+                } else {
+                    dismissError();
+                }
+
                 groupCollRef
-                        .whereArrayContains("allParticipantsIDs", fAuth.getUid())
+                        .document(group1SpinnerIDs.get(groupSpinner1.getSelectedItem()))
                         .get()
-                        .addOnSuccessListener(queryDocumentSnapshots -> {
-                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                CollectiveGroupDocument group = document.toObject(CollectiveGroupDocument.class);
-                                if (!selectedGroupName.equals(group.getName())) {
-                                    groupSpinner2Names.add(group.getName());
-                                    group2SpinnerIDs.put(group.getName(), document.getId());
-                                }
-                            }
-                            groups2ListAdapter.notifyDataSetChanged();
-
-                            groupCollRef
-                                    .document(group1SpinnerIDs.get(groupSpinner1.getSelectedItem()))
-                                    .get()
-                                    .addOnSuccessListener(documentSnapshot -> {
-                                        updateListViewList(documentSnapshot, participantsGroup1List, group1ParticipantsAdapter);
-                                    });
-
+                        .addOnSuccessListener(documentSnapshot -> {
+                            updateListView(documentSnapshot, participantsGroup1List, group1ParticipantsAdapter);
                         });
+
             }
 
             @Override
@@ -239,22 +242,22 @@ public class AdministrateGroupsDialog extends DialogFragment {
         groupSpinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                groupCollRef
-                        .document(group1SpinnerIDs.get(groupSpinner1.getSelectedItem()))
-                        .get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            updateListViewList(documentSnapshot, participantsGroup1List, group1ParticipantsAdapter);
-                        });
+                String selectedGroupName = parent.getItemAtPosition(position).toString();
+
+                if (selectedGroupName.equals((String) groupSpinner1.getSelectedItem())) {
+                    showError();
+                } else {
+                    dismissError();
+                }
 
                 groupCollRef
                         .document(group2SpinnerIDs.get(groupSpinner2.getSelectedItem()))
                         .get()
                         .addOnSuccessListener(documentSnapshot -> {
-                            updateListViewList(documentSnapshot, participantsGroup2List, group2ParticipantsAdapter);
+                            updateListView(documentSnapshot, participantsGroup2List, group2ParticipantsAdapter);
                         });
 
             }
-
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -353,7 +356,7 @@ public class AdministrateGroupsDialog extends DialogFragment {
 
     }
 
-    private void updateListViewList(DocumentSnapshot documentSnapshot, ArrayList<SelectParticipantItem> participantsGroupList, SelectParticipantsListAdapter groupParticipantsAdapter) {
+    private void updateListView(DocumentSnapshot documentSnapshot, ArrayList<SelectParticipantItem> participantsGroupList, SelectParticipantsListAdapter groupParticipantsAdapter) {
         participantsGroupList.clear();
         CollectiveGroupDocument collectiveGroupDocument = documentSnapshot.toObject(CollectiveGroupDocument.class);
         ArrayList<Group> groupsList = collectiveGroupDocument.getGroups();
@@ -369,6 +372,24 @@ public class AdministrateGroupsDialog extends DialogFragment {
                 groupParticipantsAdapter.notifyDataSetChanged();
             }
         }
+    }
+
+    private void dismissError() {
+            separator.setVisibility(View.GONE);
+            errorMessage.setVisibility(View.GONE);
+            textView3.setVisibility(View.VISIBLE);
+            participantsGroup1ListView.setVisibility(View.VISIBLE);
+            interchangeButton.setVisibility(View.VISIBLE);
+            participantsGroup2ListView.setVisibility(View.VISIBLE);
+    }
+
+    private void showError(){
+        separator.setVisibility(View.VISIBLE);
+        errorMessage.setVisibility(View.VISIBLE);
+        textView3.setVisibility(View.GONE);
+        participantsGroup1ListView.setVisibility(View.GONE);
+        interchangeButton.setVisibility(View.GONE);
+        participantsGroup2ListView.setVisibility(View.GONE);
     }
 
 }

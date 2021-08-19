@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipChildren="false"
-    android:paddingEnd="8dp"
-    android:paddingStart="8dp"
     android:paddingTop="8dp"
     android:paddingBottom="8dp">
 
@@ -14,6 +12,8 @@
         style="@style/MessageCardLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="8dp"
         android:background="@color/white"
         android:orientation="vertical"
         android:paddingEnd="150dp">
@@ -34,8 +34,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
                     android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
                     android:paddingBottom="8dp"
                     android:text="aaaaaaaaaaaaaaaaaaaa"
                     android:textStyle="bold" />
@@ -47,7 +47,7 @@
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="8dp"
-                    android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+                    android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaa" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

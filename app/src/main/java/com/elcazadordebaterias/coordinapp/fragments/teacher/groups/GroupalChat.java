@@ -94,7 +94,7 @@ public class GroupalChat extends Fragment {
                         for (Group groupDoc : group.getGroups()) {
                             if (groupDoc.getParticipantsIds().contains(fAuth.getUid())) {
                                 GroupCard groupCard = new GroupCard(
-                                        groupDoc.getName(),
+                                        group.getName(),
                                         groupDocument.getId(),
                                         selectedCourse,
                                         selectedSubject,
