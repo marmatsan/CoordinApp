@@ -40,7 +40,7 @@ public class Petitions extends Fragment {
 
     private TextView noPetitions;
 
-    public Petitions(int userType, String selectedCourse, String selectedSubject){
+    public Petitions(int userType, String selectedCourse, String selectedSubject) {
         this.userType = userType;
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
@@ -59,11 +59,17 @@ public class Petitions extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_commonfragments_petitions, container, false);
+        View view = inflater.inflate(R.layout.fragment_commonfragments_petitions, container, false);
 
         // Recyclerview - Petitions
         RecyclerView petitionsContainer = view.findViewById(R.id.petitionsContainer);
         noPetitions = view.findViewById(R.id.noPetitions);
+
+        if (userType == UserType.TYPE_TEACHER) {
+            noPetitions.setText(R.string.no_petition_teacher);
+        } else {
+            noPetitions.setText(R.string.por_ahora_no_tienes_ninguna_petici_n_puedes_crear_una_petici_n_para_formar_un_grupo_en_la_pesta_a_grupos);
+        }
 
         petitionsContainer.setAdapter(petitionsAdapter);
         LinearLayoutManager petitionsLayoutManager = new LinearLayoutManager(getContext());
@@ -87,7 +93,7 @@ public class Petitions extends Fragment {
 
                     if (userType == UserType.TYPE_STUDENT) {
                         petitionsCollRef.whereArrayContains("petitionUsersIds", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> populatePetitions(queryDocumentSnapshots));
-                    } else if (userType == UserType.TYPE_TEACHER){
+                    } else if (userType == UserType.TYPE_TEACHER) {
                         petitionsCollRef.whereEqualTo("teacherId", fAuth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> populatePetitions(queryDocumentSnapshots));
                     }
 
@@ -96,19 +102,19 @@ public class Petitions extends Fragment {
         return view;
     }
 
-    private void populatePetitions(QuerySnapshot queryDocumentSnapshots){
+    private void populatePetitions(QuerySnapshot queryDocumentSnapshots) {
         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
             PetitionRequest petition = document.toObject(PetitionRequest.class);
             ArrayList<PetitionGroupParticipant> participantsList = new ArrayList<PetitionGroupParticipant>();
 
-            for (PetitionUser user : petition.getPetitionUsersList()){
+            for (PetitionUser user : petition.getPetitionUsersList()) {
                 participantsList.add(new PetitionGroupParticipant(user.getUserFullName(), user.getPetitionStatus()));
             }
 
             petitionsList.add(new PetitionCard(selectedCourse, selectedSubject, document.getId(), petition.getRequesterId(), petition.getRequesterName(), participantsList));
         }
 
-        if (petitionsList.isEmpty()){
+        if (petitionsList.isEmpty()) {
             noPetitions.setVisibility(View.VISIBLE);
         } else {
             noPetitions.setVisibility(View.GONE);

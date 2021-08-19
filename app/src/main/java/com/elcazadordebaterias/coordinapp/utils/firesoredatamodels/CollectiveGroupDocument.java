@@ -2,17 +2,17 @@ package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
 
 import java.util.ArrayList;
 
-public class GroupDocument {
+public class CollectiveGroupDocument {
 
     private String name;
     private ArrayList<String> allParticipantsIDs;
     private ArrayList<Group> groups;
 
-    public GroupDocument(){
+    public CollectiveGroupDocument(){
 
     }
 
-    public GroupDocument(String name, ArrayList<String> allParticipantsIDs, ArrayList<Group> groups){
+    public CollectiveGroupDocument(String name, ArrayList<String> allParticipantsIDs, ArrayList<Group> groups){
         this.name = name;
         this.allParticipantsIDs = allParticipantsIDs;
         this.groups = groups;

@@ -20,10 +20,9 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.listviews.SelectParticipantsListAdapter;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.SelectParticipantItem;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
-import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupDocument;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -31,7 +30,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -187,7 +185,7 @@ public class AdministrateGroupsDialog extends DialogFragment {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        GroupDocument group = document.toObject(GroupDocument.class);
+                        CollectiveGroupDocument group = document.toObject(CollectiveGroupDocument.class);
                         groupSpinner1Names.add(group.getName());
                         group1SpinnerIDs.put(group.getName(), document.getId());
                     }
@@ -214,7 +212,7 @@ public class AdministrateGroupsDialog extends DialogFragment {
                         .get()
                         .addOnSuccessListener(queryDocumentSnapshots -> {
                             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                GroupDocument group = document.toObject(GroupDocument.class);
+                                CollectiveGroupDocument group = document.toObject(CollectiveGroupDocument.class);
                                 if (!selectedGroupName.equals(group.getName())) {
                                     groupSpinner2Names.add(group.getName());
                                     group2SpinnerIDs.put(group.getName(), document.getId());
@@ -311,10 +309,10 @@ public class AdministrateGroupsDialog extends DialogFragment {
                                 String teacherName = (String) teacherDataDocument.get("FullName");
 
                                 // Update groups
-                                GroupDocument groupDocument = documentSnapshot.toObject(GroupDocument.class);
+                                CollectiveGroupDocument collectiveGroupDocument = documentSnapshot.toObject(CollectiveGroupDocument.class);
                                 ArrayList<Group> updatedGroups = new ArrayList<Group>();
 
-                                for (Group group : groupDocument.getGroups()) {
+                                for (Group group : collectiveGroupDocument.getGroups()) {
                                     Group updatedGroup = new Group();
 
                                     updatedGroup.setName(group.getName());
@@ -357,8 +355,8 @@ public class AdministrateGroupsDialog extends DialogFragment {
 
     private void updateListViewList(DocumentSnapshot documentSnapshot, ArrayList<SelectParticipantItem> participantsGroupList, SelectParticipantsListAdapter groupParticipantsAdapter) {
         participantsGroupList.clear();
-        GroupDocument groupDocument = documentSnapshot.toObject(GroupDocument.class);
-        ArrayList<Group> groupsList = groupDocument.getGroups();
+        CollectiveGroupDocument collectiveGroupDocument = documentSnapshot.toObject(CollectiveGroupDocument.class);
+        ArrayList<Group> groupsList = collectiveGroupDocument.getGroups();
 
         for (Group group : groupsList) {
             if (!group.getHasTeacher()) {

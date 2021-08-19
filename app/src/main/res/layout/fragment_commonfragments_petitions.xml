@@ -7,13 +7,14 @@
 
     <TextView
         android:id="@+id/noPetitions"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/por_ahora_no_tienes_ninguna_petici_n"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/por_ahora_no_tienes_ninguna_petici_n_puedes_crear_una_petici_n_para_formar_un_grupo_en_la_pesta_a_grupos"
         android:textAlignment="center"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

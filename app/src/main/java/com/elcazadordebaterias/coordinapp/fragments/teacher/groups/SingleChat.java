@@ -15,11 +15,12 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
-import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.IndividualGroupDocument;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -87,6 +88,18 @@ public class SingleChat extends Fragment {
 
                     for (DocumentSnapshot groupDoc : queryDocumentsSnapshots) {
                         IndividualGroupDocument groupDocument = groupDoc.toObject(IndividualGroupDocument.class);
+
+                        groupDoc
+                                .getReference()
+                                .collection("ChatRoom")
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    if (!queryDocumentSnapshots.isEmpty()){
+                                        groupDoc
+                                                .getReference()
+                                                .update("hasVisibility", true);
+                                    }
+                                });
 
                         if (groupDocument.getHasVisibility()) {
                             Group group = groupDocument.getGroup();

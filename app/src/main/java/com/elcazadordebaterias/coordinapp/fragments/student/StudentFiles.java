@@ -18,15 +18,13 @@ import com.elcazadordebaterias.coordinapp.utils.cards.files.FilesContainerCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.files.student.GroupContainerCard;
 
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
-import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupDocument;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.StorageFile;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -91,7 +89,7 @@ public class StudentFiles extends Fragment {
                     groupsList.clear();
                     for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
                         ArrayList<FilesContainerCard> filesContainerList = new ArrayList<FilesContainerCard>();
-                        GroupDocument groupDoc = groupDocument.toObject(GroupDocument.class);
+                        CollectiveGroupDocument groupDoc = groupDocument.toObject(CollectiveGroupDocument.class);
                         String groupName = groupDoc.getName();
 
                         for (Group group : groupDoc.getGroups()) {

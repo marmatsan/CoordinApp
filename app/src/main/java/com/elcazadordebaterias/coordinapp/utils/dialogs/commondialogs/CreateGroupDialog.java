@@ -6,10 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,13 +18,11 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.listviews.SelectParticipantsListAdapter;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
-import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupDocument;
-import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionUser;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.SelectParticipantItem;
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -35,7 +30,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -161,8 +155,8 @@ public class CreateGroupDialog extends DialogFragment {
                                                                 boolean groupExists = false;
 
                                                                 for (DocumentSnapshot groupDoc : groupDocuments) {
-                                                                    GroupDocument groupDocument = groupDoc.toObject(GroupDocument.class);
-                                                                    if (groupDocument.getAllParticipantsIDs().equals(allParticipantsIDs)) {
+                                                                    CollectiveGroupDocument collectiveGroupDocument = groupDoc.toObject(CollectiveGroupDocument.class);
+                                                                    if (collectiveGroupDocument.getAllParticipantsIDs().containsAll(allParticipantsIDs)) {
                                                                         groupExists = true;
                                                                         break;
                                                                     }
@@ -180,11 +174,11 @@ public class CreateGroupDialog extends DialogFragment {
 
                                                                                 for (DocumentSnapshot petitionDoc : petitionDocuments) {
                                                                                     PetitionRequest petitionRequest = petitionDoc.toObject(PetitionRequest.class);
-                                                                                    if (petitionRequest.getRequesterId().equals(fAuth.getUid())) {
-                                                                                        numOfPetitions = numOfPetitions + 1;
-                                                                                    } else if (petitionRequest.getPetitionUsersIds().equals(petitionUsersIds)) {
+                                                                                    if (petitionRequest.getPetitionUsersIds().containsAll(petitionUsersIds)) {
                                                                                         petitionExists = true;
                                                                                         break;
+                                                                                    } else if (petitionRequest.getRequesterId().equals(fAuth.getUid())) {
+                                                                                        numOfPetitions = numOfPetitions + 1;
                                                                                     }
                                                                                 }
                                                                                 if (petitionExists) {
@@ -249,7 +243,7 @@ public class CreateGroupDialog extends DialogFragment {
 
                             collectionRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
                                 int maxIdentifier = Group.getMaxGroupIdentifier(queryDocumentSnapshots);
-                                Group.createGroup(collectionRef, selectedCourse, selectedSubject, studentsIDs, maxIdentifier + 1, context, userType);
+                                Group.createGroup(collectionRef, selectedCourse, selectedSubject, studentsIDs, maxIdentifier + 1, context, null);
                             });
 
                         }

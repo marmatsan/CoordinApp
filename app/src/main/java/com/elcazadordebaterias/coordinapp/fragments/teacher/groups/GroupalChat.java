@@ -15,7 +15,7 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
-import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupDocument;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -89,7 +89,7 @@ public class GroupalChat extends Fragment {
                     groupsList.clear();
 
                     for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
-                        GroupDocument group = groupDocument.toObject(GroupDocument.class);
+                        CollectiveGroupDocument group = groupDocument.toObject(CollectiveGroupDocument.class);
 
                         for (Group groupDoc : group.getGroups()) {
                             if (groupDoc.getParticipantsIds().contains(fAuth.getUid())) {

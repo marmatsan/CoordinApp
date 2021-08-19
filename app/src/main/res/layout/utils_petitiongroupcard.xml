@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/colorPrimaryVariant"
@@ -33,11 +34,21 @@
             android:id="@+id/view3"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/acceptRequest" />
+            app:layout_constraintTop_toBottomOf="@+id/denyRequest" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/denyRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/rechazar"
+            app:layout_constraintStart_toEndOf="@+id/acceptRequest"
+            app:layout_constraintTop_toBottomOf="@+id/requesterName" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/acceptRequest"
@@ -49,15 +60,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/requesterName" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/denyRequest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/rechazar"
-            app:layout_constraintStart_toEndOf="@+id/acceptRequest"
-            app:layout_constraintTop_toBottomOf="@+id/requesterName" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/displayParticipantsList"

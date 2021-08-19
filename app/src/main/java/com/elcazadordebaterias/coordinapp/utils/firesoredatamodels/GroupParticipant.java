@@ -1,8 +1,5 @@
 package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
 
-/**
- * Used in Firestore to represent a groupparticipant in an array
- */
 public class GroupParticipant {
 
     private String participantFullName;

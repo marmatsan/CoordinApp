@@ -20,11 +20,15 @@ import com.elcazadordebaterias.coordinapp.utils.cards.PetitionCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionUser;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -40,7 +44,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
     FirebaseFirestore fStore;
 
     private ArrayList<PetitionCard> petitionsList;
-    private Context mContext;
+    private Context context;
 
     private int userType;
 
@@ -49,7 +53,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         fStore = FirebaseFirestore.getInstance();
 
         this.petitionsList = petitionsList;
-        this.mContext = context;
+        this.context = context;
         this.userType = userType;
     }
 
@@ -80,6 +84,13 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
             holder.requesterName.setText(petitionCard.getRequesterName());
         }
 
+        if (userType == UserType.TYPE_TEACHER || petitionCard.getRequesterId().equals(fAuth.getUid())) {
+            if (petitionCard.getRequesterId().equals(fAuth.getUid())) {
+                holder.acceptRequest.setVisibility(View.GONE);
+            }
+            holder.denyRequest.setText(R.string.eliminar_peticion);
+        }
+
         holder.acceptRequest.setOnClickListener(v -> {
             petitionsCollRef
                     .document(petitionCard.getPetitionId())
@@ -99,7 +110,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                     .document(petitionCard.getPetitionId())
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
-                        if (userType == UserType.TYPE_TEACHER) { // The logged user is a teacher
+                        if (userType == UserType.TYPE_TEACHER || petitionCard.getRequesterId().equals(fAuth.getUid())) { // The logged user is a teacher
                             documentSnapshot.getReference().delete();
                         } else {
                             updatePetition(documentSnapshot, PetitionUser.STATUS_REJECTED);
@@ -109,7 +120,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
 
         holder.displayParticipantsList.setOnClickListener(v -> {
             DisplayParticipantsListDialog dialog = new DisplayParticipantsListDialog(petitionCard.getParticipantsList());
-            dialog.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "dialog");
+            dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");
         });
 
     }
@@ -148,13 +159,6 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
     private void createNewGroup(String selectedCourse, String selectedSubject, DocumentSnapshot documentSnapshot) {
         PetitionRequest petition = documentSnapshot.toObject(PetitionRequest.class);
 
-        ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
-
-        for (PetitionUser user : petition.getPetitionUsersList()) {
-            participants.add(new GroupParticipant(user.getUserFullName(), user.getUserId()));
-        }
-
-        // Reference to the subject that the group is going to be created
         CollectionReference groupsCollRef =
                 fStore
                         .collection("CoursesOrganization")
@@ -163,17 +167,12 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                         .document(selectedSubject)
                         .collection("CollectiveGroups");
 
-        // Search for the greatest group identifier
+
         groupsCollRef
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    ArrayList<String> groupsIdentifiers = new ArrayList<String>();
-
-                    for (DocumentSnapshot document : queryDocumentSnapshots) {
-                        Group group = document.toObject(Group.class);
-                        groupsIdentifiers.add(group.getName());
-                    }
-
+                    int maxGroupIdentifier = Group.getMaxGroupIdentifier(queryDocumentSnapshots);
+                    Group.createGroup(groupsCollRef, selectedCourse, selectedSubject, petition.getPetitionUsersIds(), maxGroupIdentifier + 1, context, documentSnapshot.getReference());
                 });
 
     }

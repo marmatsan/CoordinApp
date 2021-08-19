@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,8 +23,8 @@ import java.util.List;
 
 public class Group {
 
-    private String name; // The name of the group
-    private String courseName;     // The name of this group
+    private String name;
+    private String courseName;
     private String subjectName;
 
     private boolean hasTeacher;
@@ -117,10 +118,8 @@ public class Group {
         ArrayList<String> groupsNames = new ArrayList<String>();
 
         for (DocumentSnapshot document : queryDocumentSnapshots) {
-            GroupDocument groupDocument = document.toObject(GroupDocument.class);
-            if (groupDocument.getName() != null) {
-                groupsNames.add(groupDocument.getName());
-            }
+            CollectiveGroupDocument collectiveGroupDocument = document.toObject(CollectiveGroupDocument.class);
+            groupsNames.add(collectiveGroupDocument.getName()); // TODO: Could cause nullpointerexception if the group is of type IndividualGroupDocument, but it does not since IndividualGroupDocument has getName() also
         }
 
         int maxGroupIdentifier = 0;
@@ -139,7 +138,7 @@ public class Group {
         return maxGroupIdentifier;
     }
 
-    public static void createGroup(CollectionReference groupsCollRef, String selectedCourse, String selectedSubject, List<String> studentIDs, int identifier, Context context, int userType) {
+    public static void createGroup(CollectionReference groupsCollRef, String selectedCourse, String selectedSubject, List<String> studentIDs, int identifier, Context context, DocumentReference petitionDocument) {
 
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
@@ -197,38 +196,48 @@ public class Group {
 
                                     groups.add(onlyStudentsGroup);
 
-                                    GroupDocument newGroupDocument = new GroupDocument("Grupo " + identifier, studentsAndTeacherIDs, groups);
+                                    CollectiveGroupDocument newCollectiveGroupDocument = new CollectiveGroupDocument("Grupo " + identifier, studentsAndTeacherIDs, groups);
 
                                     groupsCollRef
                                             .get()
                                             .addOnSuccessListener(queryDocumentSnapshots -> {
-                                                boolean groupExists = collectiveGroupExists(queryDocumentSnapshots, newGroupDocument.getAllParticipantsIDs());
+                                                boolean groupExists = collectiveGroupExists(queryDocumentSnapshots, newCollectiveGroupDocument.getAllParticipantsIDs());
                                                 if (groupExists) {
-                                                    Toast.makeText(context, "Ya existe un grupo igual a: " + newGroupDocument.getName(), Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(context, "Ya existe un grupo como este (Grupo " + (identifier - 1) + ")", Toast.LENGTH_SHORT).show();
                                                 } else {
-                                                    groupsCollRef.add(newGroupDocument);
+                                                    if (petitionDocument != null) {
+                                                        petitionDocument.delete();
+                                                    }
+                                                    groupsCollRef.add(newCollectiveGroupDocument);
                                                 }
                                             });
 
                                 } else {
-                                    IndividualGroupDocument newGroupDocument = new IndividualGroupDocument("Grupo " + identifier, studentsAndTeacherIDs, studentsAndTeacherGroup);
+                                    String studentID = onlyStudentsIDs.get(0);
 
-                                    groupsCollRef
+                                    fStore
+                                            .collection("Students")
+                                            .document(studentID)
                                             .get()
-                                            .addOnSuccessListener(queryDocumentSnapshots -> {
-                                                DocumentSnapshot individualGroup = individualGroupExist(queryDocumentSnapshots, newGroupDocument.getAllParticipantsIDs());
-                                                if (individualGroup != null) {
-                                                    if (userType == UserType.TYPE_TEACHER) {
-                                                        individualGroup
-                                                                .getReference()
-                                                                .update("visible", true);
-                                                    }
-                                                } else {
-                                                    if (userType == UserType.TYPE_TEACHER) {
-                                                        newGroupDocument.setVisible(true);
-                                                    }
-                                                    groupsCollRef.add(newGroupDocument);
-                                                }
+                                            .addOnSuccessListener(documentSnapshot -> {
+                                                String studentName = (String) documentSnapshot.get("FullName");
+                                                studentsAndTeacherGroup.setName("Grupo con " + studentName);
+                                                IndividualGroupDocument newGroupDocument = new IndividualGroupDocument("Grupo " + identifier, studentsAndTeacherIDs, studentsAndTeacherGroup);
+
+                                                groupsCollRef
+                                                        .get()
+                                                        .addOnSuccessListener(queryDocumentSnapshots -> {
+                                                            DocumentSnapshot individualGroup = individualGroupExist(queryDocumentSnapshots, newGroupDocument.getAllParticipantsIDs());
+                                                            if (individualGroup != null) {
+                                                                individualGroup
+                                                                        .getReference()
+                                                                        .update("visible", true);
+                                                            } else {
+                                                                newGroupDocument.setVisible(true);
+                                                                groupsCollRef.document(studentID).set(newGroupDocument);
+                                                            }
+                                                        });
+
                                             });
 
                                 }
@@ -241,8 +250,8 @@ public class Group {
         boolean groupExists = false;
 
         for (DocumentSnapshot groupDoc : queryDocumentSnapshots) {
-            GroupDocument currentGroupDocument = groupDoc.toObject(GroupDocument.class);
-            if (currentGroupDocument.getAllParticipantsIDs().equals(allParticipantsIDs)) {
+            CollectiveGroupDocument currentCollectiveGroupDocument = groupDoc.toObject(CollectiveGroupDocument.class);
+            if (currentCollectiveGroupDocument.getAllParticipantsIDs().containsAll(allParticipantsIDs)) {
                 groupExists = true;
                 break;
             }
@@ -256,7 +265,7 @@ public class Group {
 
         for (DocumentSnapshot groupDoc : queryDocumentSnapshots) {
             IndividualGroupDocument currentGroupDocument = groupDoc.toObject(IndividualGroupDocument.class);
-            if (currentGroupDocument.getAllParticipantsIDs().equals(allParticipantsIDs)) {
+            if (currentGroupDocument.getAllParticipantsIDs().containsAll(allParticipantsIDs)) {
                 individualGroup = groupDoc;
                 break;
             }

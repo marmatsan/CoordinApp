@@ -33,6 +33,7 @@
     <string name="coordinapp">CoordinApp</string>
     <string name="inicio_de_sesi_n">Inicio de sesión</string>
     <string name="e_mail">E-Mail</string>
+    <string name="eliminar_peticion">Eliminar petición</string>
     <string name="contrase_a">Contraseña</string>
     <string name="iniciar_sesi_n">Iniciar sesión</string>
     <string name="crear_una_cuenta"><u>Crear una cuenta</u></string>
@@ -154,5 +155,7 @@
     <string name="errormessage">ErrorMessage</string>
     <string name="si_el_reparto_es_desigual_introducir_a_los_alumnos_restantes_en_un_grupo_de_un_tama_o_m_s_grande">Si el reparto es desigual, introducir a los alumnos restantes en un grupo de un tamaño más grande</string>
     <string name="todav_a_no_hay_ning_n_grupo_creado_puedes_pedirle_al_profesor_que_cree_un_grupo_con_el_bot_n">Todavía no hay ningún grupo creado. Puedes pedirle al profesor que cree un grupo con el botón +</string>
+    <string name="por_ahora_no_tienes_ninguna_petici_n_puedes_crear_una_petici_n_para_formar_un_grupo_en_la_pesta_a_grupos">Por ahora no tienes ninguna petición. Puedes crear una petición para formar un grupo en la pestaña Grupos</string>
+    <string name="no_petition_teacher">Por ahora no tienes ninguna petición de creación de grupo por parte de los alumnos</string>
 
 </resources>

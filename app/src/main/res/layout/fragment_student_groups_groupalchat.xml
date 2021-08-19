@@ -31,17 +31,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/requestGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_add_24" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/openIndividualChat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,6 +39,19 @@
         app:layout_constraintBottom_toTopOf="@+id/requestGroup"
         app:layout_constraintEnd_toEndOf="@+id/requestGroup"
         app:layout_constraintStart_toStartOf="@+id/requestGroup"
-        app:srcCompat="@drawable/ic_baseline_chat_24" />
+        app:srcCompat="@drawable/ic_baseline_chat_24"
+        android:focusable="true" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/requestGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_add_24"
+        android:focusable="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
