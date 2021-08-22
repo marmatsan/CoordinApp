@@ -21,6 +21,7 @@ import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.StorageFile;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -66,6 +67,11 @@ public class ChatActivity extends AppCompatActivity {
 
     private int userType;
 
+    // Reference to the group document
+    DocumentReference groupRef;
+
+    RecyclerView messageListContainer;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,8 +100,8 @@ public class ChatActivity extends AppCompatActivity {
         // Get userType
         userType = getIntent().getIntExtra("userType", 0);
 
-        // Reference to the collection of the messages
-        DocumentReference groupRef = fStore
+        // Reference to the group document
+        groupRef = fStore
                 .collection("CoursesOrganization")
                 .document(card.getCourseName())
                 .collection("Subjects")
@@ -112,28 +118,30 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         // Recyclerview setup
-        RecyclerView messageListContainer = findViewById(R.id.messageListContainer);
+        messageListContainer = findViewById(R.id.messageListContainer);
 
         messageList = new ArrayList<ChatMessageCard>();
         messageAdapter = new MessagesListAdapter(messageList, this);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-
+        layoutManager.setStackFromEnd(true);
         messageListContainer.setAdapter(messageAdapter);
         messageListContainer.setLayoutManager(layoutManager);
 
         // Listen for added message in the chatroom
-        chatroomRef.orderBy("date", Query.Direction.ASCENDING).addSnapshotListener((queryDocumentSnapshots, error) -> {
+        chatroomRef
+                .orderBy("date", Query.Direction.ASCENDING)
+                .addSnapshotListener((queryDocumentSnapshots, error) -> {
 
-            if (error != null) {
-                return;
-            } else if (queryDocumentSnapshots == null) {
-                return;
-            }
+                    if (error != null) {
+                        return;
+                    } else if (queryDocumentSnapshots == null) {
+                        return;
+                    }
 
-            messageList.clear();
-            populateMessages(queryDocumentSnapshots);
-        });
+                    messageList.clear();
+                    populateMessages(queryDocumentSnapshots);
+                });
 
         // Setup for send message button
         sendMessage.setOnClickListener(v -> {
@@ -157,23 +165,32 @@ public class ChatActivity extends AppCompatActivity {
             collectionPath = "Teachers";
         }
 
-        fStore.collection(collectionPath).document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
-            String fullName = (String) documentSnapshot.get("FullName");
+        fStore
+                .collection(collectionPath)
+                .document(fAuth.getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String fullName = (String) documentSnapshot.get("FullName");
 
-            String messageTitle;
-            String message;
+                    String messageTitle;
+                    String message;
 
-            if (fileRef == null) {
-                messageTitle = fullName;
-                message = messageInputText;
-            } else {
-                messageTitle = "Archivo subido";
-                message = fullName + " ha subido el archivo " + fileRef.getFileName() + ". Puedes encontrarlo en la pestaña Archivos o descargarlo haciendo click en el siguiente link.";
-            }
+                    if (fileRef == null) {
+                        messageTitle = fullName;
+                        message = messageInputText;
+                    } else {
+                        messageTitle = "Archivo subido";
+                        message = fullName + " ha subido el archivo " + fileRef.getFileName() + ". Puedes encontrarlo en la pestaña Archivos o descargarlo haciendo click en el siguiente link.";
+                    }
 
-            ChatMessageCard messageCard = new ChatMessageCard(messageTitle, fAuth.getUid(), message, Timestamp.now().toDate(), fileRef);
-            chatroomRef.add(messageCard).addOnSuccessListener(documentReference -> messageInput.getText().clear());
-        });
+                    ChatMessageCard messageCard = new ChatMessageCard(messageTitle, fAuth.getUid(), message, Timestamp.now().toDate(), fileRef);
+                    chatroomRef.add(messageCard).addOnSuccessListener(documentReference -> {
+                        if (userType == UserType.TYPE_STUDENT){
+                            groupRef.update("hasVisibility", true);
+                        }
+                        messageInput.getText().clear();
+                    });
+                });
 
     }
 
@@ -182,6 +199,7 @@ public class ChatActivity extends AppCompatActivity {
             ChatMessageCard message = messageDoc.toObject(ChatMessageCard.class);
             messageList.add(message);
         }
+        messageListContainer.scrollToPosition(messageList.size() - 1);
         messageAdapter.notifyDataSetChanged();
     }
 

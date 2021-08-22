@@ -18,12 +18,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-/**
- * The Login Activity. Launched when we start the app for the first time (declared with the intent filter
- * in the manifest).
- *
- * @author Martín Mateos Sánchez.
- */
 public class LoginActivity extends AppCompatActivity {
 
     LinearProgressIndicator logIndicator;
@@ -58,36 +52,29 @@ public class LoginActivity extends AppCompatActivity {
             if (fieldsOk()) {
                 logIndicator.setVisibility(View.VISIBLE);
 
-                fAuth.signInWithEmailAndPassword(userEmail.getText().toString(), userPassword.getText().toString()).addOnSuccessListener(authResult -> {
-                    Toast.makeText(getApplicationContext(), "Inicio de sesión correcto", Toast.LENGTH_SHORT).show();
-                    checkUserAccessLevel(authResult.getUser().getUid());
-                }).addOnFailureListener(e -> {
-                    Toast.makeText(getApplicationContext(), "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
+                fAuth
+                        .signInWithEmailAndPassword(userEmail.getText().toString(), userPassword.getText().toString())
+                        .addOnSuccessListener(authResult -> {
+                            checkUserAccessLevel(authResult.getUser().getUid());
+                        }).addOnFailureListener(e -> {
+                    logIndicator.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(), "Error al iniciar sesión. Por favor, revisa la validez los campos", Toast.LENGTH_SHORT).show();
                 });
             } else {
-                Toast.makeText(getApplicationContext(), "Por favor, revisa los campos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Error al iniciar sesión. Por favor, revisa la validez los campos", Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
-    /**
-     * If the user has not signed out, it is sent to its corresponging activity depending of the type of user it is
-     */
     @Override
-    protected void onStart() { // TODO: 25-01-2021 Do not transition to the loginactivity (or hide the layout) if a user is signed out
+    protected void onStart() {
         super.onStart();
         if (fAuth.getCurrentUser() != null) {
             checkUserAccessLevel(fAuth.getCurrentUser().getUid());
         }
     }
 
-    /**
-     * Check whether the fields given as input by the user at login are OK.
-     * The fields are OK if the email input has email format and if both email and password
-     * are not empty.
-     * @return Whether the fields are valid.
-     */
     private boolean fieldsOk() {
 
         String email = userEmail.getText().toString();
@@ -99,15 +86,6 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Check the access level of the user. The user is redirected to their corresponding
-     * activity based on which database belongs.
-     * It uses an instance of FirebaseFirestore to check the permissions of the user identified with
-     * the uid parameter.
-     *
-     * @param uid The Unique ID of the user. Used to identify the current user that is being logging in.
-     *
-     */
     private void checkUserAccessLevel(String uid) {
 
         DocumentReference df = fStore.collection("Teachers").document(uid);
@@ -126,15 +104,6 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Error comprobando los permisos", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    /**
-     * Used by the gotoregister TextView declared at activity_login.xml to go to RegisterActivity.
-     * @param view The TextView.
-     */
-    public void goToRegister(View view) {
-        startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
-        finish();
     }
 
 }

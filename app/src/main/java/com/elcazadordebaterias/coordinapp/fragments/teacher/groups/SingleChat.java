@@ -89,18 +89,6 @@ public class SingleChat extends Fragment {
                     for (DocumentSnapshot groupDoc : queryDocumentsSnapshots) {
                         IndividualGroupDocument groupDocument = groupDoc.toObject(IndividualGroupDocument.class);
 
-                        groupDoc
-                                .getReference()
-                                .collection("ChatRoomWithTeacher")
-                                .get()
-                                .addOnSuccessListener(queryDocumentSnapshots -> {
-                                    if (!queryDocumentSnapshots.isEmpty()){
-                                        groupDoc
-                                                .getReference()
-                                                .update("hasVisibility", true);
-                                    }
-                                });
-
                         if (groupDocument.getHasVisibility()) {
                             Group group = groupDocument.getGroup();
 
