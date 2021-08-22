@@ -15,6 +15,7 @@ import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.InputTextCar
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.InteractivityCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.MultichoiceCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.ReminderCard;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -41,10 +42,10 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
         View view;
 
         switch (viewType){
-            case TYPE_INPUTTEXT:
+            case InteractivityCardType.TYPE_INPUTTEXT:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_inputextcard, parent, false);
                 return new InputTextCardViewHolder(view);
-            case TYPE_CHOICES:
+            case InteractivityCardType.TYPE_CHOICES:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_multichoicescard, parent, false);
                 return new MultiChoiceCardViewHolder(view);
             default: // ReminderCard

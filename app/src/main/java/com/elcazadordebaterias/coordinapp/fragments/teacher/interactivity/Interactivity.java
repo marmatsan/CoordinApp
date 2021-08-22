@@ -62,7 +62,7 @@ public class Interactivity extends Fragment {
         createInteractivityCard.setOnClickListener(v -> buttonAnimator.onButtonClicked());
 
         createInputTextCard.setOnClickListener(v -> {
-            CreateInputTextCardDialog dialog = new CreateInputTextCardDialog();
+            CreateInputTextCardDialog dialog = new CreateInputTextCardDialog(selectedCourse, selectedSubject);
             dialog.show(getParentFragmentManager(), "dialog");
         });
 

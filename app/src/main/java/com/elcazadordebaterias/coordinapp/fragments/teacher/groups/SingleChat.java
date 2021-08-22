@@ -32,10 +32,10 @@ public class SingleChat extends Fragment {
     private ArrayList<GroupCard> groupsList;
     private GroupCardAdapter groupsAdapter;
 
-    private int userType;
+    private final int userType;
 
-    private String selectedCourse;
-    private String selectedSubject;
+    private final String selectedCourse;
+    private final String selectedSubject;
 
     private TextView noGroups;
 
