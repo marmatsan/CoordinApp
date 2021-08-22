@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.utilities.EmailValidation;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,7 +23,7 @@ public class LoginActivity extends AppCompatActivity {
 
     LinearProgressIndicator logIndicator;
     TextInputEditText userEmail, userPassword;
-    MaterialButton login;
+    FloatingActionButton login;
 
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;

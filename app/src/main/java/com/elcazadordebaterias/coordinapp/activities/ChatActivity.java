@@ -157,11 +157,11 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage(String messageInputText, StorageFile fileRef) {
-        String collectionPath = null;
+        String collectionPath;
 
         if (userType == UserType.TYPE_STUDENT) {
             collectionPath = "Students";
-        } else if (userType == UserType.TYPE_TEACHER) {
+        } else {
             collectionPath = "Teachers";
         }
 
@@ -185,7 +185,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     ChatMessageCard messageCard = new ChatMessageCard(messageTitle, fAuth.getUid(), message, Timestamp.now().toDate(), fileRef);
                     chatroomRef.add(messageCard).addOnSuccessListener(documentReference -> {
-                        if (userType == UserType.TYPE_STUDENT){
+                        if (userType == UserType.TYPE_STUDENT) {
                             groupRef.update("hasVisibility", true);
                         }
                         messageInput.getText().clear();
@@ -241,19 +241,31 @@ public class ChatActivity extends AppCompatActivity {
                     String uploadedTime = formatter.format(calendar.getTime());
 
                     if (userType == UserType.TYPE_STUDENT) {
-                        fStore.collection("Students").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
-                            StorageFile fileReference = new StorageFile((String) documentSnapshot.get("FullName"), fileNameWithExtension, uploadedTime, uri.toString());
-                            storageRef.add(fileReference).addOnSuccessListener(documentReference -> {
-                                sendMessage(null, fileReference);
-                            });
-                        });
-                    } else if (userType == UserType.TYPE_TEACHER) {
-                        fStore.collection("Teachers").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> {
-                            StorageFile fileReference = new StorageFile((String) documentSnapshot.get("FullName"), fileNameWithExtension, uploadedTime, uri.toString());
-                            storageRef.add(fileReference).addOnSuccessListener(documentReference -> {
-                                sendMessage(null, fileReference);
-                            });
-                        });
+                        fStore
+                                .collection("Students")
+                                .document(fAuth.getUid())
+                                .get()
+                                .addOnSuccessListener(documentSnapshot -> {
+                                    StorageFile fileReference = new StorageFile((String) documentSnapshot.get("FullName"), fileNameWithExtension, uploadedTime, uri.toString());
+                                    storageRef
+                                            .add(fileReference)
+                                            .addOnSuccessListener(documentReference -> {
+                                                sendMessage(null, fileReference);
+                                            });
+                                });
+                    } else {
+                        fStore
+                                .collection("Teachers")
+                                .document(fAuth.getUid())
+                                .get()
+                                .addOnSuccessListener(documentSnapshot -> {
+                                    StorageFile fileReference = new StorageFile((String) documentSnapshot.get("FullName"), fileNameWithExtension, uploadedTime, uri.toString());
+                                    storageRef
+                                            .add(fileReference)
+                                            .addOnSuccessListener(documentReference -> {
+                                                sendMessage(null, fileReference);
+                                            });
+                                });
                     }
                 });
 
