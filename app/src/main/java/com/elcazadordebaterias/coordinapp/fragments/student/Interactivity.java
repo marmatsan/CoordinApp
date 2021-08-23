@@ -63,22 +63,26 @@ public class Interactivity extends Fragment {
                 .collection("Subjects")
                 .document(selectedSubject)
                 .collection("CollectiveGroups")
-                .get()
-                .addOnSuccessListener(collectiveGroupsDocumentSnapshots -> {
+                .whereArrayContains("allParticipantsIDs", fAuth.getUid())
+                .addSnapshotListener((collectiveGroupsDocumentSnapshots, error) -> {
+
+                    if (error != null) {
+                        return;
+                    } else if (collectiveGroupsDocumentSnapshots == null) {
+                        return;
+                    }
+
                     for (DocumentSnapshot collectiveGroupDocumentSnapshot : collectiveGroupsDocumentSnapshots) {
                         CollectiveGroupDocument collectiveGroupDocument = collectiveGroupDocumentSnapshot.toObject(CollectiveGroupDocument.class);
 
                         String groupName = collectiveGroupDocument.getName();
 
-                        CollectionReference interactivityCardsCollRef =
-                                collectiveGroupDocumentSnapshot
-                                        .getReference()
-                                        .collection("InteractivityCards");
+                        collectiveGroupDocumentSnapshot
+                                .getReference()
+                                .collection("InteractivityCards")
+                                .addSnapshotListener((interactivityCardsDocumentSnapshots, error2) -> {
 
-                        interactivityCardsCollRef
-                                .addSnapshotListener((interactivityCardsDocumentSnapshots, error) -> {
-
-                                    if (error != null) {
+                                    if (error2 != null) {
                                         return;
                                     } else if (interactivityCardsDocumentSnapshots == null) {
                                         return;
@@ -86,6 +90,7 @@ public class Interactivity extends Fragment {
 
                                     cardsList.clear();
                                     ArrayList<InteractivityCard> interactivityCardsList = new ArrayList<InteractivityCard>();
+                                    GroupsInteractivityCardsContainer interactivityCardsContainer = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);
 
                                     for (DocumentSnapshot interactivityCardDocumentSnapshot : interactivityCardsDocumentSnapshots) {
 
@@ -108,9 +113,12 @@ public class Interactivity extends Fragment {
                                                 default: // Reminder
 
                                             }
-                                            GroupsInteractivityCardsContainer interactivityCardsContainer = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);
-                                            cardsList.add(interactivityCardsContainer);
                                         }
+
+                                    }
+
+                                    if (!interactivityCardsList.isEmpty()) {
+                                        cardsList.add(interactivityCardsContainer);
                                     }
 
                                     adapter.notifyDataSetChanged();

@@ -107,19 +107,20 @@ public class StudentFiles extends Fragment {
                             collectionRef
                                     .document(groupDocument.getId())
                                     .collection(storageCollection)
-                                    .get().addOnSuccessListener(queryDocumentSnapshots -> {
-                                for (DocumentSnapshot storageFileDoc : queryDocumentSnapshots) {
-                                    StorageFile storageFile = storageFileDoc.toObject(StorageFile.class);
-                                    FileCard fileCard = new FileCard(
-                                            R.drawable.ic_baseline_insert_drive_file_24,
-                                            storageFile.getUploaderName(),
-                                            storageFile.getFileName(),
-                                            storageFile.getUploadedDate(),
-                                            storageFile.getDownloadLink());
-                                    filesList.add(fileCard);
-                                }
-                                listChanged();
-                            });
+                                    .get()
+                                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                                        for (DocumentSnapshot storageFileDoc : queryDocumentSnapshots) {
+                                            StorageFile storageFile = storageFileDoc.toObject(StorageFile.class);
+                                            FileCard fileCard = new FileCard(
+                                                    R.drawable.ic_baseline_insert_drive_file_24,
+                                                    storageFile.getUploaderName(),
+                                                    storageFile.getFileName(),
+                                                    storageFile.getUploadedDate(),
+                                                    storageFile.getDownloadLink());
+                                            filesList.add(fileCard);
+                                        }
+                                        listChanged();
+                                    });
                             filesContainerList.add(new FilesContainerCard(name, filesList));
                         }
                         groupsList.add(new GroupContainerCard(groupName, filesContainerList));
