@@ -1,4 +1,5 @@
-package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity;
+package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.teacher;
+
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,17 +14,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.InputTextCard;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.InteractivityCard;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.MultichoiceCard;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.ReminderCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InputTextCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.MultichoiceCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.ReminderCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -47,13 +48,13 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
         switch (viewType) {
             case InteractivityCardType.TYPE_INPUTTEXT:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_inputextcard, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_studentcards_inputextcard, parent, false);
                 return new InputTextCardViewHolder(view);
             case InteractivityCardType.TYPE_CHOICES:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_multichoicescard, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_studentcards_multichoicescard, parent, false);
                 return new MultiChoiceCardViewHolder(view);
             default: // ReminderCard
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_remindercard, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_studentcards_remindercard, parent, false);
                 return new ReminderCardViewHolder(view);
         }
 
@@ -74,8 +75,11 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
                     if (!response.isEmpty()) {
 
-                        InputTextCardDocument inputTextCardDocument = inputTextCard.getDocumentSnapshot().toObject(InputTextCardDocument.class);
-                        DocumentReference documentReference = inputTextCard.getDocumentSnapshot().getReference();
+                        DocumentSnapshot interactivityCardDocument = inputTextCard.getDocumentSnapshot();
+
+                        InputTextCardDocument inputTextCardDocument = interactivityCardDocument.toObject(InputTextCardDocument.class);
+
+                        DocumentReference documentReference = interactivityCardDocument.getReference();
 
                         ArrayList<InputTextCardDocument.InputTextCardStudentData> studentsData = new ArrayList<InputTextCardDocument.InputTextCardStudentData>();
                         for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
@@ -87,8 +91,11 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                             studentsData.add(studentData);
 
                         }
+
                         documentReference.update("studentsData", studentsData).addOnSuccessListener(unused -> {
-                            Toast.makeText(context, "Respuesta enviada correctamente", Toast.LENGTH_SHORT).show();
+                            documentReference.update("hasTeacherVisibility", true).addOnSuccessListener(unused1 -> {
+                                Toast.makeText(context, "Respuesta enviada correctamente", Toast.LENGTH_SHORT).show();
+                            });
                         });
                     }
                 });

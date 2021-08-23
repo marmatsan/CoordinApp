@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.files.Files;
-import com.elcazadordebaterias.coordinapp.fragments.teacher.interactivity.Interactivity;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.Interactivity;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.groups.Groups;
 import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;

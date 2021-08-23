@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.utils.cards.interactivity;
+package com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards;
 
 public class ReminderCard extends InteractivityCard {
 

@@ -11,15 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.GroupsInteractivityCardsAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.GroupsInteractivityCardsContainer;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.InputTextCard;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.InteractivityCard;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.student.GroupsInteractivityCardsAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.GroupsInteractivityCardsContainer;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.InputTextCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.InteractivityCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -57,6 +56,12 @@ public class Interactivity extends Fragment {
         ArrayList<GroupsInteractivityCardsContainer> cardsList = new ArrayList<GroupsInteractivityCardsContainer>();
         GroupsInteractivityCardsAdapter adapter = new GroupsInteractivityCardsAdapter(cardsList, getContext());
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        interactivityCardsContainerRecyclerView.setAdapter(adapter);
+        interactivityCardsContainerRecyclerView.setLayoutManager(layoutManager);
+
+        // adapter.notifyDataSetChanged();
+
         fStore
                 .collection("CoursesOrganization")
                 .document(selectedCourse)
@@ -71,6 +76,8 @@ public class Interactivity extends Fragment {
                     } else if (collectiveGroupsDocumentSnapshots == null) {
                         return;
                     }
+                    Log.d("DEBUGGING", "Called CollectiveGroups listener. Cleaning list");
+                    cardsList.clear();
 
                     for (DocumentSnapshot collectiveGroupDocumentSnapshot : collectiveGroupsDocumentSnapshots) {
                         CollectiveGroupDocument collectiveGroupDocument = collectiveGroupDocumentSnapshot.toObject(CollectiveGroupDocument.class);
@@ -80,14 +87,14 @@ public class Interactivity extends Fragment {
                         collectiveGroupDocumentSnapshot
                                 .getReference()
                                 .collection("InteractivityCards")
-                                .addSnapshotListener((interactivityCardsDocumentSnapshots, error2) -> {
+                                .addSnapshotListener((interactivityCardsDocumentSnapshots, error1) -> {
 
-                                    if (error2 != null) {
+                                    if (error1 != null) {
                                         return;
                                     } else if (interactivityCardsDocumentSnapshots == null) {
                                         return;
                                     }
-
+                                    Log.d("DEBUGGING", "Called InteractivityCards listener. Cleaning list");
                                     cardsList.clear();
                                     ArrayList<InteractivityCard> interactivityCardsList = new ArrayList<InteractivityCard>();
                                     GroupsInteractivityCardsContainer interactivityCardsContainer = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);
@@ -126,12 +133,6 @@ public class Interactivity extends Fragment {
 
                     }
                 });
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        interactivityCardsContainerRecyclerView.setAdapter(adapter);
-        interactivityCardsContainerRecyclerView.setLayoutManager(layoutManager);
-
-        adapter.notifyDataSetChanged();
 
         return view;
     }

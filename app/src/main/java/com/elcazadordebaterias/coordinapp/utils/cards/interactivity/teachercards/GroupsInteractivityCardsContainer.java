@@ -1,6 +1,4 @@
-package com.elcazadordebaterias.coordinapp.utils.cards.interactivity;
-
-import com.elcazadordebaterias.coordinapp.fragments.teacher.interactivity.Interactivity;
+package com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards;
 
 import java.util.ArrayList;
 

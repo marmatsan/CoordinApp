@@ -1,6 +1,5 @@
-package com.elcazadordebaterias.coordinapp.utils.cards.interactivity;
+package com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards;
 
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 public class InputTextCard extends InteractivityCard {

@@ -54,10 +54,12 @@ public class ButtonAnimator {
         if(!clicked){
             for (FloatingActionButton button : buttons){
                 button.setVisibility(View.VISIBLE);
+                button.setClickable(true);
             }
         } else {
             for (FloatingActionButton button : buttons){
                 button.setVisibility(View.GONE);
+                button.setClickable(false);
             }
         }
     }

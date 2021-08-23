@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class InputTextCardDocument {
 
-    private final int cardType = InteractivityCardType.TYPE_INPUTTEXT;
     private String title;
+    private boolean hasTeacherVisibility;
     private ArrayList<InputTextCardStudentData> studentsData;
 
     public InputTextCardDocument() {
@@ -21,12 +21,16 @@ public class InputTextCardDocument {
         for (String studentID : studentsIDs) {
             studentsData.add(new InputTextCardStudentData(studentID));
         }
-
+        this.hasTeacherVisibility = false;
         this.studentsData = studentsData;
     }
 
+    public boolean getHasTeacherVisibility() {
+        return hasTeacherVisibility;
+    }
+
     public int getCardType() {
-        return cardType;
+        return InteractivityCardType.TYPE_INPUTTEXT;
     }
 
     public String getTitle() {
