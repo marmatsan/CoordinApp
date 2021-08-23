@@ -16,9 +16,7 @@ import androidx.fragment.app.DialogFragment;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
-import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.InputTextCardDocument;
-import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,12 +24,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class CreateInputTextCardDialog extends DialogFragment {
@@ -106,10 +102,10 @@ public class CreateInputTextCardDialog extends DialogFragment {
                 });
 
         builder.setView(view)
-                .setTitle("Menú de creación de grupos")
+                .setTitle("Crear nueva actividad de tipo entrada de texto")
                 .setNegativeButton("Cancelar", (dialogInterface, i) -> {
                     // Just closes the dialog
-                }).setPositiveButton("Crear grupos", null);
+                }).setPositiveButton("Crear", null);
 
         AlertDialog dialog = builder.create();
         dialog.setOnShowListener(dialogInterface -> {

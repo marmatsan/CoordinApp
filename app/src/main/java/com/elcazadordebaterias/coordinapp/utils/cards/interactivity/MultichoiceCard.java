@@ -6,8 +6,12 @@ public class MultichoiceCard extends InteractivityCard {
 
     private ArrayList<String> questions;
 
-    public MultichoiceCard(String cardTitle, ArrayList<String> questions) {
-        super(cardTitle);
+    public MultichoiceCard() {
+
+    }
+
+    public MultichoiceCard(String cardTitle, String studentID, ArrayList<String> questions) {
+        super(cardTitle, studentID);
         this.questions = questions;
     }
 

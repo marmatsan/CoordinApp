@@ -4,6 +4,10 @@ public class ReminderCard extends InteractivityCard {
 
     private String reminderText;
 
+    public ReminderCard() {
+
+    }
+
     public ReminderCard(String cardTitle, String reminderText) {
         super(cardTitle);
         this.reminderText = reminderText;

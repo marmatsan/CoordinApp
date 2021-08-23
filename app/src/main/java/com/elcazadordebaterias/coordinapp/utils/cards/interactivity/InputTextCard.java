@@ -1,19 +1,22 @@
 package com.elcazadordebaterias.coordinapp.utils.cards.interactivity;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+
 public class InputTextCard extends InteractivityCard {
 
-    private String inputText;
+    private DocumentSnapshot documentSnapshot;
 
-    public InputTextCard(String cardTitle) {
-        super(cardTitle);
+    public InputTextCard() {
+
     }
 
-    public String getInputText() {
-        return inputText;
+    public InputTextCard(String cardTitle, String studentID, DocumentSnapshot documentSnapshot) {
+        super(cardTitle, studentID);
+        this.documentSnapshot = documentSnapshot;
     }
 
-    public void setInputText(String inputText) {
-        this.inputText = inputText;
+    public DocumentSnapshot getDocumentSnapshot() {
+        return documentSnapshot;
     }
-
 }

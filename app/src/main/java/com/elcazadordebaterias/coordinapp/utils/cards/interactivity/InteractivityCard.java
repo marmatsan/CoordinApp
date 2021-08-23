@@ -3,9 +3,19 @@ package com.elcazadordebaterias.coordinapp.utils.cards.interactivity;
 public class InteractivityCard {
 
     private String cardTitle;
+    private String studentID;
 
-    public InteractivityCard(String cardTitle){
+    public InteractivityCard() {
+
+    }
+
+    public InteractivityCard(String cardTitle) {
         this.cardTitle = cardTitle;
+    }
+
+    public InteractivityCard(String cardTitle, String studentID){
+        this.cardTitle = cardTitle;
+        this.studentID = studentID;
     }
 
     public String getCardTitle() {
@@ -15,4 +25,13 @@ public class InteractivityCard {
     public void setCardTitle(String cardTitle) {
         this.cardTitle = cardTitle;
     }
+
+    public String getStudentID() {
+        return studentID;
+    }
+
+    public void setStudentID(String studentID) {
+        this.studentID = studentID;
+    }
+
 }

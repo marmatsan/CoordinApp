@@ -1,11 +1,13 @@
-package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
+package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,8 +18,12 @@ import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.Interactivit
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.MultichoiceCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.ReminderCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentReference;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,13 +32,11 @@ import java.util.ArrayList;
 public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<InteractivityCard> cardsList;
+    private final Context context;
 
-    private final int TYPE_INPUTTEXT = 0;
-    private final int TYPE_CHOICES = 1;
-    private final int TYPE_REMINDER = 2;
-
-    public InteractivityCardsAdapter(ArrayList<InteractivityCard> cardsList){
+    public InteractivityCardsAdapter(ArrayList<InteractivityCard> cardsList, Context context) {
         this.cardsList = cardsList;
+        this.context = context;
     }
 
     @NonNull
@@ -41,15 +45,15 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View view;
 
-        switch (viewType){
+        switch (viewType) {
             case InteractivityCardType.TYPE_INPUTTEXT:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_inputextcard, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_inputextcard, parent, false);
                 return new InputTextCardViewHolder(view);
             case InteractivityCardType.TYPE_CHOICES:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_multichoicescard, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_multichoicescard, parent, false);
                 return new MultiChoiceCardViewHolder(view);
             default: // ReminderCard
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_remindercard, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_remindercard, parent, false);
                 return new ReminderCardViewHolder(view);
         }
 
@@ -59,28 +63,44 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
     public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
         InteractivityCard card = cardsList.get(position);
 
-        switch(holder.getItemViewType()){
-            case TYPE_INPUTTEXT:
-                InputTextCard textCard = (InputTextCard) card;
+        switch (holder.getItemViewType()) {
+            case InteractivityCardType.TYPE_INPUTTEXT:
+                InputTextCard inputTextCard = (InputTextCard) card;
                 InputTextCardViewHolder holder1 = (InputTextCardViewHolder) holder;
 
-                holder1.cardTitle.setText(textCard.getCardTitle());
-                textCard.setInputText(holder1.inputText.getText().toString());
-                holder1.sendResponse.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Implement send response
+                holder1.cardTitle.setText(inputTextCard.getCardTitle());
+                holder1.sendResponse.setOnClickListener(v -> {
+                    String response = holder1.inputText.getText().toString();
+
+                    if (!response.isEmpty()) {
+
+                        InputTextCardDocument inputTextCardDocument = inputTextCard.getDocumentSnapshot().toObject(InputTextCardDocument.class);
+                        DocumentReference documentReference = inputTextCard.getDocumentSnapshot().getReference();
+
+                        ArrayList<InputTextCardDocument.InputTextCardStudentData> studentsData = new ArrayList<InputTextCardDocument.InputTextCardStudentData>();
+                        for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
+
+                            if (studentData.getStudentID().equals(inputTextCard.getStudentID())) {
+                                studentData.sethasResponded(true);
+                                studentData.setStudentResponse(response);
+                            }
+                            studentsData.add(studentData);
+
+                        }
+                        documentReference.update("studentsData", studentsData).addOnSuccessListener(unused -> {
+                            Toast.makeText(context, "Respuesta enviada correctamente", Toast.LENGTH_SHORT).show();
+                        });
                     }
                 });
                 break;
 
-            case TYPE_CHOICES:
+            case InteractivityCardType.TYPE_CHOICES:
                 MultichoiceCard choicesCard = (MultichoiceCard) card;
                 MultiChoiceCardViewHolder holder2 = (MultiChoiceCardViewHolder) holder;
 
                 holder2.cardTitle.setText(choicesCard.getCardTitle());
 
-                for(String question : choicesCard.getQuestions()){
+                for (String question : choicesCard.getQuestions()) {
                     RadioButton button = new RadioButton(holder2.radioGroup.getContext());
                     button.setText(question);
                     holder2.radioGroup.addView(button);
@@ -108,18 +128,18 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
         int viewType;
 
-        if (card instanceof InputTextCard){
-            viewType = TYPE_INPUTTEXT;
-        } else if (card instanceof MultichoiceCard){
-            viewType = TYPE_CHOICES;
+        if (card instanceof InputTextCard) {
+            viewType = InteractivityCardType.TYPE_INPUTTEXT;
+        } else if (card instanceof MultichoiceCard) {
+            viewType = InteractivityCardType.TYPE_CHOICES;
         } else { // ReminderCard
-            viewType = TYPE_REMINDER;
+            viewType = InteractivityCardType.TYPE_REMINDER;
         }
 
         return viewType;
     }
 
-    public static class CardViewHolder extends RecyclerView.ViewHolder{
+    public static class CardViewHolder extends RecyclerView.ViewHolder {
 
         TextView cardTitle;
 
@@ -130,10 +150,10 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     }
 
-    public static class InputTextCardViewHolder extends CardViewHolder{
+    public static class InputTextCardViewHolder extends CardViewHolder {
 
         TextInputEditText inputText;
-        MaterialButton sendResponse;
+        FloatingActionButton sendResponse;
 
         public InputTextCardViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -143,7 +163,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     }
 
-    public static class MultiChoiceCardViewHolder extends CardViewHolder{
+    public static class MultiChoiceCardViewHolder extends CardViewHolder {
 
         RadioGroup radioGroup;
         MaterialButton sendAnswer;
@@ -156,7 +176,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     }
 
-    public static class ReminderCardViewHolder extends CardViewHolder{
+    public static class ReminderCardViewHolder extends CardViewHolder {
 
         TextView reminderContainer;
 

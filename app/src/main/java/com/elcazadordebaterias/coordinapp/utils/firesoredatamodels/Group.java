@@ -4,8 +4,6 @@ package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 

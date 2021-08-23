@@ -86,6 +86,7 @@ public class StudentFiles extends Fragment {
                     } else if (queryDocumentsSnapshots == null) {
                         return;
                     }
+
                     groupsList.clear();
                     for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
                         ArrayList<FilesContainerCard> filesContainerList = new ArrayList<FilesContainerCard>();

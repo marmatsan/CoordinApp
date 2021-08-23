@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
+package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments;
 
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 
@@ -9,6 +9,10 @@ public class InputTextCardDocument {
     private final int cardType = InteractivityCardType.TYPE_INPUTTEXT;
     private String title;
     private ArrayList<InputTextCardStudentData> studentsData;
+
+    public InputTextCardDocument() {
+
+    }
 
     public InputTextCardDocument(String title, ArrayList<String> studentsIDs) {
         this.title = title;
@@ -33,11 +37,15 @@ public class InputTextCardDocument {
         return studentsData;
     }
 
-    private static class InputTextCardStudentData {
+    public static class InputTextCardStudentData {
         private String studentID;
         private int mark;
         private String studentResponse;
-        private boolean responded;
+        private boolean hasResponded;
+
+        public InputTextCardStudentData() {
+
+        }
 
         public InputTextCardStudentData(String studentID) {
             this.studentID = studentID;
@@ -56,7 +64,7 @@ public class InputTextCardDocument {
         }
 
         public boolean getHasResponded() {
-            return responded;
+            return hasResponded;
         }
 
         public void setStudentID(String studentID) {
@@ -71,8 +79,8 @@ public class InputTextCardDocument {
             this.studentResponse = studentResponse;
         }
 
-        public void setResponded(boolean responded) {
-            this.responded = responded;
+        public void sethasResponded(boolean responded) {
+            this.hasResponded = responded;
         }
     }
 
