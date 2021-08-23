@@ -58,12 +58,6 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
 
         viewHolder.groupName.setText(groupsContainerCard.getName());
 
-        if (groupsContainerCard.allCardsInvisible()) {
-            viewHolder.pendingOfResponse.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.pendingOfResponse.setVisibility(View.GONE);
-        }
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(viewHolder.filesRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
 
         layoutManager.setInitialPrefetchItemCount(groupsContainerCard.getInteractivityCardsList().size());
@@ -99,8 +93,8 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
 
         TextView groupName;
         MaterialButton expandFilesButton;
+        MaterialButton showStatistics;
         ConstraintLayout expandableView;
-        TextView pendingOfResponse;
         RecyclerView filesRecyclerView;
 
         GroupsInteractivityCardsViewHolder(final View itemView) {
@@ -108,8 +102,8 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
 
             groupName = itemView.findViewById(R.id.groupName);
             expandFilesButton = itemView.findViewById(R.id.expandFilesButton);
+            showStatistics = itemView.findViewById(R.id.showStatistics);
             expandableView = itemView.findViewById(R.id.expandableView);
-            pendingOfResponse = itemView.findViewById(R.id.pendingOfResponse);
             filesRecyclerView = itemView.findViewById(R.id.filesRecyclerView);
 
         }

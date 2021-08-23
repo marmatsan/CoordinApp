@@ -5,65 +5,84 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/colorSecondary"
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
     app:cardCornerRadius="4dp"
-    app:cardElevation="1dp"
-    android:backgroundTint="@color/colorPrimary">
+    app:cardElevation="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/groupName"
+            android:id="@+id/cardTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="@string/group_name"
-            android:textColor="@color/colorOnPrimary"
+            android:background="@drawable/roundedtextview"
+            android:text="@string/title"
+            android:textAlignment="textStart"
+            android:textColor="@color/colorOnSecondary"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/expandFilesButton"
+        <TextView
+            android:id="@+id/averageMark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/expandir"
-            app:layout_constraintBottom_toTopOf="@id/expandableView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/groupName" />
+            android:text="@string/puntuaci_n_media_de_las_respuestas"
+            app:layout_constraintStart_toStartOf="@+id/cardTitle"
+            app:layout_constraintTop_toBottomOf="@+id/cardTitle" />
+
+        <TextView
+            android:id="@+id/unansweredQuestions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/faltan_por_contestar"
+            app:layout_constraintStart_toStartOf="@+id/averageMark"
+            app:layout_constraintTop_toBottomOf="@+id/averageMark" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/showStatistics"
+            android:id="@+id/expandView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/ver_estad_sticas"
-            app:layout_constraintBottom_toBottomOf="@+id/expandFilesButton"
-            app:layout_constraintStart_toEndOf="@+id/expandFilesButton"
-            app:layout_constraintTop_toTopOf="@+id/expandFilesButton" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Abrir"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/unansweredQuestions" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/showResponses"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:text="Ver respuestas"
+            app:layout_constraintStart_toEndOf="@+id/expandView"
+            app:layout_constraintTop_toBottomOf="@+id/unansweredQuestions" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/expandableView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/expandFilesButton">
+            app:layout_constraintTop_toBottomOf="@+id/expandView">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/filesRecyclerView"
+                android:id="@+id/inputTextCardChildRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"

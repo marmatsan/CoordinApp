@@ -167,5 +167,10 @@
     <string name="poner_nota">Poner nota</string>
     <string name="answer_of_the_student">Answer of the student</string>
     <string name="pendiente_de_respuesta_por_parte_de_los_alumnos">Pendiente de respuesta por parte de los alumnos</string>
+    <string name="pendingResponse">Pendiente de respuesta por parte de los alumnos</string>
+    <string name="noCalifications">No hay actividades que evaluar</string>
+    <string name="ver_estad_sticas">Ver estadísticas</string>
+    <string name="puntuaci_n_media_de_las_respuestas">Puntuación media de las respuestas</string>
+    <string name="faltan_por_contestar">Faltan por contestar</string>
 
 </resources>

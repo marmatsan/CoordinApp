@@ -83,18 +83,21 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                         for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
 
                             if (studentData.getStudentID().equals(inputTextCard.getStudentID())) {
-                                studentData.sethasResponded(true);
-                                studentData.setStudentResponse(response);
+                                studentData.setResponse(response);
                             }
                             studentsData.add(studentData);
 
                         }
 
-                        documentReference.update("studentsData", studentsData).addOnSuccessListener(unused -> {
-                            documentReference.update("hasTeacherVisibility", true).addOnSuccessListener(unused1 -> {
-                                Toast.makeText(context, "Respuesta enviada correctamente", Toast.LENGTH_SHORT).show();
-                            });
-                        });
+                        documentReference
+                                .update("studentsData", studentsData)
+                                .addOnSuccessListener(unused -> {
+                                    documentReference
+                                            .update("hasTeacherVisibility", true)
+                                            .addOnSuccessListener(unused1 -> {
+                                                Toast.makeText(context, "Respuesta enviada correctamente", Toast.LENGTH_SHORT).show();
+                                            });
+                                });
                     }
                 });
                 break;

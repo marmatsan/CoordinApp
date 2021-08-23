@@ -42,8 +42,8 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
     FirebaseFirestore fStore;
 
     // Selected course and subject
-    private String selectedCourse;
-    private String selectedSubject;
+    private String selectedCourse = "4ºESO B";
+    private String selectedSubject = "Matemáticas";
 
     private MenuItem menuItem;
 

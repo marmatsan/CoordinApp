@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class InputTextCardDocument {
 
     private String title;
-    private boolean hasTeacherVisibility;
+    private boolean hasAllActivitiesGraded;
     private ArrayList<InputTextCardStudentData> studentsData;
 
     public InputTextCardDocument() {
@@ -22,32 +22,31 @@ public class InputTextCardDocument {
             studentsData.add(new InputTextCardStudentData(studentID));
         }
 
-        this.hasTeacherVisibility = false;
+        this.hasAllActivitiesGraded = false;
         this.studentsData = studentsData;
-    }
-
-    public boolean getHasTeacherVisibility() {
-        return hasTeacherVisibility;
-    }
-
-    public int getCardType() {
-        return InteractivityCardType.TYPE_INPUTTEXT;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public boolean getHasAllActivitiesGraded() {
+        return hasAllActivitiesGraded;
+    }
+
+    public int getCardType() {
+        return InteractivityCardType.TYPE_INPUTTEXT;
+    }
+
     public ArrayList<InputTextCardStudentData> getStudentsData() {
         return studentsData;
     }
 
+
     public static class InputTextCardStudentData {
         private String studentID;
         private float mark;
-        private String studentResponse;
-        private boolean hasMarkSet;
-        private boolean hasResponded;
+        private String response;
 
         public InputTextCardStudentData() {
 
@@ -55,7 +54,6 @@ public class InputTextCardDocument {
 
         public InputTextCardStudentData(String studentID) {
             this.studentID = studentID;
-            this.hasMarkSet = false;
         }
 
         public String getStudentID() {
@@ -66,16 +64,8 @@ public class InputTextCardDocument {
             return mark;
         }
 
-        public String getStudentResponse() {
-            return studentResponse;
-        }
-
-        public boolean getHasMarkSet(){
-            return hasMarkSet;
-        }
-
-        public boolean getHasResponded() {
-            return hasResponded;
+        public String getResponse() {
+            return response;
         }
 
         public void setStudentID(String studentID) {
@@ -86,17 +76,10 @@ public class InputTextCardDocument {
             this.mark = mark;
         }
 
-        public void setStudentResponse(String studentResponse) {
-            this.studentResponse = studentResponse;
+        public void setResponse(String response) {
+            this.response = response;
         }
 
-        public void setHasMarkSet(boolean hasMarkSet) {
-            this.hasMarkSet = hasMarkSet;
-        }
-
-        public void sethasResponded(boolean responded) {
-            this.hasResponded = responded;
-        }
     }
 
 }

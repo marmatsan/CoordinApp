@@ -107,7 +107,7 @@ public class Interactivity extends Fragment {
                                                     InputTextCardDocument inputTextCardDocument = interactivityCardDocumentSnapshot.toObject(InputTextCardDocument.class);
 
                                                     for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
-                                                        if (studentData.getStudentID().equals(fAuth.getUid()) && !studentData.getHasResponded()) {
+                                                        if (studentData.getStudentID().equals(fAuth.getUid()) && studentData.getResponse() == null) {
                                                             InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), interactivityCardDocumentSnapshot);
                                                             interactivityCardsList.add(inputTextCard);
                                                         }

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.teacher.GroupsInteractivityCardsAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.GroupsInteractivityCardsContainer;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InputTextCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InputTextCardParent;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateInputTextCardDialog;
@@ -98,12 +98,14 @@ public class Interactivity extends Fragment {
                     }
 
                     if (collectiveGroupsDocumentSnapshots.isEmpty()) {
+                        hideButtons();
                         warningMessage.setText(R.string.noGroups);
                         warningMessage.setVisibility(View.VISIBLE);
-                        hideButtons();
                     } else {
+                        showButtons();
                         for (DocumentSnapshot documentSnapshot : collectiveGroupsDocumentSnapshots) {
                             String groupName = documentSnapshot.toObject(CollectiveGroupDocument.class).getName();
+                            warningMessage.setVisibility(View.GONE);
 
                             documentSnapshot
                                     .getReference()
@@ -117,8 +119,6 @@ public class Interactivity extends Fragment {
                                         }
 
                                         cardsList.clear();
-                                        showButtons();
-
                                         if (interactivityCardsDocumentSnapshots.isEmpty()) {
                                             warningMessage.setText(R.string.noStatistics);
                                             warningMessage.setVisibility(View.VISIBLE);
@@ -131,25 +131,53 @@ public class Interactivity extends Fragment {
                                                 if (cardType != null) {
                                                     switch (cardType.intValue()) {
                                                         case InteractivityCardType.TYPE_INPUTTEXT:
-
                                                             InputTextCardDocument inputTextCardDocument = interactivityCardDocumentSnapshot.toObject(InputTextCardDocument.class);
+
+                                                            ArrayList<InputTextCardParent.InputTextCardChild> inputTextCardChildList = new ArrayList<InputTextCardParent.InputTextCardChild>();
+                                                            InputTextCardParent newCardParent = new InputTextCardParent(inputTextCardDocument.getTitle(), inputTextCardChildList, interactivityCardDocumentSnapshot);
+
+                                                            float totalGrade = 0;
+                                                            int studentsThatAnswered = 0;
+                                                            int totalStudents = 0;
+
                                                             for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
-                                                                if (studentData.getHasResponded() && !studentData.getHasMarkSet()) {
-                                                                    InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), studentData.getStudentResponse(), interactivityCardDocumentSnapshot);
-                                                                    interactivityCardsList.add(inputTextCard);
+                                                                if (studentData.getResponse() != null) {
+                                                                    totalGrade = totalGrade + studentData.getMark();
+                                                                    studentsThatAnswered++;
+                                                                    InputTextCardParent.InputTextCardChild childInputTextCard =
+                                                                            new InputTextCardParent.InputTextCardChild(
+                                                                                    studentData.getStudentID(),
+                                                                                    studentData.getResponse(),
+                                                                                    interactivityCardDocumentSnapshot
+                                                                            );
+                                                                    inputTextCardChildList.add(childInputTextCard);
                                                                 }
                                                             }
 
+                                                            if (studentsThatAnswered == 0) {
+                                                                newCardParent.setAverageGrade("Ningún estudiante ha contestado la pregunta todavía");
+                                                            } else {
+                                                                float averageGrade = totalGrade / studentsThatAnswered;
+                                                                newCardParent.setAverageGrade("Puntuación media de las respuestas: " + averageGrade + "/10");
+                                                            }
+
+                                                            newCardParent.setStudentsThatHaveNotAnswered("Faltan por contestar: " + (totalStudents - studentsThatAnswered) + "/" + totalStudents);
+                                                            interactivityCardsList.add(newCardParent);
+
                                                         case InteractivityCardType.TYPE_CHOICES:
+
+
+                                                        case InteractivityCardType.TYPE_REMINDER:
 
                                                     }
                                                 }
-                                            }
-                                            GroupsInteractivityCardsContainer newCard = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);
-                                            cardsList.add(newCard);
-                                            adapter.notifyDataSetChanged();
 
-                                            warningMessage.setVisibility(View.GONE);
+                                                if (!interactivityCardsList.isEmpty()) {
+                                                    GroupsInteractivityCardsContainer newContainer = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);
+                                                    cardsList.add(newContainer);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            }
                                         }
                                     });
                         }

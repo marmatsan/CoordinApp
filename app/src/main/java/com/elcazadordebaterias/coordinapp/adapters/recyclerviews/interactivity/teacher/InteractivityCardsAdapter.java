@@ -2,6 +2,7 @@ package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.
 
 
 import android.content.Context;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +12,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InputTextCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.InputTextCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InputTextCardParent;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.MultichoiceCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.ReminderCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.slider.Slider;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -35,6 +37,8 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     private ArrayList<InteractivityCard> cardsList;
     private final Context context;
+
+
 
     public InteractivityCardsAdapter(ArrayList<InteractivityCard> cardsList, Context context) {
         this.cardsList = cardsList;
@@ -49,8 +53,8 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
         switch (viewType) {
             case InteractivityCardType.TYPE_INPUTTEXT:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_teachercards_inputextcard, parent, false);
-                return new InputTextCardViewHolder(view);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_teachercards_inputextcardparent, parent, false);
+                return new InputTextCardParentViewHolder(view);
             case InteractivityCardType.TYPE_CHOICES:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_teachercards_multichoicescard, parent, false);
                 return new MultiChoiceCardViewHolder(view);
@@ -67,39 +71,48 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
         switch (holder.getItemViewType()) {
             case InteractivityCardType.TYPE_INPUTTEXT:
-                InputTextCard inputTextCard = (InputTextCard) card;
-                InputTextCardViewHolder holder1 = (InputTextCardViewHolder) holder;
+                InputTextCardParent inputTextCardParent = (InputTextCardParent) card;
+                InputTextCardParentViewHolder holder1 = (InputTextCardParentViewHolder) holder;
 
-                holder1.cardTitle.setText(inputTextCard.getCardTitle());
-                holder1.studentAnswer.setText(inputTextCard.getStudentAnswer());
+                holder1.cardTitle.setText(inputTextCardParent.getCardTitle());
 
-                holder1.addMark.setOnClickListener(v -> {
-                    float mark = holder1.markSlider.getValue();
+                // Todo lo relacionado con la puntuación media y las que faltan por contestar
 
-                    DocumentSnapshot interactivityCardDocument = inputTextCard.getDocumentSnapshot();
+                LinearLayoutManager layoutManager = new LinearLayoutManager(holder1.inputTextCardChildRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
 
-                    InputTextCardDocument inputTextCardDocument = interactivityCardDocument.toObject(InputTextCardDocument.class);
+                layoutManager.setInitialPrefetchItemCount(inputTextCardParent.getInputTextCardChildList().size());
+                InputTextCardsChildAdapter inputTextCardsChildAdapter = new InputTextCardsChildAdapter(inputTextCardParent.getInputTextCardChildList(), context);
 
-                    DocumentReference documentReference = interactivityCardDocument.getReference();
+                RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+                SparseBooleanArray expandState = new SparseBooleanArray();
 
-                    ArrayList<InputTextCardDocument.InputTextCardStudentData> studentsData = new ArrayList<InputTextCardDocument.InputTextCardStudentData>();
-                    for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
-                        if (studentData.getStudentID().equals(inputTextCard.getStudentID())) {
-                            studentData.setMark(mark);
-                            studentData.setHasMarkSet(true);
-                        }
-                        studentsData.add(studentData);
+                for (int i = 0; i < cardsList.size(); i++) {
+                    expandState.append(i, false);
+                }
+
+                holder1.inputTextCardChildRecyclerView.setLayoutManager(layoutManager);
+                holder1.inputTextCardChildRecyclerView.setAdapter(inputTextCardsChildAdapter);
+                holder1.inputTextCardChildRecyclerView.setRecycledViewPool(viewPool);
+
+                final boolean isExpanded = expandState.get(position); //Check if the view is expanded
+                holder1.expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+
+                holder1.expandView.setOnClickListener(view -> {
+                    if (holder1.expandableView.getVisibility() == View.VISIBLE) {
+                        holder1.expandableView.setVisibility(View.GONE);
+                        holder1.expandView.setText(R.string.expandir);
+                        expandState.put(position, false);
+                    } else {
+                        holder1.expandableView.setVisibility(View.VISIBLE);
+                        holder1.expandView.setText(R.string.colapsar);
+                        expandState.put(position, true);
                     }
-
-                    documentReference
-                            .update("studentsData", studentsData)
-                            .addOnSuccessListener(unused -> {
-                                Toast.makeText(context, "Pregunta calificada", Toast.LENGTH_SHORT).show();
-                            });
                 });
+
                 break;
 
             case InteractivityCardType.TYPE_CHOICES:
+                /*
                 MultichoiceCard choicesCard = (MultichoiceCard) card;
                 MultiChoiceCardViewHolder holder2 = (MultiChoiceCardViewHolder) holder;
 
@@ -110,14 +123,17 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                     button.setText(question);
                     holder2.radioGroup.addView(button);
                 }
+                 */
                 break;
 
             default: // ReminderCard
+                /*
                 ReminderCard reminderCard = (ReminderCard) card;
                 ReminderCardViewHolder holder3 = (ReminderCardViewHolder) holder;
 
                 holder3.cardTitle.setText(reminderCard.getCardTitle());
                 holder3.reminderContainer.setText(reminderCard.getReminderText());
+                 */
                 break;
         }
     }
@@ -133,7 +149,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
         int viewType;
 
-        if (card instanceof InputTextCard) {
+        if (card instanceof InputTextCardParent) {
             viewType = InteractivityCardType.TYPE_INPUTTEXT;
         } else if (card instanceof MultichoiceCard) {
             viewType = InteractivityCardType.TYPE_CHOICES;
@@ -155,17 +171,23 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     }
 
-    public static class InputTextCardViewHolder extends CardViewHolder {
+    public static class InputTextCardParentViewHolder extends CardViewHolder {
 
-        TextView studentAnswer;
-        Slider markSlider;
-        MaterialButton addMark;
+        TextView averageMark;
+        TextView unansweredQuestions;
+        MaterialButton expandView;
+        MaterialButton showResponses;
+        ConstraintLayout expandableView;
+        RecyclerView inputTextCardChildRecyclerView;
 
-        public InputTextCardViewHolder(@NonNull @NotNull View itemView) {
+        public InputTextCardParentViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            studentAnswer = itemView.findViewById(R.id.studentAnswer);
-            markSlider = itemView.findViewById(R.id.markSlider);
-            addMark = itemView.findViewById(R.id.addMark);
+            averageMark = itemView.findViewById(R.id.averageMark);
+            unansweredQuestions = itemView.findViewById(R.id.unansweredQuestions);
+            expandView = itemView.findViewById(R.id.expandView);
+            showResponses = itemView.findViewById(R.id.showResponses);
+            expandableView = itemView.findViewById(R.id.expandableView);
+            inputTextCardChildRecyclerView = itemView.findViewById(R.id.inputTextCardChildRecyclerView);
         }
 
     }

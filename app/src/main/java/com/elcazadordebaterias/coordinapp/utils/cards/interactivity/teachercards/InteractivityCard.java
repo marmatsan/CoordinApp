@@ -3,7 +3,6 @@ package com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercard
 public class InteractivityCard {
 
     private String cardTitle;
-    private boolean hasTeacherVisibility;
 
     public InteractivityCard() {
 
@@ -21,11 +20,4 @@ public class InteractivityCard {
         this.cardTitle = cardTitle;
     }
 
-    public boolean getHasTeacherVisibility() {
-        return hasTeacherVisibility;
-    }
-
-    public void setHasTeacherVisibility(boolean hasTeacherVisibility) {
-        this.hasTeacherVisibility = hasTeacherVisibility;
-    }
 }

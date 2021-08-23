@@ -10,7 +10,7 @@ public class MultichoiceCard extends InteractivityCard {
 
     }
 
-    public MultichoiceCard(String cardTitle, ArrayList<String> questions) {
+    public MultichoiceCard(String cardTitle, boolean hasTeacherVisibility, boolean hasAllActivitiesMarked, ArrayList<String> questions) {
         super(cardTitle);
         this.questions = questions;
     }
