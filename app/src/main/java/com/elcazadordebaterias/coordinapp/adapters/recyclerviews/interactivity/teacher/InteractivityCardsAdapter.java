@@ -22,6 +22,7 @@ import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCa
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -48,13 +49,13 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
         switch (viewType) {
             case InteractivityCardType.TYPE_INPUTTEXT:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_studentcards_inputextcard, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_teachercards_inputextcard, parent, false);
                 return new InputTextCardViewHolder(view);
             case InteractivityCardType.TYPE_CHOICES:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_studentcards_multichoicescard, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_teachercards_multichoicescard, parent, false);
                 return new MultiChoiceCardViewHolder(view);
             default: // ReminderCard
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_studentcards_remindercard, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_teachercards_remindercard, parent, false);
                 return new ReminderCardViewHolder(view);
         }
 
@@ -70,34 +71,31 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 InputTextCardViewHolder holder1 = (InputTextCardViewHolder) holder;
 
                 holder1.cardTitle.setText(inputTextCard.getCardTitle());
-                holder1.sendResponse.setOnClickListener(v -> {
-                    String response = holder1.inputText.getText().toString();
+                holder1.studentAnswer.setText(inputTextCard.getStudentAnswer());
 
-                    if (!response.isEmpty()) {
+                holder1.addMark.setOnClickListener(v -> {
+                    float mark = holder1.markSlider.getValue();
 
-                        DocumentSnapshot interactivityCardDocument = inputTextCard.getDocumentSnapshot();
+                    DocumentSnapshot interactivityCardDocument = inputTextCard.getDocumentSnapshot();
 
-                        InputTextCardDocument inputTextCardDocument = interactivityCardDocument.toObject(InputTextCardDocument.class);
+                    InputTextCardDocument inputTextCardDocument = interactivityCardDocument.toObject(InputTextCardDocument.class);
 
-                        DocumentReference documentReference = interactivityCardDocument.getReference();
+                    DocumentReference documentReference = interactivityCardDocument.getReference();
 
-                        ArrayList<InputTextCardDocument.InputTextCardStudentData> studentsData = new ArrayList<InputTextCardDocument.InputTextCardStudentData>();
-                        for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
-
-                            if (studentData.getStudentID().equals(inputTextCard.getStudentID())) {
-                                studentData.sethasResponded(true);
-                                studentData.setStudentResponse(response);
-                            }
-                            studentsData.add(studentData);
-
+                    ArrayList<InputTextCardDocument.InputTextCardStudentData> studentsData = new ArrayList<InputTextCardDocument.InputTextCardStudentData>();
+                    for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
+                        if (studentData.getStudentID().equals(inputTextCard.getStudentID())) {
+                            studentData.setMark(mark);
+                            studentData.setHasMarkSet(true);
                         }
-
-                        documentReference.update("studentsData", studentsData).addOnSuccessListener(unused -> {
-                            documentReference.update("hasTeacherVisibility", true).addOnSuccessListener(unused1 -> {
-                                Toast.makeText(context, "Respuesta enviada correctamente", Toast.LENGTH_SHORT).show();
-                            });
-                        });
+                        studentsData.add(studentData);
                     }
+
+                    documentReference
+                            .update("studentsData", studentsData)
+                            .addOnSuccessListener(unused -> {
+                                Toast.makeText(context, "Pregunta calificada", Toast.LENGTH_SHORT).show();
+                            });
                 });
                 break;
 
@@ -159,13 +157,15 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     public static class InputTextCardViewHolder extends CardViewHolder {
 
-        TextInputEditText inputText;
-        FloatingActionButton sendResponse;
+        TextView studentAnswer;
+        Slider markSlider;
+        MaterialButton addMark;
 
         public InputTextCardViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            inputText = itemView.findViewById(R.id.inputText);
-            sendResponse = itemView.findViewById(R.id.sendResponse);
+            studentAnswer = itemView.findViewById(R.id.studentAnswer);
+            markSlider = itemView.findViewById(R.id.markSlider);
+            addMark = itemView.findViewById(R.id.addMark);
         }
 
     }

@@ -12,11 +12,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.student.GroupsInteractivityCardsAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.GroupsInteractivityCardsContainer;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.teacher.GroupsInteractivityCardsAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.GroupsInteractivityCardsContainer;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InputTextCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCard;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateInputTextCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateMultichoiceCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateReminderCardDialog;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -84,39 +89,74 @@ public class Interactivity extends Fragment {
                 .collection("Subjects")
                 .document(selectedSubject)
                 .collection("CollectiveGroups")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (queryDocumentSnapshots.isEmpty()) {
+                .addSnapshotListener((collectiveGroupsDocumentSnapshots, error) -> {
+
+                    if (error != null) {
+                        return;
+                    } else if (collectiveGroupsDocumentSnapshots == null) {
+                        return;
+                    }
+
+                    if (collectiveGroupsDocumentSnapshots.isEmpty()) {
                         warningMessage.setText(R.string.noGroups);
                         warningMessage.setVisibility(View.VISIBLE);
                         hideButtons();
                     } else {
-                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        for (DocumentSnapshot documentSnapshot : collectiveGroupsDocumentSnapshots) {
+                            String groupName = documentSnapshot.toObject(CollectiveGroupDocument.class).getName();
+
                             documentSnapshot
                                     .getReference()
                                     .collection("InteractivityCards")
-                                    .get()
-                                    .addOnSuccessListener(interactivityCardsDocumentSnapshots -> {
+                                    .addSnapshotListener((interactivityCardsDocumentSnapshots, error1) -> {
+
+                                        if (error1 != null) {
+                                            return;
+                                        } else if (interactivityCardsDocumentSnapshots == null) {
+                                            return;
+                                        }
+
+                                        cardsList.clear();
+                                        showButtons();
+
                                         if (interactivityCardsDocumentSnapshots.isEmpty()) {
                                             warningMessage.setText(R.string.noStatistics);
                                             warningMessage.setVisibility(View.VISIBLE);
                                         } else {
+                                            ArrayList<InteractivityCard> interactivityCardsList = new ArrayList<InteractivityCard>();
+
                                             for (DocumentSnapshot interactivityCardDocumentSnapshot : interactivityCardsDocumentSnapshots) {
                                                 Long cardType = interactivityCardDocumentSnapshot.getLong("cardType");
 
                                                 if (cardType != null) {
-                                                    
-                                                }
+                                                    switch (cardType.intValue()) {
+                                                        case InteractivityCardType.TYPE_INPUTTEXT:
 
+                                                            InputTextCardDocument inputTextCardDocument = interactivityCardDocumentSnapshot.toObject(InputTextCardDocument.class);
+                                                            for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
+                                                                if (studentData.getHasResponded() && !studentData.getHasMarkSet()) {
+                                                                    InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), studentData.getStudentResponse(), interactivityCardDocumentSnapshot);
+                                                                    interactivityCardsList.add(inputTextCard);
+                                                                }
+                                                            }
+
+                                                        case InteractivityCardType.TYPE_CHOICES:
+
+                                                    }
+                                                }
                                             }
+                                            GroupsInteractivityCardsContainer newCard = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);
+                                            cardsList.add(newCard);
+                                            adapter.notifyDataSetChanged();
+
                                             warningMessage.setVisibility(View.GONE);
                                         }
-                                        showButtons();
                                     });
                         }
                     }
                 });
 
+        // Buttons configuration
         ArrayList<FloatingActionButton> buttons = new ArrayList<FloatingActionButton>();
         buttons.add(createInputTextCard);
         buttons.add(createMultichoiceCard);
@@ -124,7 +164,6 @@ public class Interactivity extends Fragment {
 
         ButtonAnimator buttonAnimator = new ButtonAnimator(getContext(), createInteractivityCard, buttons);
 
-        // Buttons listeners
         createInteractivityCard.setOnClickListener(v -> buttonAnimator.onButtonClicked());
 
         createInputTextCard.setOnClickListener(v -> {

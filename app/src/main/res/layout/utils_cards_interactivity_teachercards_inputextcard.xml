@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/colorSecondary"
@@ -15,59 +16,63 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/sendResponse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            app:backgroundTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/outlinedTextField"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/outlinedTextField"
-            app:layout_constraintTop_toTopOf="@+id/outlinedTextField"
-            app:srcCompat="@drawable/ic_baseline_send_24" />
-
         <TextView
             android:id="@+id/cardTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/name_of_the_course"
+            android:background="@drawable/roundedtextview"
+            android:text="@string/title"
+            android:textAlignment="textStart"
             android:textColor="@color/colorOnSecondary"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/outlinedTextField"
+        <TextView
+            android:id="@+id/studentAnswer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:hint="@string/escribe_algo"
-            app:boxBackgroundColor="@color/white"
-            app:boxStrokeColor="@color/colorSecondary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/sendResponse"
+            android:background="@drawable/roundedtextview"
+            android:text="@string/answer_of_the_student"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardTitle">
+            app:layout_constraintTop_toBottomOf="@+id/cardTitle" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addMark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/poner_nota"
+            android:textColor="@color/colorOnSecondary"
+            app:backgroundTint="@color/white"
+            app:icon="@drawable/ic_baseline_check_circle_outline_24"
+            app:iconTint="@color/colorOnSecondary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/studentAnswer" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.slider.Slider
+            android:id="@+id/markSlider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:valueFrom="0.0"
+            android:valueTo="10.0"
+            android:stepSize="0.5"
+            app:layout_constraintBottom_toBottomOf="@+id/addMark"
+            app:layout_constraintEnd_toStartOf="@+id/addMark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/addMark" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

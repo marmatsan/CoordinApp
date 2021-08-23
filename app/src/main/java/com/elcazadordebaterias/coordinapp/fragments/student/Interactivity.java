@@ -76,7 +76,6 @@ public class Interactivity extends Fragment {
                     } else if (collectiveGroupsDocumentSnapshots == null) {
                         return;
                     }
-                    Log.d("DEBUGGING", "Called CollectiveGroups listener. Cleaning list");
                     cardsList.clear();
 
                     for (DocumentSnapshot collectiveGroupDocumentSnapshot : collectiveGroupsDocumentSnapshots) {
@@ -94,7 +93,6 @@ public class Interactivity extends Fragment {
                                     } else if (interactivityCardsDocumentSnapshots == null) {
                                         return;
                                     }
-                                    Log.d("DEBUGGING", "Called InteractivityCards listener. Cleaning list");
                                     cardsList.clear();
                                     ArrayList<InteractivityCard> interactivityCardsList = new ArrayList<InteractivityCard>();
                                     GroupsInteractivityCardsContainer interactivityCardsContainer = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);

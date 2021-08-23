@@ -21,6 +21,7 @@ public class InputTextCardDocument {
         for (String studentID : studentsIDs) {
             studentsData.add(new InputTextCardStudentData(studentID));
         }
+
         this.hasTeacherVisibility = false;
         this.studentsData = studentsData;
     }
@@ -43,8 +44,9 @@ public class InputTextCardDocument {
 
     public static class InputTextCardStudentData {
         private String studentID;
-        private int mark;
+        private float mark;
         private String studentResponse;
+        private boolean hasMarkSet;
         private boolean hasResponded;
 
         public InputTextCardStudentData() {
@@ -53,18 +55,23 @@ public class InputTextCardDocument {
 
         public InputTextCardStudentData(String studentID) {
             this.studentID = studentID;
+            this.hasMarkSet = false;
         }
 
         public String getStudentID() {
             return studentID;
         }
 
-        public int getMark() {
+        public float getMark() {
             return mark;
         }
 
         public String getStudentResponse() {
             return studentResponse;
+        }
+
+        public boolean getHasMarkSet(){
+            return hasMarkSet;
         }
 
         public boolean getHasResponded() {
@@ -75,12 +82,16 @@ public class InputTextCardDocument {
             this.studentID = studentID;
         }
 
-        public void setMark(int mark) {
+        public void setMark(float mark) {
             this.mark = mark;
         }
 
         public void setStudentResponse(String studentResponse) {
             this.studentResponse = studentResponse;
+        }
+
+        public void setHasMarkSet(boolean hasMarkSet) {
+            this.hasMarkSet = hasMarkSet;
         }
 
         public void sethasResponded(boolean responded) {

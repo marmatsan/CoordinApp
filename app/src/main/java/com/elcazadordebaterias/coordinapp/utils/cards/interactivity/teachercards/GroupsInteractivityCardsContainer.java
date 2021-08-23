@@ -20,4 +20,23 @@ public class GroupsInteractivityCardsContainer {
         return interactivityCardsList;
     }
 
+    public boolean allCardsInvisible() {
+        boolean allCardsInvisible = true;
+        for (InteractivityCard card : interactivityCardsList) {
+            if (card.getHasTeacherVisibility()) {
+                allCardsInvisible = false;
+                break;
+            }
+        }
+        return allCardsInvisible;
+    }
+
+    public boolean allCardsResponded(){
+        boolean allCardsResponded = false;
+
+        ArrayList<Stu>
+
+        return allCardsResponded;
+    }
+
 }
