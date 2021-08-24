@@ -122,6 +122,10 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 holder2.cardTitle.setText(multiChoiceCard.getCardTitle());
                 holder2.errorMessage.setVisibility(View.GONE);
 
+                holder2.radioGroup.setOnCheckedChangeListener((radioGroup, i) -> {
+                    holder2.errorMessage.setVisibility(View.GONE);
+                });
+
                 HashMap<Integer, MultichoiceCardDocument.Question> questionsMap = new HashMap<Integer, MultichoiceCardDocument.Question>();
 
                 int buttonID = 0;
@@ -155,25 +159,24 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                         holder2.errorMessage.setVisibility(View.GONE);
 
                         MultichoiceCardDocument.Question selectedQuestion = questionsMap.get(checkedButtonID);
-                        Log.d("DEBUGGING", "Selected ID: "+ checkedButtonID);
 
                         if (selectedQuestion != null) {
 
                             ArrayList<MultichoiceCardDocument.MultichoiceCardStudentData> studentsData = new ArrayList<MultichoiceCardDocument.MultichoiceCardStudentData>();
 
-                            if (multiChoiceCardDocument.getHasToBeEvaluated()) { // Evaluate the question
-
-                            } else {
-                                Log.d("DEBUGGING", "Non evaluable");
-
-                                for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multiChoiceCardDocument.getStudentsData()) {
-                                    if (studentData.getStudentID().equals(fAuth.getUid())) {
-                                        studentData.setResponse(selectedQuestion.getQuestionIdentifier());
+                            for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multiChoiceCardDocument.getStudentsData()) {
+                                if (studentData.getStudentID().equals(fAuth.getUid())) {
+                                    studentData.setResponse(selectedQuestion.getQuestionIdentifier());
+                                    if (multiChoiceCardDocument.getHasToBeEvaluated()) {
+                                        if (selectedQuestion.getHasCorrectAnswer()) {
+                                            studentData.setMark(1);
+                                        } else {
+                                            studentData.setMark(0);
+                                        }
                                     }
-                                    studentsData.add(studentData);
                                 }
+                                studentsData.add(studentData);
                             }
-
 
                             documentReference.update("studentsData", studentsData);
 
