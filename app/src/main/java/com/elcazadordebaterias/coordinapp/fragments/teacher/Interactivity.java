@@ -141,10 +141,9 @@ public class Interactivity extends Fragment {
 
                                                             float totalGrade = 0;
                                                             int studentsThatAnswered = 0;
-                                                            int totalStudents = 0;
+                                                            int totalStudents = inputTextCardDocument.getStudentsData().size();
 
                                                             for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
-                                                                totalStudents++;
                                                                 if (studentData.getResponse() != null) {
                                                                     totalGrade = totalGrade + studentData.getMark();
                                                                     studentsThatAnswered++;
@@ -173,6 +172,7 @@ public class Interactivity extends Fragment {
 
                                                             interactivityCardsList.add(newCardParent);
                                                             break;
+
                                                         case InteractivityCardType.TYPE_CHOICES:
                                                             MultichoiceCard multichoiceCard = new MultichoiceCard(interactivityCardDocumentSnapshot);
 

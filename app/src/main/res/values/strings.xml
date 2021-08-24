@@ -194,5 +194,6 @@
     <string name="listado_de_respuestas">Listado de respuestas</string>
     <string name="actividad_de_tipo_multirespuesta">Actividad de tipo multirespuesta</string>
     <string name="actividad_de_tipo_entrada_de_texto">Actividad de tipo entrada de texto</string>
+    <string name="ver_respuestas">Ver respuestas</string>
 
 </resources>

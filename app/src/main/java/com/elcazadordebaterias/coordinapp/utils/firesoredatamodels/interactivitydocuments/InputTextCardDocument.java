@@ -8,6 +8,8 @@ public class InputTextCardDocument {
 
     private String title;
     private boolean hasAllActivitiesGraded;
+    private boolean hasTeacherVisibility;
+
     private ArrayList<InputTextCardStudentData> studentsData;
 
     public InputTextCardDocument() {
@@ -23,6 +25,7 @@ public class InputTextCardDocument {
         }
 
         this.hasAllActivitiesGraded = false;
+        this.hasTeacherVisibility = false;
         this.studentsData = studentsData;
     }
 
@@ -32,6 +35,10 @@ public class InputTextCardDocument {
 
     public boolean getHasAllActivitiesGraded() {
         return hasAllActivitiesGraded;
+    }
+
+    public boolean getHasTeacherVisibility() {
+        return hasTeacherVisibility;
     }
 
     public int getCardType() {
