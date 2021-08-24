@@ -1,6 +1,9 @@
 package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.student;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +22,24 @@ import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.ReminderCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private FirebaseFirestore fStore;
+    private FirebaseAuth fAuth;
 
     private ArrayList<InteractivityCard> cardsList;
     private final Context context;
@@ -37,6 +47,9 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
     public InteractivityCardsAdapter(ArrayList<InteractivityCard> cardsList, Context context) {
         this.cardsList = cardsList;
         this.context = context;
+
+        fStore = FirebaseFirestore.getInstance();
+        fAuth = FirebaseAuth.getInstance();
     }
 
     @NonNull
@@ -103,16 +116,72 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 break;
 
             case InteractivityCardType.TYPE_CHOICES:
-                MultichoiceCard choicesCard = (MultichoiceCard) card;
+                MultichoiceCard multiChoiceCard = (MultichoiceCard) card;
                 MultiChoiceCardViewHolder holder2 = (MultiChoiceCardViewHolder) holder;
 
-                holder2.cardTitle.setText(choicesCard.getCardTitle());
+                holder2.cardTitle.setText(multiChoiceCard.getCardTitle());
+                holder2.errorMessage.setVisibility(View.GONE);
 
-                for (String question : choicesCard.getQuestions()) {
+                HashMap<Integer, MultichoiceCardDocument.Question> questionsMap = new HashMap<Integer, MultichoiceCardDocument.Question>();
+
+                int buttonID = 0;
+
+                // Add questions to card
+                for (MultichoiceCardDocument.Question question : multiChoiceCard.getQuestionsList()) {
                     RadioButton button = new RadioButton(holder2.radioGroup.getContext());
-                    button.setText(question);
+                    button.setText(question.getQuestionTitle());
+
+                    int textColor = Color.parseColor("#1976d2");
+                    button.setButtonTintList(ColorStateList.valueOf(textColor));
+
+                    button.setId(buttonID);
+                    questionsMap.put(buttonID, question);
                     holder2.radioGroup.addView(button);
+
+                    buttonID++;
                 }
+
+                DocumentSnapshot interactivityCardDocument = multiChoiceCard.getDocumentSnapshot();
+
+                MultichoiceCardDocument multiChoiceCardDocument = interactivityCardDocument.toObject(MultichoiceCardDocument.class);
+                DocumentReference documentReference = interactivityCardDocument.getReference();
+
+                holder2.sendAnswer.setOnClickListener(view -> {
+                    int checkedButtonID = holder2.radioGroup.getCheckedRadioButtonId();
+
+                    if (checkedButtonID == -1) {
+                        holder2.errorMessage.setVisibility(View.VISIBLE);
+                    } else {
+                        holder2.errorMessage.setVisibility(View.GONE);
+
+                        MultichoiceCardDocument.Question selectedQuestion = questionsMap.get(checkedButtonID);
+                        Log.d("DEBUGGING", "Selected ID: "+ checkedButtonID);
+
+                        if (selectedQuestion != null) {
+
+                            ArrayList<MultichoiceCardDocument.MultichoiceCardStudentData> studentsData = new ArrayList<MultichoiceCardDocument.MultichoiceCardStudentData>();
+
+                            if (multiChoiceCardDocument.getHasToBeEvaluated()) { // Evaluate the question
+
+                            } else {
+                                Log.d("DEBUGGING", "Non evaluable");
+
+                                for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multiChoiceCardDocument.getStudentsData()) {
+                                    if (studentData.getStudentID().equals(fAuth.getUid())) {
+                                        studentData.setResponse(selectedQuestion.getQuestionIdentifier());
+                                    }
+                                    studentsData.add(studentData);
+                                }
+                            }
+
+
+                            documentReference.update("studentsData", studentsData);
+
+                        }
+
+                    }
+                });
+
                 break;
 
             default: // ReminderCard
@@ -174,12 +243,14 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
     public static class MultiChoiceCardViewHolder extends CardViewHolder {
 
         RadioGroup radioGroup;
-        MaterialButton sendAnswer;
+        FloatingActionButton sendAnswer;
+        TextView errorMessage;
 
         public MultiChoiceCardViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             radioGroup = itemView.findViewById(R.id.radioGroup);
             sendAnswer = itemView.findViewById(R.id.sendAnswer);
+            errorMessage = itemView.findViewById(R.id.errorMessage);
         }
 
     }

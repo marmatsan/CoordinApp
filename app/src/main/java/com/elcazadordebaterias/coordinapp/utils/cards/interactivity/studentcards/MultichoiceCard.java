@@ -1,25 +1,30 @@
 package com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards;
 
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
+import com.google.firebase.firestore.DocumentSnapshot;
+
 import java.util.ArrayList;
 
 public class MultichoiceCard extends InteractivityCard {
 
-    private ArrayList<String> questions;
+    private ArrayList<MultichoiceCardDocument.Question> questionsList;
+    private DocumentSnapshot documentSnapshot;
 
     public MultichoiceCard() {
 
     }
 
-    public MultichoiceCard(String cardTitle, String studentID, ArrayList<String> questions) {
+    public MultichoiceCard(String cardTitle, String studentID, ArrayList<MultichoiceCardDocument.Question> questionsList, DocumentSnapshot documentSnapshot) {
         super(cardTitle, studentID);
-        this.questions = questions;
+        this.questionsList = questionsList;
+        this.documentSnapshot = documentSnapshot;
     }
 
-    public ArrayList<String> getQuestions() {
-        return questions;
+    public ArrayList<MultichoiceCardDocument.Question> getQuestionsList() {
+        return questionsList;
     }
 
-    public void setQuestions(ArrayList<String> questions) {
-        this.questions = questions;
+    public DocumentSnapshot getDocumentSnapshot() {
+        return documentSnapshot;
     }
 }

@@ -185,5 +185,6 @@
     <string name="debes_agregar_al_menos_dos_opciones">Debes agregar al menos dos opciones</string>
     <string name="actividad_evaluable">Actividad evaluable</string>
     <string name="noSelected">Si la pregunta es evaluable debes de seleccionar la respuesta correcta</string>
+    <string name="selecciona_una_de_las_opciones">Selecciona una de las opciones</string>
 
 </resources>

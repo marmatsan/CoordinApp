@@ -12,6 +12,9 @@ public class MultichoiceCardDocument {
     private ArrayList<Question> questionsList;
     private ArrayList<MultichoiceCardStudentData> studentsData;
 
+    public MultichoiceCardDocument() {
+
+    }
 
     public MultichoiceCardDocument(String title, boolean hasToBeEvaluated, ArrayList<Question> questionsList, ArrayList<String> studentsIDs) {
         this.title = title;
@@ -54,22 +57,27 @@ public class MultichoiceCardDocument {
 
     public static class MultichoiceCardStudentData {
         private String studentID;
-        private String response;
+        private int response;
         private int mark;
+
+        public MultichoiceCardStudentData() {
+
+        }
 
         public MultichoiceCardStudentData(String studentID) {
             this.studentID = studentID;
+            this.response = -1;
         }
 
         public String getStudentID() {
             return studentID;
         }
 
-        public String getResponse() {
+        public int getResponse() {
             return response;
         }
 
-        public void setResponse(String response) {
+        public void setResponse(int response) {
             this.response = response;
         }
 
@@ -86,6 +94,10 @@ public class MultichoiceCardDocument {
         private String questionTitle;
         private int questionIdentifier;
         private boolean hasCorrectAnswer;
+
+        public Question() {
+
+        }
 
         public Question(String questionTitle, int questionIdentifier) {
             this.questionTitle = questionTitle;

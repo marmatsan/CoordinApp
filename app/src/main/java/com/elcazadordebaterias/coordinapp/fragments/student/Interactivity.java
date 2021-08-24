@@ -15,9 +15,11 @@ import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.s
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.GroupsInteractivityCardsContainer;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.InputTextCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.InteractivityCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.MultichoiceCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -93,6 +95,7 @@ public class Interactivity extends Fragment {
                                     } else if (interactivityCardsDocumentSnapshots == null) {
                                         return;
                                     }
+
                                     cardsList.clear();
                                     ArrayList<InteractivityCard> interactivityCardsList = new ArrayList<InteractivityCard>();
                                     GroupsInteractivityCardsContainer interactivityCardsContainer = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);
@@ -110,10 +113,21 @@ public class Interactivity extends Fragment {
                                                         if (studentData.getStudentID().equals(fAuth.getUid()) && studentData.getResponse() == null) {
                                                             InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), interactivityCardDocumentSnapshot);
                                                             interactivityCardsList.add(inputTextCard);
+                                                            break;
                                                         }
                                                     }
 
                                                 case InteractivityCardType.TYPE_CHOICES:
+                                                    MultichoiceCardDocument multichoiceCardDocument = interactivityCardDocumentSnapshot.toObject(MultichoiceCardDocument.class);
+
+                                                    for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()){
+                                                        if (studentData.getStudentID().equals(fAuth.getUid()) && studentData.getResponse() == -1) { //
+                                                            MultichoiceCard multiChoiceCard = new MultichoiceCard(multichoiceCardDocument.getTitle(), studentData.getStudentID(), multichoiceCardDocument.getQuestionsList(), interactivityCardDocumentSnapshot);
+                                                            interactivityCardsList.add(multiChoiceCard);
+                                                            break;
+                                                        }
+
+                                                    }
 
                                                 default: // Reminder
 
