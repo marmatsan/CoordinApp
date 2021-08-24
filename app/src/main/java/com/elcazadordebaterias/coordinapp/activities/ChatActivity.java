@@ -180,16 +180,18 @@ public class ChatActivity extends AppCompatActivity {
                         message = messageInputText;
                     } else {
                         messageTitle = "Archivo subido";
-                        message = fullName + " ha subido el archivo " + fileRef.getFileName() + ". Puedes encontrarlo en la pestaña Archivos o descargarlo haciendo click en el siguiente link.";
+                        message = fullName + " ha subido el archivo " + fileRef.getFileName() + ". Puedes encontrarlo en la pestaña Archivos o descargarlo haciendo click en el botón";
                     }
 
                     ChatMessageCard messageCard = new ChatMessageCard(messageTitle, fAuth.getUid(), message, Timestamp.now().toDate(), fileRef);
-                    chatroomRef.add(messageCard).addOnSuccessListener(documentReference -> {
-                        if (userType == UserType.TYPE_STUDENT) {
-                            groupRef.update("hasVisibility", true);
-                        }
-                        messageInput.getText().clear();
-                    });
+                    chatroomRef
+                            .add(messageCard)
+                            .addOnSuccessListener(documentReference -> {
+                                if (userType == UserType.TYPE_STUDENT) {
+                                    groupRef.update("hasVisibility", true);
+                                }
+                                messageInput.getText().clear();
+                            });
                 });
 
     }

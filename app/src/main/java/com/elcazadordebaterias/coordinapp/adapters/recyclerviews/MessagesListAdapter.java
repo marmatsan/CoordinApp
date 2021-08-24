@@ -2,6 +2,7 @@ package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.SpannableString;
@@ -15,21 +16,25 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.teacher.InteractivityCardsAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Adapter to be used by chatactivity to manage the messages
- *
  */
-public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapter.MessageListViewHolder> {
+public class MessagesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int MESSAGE_LEFT = 0;
     private static final int MESSAGE_RIGHT = 1;
@@ -51,48 +56,68 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
     @NonNull
     @NotNull
     @Override
-    public MessageListViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View view;
 
-        if (viewType == MESSAGE_RIGHT) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_chatmessageright, parent, false);
-        } else if (viewType == MESSAGE_LEFT) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_chatmessageleft, parent, false);
-        } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_chatmessagecenter, parent, false);
+        switch (viewType) {
+            case MESSAGE_LEFT:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_chatmessageleft, parent, false);
+                return new TextMessageViewHolder(view);
+            case MESSAGE_RIGHT:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_chatmessageright, parent, false);
+                return new TextMessageViewHolder(view);
+            default: // MessageCenter
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_chatmessagecenter, parent, false);
+                return new MessageWithFileViewHolder(view);
+
         }
 
-        return new MessageListViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull MessageListViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
         ChatMessageCard messageCard = messageList.get(position);
 
-        holder.messageTitle.setText(messageCard.getMessageTitle());
+        if (holder.getItemViewType() == MESSAGE_CENTER) {
+            MessageWithFileViewHolder messageHolder = (MessageWithFileViewHolder) holder;
+            messageHolder.messageTitle.setText(messageCard.getMessageTitle());
+            messageHolder.message.setText(messageCard.getMessage());
+            messageHolder.date.setText(messageCard.getDate().toString());
 
-        if (messageCard.getFileRef() == null){
-            holder.message.setText(messageCard.getMessage());
+            messageHolder.downloadFile.setOnClickListener(v -> {
+                DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                Uri uri = Uri.parse(messageCard.getFileRef().getDownloadLink());
+                DownloadManager.Request request = new DownloadManager.Request(uri);
+
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, messageCard.getFileRef().getFileName());
+
+                downloadManager.enqueue(request);
+            });
+
         } else {
-            SpannableString ss = new SpannableString(messageCard.getMessage());
-            ClickableSpan span = new ClickableSpan() {
-                @Override
-                public void onClick(View textView) {
-                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-                    Uri uri = Uri.parse(messageCard.getFileRef().getDownloadLink());
-                    DownloadManager.Request request = new DownloadManager.Request(uri);
+            TextMessageViewHolder messageHolder = (TextMessageViewHolder) holder;
 
-                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                    request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, messageCard.getFileRef().getFileName());
+            messageHolder.messageTitle.setText(messageCard.getMessageTitle());
+            messageHolder.date.setText(messageCard.getDate().toString());
 
-                    downloadManager.enqueue(request);
-                }
-            };
-            ss.setSpan(span, messageCard.getMessage().indexOf("link"), messageCard.getMessage().indexOf("link") + "link".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.message.setText(ss);
-            holder.message.setMovementMethod(LinkMovementMethod.getInstance());
+            if (messageCard.getMessage().startsWith("http") || messageCard.getMessage().startsWith("https")) {
+                SpannableString ss = new SpannableString(messageCard.getMessage());
+                ClickableSpan span = new ClickableSpan() {
+                    @Override
+                    public void onClick(View textView) {
+                        Uri uri = Uri.parse(messageCard.getMessage());
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        context.startActivity(intent);
+                    }
+                };
+                ss.setSpan(span, 0, messageCard.getMessage().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                messageHolder.message.setText(ss);
+                messageHolder.message.setMovementMethod(LinkMovementMethod.getInstance());
+            } else {
+                messageHolder.message.setText(messageCard.getMessage());
+            }
         }
-
     }
 
     @Override
@@ -102,10 +127,10 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
 
     @Override
     public int getItemViewType(int position) {
-        if (messageList.get(position).getFileRef() != null){
+        if (messageList.get(position).getFileRef() != null) {
             return MESSAGE_CENTER;
         } else {
-            if (messageList.get(position).getSenderId().equals(fAuth.getUid())){
+            if (messageList.get(position).getSenderId().equals(fAuth.getUid())) {
                 return MESSAGE_RIGHT;
             } else {
                 return MESSAGE_LEFT;
@@ -113,16 +138,31 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
         }
     }
 
-    static class MessageListViewHolder extends RecyclerView.ViewHolder{
+    static class TextMessageViewHolder extends RecyclerView.ViewHolder {
 
         TextView messageTitle;
         TextView message;
+        TextView date;
 
-        public MessageListViewHolder(@NonNull @NotNull View itemView) {
+        public TextMessageViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
 
             messageTitle = itemView.findViewById(R.id.messageTitle);
             message = itemView.findViewById(R.id.message);
+            date = itemView.findViewById(R.id.date);
+
         }
     }
+
+    public static class MessageWithFileViewHolder extends TextMessageViewHolder {
+
+        FloatingActionButton downloadFile;
+
+        public MessageWithFileViewHolder(@NonNull @NotNull View itemView) {
+            super(itemView);
+            downloadFile = itemView.findViewById(R.id.downloadFile);
+        }
+
+    }
+
 }

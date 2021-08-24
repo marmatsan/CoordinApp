@@ -177,12 +177,11 @@ public class Interactivity extends Fragment {
 
                                                     }
                                                 }
-
-                                                if (!interactivityCardsList.isEmpty()) {
-                                                    GroupsInteractivityCardsContainer newContainer = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);
-                                                    cardsList.add(newContainer);
-                                                    adapter.notifyDataSetChanged();
-                                                }
+                                            }
+                                            if (!interactivityCardsList.isEmpty()) {
+                                                GroupsInteractivityCardsContainer newContainer = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);
+                                                cardsList.add(newContainer);
+                                                adapter.notifyDataSetChanged();
                                             }
                                         }
                                     });

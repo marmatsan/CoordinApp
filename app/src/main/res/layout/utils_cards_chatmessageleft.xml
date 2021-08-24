@@ -49,6 +49,17 @@
                     android:paddingBottom="8dp"
                     android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaa" />
 
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="@color/grey"
+                    android:layout_gravity="end"
+                    android:text="aaaaaaaaaaa" />
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
