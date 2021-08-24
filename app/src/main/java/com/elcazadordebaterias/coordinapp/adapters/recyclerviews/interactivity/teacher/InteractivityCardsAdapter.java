@@ -38,8 +38,6 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
     private ArrayList<InteractivityCard> cardsList;
     private final Context context;
 
-
-
     public InteractivityCardsAdapter(ArrayList<InteractivityCard> cardsList, Context context) {
         this.cardsList = cardsList;
         this.context = context;
