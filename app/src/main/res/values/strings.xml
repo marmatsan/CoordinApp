@@ -179,7 +179,11 @@
     <string name="_3_agrega_las_preguntas_que_quieras_que_tenga_la_actividad">3. Agrega las opciones que quieras que tenga la actividad y marca la correcta</string>
     <string name="a_adir_pregunta">Añadir opción</string>
     <string name="listado_de_preguntas">Listado de preguntas</string>
-    <string name="escribe_el_t_rulo_de_la_pregunta">Escribe el tírulo de la pregunta</string>
+    <string name="escribe_el_t_rulo_de_la_pregunta">Escribe un título</string>
     <string name="agrega_una_opci_n">Agrega una opción</string>
+    <string name="listado_de_opciones_a_adidas">Listado de opciones añadidas</string>
+    <string name="debes_agregar_al_menos_dos_opciones">Debes agregar al menos dos opciones</string>
+    <string name="actividad_evaluable">Actividad evaluable</string>
+    <string name="noSelected">Si la pregunta es evaluable debes de seleccionar la respuesta correcta</string>
 
 </resources>

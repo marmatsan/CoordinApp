@@ -205,7 +205,7 @@ public class Interactivity extends Fragment {
         });
 
         createMultichoiceCard.setOnClickListener(v -> {
-            CreateMultichoiceCardDialog dialog = new CreateMultichoiceCardDialog();
+            CreateMultichoiceCardDialog dialog = new CreateMultichoiceCardDialog(selectedCourse, selectedSubject);
             dialog.show(getParentFragmentManager(), "dialog");
         });
 

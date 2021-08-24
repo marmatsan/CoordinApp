@@ -44,7 +44,7 @@ public class SelectParticipantsListAdapter extends BaseAdapter {
 
         ViewHolder holder;
 
-        if(convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.utils_selectparticipantitem, null);
 
             holder = new ViewHolder();
@@ -70,7 +70,7 @@ public class SelectParticipantsListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    static class ViewHolder{
+    static class ViewHolder {
         TextView participantName;
         MaterialCheckBox selectParticipant;
     }
