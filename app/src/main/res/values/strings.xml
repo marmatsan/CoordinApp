@@ -172,5 +172,9 @@
     <string name="ver_estad_sticas">Ver estadísticas</string>
     <string name="puntuaci_n_media_de_las_respuestas">Puntuación media de las respuestas</string>
     <string name="faltan_por_contestar">Faltan por contestar</string>
+    <string name="abrir">Abrir</string>
+    <string name="ocultar">Ocultar</string>
+    <string name="verRespuestas">Abrir respuestas</string>
+    <string name="lista_de_repsuestas">Lista de repsuestas</string>
 
 </resources>

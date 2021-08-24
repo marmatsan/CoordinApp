@@ -141,6 +141,7 @@ public class Interactivity extends Fragment {
                                                             int totalStudents = 0;
 
                                                             for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
+                                                                totalStudents++;
                                                                 if (studentData.getResponse() != null) {
                                                                     totalGrade = totalGrade + studentData.getMark();
                                                                     studentsThatAnswered++;
@@ -161,7 +162,12 @@ public class Interactivity extends Fragment {
                                                                 newCardParent.setAverageGrade("Puntuación media de las respuestas: " + averageGrade + "/10");
                                                             }
 
-                                                            newCardParent.setStudentsThatHaveNotAnswered("Faltan por contestar: " + (totalStudents - studentsThatAnswered) + "/" + totalStudents);
+                                                            if (studentsThatAnswered == totalStudents) {
+                                                                newCardParent.setStudentsThatHaveNotAnswered("Todos los estudiantes han contestado");
+                                                            } else {
+                                                                newCardParent.setStudentsThatHaveNotAnswered("Faltan por contestar: " + (totalStudents - studentsThatAnswered) + "/" + totalStudents);
+                                                            }
+
                                                             interactivityCardsList.add(newCardParent);
 
                                                         case InteractivityCardType.TYPE_CHOICES:

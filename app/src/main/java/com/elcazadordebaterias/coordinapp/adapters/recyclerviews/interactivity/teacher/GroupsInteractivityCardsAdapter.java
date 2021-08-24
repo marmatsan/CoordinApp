@@ -73,11 +73,11 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
         viewHolder.expandFilesButton.setOnClickListener(view -> {
             if (viewHolder.expandableView.getVisibility() == View.VISIBLE) {
                 viewHolder.expandableView.setVisibility(View.GONE);
-                viewHolder.expandFilesButton.setText(R.string.expandir);
+                viewHolder.expandFilesButton.setText(R.string.abrir);
                 expandState.put(position, false);
             } else {
                 viewHolder.expandableView.setVisibility(View.VISIBLE);
-                viewHolder.expandFilesButton.setText(R.string.colapsar);
+                viewHolder.expandFilesButton.setText(R.string.ocultar);
                 expandState.put(position, true);
             }
         });
@@ -105,7 +105,6 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
             showStatistics = itemView.findViewById(R.id.showStatistics);
             expandableView = itemView.findViewById(R.id.expandableView);
             filesRecyclerView = itemView.findViewById(R.id.filesRecyclerView);
-
         }
     }
 

@@ -42,7 +42,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cardTitle" />
 
         <TextView
-            android:id="@+id/unansweredQuestions"
+            android:id="@+id/notAnsweredStudents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -56,9 +56,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Abrir"
+            android:layout_marginBottom="16dp"
+            android:text="@string/abrir"
+            app:layout_constraintBottom_toTopOf="@+id/expandableView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/unansweredQuestions" />
+            app:layout_constraintTop_toBottomOf="@+id/notAnsweredStudents" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/showResponses"
@@ -66,15 +68,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="Ver respuestas"
+            android:text="@string/lista_de_repsuestas"
             app:layout_constraintStart_toEndOf="@+id/expandView"
-            app:layout_constraintTop_toBottomOf="@+id/unansweredQuestions" />
+            app:layout_constraintTop_toBottomOf="@+id/notAnsweredStudents" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/expandableView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

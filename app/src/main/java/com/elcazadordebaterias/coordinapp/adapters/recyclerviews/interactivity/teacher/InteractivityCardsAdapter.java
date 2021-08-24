@@ -76,7 +76,8 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
                 holder1.cardTitle.setText(inputTextCardParent.getCardTitle());
 
-                // Todo lo relacionado con la puntuación media y las que faltan por contestar
+                holder1.averageMark.setText(inputTextCardParent.getAverageGrade());
+                holder1.notAnsweredStudents.setText(inputTextCardParent.getStudentsThatHaveNotAnswered());
 
                 LinearLayoutManager layoutManager = new LinearLayoutManager(holder1.inputTextCardChildRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
 
@@ -100,11 +101,11 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 holder1.expandView.setOnClickListener(view -> {
                     if (holder1.expandableView.getVisibility() == View.VISIBLE) {
                         holder1.expandableView.setVisibility(View.GONE);
-                        holder1.expandView.setText(R.string.expandir);
+                        holder1.expandView.setText(R.string.verRespuestas);
                         expandState.put(position, false);
                     } else {
                         holder1.expandableView.setVisibility(View.VISIBLE);
-                        holder1.expandView.setText(R.string.colapsar);
+                        holder1.expandView.setText(R.string.ocultar);
                         expandState.put(position, true);
                     }
                 });
@@ -174,7 +175,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
     public static class InputTextCardParentViewHolder extends CardViewHolder {
 
         TextView averageMark;
-        TextView unansweredQuestions;
+        TextView notAnsweredStudents;
         MaterialButton expandView;
         MaterialButton showResponses;
         ConstraintLayout expandableView;
@@ -183,7 +184,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
         public InputTextCardParentViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             averageMark = itemView.findViewById(R.id.averageMark);
-            unansweredQuestions = itemView.findViewById(R.id.unansweredQuestions);
+            notAnsweredStudents = itemView.findViewById(R.id.notAnsweredStudents);
             expandView = itemView.findViewById(R.id.expandView);
             showResponses = itemView.findViewById(R.id.showResponses);
             expandableView = itemView.findViewById(R.id.expandableView);

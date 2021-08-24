@@ -57,6 +57,7 @@ public class InputTextCardsChildAdapter extends RecyclerView.Adapter<InputTextCa
             for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
                 if (studentData.getStudentID().equals(inputTextCardChild.getStudentID())) {
                     studentData.setMark(mark);
+                    studentData.setHasMarkSet(true);
                 }
                 studentsData.add(studentData);
             }
