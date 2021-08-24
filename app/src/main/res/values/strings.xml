@@ -186,5 +186,13 @@
     <string name="actividad_evaluable">Actividad evaluable</string>
     <string name="noSelected">Si la pregunta es evaluable debes de seleccionar la respuesta correcta</string>
     <string name="selecciona_una_de_las_opciones">Selecciona una de las opciones</string>
+    <string name="respuestas_correctas">Respuestas correctas</string>
+    <string name="han_contestado_correctamente">Han contestado correctamente</string>
+    <string name="respuesta_correcta">Respuesta correcta</string>
+    <string name="noEvaluable">Actividad no evaluable</string>
+    <string name="texto_informativo">Texto informativo</string>
+    <string name="listado_de_respuestas">Listado de respuestas</string>
+    <string name="actividad_de_tipo_multirespuesta">Actividad de tipo multirespuesta</string>
+    <string name="actividad_de_tipo_entrada_de_texto">Actividad de tipo entrada de texto</string>
 
 </resources>

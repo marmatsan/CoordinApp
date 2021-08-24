@@ -2,10 +2,14 @@ package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.
 
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -24,6 +28,7 @@ import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.ReminderCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
 import com.google.firebase.firestore.DocumentReference;
@@ -32,6 +37,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -111,18 +118,100 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 break;
 
             case InteractivityCardType.TYPE_CHOICES:
-                /*
-                MultichoiceCard choicesCard = (MultichoiceCard) card;
+
+                MultichoiceCard multichoiceCard = (MultichoiceCard) card;
                 MultiChoiceCardViewHolder holder2 = (MultiChoiceCardViewHolder) holder;
 
-                holder2.cardTitle.setText(choicesCard.getCardTitle());
+                MultichoiceCardDocument multichoiceCardDocument = multichoiceCard.getMultichoiceCardDocument();
 
-                for (String question : choicesCard.getQuestions()) {
-                    RadioButton button = new RadioButton(holder2.radioGroup.getContext());
-                    button.setText(question);
-                    holder2.radioGroup.addView(button);
+                holder2.cardTitle.setText(multichoiceCard.getCardTitle());
+
+                holder2.listOfAnswers.setVisibility(View.GONE);
+
+                // Initialize hashMaps
+                HashMap<Integer, String> identifierTitleMap = new HashMap<Integer, String>();
+                HashMap<Integer, Integer> counterMap = new HashMap<Integer, Integer>();
+
+                for (MultichoiceCardDocument.Question question : multichoiceCardDocument.getQuestionsList()) {
+                    identifierTitleMap.put(question.getQuestionIdentifier(), question.getQuestionTitle());
+                    counterMap.put(question.getQuestionIdentifier(), 0);
                 }
-                 */
+
+                // Subtitle
+                if (multichoiceCardDocument.getHasToBeEvaluated()) {
+
+                    for (MultichoiceCardDocument.Question question : multichoiceCardDocument.getQuestionsList()) {
+                        if (question.getHasCorrectAnswer()) {
+                            String correctAnswer = "Respuesta correcta: " + question.getQuestionTitle();
+                            SpannableStringBuilder str = new SpannableStringBuilder(correctAnswer);
+                            str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Respuesta correcta: ".length() -1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            holder2.correctAnswer.setText(str);
+                            break;
+                        }
+                    }
+
+                } else {
+                    holder2.correctAnswer.setText(R.string.noEvaluable);
+                }
+
+                int nonAnswered = 0;
+
+                for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()) {
+                    int questionIdentifier = studentData.getQuestionRespondedIdentifier();
+
+                    if (questionIdentifier != -1) {
+                        Integer counter = counterMap.get(questionIdentifier);
+                        if (counter != null) {
+                            counter++;
+                            counterMap.put(questionIdentifier, counter);
+                        }
+                    } else {
+                        nonAnswered++;
+                    }
+                }
+
+                if (nonAnswered == multichoiceCardDocument.getStudentsData().size()) {
+                    String informativeText = "A la espera de respuestas";
+                    holder2.informativeText.setText(informativeText);
+                } else if (nonAnswered == 0) {
+                    String informativeText = "Todos los estudiantes han contestado";
+                    holder2.informativeText.setText(informativeText);
+                } else {
+                    String informativeText;
+                    if (nonAnswered == 1) {
+                        informativeText = "Falta por contestar " + nonAnswered + " estudiante";
+                    } else {
+                        informativeText = "Faltan por contestar " + nonAnswered + " estudiantes";
+                    }
+                    holder2.informativeText.setText(informativeText);
+                }
+
+                for (Map.Entry<Integer, Integer> entry : counterMap.entrySet()) {
+                    if (entry.getValue() != 0) {
+                        holder2.listOfAnswers.setVisibility(View.VISIBLE);
+
+                        int percentage = (entry.getValue() * 100) / multichoiceCardDocument.getStudentsData().size();
+
+                        String questionTitle = identifierTitleMap.get(entry.getKey());
+                        String text = questionTitle + ":  Contestada por " + entry.getValue() + " (" + percentage + "%)";
+
+                        TextView textView = new TextView(holder2.questionsContainer.getContext());
+                        textView.setText(text);
+                        textView.setTextColor(Color.rgb(0, 0, 0));
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        params.setMargins(0, 8, 8, 8);
+                        textView.setLayoutParams(params);
+
+                        holder2.questionsContainer.addView(textView);
+
+                    }
+                }
+
+                holder2.setVisibilityOff.setOnClickListener(view -> {
+                    multichoiceCard.getMultichoiceCardDocumentSnapshot().getReference().update("hasTeacherVisibility", false);
+                });
+
+
                 break;
 
             default: // ReminderCard
@@ -193,13 +282,19 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     public static class MultiChoiceCardViewHolder extends CardViewHolder {
 
-        RadioGroup radioGroup;
-        MaterialButton sendAnswer;
+        TextView correctAnswer;
+        TextView informativeText;
+        TextView listOfAnswers;
+        LinearLayout questionsContainer;
+        MaterialButton setVisibilityOff;
 
         public MultiChoiceCardViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            radioGroup = itemView.findViewById(R.id.radioGroup);
-            sendAnswer = itemView.findViewById(R.id.sendAnswer);
+            correctAnswer = itemView.findViewById(R.id.correctAnswer);
+            informativeText = itemView.findViewById(R.id.informativeText);
+            listOfAnswers = itemView.findViewById(R.id.listOfAnswers);
+            questionsContainer = itemView.findViewById(R.id.questionsContainer);
+            setVisibilityOff = itemView.findViewById(R.id.setVisibilityOff);
         }
 
     }

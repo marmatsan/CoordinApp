@@ -121,7 +121,7 @@ public class Interactivity extends Fragment {
                                                     MultichoiceCardDocument multichoiceCardDocument = interactivityCardDocumentSnapshot.toObject(MultichoiceCardDocument.class);
 
                                                     for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()){
-                                                        if (studentData.getStudentID().equals(fAuth.getUid()) && studentData.getResponse() == -1) { //
+                                                        if (studentData.getStudentID().equals(fAuth.getUid()) && studentData.getQuestionRespondedIdentifier() == -1) { //
                                                             MultichoiceCard multiChoiceCard = new MultichoiceCard(multichoiceCardDocument.getTitle(), studentData.getStudentID(), multichoiceCardDocument.getQuestionsList(), interactivityCardDocumentSnapshot);
                                                             interactivityCardsList.add(multiChoiceCard);
                                                             break;

@@ -166,7 +166,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
                             for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multiChoiceCardDocument.getStudentsData()) {
                                 if (studentData.getStudentID().equals(fAuth.getUid())) {
-                                    studentData.setResponse(selectedQuestion.getQuestionIdentifier());
+                                    studentData.setQuestionRespondedIdentifier(selectedQuestion.getQuestionIdentifier());
                                     if (multiChoiceCardDocument.getHasToBeEvaluated()) {
                                         if (selectedQuestion.getHasCorrectAnswer()) {
                                             studentData.setMark(1);

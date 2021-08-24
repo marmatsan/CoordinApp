@@ -42,7 +42,7 @@
         app:layout_constraintBottom_toTopOf="@+id/createReminderCard"
         app:layout_constraintEnd_toEndOf="@+id/createReminderCard"
         app:layout_constraintStart_toStartOf="@+id/createReminderCard"
-        app:srcCompat="@drawable/ic_question"
+        app:srcCompat="@drawable/ic_questionnaire"
         app:tint="@color/white" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

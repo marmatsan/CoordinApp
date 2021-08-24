@@ -8,7 +8,7 @@ public class MultichoiceCardDocument {
 
     private String title;
     private boolean hasToBeEvaluated;
-    private boolean hasAllActivitiesGraded;
+    private boolean hasTeacherVisibility;
     private ArrayList<Question> questionsList;
     private ArrayList<MultichoiceCardStudentData> studentsData;
 
@@ -19,8 +19,8 @@ public class MultichoiceCardDocument {
     public MultichoiceCardDocument(String title, boolean hasToBeEvaluated, ArrayList<Question> questionsList, ArrayList<String> studentsIDs) {
         this.title = title;
         this.hasToBeEvaluated = hasToBeEvaluated;
-        this.hasAllActivitiesGraded = false;
         this.questionsList = questionsList;
+        this.hasTeacherVisibility = true;
 
         ArrayList<MultichoiceCardStudentData> studentsData = new ArrayList<MultichoiceCardStudentData>();
         for (String studentID : studentsIDs) {
@@ -38,8 +38,8 @@ public class MultichoiceCardDocument {
         return hasToBeEvaluated;
     }
 
-    public boolean getHasAllActivitiesGraded() {
-        return hasAllActivitiesGraded;
+    public boolean getHasTeacherVisibility() {
+        return hasTeacherVisibility;
     }
 
     public ArrayList<Question> getQuestionsList() {
@@ -57,7 +57,7 @@ public class MultichoiceCardDocument {
 
     public static class MultichoiceCardStudentData {
         private String studentID;
-        private int response;
+        private int questionRespondedIdentifier;
         private int mark;
 
         public MultichoiceCardStudentData() {
@@ -66,19 +66,19 @@ public class MultichoiceCardDocument {
 
         public MultichoiceCardStudentData(String studentID) {
             this.studentID = studentID;
-            this.response = -1;
+            this.questionRespondedIdentifier = -1;
         }
 
         public String getStudentID() {
             return studentID;
         }
 
-        public int getResponse() {
-            return response;
+        public int getQuestionRespondedIdentifier() {
+            return questionRespondedIdentifier;
         }
 
-        public void setResponse(int response) {
-            this.response = response;
+        public void setQuestionRespondedIdentifier(int questionRespondedIdentifier) {
+            this.questionRespondedIdentifier = questionRespondedIdentifier;
         }
 
         public int getMark() {

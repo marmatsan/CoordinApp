@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,14 @@ import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.t
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.GroupsInteractivityCardsContainer;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InputTextCardParent;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.MultichoiceCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateInputTextCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateMultichoiceCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateReminderCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -169,10 +172,15 @@ public class Interactivity extends Fragment {
                                                             }
 
                                                             interactivityCardsList.add(newCardParent);
-
+                                                            break;
                                                         case InteractivityCardType.TYPE_CHOICES:
+                                                            MultichoiceCard multichoiceCard = new MultichoiceCard(interactivityCardDocumentSnapshot);
 
+                                                            if(multichoiceCard.getHasTeacherVisibility()) {
+                                                                interactivityCardsList.add(multichoiceCard);
+                                                            }
 
+                                                            break;
                                                         case InteractivityCardType.TYPE_REMINDER:
 
                                                     }
@@ -181,8 +189,8 @@ public class Interactivity extends Fragment {
                                             if (!interactivityCardsList.isEmpty()) {
                                                 GroupsInteractivityCardsContainer newContainer = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);
                                                 cardsList.add(newContainer);
-                                                adapter.notifyDataSetChanged();
                                             }
+                                            adapter.notifyDataSetChanged();
                                         }
                                     });
                         }
