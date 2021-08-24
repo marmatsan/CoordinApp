@@ -25,11 +25,15 @@ import com.elcazadordebaterias.coordinapp.R;
 
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -148,13 +152,6 @@ public class CreateMultichoiceCardDialog extends DialogFragment {
 
         });
 
-        ArrayList<String> questionsCounter = new ArrayList<String>();
-        questionsCounter.add("a) ");
-        questionsCounter.add("b) ");
-        questionsCounter.add("c) ");
-        questionsCounter.add("d) ");
-        questionsCounter.add("e) ");
-
         addOption.setOnClickListener(v -> {
             if (inputQuestionTitle.getText().toString().isEmpty()) {
                 inputQuestionTitleLayout.setErrorEnabled(true);
@@ -182,7 +179,7 @@ public class CreateMultichoiceCardDialog extends DialogFragment {
                     textView.setText(newOption);
                     textView.setTextColor(Color.rgb(0, 0, 0));
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(8,8,8,8);
+                    params.setMargins(8, 8, 8, 8);
                     textView.setLayoutParams(params);
 
                     questionsTitleContainer.addView(textView);
@@ -220,16 +217,87 @@ public class CreateMultichoiceCardDialog extends DialogFragment {
                         errorMessage.setText(R.string.debes_agregar_al_menos_dos_opciones);
                         errorMessage.setVisibility(View.VISIBLE);
                     } else {
-                        if (questionIsEvaluable.isChecked()) {
-                            int radioButtonID = questionsRadioGroup.getCheckedRadioButtonId();
-                            if (radioButtonID == -1) {
+                        boolean evaluableQuestion = questionIsEvaluable.isChecked();
+
+                        if (evaluableQuestion) {
+                            int checkedRadioButtonID = questionsRadioGroup.getCheckedRadioButtonId();
+
+                            if (checkedRadioButtonID == -1) {
                                 errorMessage.setText(R.string.noSelected);
                                 errorMessage.setVisibility(View.VISIBLE);
-                            } else {
+                            } else { // Create evaluable multichoicecardactivity
+
+                                String groupID = groupMap.get(groupNamesSpinner.getSelectedItem());
+
+                                DocumentReference groupDocumentRef = collectiveGroupsCollRef.document(groupID);
+
+                                groupDocumentRef
+                                        .get()
+                                        .addOnSuccessListener(documentSnapshot -> {
+                                            CollectiveGroupDocument groupDocument = documentSnapshot.toObject(CollectiveGroupDocument.class);
+                                            ArrayList<Group> groups = groupDocument.getGroups();
+
+                                            for (Group group : groups) {
+                                                if (!group.getHasTeacher()) {
+                                                    ArrayList<String> studentsIDs = group.getParticipantsIds();
+
+                                                    ArrayList<MultichoiceCardDocument.Question> questionsList = new ArrayList<MultichoiceCardDocument.Question>();
+
+                                                    for (int i = 0; i < questionsRadioGroup.getChildCount(); i++) {
+                                                        RadioButton button = (RadioButton) questionsRadioGroup.getChildAt(i);
+                                                        MultichoiceCardDocument.Question newQuestion = new MultichoiceCardDocument.Question(button.getText().toString(), i);
+
+                                                        newQuestion.setHasCorrectAnswer(button.getId() == checkedRadioButtonID);
+
+                                                        questionsList.add(newQuestion);
+                                                    }
+
+                                                    MultichoiceCardDocument multichoiceCardDocument = new MultichoiceCardDocument(cardTitle, true, questionsList, studentsIDs);
+
+                                                    groupDocumentRef.collection("InteractivityCards").add(multichoiceCardDocument);
+                                                    break;
+                                                }
+                                            }
+
+                                        });
 
                                 dialog.dismiss();
                             }
-                        } else {
+                        } else { // Create non evaluable multichoicecardactivity
+
+                            String groupID = groupMap.get(groupNamesSpinner.getSelectedItem());
+
+                            DocumentReference groupDocumentRef = collectiveGroupsCollRef.document(groupID);
+
+                            groupDocumentRef
+                                    .get()
+                                    .addOnSuccessListener(documentSnapshot -> {
+                                        CollectiveGroupDocument groupDocument = documentSnapshot.toObject(CollectiveGroupDocument.class);
+                                        ArrayList<Group> groups = groupDocument.getGroups();
+
+                                        for (Group group : groups) {
+                                            if (!group.getHasTeacher()) {
+                                                ArrayList<String> studentsIDs = group.getParticipantsIds();
+
+                                                ArrayList<MultichoiceCardDocument.Question> questionsList = new ArrayList<MultichoiceCardDocument.Question>();
+
+                                                for (int i = 0; i < questionsTitleContainer.getChildCount(); i++) {
+                                                    TextView questionTitleView = (TextView) questionsRadioGroup.getChildAt(i);
+                                                    MultichoiceCardDocument.Question newQuestion = new MultichoiceCardDocument.Question(questionTitleView.getText().toString(), i);
+
+                                                    newQuestion.setHasCorrectAnswer(false);
+
+                                                    questionsList.add(newQuestion);
+                                                }
+
+                                                MultichoiceCardDocument multichoiceCardDocument = new MultichoiceCardDocument(cardTitle, false, questionsList, studentsIDs);
+
+                                                groupDocumentRef.collection("InteractivityCards").add(multichoiceCardDocument);
+                                                break;
+                                            }
+                                        }
+
+                                    });
 
                             dialog.dismiss();
                         }
