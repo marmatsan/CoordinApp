@@ -24,11 +24,13 @@ import java.util.ArrayList;
 public class InputTextCardsChildAdapter extends RecyclerView.Adapter<InputTextCardsChildAdapter.InputTextCardsChildViewHolder> {
 
     private ArrayList<InputTextCardParent.InputTextCardChild> cardsList;
+    private boolean isEvaluable;
     private final Context context;
 
 
-    public InputTextCardsChildAdapter(ArrayList<InputTextCardParent.InputTextCardChild> cardsList, Context context) {
+    public InputTextCardsChildAdapter(ArrayList<InputTextCardParent.InputTextCardChild> cardsList, boolean isEvaluable, Context context) {
         this.cardsList = cardsList;
+        this.isEvaluable = isEvaluable;
         this.context = context;
     }
 
@@ -44,6 +46,15 @@ public class InputTextCardsChildAdapter extends RecyclerView.Adapter<InputTextCa
         InputTextCardParent.InputTextCardChild inputTextCardChild = cardsList.get(position);
 
         holder.studentAnswer.setText(inputTextCardChild.getResponse());
+
+        if (isEvaluable) {
+            holder.markSlider.setVisibility(View.VISIBLE);
+            holder.addMark.setVisibility(View.VISIBLE);
+        } else {
+            holder.markSlider.setVisibility(View.GONE);
+            holder.addMark.setVisibility(View.GONE);
+        }
+
         holder.addMark.setOnClickListener(v -> {
             float mark = holder.markSlider.getValue();
 

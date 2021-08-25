@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class InputTextCardDocument {
 
     private String title;
+    private boolean hasToBeEvaluated;
     private boolean hasAllActivitiesGraded;
     private boolean hasTeacherVisibility;
 
@@ -16,8 +17,9 @@ public class InputTextCardDocument {
 
     }
 
-    public InputTextCardDocument(String title, ArrayList<String> studentsIDs) {
+    public InputTextCardDocument(String title, boolean hasToBeEvaluated, ArrayList<String> studentsIDs) {
         this.title = title;
+        this.hasToBeEvaluated = hasToBeEvaluated;
         ArrayList<InputTextCardStudentData> studentsData = new ArrayList<InputTextCardStudentData>();
 
         for (String studentID : studentsIDs) {
@@ -31,6 +33,10 @@ public class InputTextCardDocument {
 
     public String getTitle() {
         return title;
+    }
+
+    public boolean getHasToBeEvaluated() {
+        return hasToBeEvaluated;
     }
 
     public boolean getHasAllActivitiesGraded() {

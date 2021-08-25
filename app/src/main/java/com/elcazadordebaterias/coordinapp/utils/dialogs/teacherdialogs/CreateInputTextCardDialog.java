@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -42,6 +43,8 @@ public class CreateInputTextCardDialog extends DialogFragment {
     private TextInputLayout inputCardNameLayout;
     private TextInputEditText inputCardName;
 
+    private CheckBox questionIsEvaluable;
+
     public CreateInputTextCardDialog(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
@@ -67,6 +70,9 @@ public class CreateInputTextCardDialog extends DialogFragment {
         groupNamesSpinner = view.findViewById(R.id.groupNamesSpinner);
         inputCardNameLayout = view.findViewById(R.id.inputCardNameLayout);
         inputCardName = view.findViewById(R.id.inputCardName);
+        questionIsEvaluable = view.findViewById(R.id.questionIsEvaluable);
+        questionIsEvaluable.setActivated(false);
+
 
         HashMap<String, String> groupMap = new HashMap<String, String>();
 
@@ -135,7 +141,7 @@ public class CreateInputTextCardDialog extends DialogFragment {
                                 for (Group group : groups) {
                                     if(!group.getHasTeacher()) {
                                         ArrayList<String> studentsIDs = group.getParticipantsIds();
-                                        InputTextCardDocument textCardDocument = new InputTextCardDocument(cardTitle, studentsIDs);
+                                        InputTextCardDocument textCardDocument = new InputTextCardDocument(cardTitle, questionIsEvaluable.isChecked() ,studentsIDs);
                                         groupDocumentRef.collection("InteractivityCards").add(textCardDocument);
                                         break;
                                     }

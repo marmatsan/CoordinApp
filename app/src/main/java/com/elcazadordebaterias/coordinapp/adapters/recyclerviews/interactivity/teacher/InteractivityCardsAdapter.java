@@ -72,15 +72,36 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 InputTextCardParent inputTextCardParent = (InputTextCardParent) card;
                 InputTextCardParentViewHolder holder1 = (InputTextCardParentViewHolder) holder;
 
+                InputTextCardDocument inputTextCardDocument = inputTextCardParent.getInputTextCardDocument();
+
+                String evaluableText;
+
+                if (inputTextCardDocument.getHasToBeEvaluated()) {
+                    evaluableText = "Actividad evaluable";
+                } else {
+                    evaluableText = "Actividad no evaluable";
+                }
+
+                SpannableStringBuilder strb1 = new SpannableStringBuilder(evaluableText);
+                strb1.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, evaluableText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                holder1.isEvaluable.setText(strb1);
+
                 holder1.cardTitle.setText(inputTextCardParent.getCardTitle());
 
                 // Set information of the card
-                int totalNumberofStudents = inputTextCardParent.getInputTextCardDocument().getStudentsData().size();
+                int totalNumberofStudents = inputTextCardDocument.getStudentsData().size();
                 int nonAnsweredStudents = 0;
+                int studentsWithMarkSet = 0;
+                float sumOfMarks = 0;
 
-                for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardParent.getInputTextCardDocument().getStudentsData()) {
+                for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
                     if (studentData.getResponse() == null) {
                         nonAnsweredStudents++;
+                    } else {
+                        if (studentData.getHasMarkSet()) {
+                            studentsWithMarkSet++;
+                            sumOfMarks = sumOfMarks + studentData.getMark();
+                        }
                     }
                 }
 
@@ -88,17 +109,45 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
                 if (nonAnsweredStudents == totalNumberofStudents) {
                     inputCardinformativeText = "A la espera de respuestas";
-                } else if () {
-
+                } else if (nonAnsweredStudents == 0) {
+                    inputCardinformativeText = "Todos los estudiantes han contestado";
+                } else {
+                    if (nonAnsweredStudents == 1) {
+                        inputCardinformativeText = "Falta por contestar 1 estudiante";
+                    } else {
+                        inputCardinformativeText = "Faltan por contestar " + nonAnsweredStudents + " estudiantes";
+                    }
                 }
 
                 holder1.informativeText.setText(inputCardinformativeText);
-                holder1.notAnsweredStudents.setText(inputTextCardParent.getStudentsThatHaveNotAnswered());
+
+                float averageMark = 0;
+
+                if (studentsWithMarkSet != 0) {
+                    holder1.averageMark.setVisibility(View.VISIBLE);
+                    averageMark = sumOfMarks / studentsWithMarkSet;
+                } else {
+                    holder1.averageMark.setVisibility(View.GONE);
+                }
+
+                String averageMarkString = "Nota media de las respuestas: " + averageMark + "/10";
+
+                SpannableStringBuilder strb = new SpannableStringBuilder(averageMarkString);
+                strb.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Nota media de las respuestas: ".length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                holder1.averageMark.setText(strb);
+
+                // Recyclerview con la lista de respuestas
+
+                if (inputTextCardParent.getInputTextCardChildList().size() == 0) {
+                    holder1.expandView.setVisibility(View.GONE);
+                } else {
+                    holder1.expandView.setVisibility(View.VISIBLE);
+                }
 
                 LinearLayoutManager layoutManager = new LinearLayoutManager(holder1.inputTextCardChildRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
 
                 layoutManager.setInitialPrefetchItemCount(inputTextCardParent.getInputTextCardChildList().size());
-                InputTextCardsChildAdapter inputTextCardsChildAdapter = new InputTextCardsChildAdapter(inputTextCardParent.getInputTextCardChildList(), context);
+                InputTextCardsChildAdapter inputTextCardsChildAdapter = new InputTextCardsChildAdapter(inputTextCardParent.getInputTextCardChildList(), inputTextCardDocument.getHasToBeEvaluated(), context);
 
                 RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
                 SparseBooleanArray expandState = new SparseBooleanArray();
@@ -191,10 +240,8 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
                 if (nonAnswered == multichoiceCardDocument.getStudentsData().size()) {
                     multiChoiceCardInformativeText = "A la espera de respuestas";
-                    holder2.informativeText.setText(multiChoiceCardInformativeText);
                 } else if (nonAnswered == 0) {
                     multiChoiceCardInformativeText = "Todos los estudiantes han contestado";
-                    holder2.informativeText.setText(multiChoiceCardInformativeText);
                 } else {
                     if (nonAnswered == 1) {
                         multiChoiceCardInformativeText = "Falta por contestar 1 estudiante";
@@ -284,8 +331,9 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     public static class InputTextCardParentViewHolder extends CardViewHolder {
 
+        TextView isEvaluable;
         TextView informativeText;
-        TextView notAnsweredStudents;
+        TextView averageMark;
         MaterialButton expandView;
         MaterialButton setVisibilityOff;
         ConstraintLayout expandableView;
@@ -293,8 +341,9 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
         public InputTextCardParentViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            isEvaluable = itemView.findViewById(R.id.isEvaluable);
             informativeText = itemView.findViewById(R.id.informativeText);
-            notAnsweredStudents = itemView.findViewById(R.id.notAnsweredStudents);
+            averageMark = itemView.findViewById(R.id.averageMark);
             expandView = itemView.findViewById(R.id.expandView);
             setVisibilityOff = itemView.findViewById(R.id.setVisibilityOff);
             expandableView = itemView.findViewById(R.id.expandableView);
