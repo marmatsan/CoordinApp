@@ -74,20 +74,14 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
             holder.changeSpoker.setVisibility(View.GONE);
             holder.spokerName.setVisibility(View.GONE);
         } else {
-            fStore
-                    .collection("Students")
-                    .document(groupCard.getSpokerID())
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        String spokerName = (String) documentSnapshot.get("FullName");
-                        if (spokerName != null) {
-                            String spokerNameTitle = "Portavoz del grupo: " + spokerName;
+            String spokerName = groupCard.getSpokerName();
+            if (spokerName != null) {
+                String spokerNameTitle = "Portavoz del grupo: " + spokerName;
 
-                            SpannableStringBuilder strb = new SpannableStringBuilder(spokerNameTitle);
-                            strb.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Portavoz del grupo: ".length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            holder.spokerName.setText(strb);
-                        }
-                    });
+                SpannableStringBuilder strb = new SpannableStringBuilder(spokerNameTitle);
+                strb.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Portavoz del grupo: ".length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                holder.spokerName.setText(strb);
+            }
         }
 
 
@@ -154,7 +148,7 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
 
         holder.changeSpoker.setOnClickListener(v -> {
             ChangeSpokerDialog dialog = new ChangeSpokerDialog(groupCard.getCourseName(), groupCard.getSubjectName(), groupCard.getGroupId(), groupCard.getSpokerID());
-            dialog.show(((AppCompatActivity)context).getSupportFragmentManager(), "dialog");
+            dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");
         });
 
         holder.view.setOnClickListener(v -> {

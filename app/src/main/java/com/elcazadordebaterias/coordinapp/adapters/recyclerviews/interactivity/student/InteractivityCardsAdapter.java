@@ -20,6 +20,7 @@ import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.InteractivityCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.MultichoiceCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.ReminderCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.StandByCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
@@ -65,6 +66,9 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
             case InteractivityCardType.TYPE_CHOICES:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_studentcards_multichoicescard, parent, false);
                 return new MultiChoiceCardViewHolder(view);
+            case InteractivityCardType.TYPE_STANDBY:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_studentcards_standbycard, parent, false);
+                return new StandbyCardCardViewHolder(view);
             default: // ReminderCard
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_interactivity_studentcards_remindercard, parent, false);
                 return new ReminderCardViewHolder(view);
@@ -187,12 +191,20 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
                 break;
 
+            case InteractivityCardType.TYPE_STANDBY:
+                StandByCard standbyCard = (StandByCard) card;
+                StandbyCardCardViewHolder holder3 = (StandbyCardCardViewHolder) holder;
+
+                holder3.cardTitle.setText(standbyCard.getCardTitle());
+                String spokerNameAndMessageText = "Debate con tus compañeros la respuesta correcta. Cuando lo tengáis claro, pide a " + standbyCard.getSpokerName() + " que conteste";
+                holder3.spokerNameAndMessage.setText(spokerNameAndMessageText);
+
             default: // ReminderCard
                 ReminderCard reminderCard = (ReminderCard) card;
-                ReminderCardViewHolder holder3 = (ReminderCardViewHolder) holder;
+                ReminderCardViewHolder holder4 = (ReminderCardViewHolder) holder;
 
-                holder3.cardTitle.setText(reminderCard.getCardTitle());
-                holder3.reminderContainer.setText(reminderCard.getReminderText());
+                holder4.cardTitle.setText(reminderCard.getCardTitle());
+                holder4.reminderContainer.setText(reminderCard.getReminderText());
                 break;
         }
     }
@@ -265,6 +277,16 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
         public ReminderCardViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             reminderContainer = itemView.findViewById(R.id.reminderContainer);
+        }
+    }
+
+    public static class StandbyCardCardViewHolder extends CardViewHolder {
+
+        TextView spokerNameAndMessage;
+
+        public StandbyCardCardViewHolder(@NonNull @NotNull View itemView) {
+            super(itemView);
+            spokerNameAndMessage = itemView.findViewById(R.id.spokerNameAndMessage);
         }
     }
 

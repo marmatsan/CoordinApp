@@ -98,6 +98,7 @@ public class SingleChat extends Fragment {
                                     group.getHasTeacher(),
                                     group.getParticipantNames(),
                                     group.getCollectionId(),
+                                    null,
                                     null
                             );
 

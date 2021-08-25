@@ -87,6 +87,7 @@ public class Interactivity extends Fragment {
 
                         String groupName = collectiveGroupDocument.getName();
                         String spokerID = collectiveGroupDocument.getSpokesStudentID();
+                        String spokerName = collectiveGroupDocument.getSpokerName();
 
                         collectiveGroupDocumentSnapshot
                                 .getReference()
@@ -119,34 +120,24 @@ public class Interactivity extends Fragment {
                                                             InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), interactivityCardDocumentSnapshot);
                                                             interactivityCardsList.add(inputTextCard);
                                                         } else {
-                                                            fStore
-                                                                    .collection("Students")
-                                                                    .document(spokerID)
-                                                                    .get()
-                                                                    .addOnSuccessListener(documentSnapshot -> {
-                                                                        StandByCard standByCard = new StandByCard(inputTextCardDocument.getTitle(), null, (String) documentSnapshot.get("FullName"));
-                                                                        interactivityCardsList.add(standByCard);
-
-                                                                    });
+                                                            StandByCard standByCard = new StandByCard(inputTextCardDocument.getTitle(), null, spokerName);
+                                                            interactivityCardsList.add(standByCard);
                                                         }
-
                                                     } else {
-
-                                                    }
-
-                                                    for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
-                                                        if (studentData.getStudentID().equals(fAuth.getUid()) && studentData.getResponse() == null) {
-                                                            InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), interactivityCardDocumentSnapshot);
-                                                            interactivityCardsList.add(inputTextCard);
-                                                            break;
+                                                        for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
+                                                            if (studentData.getStudentID().equals(fAuth.getUid()) && studentData.getResponse() == null) {
+                                                                InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), interactivityCardDocumentSnapshot);
+                                                                interactivityCardsList.add(inputTextCard);
+                                                                break;
+                                                            }
                                                         }
                                                     }
 
-                                                break;
+                                                    break;
                                                 case InteractivityCardType.TYPE_CHOICES:
                                                     MultichoiceCardDocument multichoiceCardDocument = interactivityCardDocumentSnapshot.toObject(MultichoiceCardDocument.class);
 
-                                                    for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()){
+                                                    for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()) {
                                                         if (studentData.getStudentID().equals(fAuth.getUid()) && studentData.getQuestionRespondedIdentifier() == -1) { //
                                                             MultichoiceCard multiChoiceCard = new MultichoiceCard(multichoiceCardDocument.getTitle(), studentData.getStudentID(), multichoiceCardDocument.getQuestionsList(), interactivityCardDocumentSnapshot);
                                                             interactivityCardsList.add(multiChoiceCard);
@@ -155,7 +146,7 @@ public class Interactivity extends Fragment {
 
                                                     }
 
-                                                break;
+                                                    break;
                                                 default: // Reminder
 
                                             }

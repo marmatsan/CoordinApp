@@ -4,6 +4,7 @@ package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 
@@ -203,21 +204,29 @@ public class Group {
                                         spokerID = spokesStudentID;
                                     }
 
-                                    CollectiveGroupDocument newCollectiveGroupDocument = new CollectiveGroupDocument("Grupo " + identifier, studentsAndTeacherIDs, groups, spokerID);
-
-                                    groupsCollRef
+                                    fStore
+                                            .collection("Students")
+                                            .document(spokerID)
                                             .get()
-                                            .addOnSuccessListener(queryDocumentSnapshots -> {
-                                                boolean groupExists = collectiveGroupExists(queryDocumentSnapshots, newCollectiveGroupDocument.getAllParticipantsIDs());
-                                                if (groupExists) {
-                                                    Toast.makeText(context, "Ya existe un grupo como este (Grupo " + (identifier - 1) + ")", Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    if (petitionDocument != null) {
-                                                        petitionDocument.delete();
-                                                    }
-                                                    groupsCollRef.add(newCollectiveGroupDocument);
-                                                }
+                                            .addOnSuccessListener(documentSnapshot -> {
+                                                String spokerName = (String) documentSnapshot.get("FullName");
+                                                CollectiveGroupDocument newCollectiveGroupDocument = new CollectiveGroupDocument("Grupo " + identifier, studentsAndTeacherIDs, groups, spokerID, spokerName);
+
+                                                groupsCollRef
+                                                        .get()
+                                                        .addOnSuccessListener(queryDocumentSnapshots -> {
+                                                            boolean groupExists = collectiveGroupExists(queryDocumentSnapshots, newCollectiveGroupDocument.getAllParticipantsIDs());
+                                                            if (groupExists) {
+                                                                Toast.makeText(context, "Ya existe un grupo como este (Grupo " + (identifier - 1) + ")", Toast.LENGTH_SHORT).show();
+                                                            } else {
+                                                                if (petitionDocument != null) {
+                                                                    petitionDocument.delete();
+                                                                }
+                                                                groupsCollRef.add(newCollectiveGroupDocument);
+                                                            }
+                                                        });
                                             });
+
 
                                 } else {
                                     String studentID = onlyStudentsIDs.get(0);

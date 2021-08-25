@@ -14,6 +14,7 @@ public class GroupCard {
     private String groupName;
     private String groupId; // The id of the document for this group in Firebase
     private String spokerID;
+    private String spokerName;
     private String courseName;
     private String subjectName;
 
@@ -22,7 +23,7 @@ public class GroupCard {
     private ArrayList<String> participantNames;
     private String collectionId;
 
-    public GroupCard(String groupName, String groupId, String courseName, String subjectName, boolean hasTeacher, ArrayList<String> participantNames, String collectionId, String spokerID) {
+    public GroupCard(String groupName, String groupId, String courseName, String subjectName, boolean hasTeacher, ArrayList<String> participantNames, String collectionId, String spokerID, String spokerName) {
         this.groupName = groupName;
         this.groupId = groupId;
         this.courseName = courseName;
@@ -31,6 +32,7 @@ public class GroupCard {
         this.participantNames = participantNames;
         this.collectionId = collectionId;
         this.spokerID = spokerID;
+        this.spokerName = spokerName;
     }
 
     public String getGroupName() {
@@ -72,4 +74,9 @@ public class GroupCard {
     public String getSpokerID() {
         return spokerID;
     }
+
+    public String getSpokerName() {
+        return spokerName;
+    }
+
 }

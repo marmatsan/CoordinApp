@@ -22,8 +22,10 @@ import com.elcazadordebaterias.coordinapp.utils.customdatamodels.SelectParticipa
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -45,7 +47,8 @@ public class ChangeSpokerDialog extends DialogFragment {
 
     private String groupID;
 
-    HashMap<Integer, String> studentsInfo;
+    HashMap<Integer, String> studentsIDsMap;
+    HashMap<Integer, String> studentsNamesMap;
 
     String spokerID;
 
@@ -54,7 +57,9 @@ public class ChangeSpokerDialog extends DialogFragment {
         this.selectedSubject = selectedSubject;
         this.groupID = groupID;
         this.spokerID = spokerID;
-        this.studentsInfo = new HashMap<Integer, String>();
+        this.studentsIDsMap = new HashMap<Integer, String>();
+        this.studentsNamesMap = new HashMap<Integer, String>();
+
     }
 
     @Override
@@ -96,16 +101,23 @@ public class ChangeSpokerDialog extends DialogFragment {
                 if (checkedButtonID == -1) {
                     Toast.makeText(context, "Selecciona a un nuevo portavoz", Toast.LENGTH_LONG).show();
                 } else {
-                    String newSpokerID = studentsInfo.get(checkedButtonID);
+                    String newSpokerID = studentsIDsMap.get(checkedButtonID);
+                    String newSpokerName = studentsNamesMap.get(checkedButtonID);
 
-                    fStore
+                    DocumentReference grouDocRef = fStore
                             .collection("CoursesOrganization")
                             .document(selectedCourse)
                             .collection("Subjects")
                             .document(selectedSubject)
                             .collection("CollectiveGroups")
-                            .document(groupID)
-                            .update("spokesStudentID", newSpokerID);
+                            .document(groupID);
+
+                    grouDocRef
+                            .update("spokesStudentID", newSpokerID)
+                            .addOnSuccessListener(unused -> {
+                                grouDocRef.update("spokerName", newSpokerName);
+                            });
+
                     dialog.dismiss();
                 }
             });
@@ -139,7 +151,8 @@ public class ChangeSpokerDialog extends DialogFragment {
 
                                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                                     String studentName = (String) document.get("FullName");
-                                    studentsInfo.put(buttonID, document.getId());
+                                    studentsIDsMap.put(buttonID, document.getId());
+                                    studentsNamesMap.put(buttonID, studentName);
 
                                     RadioButton button = new RadioButton(participantsContainer.getContext());
                                     button.setText(studentName);
