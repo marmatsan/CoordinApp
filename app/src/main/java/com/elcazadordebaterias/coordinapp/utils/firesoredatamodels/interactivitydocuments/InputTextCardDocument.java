@@ -8,6 +8,7 @@ public class InputTextCardDocument {
 
     private String title;
     private boolean hasToBeEvaluated;
+    private boolean hasGroupalActivity;
     private boolean hasTeacherVisibility;
     private boolean hasOpenedResponses;
 
@@ -17,11 +18,12 @@ public class InputTextCardDocument {
 
     }
 
-    public InputTextCardDocument(String title, boolean hasToBeEvaluated, ArrayList<String> studentsIDs) {
+    public InputTextCardDocument(String title, boolean hasToBeEvaluated, boolean hasGroupalActivity, ArrayList<String> studentsIDs) {
         this.title = title;
 
         this.hasToBeEvaluated = hasToBeEvaluated;
         ArrayList<InputTextCardStudentData> studentsData = new ArrayList<InputTextCardStudentData>();
+
 
         for (String studentID : studentsIDs) {
             studentsData.add(new InputTextCardStudentData(studentID));
@@ -29,6 +31,7 @@ public class InputTextCardDocument {
 
         this.hasTeacherVisibility = true;
         this.hasOpenedResponses = false;
+        this.hasGroupalActivity = hasGroupalActivity;
         this.studentsData = studentsData;
     }
 
@@ -46,6 +49,10 @@ public class InputTextCardDocument {
 
     public boolean getHasTeacherVisibility() {
         return hasTeacherVisibility;
+    }
+
+    public boolean getHasGroupalActivity() {
+        return hasGroupalActivity;
     }
 
     public int getCardType() {

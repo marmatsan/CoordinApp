@@ -16,10 +16,12 @@ import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.InputTextCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.InteractivityCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.MultichoiceCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.StandByCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -84,6 +86,7 @@ public class Interactivity extends Fragment {
                         CollectiveGroupDocument collectiveGroupDocument = collectiveGroupDocumentSnapshot.toObject(CollectiveGroupDocument.class);
 
                         String groupName = collectiveGroupDocument.getName();
+                        String spokerID = collectiveGroupDocument.getSpokesStudentID();
 
                         collectiveGroupDocumentSnapshot
                                 .getReference()
@@ -109,6 +112,28 @@ public class Interactivity extends Fragment {
                                                 case InteractivityCardType.TYPE_INPUTTEXT:
                                                     InputTextCardDocument inputTextCardDocument = interactivityCardDocumentSnapshot.toObject(InputTextCardDocument.class);
 
+                                                    if (inputTextCardDocument.getHasGroupalActivity()) {
+                                                        InputTextCardDocument.InputTextCardStudentData studentData = inputTextCardDocument.getStudentsData().get(0);
+
+                                                        if (studentData.getStudentID().equals(spokerID)) {
+                                                            InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), interactivityCardDocumentSnapshot);
+                                                            interactivityCardsList.add(inputTextCard);
+                                                        } else {
+                                                            fStore
+                                                                    .collection("Students")
+                                                                    .document(spokerID)
+                                                                    .get()
+                                                                    .addOnSuccessListener(documentSnapshot -> {
+                                                                        StandByCard standByCard = new StandByCard(inputTextCardDocument.getTitle(), null, (String) documentSnapshot.get("FullName"));
+                                                                        interactivityCardsList.add(standByCard);
+
+                                                                    });
+                                                        }
+
+                                                    } else {
+
+                                                    }
+
                                                     for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
                                                         if (studentData.getStudentID().equals(fAuth.getUid()) && studentData.getResponse() == null) {
                                                             InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), interactivityCardDocumentSnapshot);
@@ -117,6 +142,7 @@ public class Interactivity extends Fragment {
                                                         }
                                                     }
 
+                                                break;
                                                 case InteractivityCardType.TYPE_CHOICES:
                                                     MultichoiceCardDocument multichoiceCardDocument = interactivityCardDocumentSnapshot.toObject(MultichoiceCardDocument.class);
 
@@ -129,6 +155,7 @@ public class Interactivity extends Fragment {
 
                                                     }
 
+                                                break;
                                                 default: // Reminder
 
                                             }

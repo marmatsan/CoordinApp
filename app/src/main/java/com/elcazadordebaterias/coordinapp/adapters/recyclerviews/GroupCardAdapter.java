@@ -3,6 +3,8 @@ package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +12,16 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.ChangeSpokerDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateReminderCardDialog;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -23,6 +29,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 
 public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.GroupCardViewHolder> {
@@ -60,7 +67,29 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
         // A student can't have permits to delete a group
         if (userType == UserType.TYPE_STUDENT) {
             holder.deleteGroup.setVisibility(View.GONE);
+            holder.changeSpoker.setVisibility(View.GONE);
         }
+
+        if (groupCard.getSpokerID() == null) {
+            holder.changeSpoker.setVisibility(View.GONE);
+            holder.spokerName.setVisibility(View.GONE);
+        } else {
+            fStore
+                    .collection("Students")
+                    .document(groupCard.getSpokerID())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        String spokerName = (String) documentSnapshot.get("FullName");
+                        if (spokerName != null) {
+                            String spokerNameTitle = "Portavoz del grupo: " + spokerName;
+
+                            SpannableStringBuilder strb = new SpannableStringBuilder(spokerNameTitle);
+                            strb.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Portavoz del grupo: ".length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            holder.spokerName.setText(strb);
+                        }
+                    });
+        }
+
 
         holder.showParticipants.setOnClickListener(v -> {
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
@@ -123,6 +152,11 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
 
         });
 
+        holder.changeSpoker.setOnClickListener(v -> {
+            ChangeSpokerDialog dialog = new ChangeSpokerDialog(groupCard.getCourseName(), groupCard.getSubjectName(), groupCard.getGroupId(), groupCard.getSpokerID());
+            dialog.show(((AppCompatActivity)context).getSupportFragmentManager(), "dialog");
+        });
+
         holder.view.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatActivity.class);
 
@@ -144,15 +178,19 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
     static class GroupCardViewHolder extends RecyclerView.ViewHolder {
         View view;
         TextView groupName;
+        TextView spokerName;
         MaterialButton showParticipants;
         MaterialButton deleteGroup;
+        MaterialButton changeSpoker;
 
         GroupCardViewHolder(View view) {
             super(view);
             this.view = view;
             groupName = view.findViewById(R.id.groupName);
             showParticipants = view.findViewById(R.id.showParticipants);
+            spokerName = view.findViewById(R.id.spokerName);
             deleteGroup = view.findViewById(R.id.deleteGroup);
+            changeSpoker = view.findViewById(R.id.changeSpoker);
         }
     }
 

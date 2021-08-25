@@ -52,21 +52,25 @@ public class SelectParticipantsWithSpokerAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.participantName = convertView.findViewById(R.id.participantName);
             holder.selectParticipant = convertView.findViewById(R.id.selectParticipant);
-            holder.radioButton = convertView.findViewById(R.id.radioButton);
+            holder.selectSpoker = convertView.findViewById(R.id.radioButton);
+            holder.selectSpoker.setVisibility(View.GONE);
 
             holder.selectParticipant.setOnClickListener(checkbox -> {
                 SelectParticipantItemWithSpoker participant = (SelectParticipantItemWithSpoker) holder.selectParticipant.getTag();
                 participant.setSelected(!participant.isSelected()); // If the participant is selected, unselect it
-                Log.d("DEBUGGING", "Checked");
+                if (participant.isSpoker()) {
+                    participant.setSpoker(false);
+                }
+                notifyDataSetChanged();
             });
 
-            holder.radioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                SelectParticipantItemWithSpoker participant = (SelectParticipantItemWithSpoker) holder.selectParticipant.getTag();
-                for(SelectParticipantItemWithSpoker item : participantsList) {
+            holder.selectSpoker.setOnClickListener(view -> {
+                SelectParticipantItemWithSpoker participant = (SelectParticipantItemWithSpoker) holder.selectSpoker.getTag();
+                for (SelectParticipantItemWithSpoker item : participantsList) {
                     item.setSpoker(false);
-                    Log.d("DEBUGGING", "Selected spokesman");
                 }
                 participant.setSpoker(true);
+                notifyDataSetChanged();
             });
 
             convertView.setTag(holder);
@@ -78,9 +82,14 @@ public class SelectParticipantsWithSpokerAdapter extends BaseAdapter {
         SelectParticipantItemWithSpoker participant = participantsList.get(position);
 
         holder.participantName.setText(participant.getParticipantName());
+
         holder.selectParticipant.setTag(participant);
+        holder.selectSpoker.setTag(participant);
+
         holder.selectParticipant.setChecked(participant.isSelected());
-        holder.radioButton.setChecked(participant.isSpoker());
+        holder.selectSpoker.setChecked(participant.isSpoker());
+
+        holder.selectSpoker.setVisibility(participant.isSelected() && getNumberSelected() > 1 ? View.VISIBLE : View.GONE);
 
         return convertView;
     }
@@ -88,7 +97,40 @@ public class SelectParticipantsWithSpokerAdapter extends BaseAdapter {
     static class ViewHolder {
         TextView participantName;
         MaterialCheckBox selectParticipant;
-        RadioButton radioButton;
+        RadioButton selectSpoker;
+    }
+
+    public int getNumberSelected() {
+        int selected = 0;
+
+        for (SelectParticipantItemWithSpoker item : participantsList) {
+            if (item.isSelected()) {
+                selected++;
+            }
+        }
+
+        return selected;
+    }
+
+    public String getSpokerID() {
+        String spokerID = null;
+        for (SelectParticipantItemWithSpoker item : participantsList) {
+            if (item.isSpoker()) {
+                spokerID = item.getParticipantId();
+                break;
+            }
+        }
+        return spokerID;
+    }
+
+    public ArrayList<String> getParticipantsIDs() {
+        ArrayList<String> studentsIDs = new ArrayList<String>();
+        for (SelectParticipantItemWithSpoker item : participantsList) {
+            if (item.isSelected()) {
+                studentsIDs.add(item.getParticipantId());
+            }
+        }
+        return studentsIDs;
     }
 
 }

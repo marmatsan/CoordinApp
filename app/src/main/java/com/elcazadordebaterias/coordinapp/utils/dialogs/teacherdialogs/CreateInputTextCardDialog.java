@@ -44,6 +44,7 @@ public class CreateInputTextCardDialog extends DialogFragment {
     private TextInputEditText inputCardName;
 
     private CheckBox questionIsEvaluable;
+    private CheckBox groupalQuestion;
 
     public CreateInputTextCardDialog(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
@@ -72,6 +73,8 @@ public class CreateInputTextCardDialog extends DialogFragment {
         inputCardName = view.findViewById(R.id.inputCardName);
         questionIsEvaluable = view.findViewById(R.id.questionIsEvaluable);
         questionIsEvaluable.setActivated(false);
+        groupalQuestion = view.findViewById(R.id.groupalQuestion);
+        groupalQuestion.setActivated(false);
 
 
         HashMap<String, String> groupMap = new HashMap<String, String>();
@@ -130,20 +133,28 @@ public class CreateInputTextCardDialog extends DialogFragment {
 
                     String groupID = groupMap.get(groupNamesSpinner.getSelectedItem());
 
-                    DocumentReference groupDocumentRef =  collectiveGroupsCollRef.document(groupID);
+                    DocumentReference groupDocumentRef = collectiveGroupsCollRef.document(groupID);
 
                     groupDocumentRef
                             .get()
                             .addOnSuccessListener(documentSnapshot -> {
                                 CollectiveGroupDocument groupDocument = documentSnapshot.toObject(CollectiveGroupDocument.class);
-                                ArrayList<Group> groups = groupDocument.getGroups();
 
-                                for (Group group : groups) {
-                                    if(!group.getHasTeacher()) {
-                                        ArrayList<String> studentsIDs = group.getParticipantsIds();
-                                        InputTextCardDocument textCardDocument = new InputTextCardDocument(cardTitle, questionIsEvaluable.isChecked() ,studentsIDs);
-                                        groupDocumentRef.collection("InteractivityCards").add(textCardDocument);
-                                        break;
+                                if (groupalQuestion.isChecked()) { // TODO: Make cleaner
+                                    ArrayList<String> studentsIDs = new ArrayList<String>();
+                                    studentsIDs.add(groupDocument.getSpokesStudentID());
+                                    InputTextCardDocument textCardDocument = new InputTextCardDocument(cardTitle, questionIsEvaluable.isChecked(), true, studentsIDs);
+                                    groupDocumentRef.collection("InteractivityCards").add(textCardDocument);
+                                } else {
+                                    ArrayList<Group> groups = groupDocument.getGroups();
+
+                                    for (Group group : groups) {
+                                        if (!group.getHasTeacher()) {
+                                            ArrayList<String> studentsIDs = group.getParticipantsIds();
+                                            InputTextCardDocument textCardDocument = new InputTextCardDocument(cardTitle, questionIsEvaluable.isChecked(), false, studentsIDs);
+                                            groupDocumentRef.collection("InteractivityCards").add(textCardDocument);
+                                            break;
+                                        }
                                     }
                                 }
 

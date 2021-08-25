@@ -9,6 +9,7 @@ public class CollectiveGroupDocument {
     private ArrayList<Group> groups;
     private String spokesStudentID;
 
+
     public CollectiveGroupDocument(){
 
     }

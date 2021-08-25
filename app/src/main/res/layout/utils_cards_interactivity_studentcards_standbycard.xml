@@ -15,21 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/sendResponse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            app:backgroundTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/outlinedTextField"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/outlinedTextField"
-            app:layout_constraintTop_toTopOf="@+id/outlinedTextField"
-            app:srcCompat="@drawable/ic_baseline_send_24" />
-
         <TextView
             android:id="@+id/cardTitle"
             android:layout_width="0dp"
@@ -37,7 +22,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:text="@string/name_of_the_course"
+            android:text="@string/nombre_de_la_actividad"
             android:textColor="@color/colorOnSecondary"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -45,29 +30,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/outlinedTextField"
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:hint="@string/escribe_tu_respuesta"
-            app:boxBackgroundColor="@color/white"
-            app:boxStrokeColor="@color/colorPrimary"
+            android:layout_marginBottom="24dp"
+            android:text="@string/debate_con_tus_compa_eros_para_que_el_portavoz_responda"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/sendResponse"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardTitle">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@+id/cardTitle" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

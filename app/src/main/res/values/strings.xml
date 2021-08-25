@@ -204,5 +204,14 @@
     <string name="_1_selecciona_a_los_participantes_que_quieres_incluir_en_el_grupo">1. Selecciona a los participantes que quieres incluir en el grupo</string>
     <string name="_2_selecciona_al_portavoz_del_grupo">2. Selecciona al portavoz del grupo</string>
     <string name="selecciona_los_participantes_que_quieres_incluir_en_el_grupo_y_al_portavoz">Selecciona los participantes que quieres incluir en el grupo y al portavoz</string>
+    <string name="cambiar_portavoz">Cambiar portavoz</string>
+    <string name="selecciona_al_nuevo_portavoz_del_grupo">Selecciona al nuevo portavoz del grupo</string>
+    <string name="nombre_del_portavoz">Nombre del portavoz</string>
+    <string name="eliminar_grupo">Eliminar grupo</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="nombre_de_la_actividad">Nombre de la actividad</string>
+    <string name="actividad_grupal">Actividad grupal</string>
+    <string name="escribe_tu_respuesta">Escribe tu respuesta</string>
+    <string name="debate_con_tus_compa_eros_para_que_el_portavoz_responda">Debate con tus compañeros para que el portavoz responda</string>
 
 </resources>

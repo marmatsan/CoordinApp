@@ -211,7 +211,8 @@ public class GroupalChat extends Fragment {
                                         selectedSubject,
                                         groupDoc.getHasTeacher(),
                                         groupDoc.getParticipantNames(),
-                                        groupDoc.getCollectionId());
+                                        groupDoc.getCollectionId(),
+                                        group.getSpokesStudentID());
                                 groupList.add(groupCard);
                             }
                         }
@@ -244,7 +245,8 @@ public class GroupalChat extends Fragment {
                 selectedSubject,
                 group.getHasTeacher(),
                 group.getParticipantNames(),
-                group.getCollectionId()
+                group.getCollectionId(),
+                null
         );
 
         Intent intent = new Intent(getContext(), ChatActivity.class);

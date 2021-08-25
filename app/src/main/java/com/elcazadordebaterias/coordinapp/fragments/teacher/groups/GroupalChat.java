@@ -100,7 +100,8 @@ public class GroupalChat extends Fragment {
                                         selectedSubject,
                                         groupDoc.getHasTeacher(),
                                         groupDoc.getParticipantNames(),
-                                        groupDoc.getCollectionId());
+                                        groupDoc.getCollectionId(),
+                                        group.getSpokesStudentID());
                                 groupsList.add(groupCard);
                             }
                         }
