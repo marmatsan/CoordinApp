@@ -47,11 +47,9 @@ public class InputTextCardsChildAdapter extends RecyclerView.Adapter<InputTextCa
         holder.addMark.setOnClickListener(v -> {
             float mark = holder.markSlider.getValue();
 
-            DocumentSnapshot interactivityCardDocument = inputTextCardChild.getDocumentSnapshot();
+            InputTextCardDocument inputTextCardDocument = inputTextCardChild.getInputTextCardDocument();
 
-            InputTextCardDocument inputTextCardDocument = interactivityCardDocument.toObject(InputTextCardDocument.class);
-
-            DocumentReference documentReference = interactivityCardDocument.getReference();
+            DocumentReference documentReference = inputTextCardChild.getDocumentReference();
 
             ArrayList<InputTextCardDocument.InputTextCardStudentData> studentsData = new ArrayList<InputTextCardDocument.InputTextCardStudentData>();
             for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {

@@ -25,7 +25,7 @@ public class InputTextCardDocument {
         }
 
         this.hasAllActivitiesGraded = false;
-        this.hasTeacherVisibility = false;
+        this.hasTeacherVisibility = true;
         this.studentsData = studentsData;
     }
 

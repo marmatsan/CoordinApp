@@ -72,53 +72,59 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
-            android:id="@+id/averageMark"
-            android:layout_width="wrap_content"
+            android:id="@+id/informativeText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="@string/puntuaci_n_media_de_las_respuestas"
+            android:layout_marginEnd="24dp"
+            android:text="@string/texto_informativo"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardTitleLayout" />
 
         <TextView
             android:id="@+id/notAnsweredStudents"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
             android:text="@string/faltan_por_contestar"
-            app:layout_constraintStart_toStartOf="@+id/averageMark"
-            app:layout_constraintTop_toBottomOf="@+id/averageMark" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/informativeText"
+            app:layout_constraintTop_toBottomOf="@+id/informativeText" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/setVisibilityOff"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:text="@string/ocultar"
             android:textColor="@color/black"
             app:backgroundTint="@color/white"
             app:icon="@drawable/ic_baseline_visibility_off_24"
             app:iconTint="@color/black"
-            app:layout_constraintBottom_toBottomOf="@+id/expandView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/expandView"
-            app:layout_constraintTop_toTopOf="@+id/expandView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/notAnsweredStudents"
             app:strokeColor="@color/colorPrimary" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/expandView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/ver_respuestas"
             android:textColor="@color/black"
             app:backgroundTint="@color/white"
             app:icon="@drawable/ic_baseline_folder_open_24"
             app:iconTint="@color/black"
-
+            app:layout_constraintBottom_toTopOf="@+id/expandableView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/notAnsweredStudents" />
+            app:layout_constraintTop_toBottomOf="@+id/setVisibilityOff" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/expandableView"

@@ -1,28 +1,40 @@
 package com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards;
 
+
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 
 public class InputTextCardParent extends InteractivityCard {
 
-    private String averageGrade;
-    private String studentsThatHaveNotAnswered;
-    private ArrayList<InputTextCardChild> inputTextCardChildList;
-    private DocumentSnapshot documentSnapshot;
+    private final ArrayList<InputTextCardChild> inputTextCardChildList;
+    private final DocumentSnapshot documentSnapshot;
 
-    public InputTextCardParent(String cardTitle, ArrayList<InputTextCardChild> inputTextCardChildList, DocumentSnapshot documentSnapshot) {
-        super(cardTitle);
-        this.inputTextCardChildList = inputTextCardChildList;
+    public InputTextCardParent(DocumentSnapshot documentSnapshot) {
+        super(documentSnapshot.toObject(InputTextCardDocument.class).getTitle());
+        this.inputTextCardChildList = new ArrayList<InputTextCardParent.InputTextCardChild>();
         this.documentSnapshot = documentSnapshot;
+
+        populateChildsList();
     }
 
-    public String getAverageGrade() {
-        return averageGrade;
-    }
+    private void populateChildsList() {
 
-    public String getStudentsThatHaveNotAnswered() {
-        return studentsThatHaveNotAnswered;
+        for (InputTextCardDocument.InputTextCardStudentData studentData : getInputTextCardDocument().getStudentsData()) {
+            if (studentData.getResponse() != null) {
+                InputTextCardParent.InputTextCardChild childInputTextCard =
+                        new InputTextCardParent.InputTextCardChild(
+                                studentData.getStudentID(),
+                                studentData.getResponse(),
+                                getInputTextCardDocument(),
+                                documentSnapshot.getReference()
+                        );
+                inputTextCardChildList.add(childInputTextCard);
+            }
+        }
+
     }
 
     public ArrayList<InputTextCardChild> getInputTextCardChildList() {
@@ -33,28 +45,30 @@ public class InputTextCardParent extends InteractivityCard {
         return documentSnapshot;
     }
 
-    public void setAverageGrade(String averageGrade) {
-        this.averageGrade = averageGrade;
+    public InputTextCardDocument getInputTextCardDocument() {
+        return documentSnapshot.toObject(InputTextCardDocument.class);
     }
 
-    public void setStudentsThatHaveNotAnswered(String studentsThatHaveNotAnswered) {
-        this.studentsThatHaveNotAnswered = studentsThatHaveNotAnswered;
+    public boolean getHasTeacherVisibility() {
+        return getInputTextCardDocument().getHasTeacherVisibility();
     }
 
     public static class InputTextCardChild {
 
         private String studentID;
         private String response;
-        private DocumentSnapshot documentSnapshot;
+        private InputTextCardDocument inputTextCardDocument;
+        private DocumentReference documentReference;
 
         public InputTextCardChild() {
 
         }
 
-        public InputTextCardChild(String studentID, String response, DocumentSnapshot documentSnapshot) {
+        public InputTextCardChild(String studentID, String response, InputTextCardDocument inputTextCardDocument, DocumentReference documentReference) {
             this.studentID = studentID;
             this.response = response;
-            this.documentSnapshot = documentSnapshot;
+            this.inputTextCardDocument = inputTextCardDocument;
+            this.documentReference = documentReference;
         }
 
         public String getStudentID() {
@@ -65,8 +79,12 @@ public class InputTextCardParent extends InteractivityCard {
             return response;
         }
 
-        public DocumentSnapshot getDocumentSnapshot() {
-            return documentSnapshot;
+        public InputTextCardDocument getInputTextCardDocument() {
+            return inputTextCardDocument;
+        }
+
+        public DocumentReference getDocumentReference() {
+            return documentReference;
         }
     }
 

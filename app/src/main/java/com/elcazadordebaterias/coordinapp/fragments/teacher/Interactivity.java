@@ -28,6 +28,7 @@ import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivity
 import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -129,54 +130,23 @@ public class Interactivity extends Fragment {
                                             ArrayList<InteractivityCard> interactivityCardsList = new ArrayList<InteractivityCard>();
 
                                             for (DocumentSnapshot interactivityCardDocumentSnapshot : interactivityCardsDocumentSnapshots) {
+
                                                 Long cardType = interactivityCardDocumentSnapshot.getLong("cardType");
 
                                                 if (cardType != null) {
                                                     switch (cardType.intValue()) {
                                                         case InteractivityCardType.TYPE_INPUTTEXT:
-                                                            InputTextCardDocument inputTextCardDocument = interactivityCardDocumentSnapshot.toObject(InputTextCardDocument.class);
+                                                            InputTextCardParent inputTextCardParent = new InputTextCardParent(interactivityCardDocumentSnapshot);
 
-                                                            ArrayList<InputTextCardParent.InputTextCardChild> inputTextCardChildList = new ArrayList<InputTextCardParent.InputTextCardChild>();
-                                                            InputTextCardParent newCardParent = new InputTextCardParent(inputTextCardDocument.getTitle(), inputTextCardChildList, interactivityCardDocumentSnapshot);
-
-                                                            float totalGrade = 0;
-                                                            int studentsThatAnswered = 0;
-                                                            int totalStudents = inputTextCardDocument.getStudentsData().size();
-
-                                                            for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
-                                                                if (studentData.getResponse() != null) {
-                                                                    totalGrade = totalGrade + studentData.getMark();
-                                                                    studentsThatAnswered++;
-                                                                    InputTextCardParent.InputTextCardChild childInputTextCard =
-                                                                            new InputTextCardParent.InputTextCardChild(
-                                                                                    studentData.getStudentID(),
-                                                                                    studentData.getResponse(),
-                                                                                    interactivityCardDocumentSnapshot
-                                                                            );
-                                                                    inputTextCardChildList.add(childInputTextCard);
-                                                                }
+                                                            if (inputTextCardParent.getHasTeacherVisibility()) {
+                                                                interactivityCardsList.add(inputTextCardParent);
                                                             }
 
-                                                            if (studentsThatAnswered == 0) {
-                                                                newCardParent.setAverageGrade("Ningún estudiante ha contestado la pregunta todavía");
-                                                            } else {
-                                                                float averageGrade = totalGrade / studentsThatAnswered;
-                                                                newCardParent.setAverageGrade("Puntuación media de las respuestas: " + averageGrade + "/10");
-                                                            }
-
-                                                            if (studentsThatAnswered == totalStudents) {
-                                                                newCardParent.setStudentsThatHaveNotAnswered("Todos los estudiantes han contestado");
-                                                            } else {
-                                                                newCardParent.setStudentsThatHaveNotAnswered("Faltan por contestar: " + (totalStudents - studentsThatAnswered) + "/" + totalStudents);
-                                                            }
-
-                                                            interactivityCardsList.add(newCardParent);
                                                             break;
-
                                                         case InteractivityCardType.TYPE_CHOICES:
                                                             MultichoiceCard multichoiceCard = new MultichoiceCard(interactivityCardDocumentSnapshot);
 
-                                                            if(multichoiceCard.getHasTeacherVisibility()) {
+                                                            if (multichoiceCard.getHasTeacherVisibility()) {
                                                                 interactivityCardsList.add(multichoiceCard);
                                                             }
 

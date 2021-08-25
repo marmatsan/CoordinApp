@@ -10,10 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -21,18 +18,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.InputTextCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InputTextCardParent;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.MultichoiceCard;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.ReminderCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.slider.Slider;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -75,13 +67,32 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
         InteractivityCard card = cardsList.get(position);
 
         switch (holder.getItemViewType()) {
+
             case InteractivityCardType.TYPE_INPUTTEXT:
                 InputTextCardParent inputTextCardParent = (InputTextCardParent) card;
                 InputTextCardParentViewHolder holder1 = (InputTextCardParentViewHolder) holder;
 
                 holder1.cardTitle.setText(inputTextCardParent.getCardTitle());
 
-                holder1.averageMark.setText(inputTextCardParent.getAverageGrade());
+                // Set information of the card
+                int totalNumberofStudents = inputTextCardParent.getInputTextCardDocument().getStudentsData().size();
+                int nonAnsweredStudents = 0;
+
+                for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardParent.getInputTextCardDocument().getStudentsData()) {
+                    if (studentData.getResponse() == null) {
+                        nonAnsweredStudents++;
+                    }
+                }
+
+                String inputCardinformativeText;
+
+                if (nonAnsweredStudents == totalNumberofStudents) {
+                    inputCardinformativeText = "A la espera de respuestas";
+                } else if () {
+
+                }
+
+                holder1.informativeText.setText(inputCardinformativeText);
                 holder1.notAnsweredStudents.setText(inputTextCardParent.getStudentsThatHaveNotAnswered());
 
                 LinearLayoutManager layoutManager = new LinearLayoutManager(holder1.inputTextCardChildRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
@@ -100,6 +111,10 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 holder1.inputTextCardChildRecyclerView.setAdapter(inputTextCardsChildAdapter);
                 holder1.inputTextCardChildRecyclerView.setRecycledViewPool(viewPool);
 
+                // Button to expand responses
+                holder1.expandView.setText(R.string.verRespuestas);
+                holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_open_24);
+
                 final boolean isExpanded = expandState.get(position); //Check if the view is expanded
                 holder1.expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
 
@@ -107,10 +122,12 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                     if (holder1.expandableView.getVisibility() == View.VISIBLE) {
                         holder1.expandableView.setVisibility(View.GONE);
                         holder1.expandView.setText(R.string.verRespuestas);
+                        holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_open_24);
                         expandState.put(position, false);
                     } else {
                         holder1.expandableView.setVisibility(View.VISIBLE);
-                        holder1.expandView.setText(R.string.ocultar);
+                        holder1.expandView.setText(R.string.ocultarRespuestas);
+                        holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_24);
                         expandState.put(position, true);
                     }
                 });
@@ -144,7 +161,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                         if (question.getHasCorrectAnswer()) {
                             String correctAnswer = "Respuesta correcta: " + question.getQuestionTitle();
                             SpannableStringBuilder str = new SpannableStringBuilder(correctAnswer);
-                            str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Respuesta correcta: ".length() -1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Respuesta correcta: ".length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                             holder2.correctAnswer.setText(str);
                             break;
                         }
@@ -170,27 +187,33 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                     }
                 }
 
+                String multiChoiceCardInformativeText;
+
                 if (nonAnswered == multichoiceCardDocument.getStudentsData().size()) {
-                    String informativeText = "A la espera de respuestas";
-                    holder2.informativeText.setText(informativeText);
+                    multiChoiceCardInformativeText = "A la espera de respuestas";
+                    holder2.informativeText.setText(multiChoiceCardInformativeText);
                 } else if (nonAnswered == 0) {
-                    String informativeText = "Todos los estudiantes han contestado";
-                    holder2.informativeText.setText(informativeText);
+                    multiChoiceCardInformativeText = "Todos los estudiantes han contestado";
+                    holder2.informativeText.setText(multiChoiceCardInformativeText);
                 } else {
-                    String informativeText;
                     if (nonAnswered == 1) {
-                        informativeText = "Falta por contestar " + nonAnswered + " estudiante";
+                        multiChoiceCardInformativeText = "Falta por contestar 1 estudiante";
                     } else {
-                        informativeText = "Faltan por contestar " + nonAnswered + " estudiantes";
+                        multiChoiceCardInformativeText = "Faltan por contestar " + nonAnswered + " estudiantes";
                     }
-                    holder2.informativeText.setText(informativeText);
                 }
+
+                holder2.informativeText.setText(multiChoiceCardInformativeText);
 
                 for (Map.Entry<Integer, Integer> entry : counterMap.entrySet()) {
                     if (entry.getValue() != 0) {
                         holder2.listOfAnswers.setVisibility(View.VISIBLE);
 
-                        int percentage = (entry.getValue() * 100) / multichoiceCardDocument.getStudentsData().size();
+                        int percentage = 0;
+
+                        if (multichoiceCardDocument.getStudentsData().size() != 0) {
+                            percentage = (entry.getValue() * 100) / multichoiceCardDocument.getStudentsData().size();
+                        }
 
                         String questionTitle = identifierTitleMap.get(entry.getKey());
                         String text = questionTitle + ":  Contestada por " + entry.getValue() + " (" + percentage + "%)";
@@ -261,19 +284,19 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     public static class InputTextCardParentViewHolder extends CardViewHolder {
 
-        TextView averageMark;
+        TextView informativeText;
         TextView notAnsweredStudents;
         MaterialButton expandView;
-        MaterialButton showResponses;
+        MaterialButton setVisibilityOff;
         ConstraintLayout expandableView;
         RecyclerView inputTextCardChildRecyclerView;
 
         public InputTextCardParentViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            averageMark = itemView.findViewById(R.id.averageMark);
+            informativeText = itemView.findViewById(R.id.informativeText);
             notAnsweredStudents = itemView.findViewById(R.id.notAnsweredStudents);
             expandView = itemView.findViewById(R.id.expandView);
-            showResponses = itemView.findViewById(R.id.showResponses);
+            setVisibilityOff = itemView.findViewById(R.id.setVisibilityOff);
             expandableView = itemView.findViewById(R.id.expandableView);
             inputTextCardChildRecyclerView = itemView.findViewById(R.id.inputTextCardChildRecyclerView);
         }

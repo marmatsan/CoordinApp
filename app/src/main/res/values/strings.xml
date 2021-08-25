@@ -174,7 +174,8 @@
     <string name="faltan_por_contestar">Faltan por contestar</string>
     <string name="abrir">Abrir</string>
     <string name="ocultar">Ocultar</string>
-    <string name="verRespuestas">Abrir respuestas</string>
+    <string name="verRespuestas">Ver respuestas</string>
+    <string name="ocultarRespuestas">Ocultar respuestas</string>
     <string name="lista_de_repsuestas">Lista de repsuestas</string>
     <string name="_3_agrega_las_preguntas_que_quieras_que_tenga_la_actividad">3. Agrega las opciones que quieras que tenga la actividad y marca la correcta</string>
     <string name="a_adir_pregunta">Añadir opción</string>
