@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.cards.files.FileCard;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -41,7 +42,14 @@ public class FilesCardListAdapter extends RecyclerView.Adapter<FilesCardListAdap
     public void onBindViewHolder(@NonNull FilesCardViewHolder holder, int position) {
         FileCard fileCard = filesList.get(position);
 
-        holder.fileRepresentativeImage.setImageResource(fileCard.getFileRepresentativeImage());
+        if (fileCard.getFileName().endsWith(".pdf")){
+            holder.fileImage.setImageResource(R.drawable.ic_pdf_file);
+        } else if (fileCard.getFileName().endsWith(".jpg") || fileCard.getFileName().endsWith(".jpeg")|| fileCard.getFileName().endsWith(".png")) {
+            holder.fileImage.setImageResource(R.drawable.ic_image);
+        } else {
+            holder.fileImage.setImageResource(R.drawable.ic_file);
+        }
+
         holder.fileName.setText(fileCard.getFileName());
         holder.uploaderName.setText(fileCard.getUploaderName());
         holder.uploadedDate.setText(fileCard.getUploadedDate());
@@ -66,16 +74,16 @@ public class FilesCardListAdapter extends RecyclerView.Adapter<FilesCardListAdap
 
     static class FilesCardViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView fileRepresentativeImage;
+        ImageView fileImage;
         TextView fileName;
         TextView uploaderName;
         TextView uploadedDate;
-        MaterialButton downloadButton;
+        FloatingActionButton downloadButton;
 
         public FilesCardViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            fileRepresentativeImage = itemView.findViewById(R.id.fileRepresentativeImage);
+            fileImage = itemView.findViewById(R.id.fileImage);
             fileName = itemView.findViewById(R.id.fileName);
             uploaderName = itemView.findViewById(R.id.uploaderName);
             uploadedDate = itemView.findViewById(R.id.uploadedDate);

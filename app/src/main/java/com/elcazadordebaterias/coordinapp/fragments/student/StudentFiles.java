@@ -112,7 +112,6 @@ public class StudentFiles extends Fragment {
                                         for (DocumentSnapshot storageFileDoc : queryDocumentSnapshots) {
                                             StorageFile storageFile = storageFileDoc.toObject(StorageFile.class);
                                             FileCard fileCard = new FileCard(
-                                                    R.drawable.ic_baseline_insert_drive_file_24,
                                                     storageFile.getUploaderName(),
                                                     storageFile.getFileName(),
                                                     storageFile.getUploadedDate(),

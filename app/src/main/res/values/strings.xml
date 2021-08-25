@@ -213,5 +213,8 @@
     <string name="actividad_grupal">Actividad grupal</string>
     <string name="escribe_tu_respuesta">Escribe tu respuesta</string>
     <string name="debate_con_tus_compa_eros_para_que_el_portavoz_responda">Debate con tus compañeros para que el portavoz responda</string>
-
+    <string name="mostrar_ocultas">Mostrar ocultas</string>
+    <string name="verActividades">Ver actividades</string>
+    <string name="ocultarActividades">Ocultar actividades</string>
+    <string name="tipo_de_actividad">Tipo de actividad</string>
 </resources>

@@ -183,7 +183,7 @@ public class ChatActivity extends AppCompatActivity {
                         message = fullName + " ha subido el archivo " + fileRef.getFileName() + ". Puedes encontrarlo en la pestaña Archivos o descargarlo haciendo click en el botón";
                     }
 
-                    ChatMessageCard messageCard = new ChatMessageCard(messageTitle, fAuth.getUid(), message, Timestamp.now().toDate(), fileRef);
+                    ChatMessageCard messageCard = new ChatMessageCard(messageTitle, fAuth.getUid(), message, Calendar.getInstance().getTime(), fileRef);
                     chatroomRef
                             .add(messageCard)
                             .addOnSuccessListener(documentReference -> {
@@ -228,7 +228,7 @@ public class ChatActivity extends AppCompatActivity {
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         String type = mime.getExtensionFromMimeType(cR.getType(data));
 
-        if (type.equals("pdf") || type.equals("jpeg") || type.equals("png")) {
+        if (type.equals("pdf") || type.equals("jpg") || type.equals("jpeg") || type.equals("png")) {
 
             String fileNameWithExtension = getFileName(data);
 
@@ -239,8 +239,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
                     Calendar calendar = Calendar.getInstance(); // Returns instance with current date and time set
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); // TODO: Change
-                    String uploadedTime = formatter.format(calendar.getTime());
+                    String uploadedTime = calendar.getTime().toString();
 
                     if (userType == UserType.TYPE_STUDENT) {
                         fStore
@@ -274,7 +273,7 @@ public class ChatActivity extends AppCompatActivity {
             });
 
         } else {
-            Toast.makeText(this, "Archivo no soportado. Se soportan archivos con extensión .pdf, .png y .jpeg", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Archivo no soportado. Se soportan archivos con extensión .pdf, .jpg, .jpeg y .png", Toast.LENGTH_LONG).show();
         }
 
     }

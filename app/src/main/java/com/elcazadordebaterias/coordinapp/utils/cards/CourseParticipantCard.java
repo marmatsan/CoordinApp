@@ -6,7 +6,7 @@ import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.CourseParticipa
  * Object to hold the information of the layout card that represents an user (its name and its e-mail).
  * Used for both teacher and student.
  *
- * The layout of this object is {@link com.elcazadordebaterias.coordinapp.R.layout#utils_courseparticipant}
+ * The layout of this object is {@link com.elcazadordebaterias.coordinapp.R.layout#utils_cards_courseparticipant}
  *
  * @see CourseParticipantAdapter
  * @author Martín Mateos Sánchez

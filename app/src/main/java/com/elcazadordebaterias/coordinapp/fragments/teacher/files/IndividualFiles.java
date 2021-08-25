@@ -99,7 +99,6 @@ public class IndividualFiles extends Fragment {
                                     StorageFile storageRef = doc.toObject(StorageFile.class);
 
                                     filesList.add(new FileCard(
-                                            R.drawable.ic_baseline_insert_drive_file_24,
                                             storageRef.getFileName(),
                                             storageRef.getUploaderName(),
                                             storageRef.getUploadedDate(),

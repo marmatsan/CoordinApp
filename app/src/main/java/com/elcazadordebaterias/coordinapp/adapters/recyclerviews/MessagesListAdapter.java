@@ -82,6 +82,8 @@ public class MessagesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             MessageWithFileViewHolder messageHolder = (MessageWithFileViewHolder) holder;
             messageHolder.messageTitle.setText(messageCard.getMessageTitle());
             messageHolder.message.setText(messageCard.getMessage());
+
+
             messageHolder.date.setText(messageCard.getDate().toString());
 
             messageHolder.downloadFile.setOnClickListener(v -> {
@@ -101,7 +103,7 @@ public class MessagesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             messageHolder.messageTitle.setText(messageCard.getMessageTitle());
             messageHolder.date.setText(messageCard.getDate().toString());
 
-            if (messageCard.getMessage().startsWith("http") || messageCard.getMessage().startsWith("https")) {
+            if (messageCard.getMessage().startsWith("http")) {
                 SpannableString ss = new SpannableString(messageCard.getMessage());
                 ClickableSpan span = new ClickableSpan() {
                     @Override

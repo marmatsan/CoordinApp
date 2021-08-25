@@ -195,6 +195,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 StandByCard standbyCard = (StandByCard) card;
                 StandbyCardCardViewHolder holder3 = (StandbyCardCardViewHolder) holder;
 
+                holder3.cardType.setText(standbyCard.getCardType());
                 holder3.cardTitle.setText(standbyCard.getCardTitle());
                 String spokerNameAndMessageText = "Debate con tus compañeros la respuesta correcta. Cuando lo tengáis claro, pide a " + standbyCard.getSpokerName() + " que conteste";
                 holder3.spokerNameAndMessage.setText(spokerNameAndMessageText);
@@ -285,10 +286,12 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     public static class StandbyCardCardViewHolder extends CardViewHolder {
 
+        TextView cardType;
         TextView spokerNameAndMessage;
 
         public StandbyCardCardViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            cardType = itemView.findViewById(R.id.cardType);
             spokerNameAndMessage = itemView.findViewById(R.id.spokerNameAndMessage);
         }
     }

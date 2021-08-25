@@ -16,6 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.GroupsInteractivityCardsContainer;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -25,6 +28,7 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
     private final RecyclerView.RecycledViewPool viewPool;
     private SparseBooleanArray expandState;
     private Context context;
+    private QuerySnapshot queryDocumentSnapshots;
 
     public GroupsInteractivityCardsAdapter(ArrayList<GroupsInteractivityCardsContainer> coursesList, Context context) {
         this.groupsList = coursesList;
@@ -52,35 +56,62 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GroupsInteractivityCardsViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull GroupsInteractivityCardsViewHolder holder, int position) {
 
         GroupsInteractivityCardsContainer groupsContainerCard = groupsList.get(position);
 
-        viewHolder.groupName.setText(groupsContainerCard.getName());
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(viewHolder.filesRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
-
-        layoutManager.setInitialPrefetchItemCount(groupsContainerCard.getInteractivityCardsList().size());
-        InteractivityCardsAdapter interactivityCardsAdapter = new InteractivityCardsAdapter(groupsContainerCard.getInteractivityCardsList(), context);
-
-        viewHolder.filesRecyclerView.setLayoutManager(layoutManager);
-        viewHolder.filesRecyclerView.setAdapter(interactivityCardsAdapter);
-        viewHolder.filesRecyclerView.setRecycledViewPool(viewPool);
-
-        final boolean isExpanded = expandState.get(position); //Check if the view is expanded
-        viewHolder.expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-
-        viewHolder.expandFilesButton.setOnClickListener(view -> {
-            if (viewHolder.expandableView.getVisibility() == View.VISIBLE) {
-                viewHolder.expandableView.setVisibility(View.GONE);
-                viewHolder.expandFilesButton.setText(R.string.abrir);
-                expandState.put(position, false);
-            } else {
-                viewHolder.expandableView.setVisibility(View.VISIBLE);
-                viewHolder.expandFilesButton.setText(R.string.ocultar);
-                expandState.put(position, true);
+        holder.groupName.setText(groupsContainerCard.getName());
+        holder.showInvisibleCards.setOnClickListener(view -> {
+            if (queryDocumentSnapshots != null) {
+                for (DocumentSnapshot interactivityDocument : queryDocumentSnapshots) {
+                    Boolean isVisible = (Boolean) interactivityDocument.get("hasTeacherVisibility");
+                    if (isVisible != null) {
+                        if (!isVisible) {
+                            interactivityDocument.getReference().update("hasTeacherVisibility", true);
+                        }
+                    }
+                }
+                notifyDataSetChanged();
             }
         });
+
+
+        if (groupsContainerCard.getInteractivityCardsList().size() == 0) {
+            holder.informativeText.setVisibility(View.VISIBLE);
+            String information = "No hay actividades que mostrar";
+            holder.informativeText.setText(information);
+            holder.expandActivitiesButton.setVisibility(View.GONE);
+            holder.expandableView.setVisibility(View.GONE);
+        } else {
+            holder.informativeText.setVisibility(View.GONE);
+            holder.expandActivitiesButton.setVisibility(View.VISIBLE);
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(holder.filesRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
+
+            layoutManager.setInitialPrefetchItemCount(groupsContainerCard.getInteractivityCardsList().size());
+            InteractivityCardsAdapter interactivityCardsAdapter = new InteractivityCardsAdapter(groupsContainerCard.getInteractivityCardsList(), context);
+
+            holder.filesRecyclerView.setLayoutManager(layoutManager);
+            holder.filesRecyclerView.setAdapter(interactivityCardsAdapter);
+            holder.filesRecyclerView.setRecycledViewPool(viewPool);
+
+            final boolean isExpanded = expandState.get(position); //Check if the view is expanded
+            holder.expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+
+            holder.expandActivitiesButton.setOnClickListener(view -> {
+                if (holder.expandableView.getVisibility() == View.VISIBLE) {
+                    holder.expandableView.setVisibility(View.GONE);
+                    holder.expandActivitiesButton.setText(R.string.verActividades);
+                    holder.expandActivitiesButton.setIconResource(R.drawable.ic_baseline_folder_open_24);
+                    expandState.put(position, false);
+                } else {
+                    holder.expandableView.setVisibility(View.VISIBLE);
+                    holder.expandActivitiesButton.setText(R.string.ocultarActividades);
+                    holder.expandActivitiesButton.setIconResource(R.drawable.ic_baseline_folder_24);
+                    expandState.put(position, true);
+                }
+            });
+        }
 
     }
 
@@ -92,7 +123,9 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
     static class GroupsInteractivityCardsViewHolder extends RecyclerView.ViewHolder {
 
         TextView groupName;
-        MaterialButton expandFilesButton;
+        TextView informativeText;
+        MaterialButton expandActivitiesButton;
+        MaterialButton showInvisibleCards;
         ConstraintLayout expandableView;
         RecyclerView filesRecyclerView;
 
@@ -100,10 +133,16 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
             super(itemView);
 
             groupName = itemView.findViewById(R.id.groupName);
-            expandFilesButton = itemView.findViewById(R.id.expandFilesButton);
+            informativeText = itemView.findViewById(R.id.informativeText);
+            expandActivitiesButton = itemView.findViewById(R.id.expandActivitiesButton);
+            showInvisibleCards = itemView.findViewById(R.id.showInvisibleCards);
             expandableView = itemView.findViewById(R.id.expandableView);
             filesRecyclerView = itemView.findViewById(R.id.filesRecyclerView);
         }
+    }
+
+    public void setQueryDocumentSnapshots(QuerySnapshot queryDocumentSnapshots) {
+        this.queryDocumentSnapshots = queryDocumentSnapshots;
     }
 
 }

@@ -121,7 +121,7 @@ public class Interactivity extends Fragment {
                                                                 InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), interactivityCardDocumentSnapshot);
                                                                 interactivityCardsList.add(inputTextCard);
                                                             } else {
-                                                                StandByCard standByCard = new StandByCard(inputTextCardDocument.getTitle(), null, spokerName);
+                                                                StandByCard standByCard = new StandByCard(inputTextCardDocument.getTitle(), null, spokerName, InteractivityCardType.TYPE_INPUTTEXT);
                                                                 interactivityCardsList.add(standByCard);
                                                             }
                                                         }
@@ -139,15 +139,27 @@ public class Interactivity extends Fragment {
                                                 case InteractivityCardType.TYPE_CHOICES:
                                                     MultichoiceCardDocument multichoiceCardDocument = interactivityCardDocumentSnapshot.toObject(MultichoiceCardDocument.class);
 
-                                                    for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()) {
-                                                        if (studentData.getStudentID().equals(fAuth.getUid()) && studentData.getQuestionRespondedIdentifier() == -1) { //
-                                                            MultichoiceCard multiChoiceCard = new MultichoiceCard(multichoiceCardDocument.getTitle(), studentData.getStudentID(), multichoiceCardDocument.getQuestionsList(), interactivityCardDocumentSnapshot);
-                                                            interactivityCardsList.add(multiChoiceCard);
-                                                            break;
+                                                    if (multichoiceCardDocument.getHasGroupalActivity()) {
+                                                        MultichoiceCardDocument.MultichoiceCardStudentData studentData = multichoiceCardDocument.getStudentsData().get(0);
+
+                                                        if (studentData.getQuestionRespondedIdentifier() == -1) {
+                                                            if (fAuth.getUid().equals(spokerID)) {
+                                                                MultichoiceCard multiChoiceCard = new MultichoiceCard(multichoiceCardDocument.getTitle(), studentData.getStudentID(), multichoiceCardDocument.getQuestionsList(), interactivityCardDocumentSnapshot);
+                                                                interactivityCardsList.add(multiChoiceCard);
+                                                            } else {
+                                                                StandByCard standByCard = new StandByCard(multichoiceCardDocument.getTitle(), null, spokerName, InteractivityCardType.TYPE_CHOICES);
+                                                                interactivityCardsList.add(standByCard);
+                                                            }
                                                         }
-
+                                                    } else {
+                                                        for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()) {
+                                                            if (studentData.getStudentID().equals(fAuth.getUid()) && studentData.getQuestionRespondedIdentifier() == -1) { //
+                                                                MultichoiceCard multiChoiceCard = new MultichoiceCard(multichoiceCardDocument.getTitle(), studentData.getStudentID(), multichoiceCardDocument.getQuestionsList(), interactivityCardDocumentSnapshot);
+                                                                interactivityCardsList.add(multiChoiceCard);
+                                                                break;
+                                                            }
+                                                        }
                                                     }
-
                                                     break;
                                                 default: // Reminder
 

@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class MultichoiceCardDocument {
 
     private String title;
-    private boolean hasToBeEvaluated;
     private boolean hasTeacherVisibility;
+    private boolean hasToBeEvaluated;
     private boolean hasGroupalActivity;
     private ArrayList<Question> questionsList;
     private ArrayList<MultichoiceCardStudentData> studentsData;
@@ -28,6 +28,7 @@ public class MultichoiceCardDocument {
         for (String studentID : studentsIDs) {
             studentsData.add(new MultichoiceCardStudentData(studentID));
         }
+
         this.studentsData = studentsData;
 
     }
@@ -44,6 +45,10 @@ public class MultichoiceCardDocument {
         return hasTeacherVisibility;
     }
 
+    public boolean getHasGroupalActivity() {
+        return hasGroupalActivity;
+    }
+
     public ArrayList<Question> getQuestionsList() {
         return questionsList;
     }
@@ -52,12 +57,12 @@ public class MultichoiceCardDocument {
         return studentsData;
     }
 
-    public int getCardType() {
-        return InteractivityCardType.TYPE_CHOICES;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public boolean getHasGroupalActivity() {
-        return hasGroupalActivity;
+    public int getCardType(){
+        return InteractivityCardType.TYPE_CHOICES;
     }
 
     public static class MultichoiceCardStudentData {

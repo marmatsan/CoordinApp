@@ -127,6 +127,8 @@ public class Interactivity extends Fragment {
                                             warningMessage.setText(R.string.noStatistics);
                                             warningMessage.setVisibility(View.VISIBLE);
                                         } else {
+                                            adapter.setQueryDocumentSnapshots(interactivityCardsDocumentSnapshots);
+
                                             ArrayList<InteractivityCard> interactivityCardsList = new ArrayList<InteractivityCard>();
 
                                             for (DocumentSnapshot interactivityCardDocumentSnapshot : interactivityCardsDocumentSnapshots) {
@@ -144,6 +146,7 @@ public class Interactivity extends Fragment {
 
                                                             break;
                                                         case InteractivityCardType.TYPE_CHOICES:
+
                                                             MultichoiceCard multichoiceCard = new MultichoiceCard(interactivityCardDocumentSnapshot);
 
                                                             if (multichoiceCard.getHasTeacherVisibility()) {
@@ -156,11 +159,11 @@ public class Interactivity extends Fragment {
                                                     }
                                                 }
                                             }
-                                            if (!interactivityCardsList.isEmpty()) {
-                                                String groupTitle = "Actividades con el " + groupName;
-                                                GroupsInteractivityCardsContainer newContainer = new GroupsInteractivityCardsContainer(groupTitle, interactivityCardsList);
-                                                cardsList.add(newContainer);
-                                            }
+
+                                            String groupTitle = "Actividades con el " + groupName;
+                                            GroupsInteractivityCardsContainer newContainer = new GroupsInteractivityCardsContainer(groupTitle, interactivityCardsList);
+                                            cardsList.add(newContainer);
+
                                             adapter.notifyDataSetChanged();
                                         }
                                     });

@@ -24,7 +24,7 @@ public class CourseParticipantAdapter extends RecyclerView.Adapter<CoursePartici
     @NonNull
     @Override
     public CourseParticipantViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.utils_courseparticipant, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.utils_cards_courseparticipant, viewGroup, false);
 
         return new CourseParticipantViewHolder(view);
     }
