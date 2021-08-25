@@ -172,7 +172,7 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     int maxGroupIdentifier = Group.getMaxGroupIdentifier(queryDocumentSnapshots);
-                    Group.createGroup(groupsCollRef, selectedCourse, selectedSubject, petition.getPetitionUsersIds(), maxGroupIdentifier + 1, context, documentSnapshot.getReference());
+                    Group.createGroup(groupsCollRef, selectedCourse, selectedSubject, petition.getPetitionUsersIds(), maxGroupIdentifier + 1, context, documentSnapshot.getReference(), null);
                 });
 
     }

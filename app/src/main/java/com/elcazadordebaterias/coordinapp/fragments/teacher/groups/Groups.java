@@ -15,19 +15,16 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.tablayouts.GroupsFragmentAdapter;
 
-import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.CreateGroupDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateGroupDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.AdministrateGroupsDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateAutomaticDialog;
 import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -124,7 +121,7 @@ public class Groups extends Fragment {
         });
 
         createManualGroup.setOnClickListener(v -> {
-            CreateGroupDialog dialog = new CreateGroupDialog(userType, selectedCourse, selectedSubject);
+            CreateGroupDialog dialog = new CreateGroupDialog(selectedCourse, selectedSubject);
             dialog.show(getParentFragmentManager(), "dialog");
         });
 

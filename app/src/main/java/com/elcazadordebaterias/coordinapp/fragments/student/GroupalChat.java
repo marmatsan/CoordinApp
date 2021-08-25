@@ -17,7 +17,8 @@ import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.studentgroups.GroupsContainerCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupsContainerCard;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.CreateGroupDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.studentdialogs.RequestGroupDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateGroupDialog;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
@@ -95,7 +96,7 @@ public class GroupalChat extends Fragment {
                 .collection("IndividualGroups");
 
         requestGroup.setOnClickListener(v -> {
-            CreateGroupDialog dialog = new CreateGroupDialog(userType, selectedCourse, selectedSubject);
+            RequestGroupDialog dialog = new RequestGroupDialog(selectedCourse, selectedSubject);
             dialog.show(getParentFragmentManager(), "dialog");
         });
 

@@ -267,7 +267,7 @@ public class CreateAutomaticDialog extends DialogFragment {
 
                     // Create the groups
                     for (int i = 0; i < subLists.size(); i++) {
-                        Group.createGroup(groupsCollRef, selectedCourse, selectedSubject, subLists.get(i), maxIdentifier + 1 + i, context, null);
+                        Group.createGroup(groupsCollRef, selectedCourse, selectedSubject, subLists.get(i), maxIdentifier + 1 + i, context, null, null);
                     }
 
                 });

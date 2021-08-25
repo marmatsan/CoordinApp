@@ -17,6 +17,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class Group {
@@ -25,8 +26,6 @@ public class Group {
     private String courseName;
     private String subjectName;
     private boolean hasTeacher;
-    private String spokesStudentID;
-
 
     private ArrayList<String> participantsIds;
     private ArrayList<GroupParticipant> participants;
@@ -137,7 +136,7 @@ public class Group {
         return maxGroupIdentifier;
     }
 
-    public static void createGroup(CollectionReference groupsCollRef, String selectedCourse, String selectedSubject, List<String> studentIDs, int identifier, Context context, DocumentReference petitionDocument) {
+    public static void createGroup(CollectionReference groupsCollRef, String selectedCourse, String selectedSubject, List<String> studentIDs, int identifier, Context context, DocumentReference petitionDocument, String spokesStudentID) {
 
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
@@ -195,7 +194,16 @@ public class Group {
 
                                     groups.add(onlyStudentsGroup);
 
-                                    CollectiveGroupDocument newCollectiveGroupDocument = new CollectiveGroupDocument("Grupo " + identifier, studentsAndTeacherIDs, groups);
+                                    String spokerID;
+
+                                    if (spokesStudentID == null) {
+                                        int randomNum = ThreadLocalRandom.current().nextInt(onlyStudentsIDs.size());
+                                        spokerID = onlyStudentsIDs.get(randomNum);
+                                    } else {
+                                        spokerID = spokesStudentID;
+                                    }
+
+                                    CollectiveGroupDocument newCollectiveGroupDocument = new CollectiveGroupDocument("Grupo " + identifier, studentsAndTeacherIDs, groups, spokerID);
 
                                     groupsCollRef
                                             .get()
