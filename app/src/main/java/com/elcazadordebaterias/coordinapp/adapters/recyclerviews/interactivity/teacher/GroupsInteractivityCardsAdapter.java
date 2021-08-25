@@ -93,7 +93,6 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
 
         TextView groupName;
         MaterialButton expandFilesButton;
-        MaterialButton showStatistics;
         ConstraintLayout expandableView;
         RecyclerView filesRecyclerView;
 
@@ -102,7 +101,6 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
 
             groupName = itemView.findViewById(R.id.groupName);
             expandFilesButton = itemView.findViewById(R.id.expandFilesButton);
-            showStatistics = itemView.findViewById(R.id.showStatistics);
             expandableView = itemView.findViewById(R.id.expandableView);
             filesRecyclerView = itemView.findViewById(R.id.filesRecyclerView);
         }

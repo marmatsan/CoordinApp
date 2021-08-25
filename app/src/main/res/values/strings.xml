@@ -171,7 +171,6 @@
     <string name="noCalifications">No hay actividades que evaluar</string>
     <string name="ver_estad_sticas">Ver estadísticas</string>
     <string name="puntuaci_n_media_de_las_respuestas">Puntuación media de las respuestas</string>
-    <string name="faltan_por_contestar">Faltan por contestar</string>
     <string name="abrir">Abrir</string>
     <string name="ocultar">Ocultar</string>
     <string name="verRespuestas">Ver respuestas</string>
@@ -197,5 +196,10 @@
     <string name="actividad_de_tipo_entrada_de_texto">Actividad de tipo entrada de texto</string>
     <string name="ver_respuestas">Ver respuestas</string>
     <string name="actividad_no_evaluable">Actividad no evaluable</string>
+    <string name="nota_media">Nota media</string>
+    <string name="faltan_por_contestar">Faltan por contestar</string>
+    <string name="pendientes_de_evaluar">Pendientes de evaluar</string>
+    <string name="mostrar_actividades_ocultas">Mostrar actividades ocultas</string>
+    <string name="actividades_del_grupo">Actividades del grupo</string>
 
 </resources>

@@ -103,17 +103,31 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:text="@string/faltan_por_contestar"
+            android:text="@string/nota_media"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/informativeText"
             app:layout_constraintTop_toBottomOf="@+id/informativeText" />
+
+        <TextView
+            android:id="@+id/nonEvaluated"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/pendientes_de_evaluar"
+            android:textColor="@color/warning"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/averageMark" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/setVisibilityOff"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
             android:text="@string/ocultar"
             android:textColor="@color/black"
@@ -122,7 +136,7 @@
             app:iconTint="@color/black"
             app:layout_constraintBottom_toTopOf="@+id/expandView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/averageMark"
+            app:layout_constraintTop_toBottomOf="@+id/nonEvaluated"
             app:strokeColor="@color/colorPrimary" />
 
         <com.google.android.material.button.MaterialButton

@@ -157,7 +157,8 @@ public class Interactivity extends Fragment {
                                                 }
                                             }
                                             if (!interactivityCardsList.isEmpty()) {
-                                                GroupsInteractivityCardsContainer newContainer = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);
+                                                String groupTitle = "Actividades con el " + groupName;
+                                                GroupsInteractivityCardsContainer newContainer = new GroupsInteractivityCardsContainer(groupTitle, interactivityCardsList);
                                                 cardsList.add(newContainer);
                                             }
                                             adapter.notifyDataSetChanged();

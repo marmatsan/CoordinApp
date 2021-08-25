@@ -28,6 +28,7 @@ public class InputTextCardParent extends InteractivityCard {
                         new InputTextCardParent.InputTextCardChild(
                                 studentData.getStudentID(),
                                 studentData.getResponse(),
+                                studentData.getHasMarkSet(),
                                 getInputTextCardDocument(),
                                 documentSnapshot.getReference()
                         );
@@ -57,6 +58,7 @@ public class InputTextCardParent extends InteractivityCard {
 
         private String studentID;
         private String response;
+        private boolean hasMarkSet;
         private InputTextCardDocument inputTextCardDocument;
         private DocumentReference documentReference;
 
@@ -64,9 +66,10 @@ public class InputTextCardParent extends InteractivityCard {
 
         }
 
-        public InputTextCardChild(String studentID, String response, InputTextCardDocument inputTextCardDocument, DocumentReference documentReference) {
+        public InputTextCardChild(String studentID, String response, boolean hasMarkSet, InputTextCardDocument inputTextCardDocument, DocumentReference documentReference) {
             this.studentID = studentID;
             this.response = response;
+            this.hasMarkSet = hasMarkSet;
             this.inputTextCardDocument = inputTextCardDocument;
             this.documentReference = documentReference;
         }
@@ -77,6 +80,10 @@ public class InputTextCardParent extends InteractivityCard {
 
         public String getResponse() {
             return response;
+        }
+
+        public boolean getHasMarkSet() {
+            return hasMarkSet;
         }
 
         public InputTextCardDocument getInputTextCardDocument() {

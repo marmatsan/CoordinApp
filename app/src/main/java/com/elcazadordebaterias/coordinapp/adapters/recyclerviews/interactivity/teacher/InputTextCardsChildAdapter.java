@@ -48,8 +48,13 @@ public class InputTextCardsChildAdapter extends RecyclerView.Adapter<InputTextCa
         holder.studentAnswer.setText(inputTextCardChild.getResponse());
 
         if (isEvaluable) {
-            holder.markSlider.setVisibility(View.VISIBLE);
-            holder.addMark.setVisibility(View.VISIBLE);
+            if (inputTextCardChild.getHasMarkSet()) {
+                holder.markSlider.setVisibility(View.GONE);
+                holder.addMark.setVisibility(View.GONE);
+            } else {
+                holder.markSlider.setVisibility(View.VISIBLE);
+                holder.addMark.setVisibility(View.VISIBLE);
+            }
         } else {
             holder.markSlider.setVisibility(View.GONE);
             holder.addMark.setVisibility(View.GONE);

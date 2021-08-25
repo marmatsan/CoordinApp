@@ -24,8 +24,9 @@ public class Group {
     private String name;
     private String courseName;
     private String subjectName;
-
     private boolean hasTeacher;
+    private String spokesStudentID;
+
 
     private ArrayList<String> participantsIds;
     private ArrayList<GroupParticipant> participants;

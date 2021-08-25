@@ -25,6 +25,7 @@ import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCa
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.firestore.DocumentReference;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -92,6 +93,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 int totalNumberofStudents = inputTextCardDocument.getStudentsData().size();
                 int nonAnsweredStudents = 0;
                 int studentsWithMarkSet = 0;
+                int studentsWithNoMarkSet = 0;
                 float sumOfMarks = 0;
 
                 for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
@@ -101,6 +103,8 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                         if (studentData.getHasMarkSet()) {
                             studentsWithMarkSet++;
                             sumOfMarks = sumOfMarks + studentData.getMark();
+                        } else {
+                            studentsWithNoMarkSet++;
                         }
                     }
                 }
@@ -130,6 +134,23 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                     holder1.averageMark.setVisibility(View.GONE);
                 }
 
+                if (!inputTextCardDocument.getHasToBeEvaluated()) {
+                    holder1.nonEvaluated.setVisibility(View.GONE);
+                } else {
+                    if (studentsWithNoMarkSet != 0) {
+                        holder1.nonEvaluated.setVisibility(View.VISIBLE);
+                        String nonEvaluatedStudents;
+                        if (studentsWithNoMarkSet == 1) {
+                            nonEvaluatedStudents = "Falta 1 respuesta por evaluar";
+                        } else {
+                            nonEvaluatedStudents = "Faltan " + studentsWithNoMarkSet + " respuestas por evaluar";
+                        }
+                        holder1.nonEvaluated.setText(nonEvaluatedStudents);
+                    } else {
+                        holder1.nonEvaluated.setVisibility(View.GONE);
+                    }
+                }
+
                 String averageMarkString = "Nota media de las respuestas: " + averageMark + "/10";
 
                 SpannableStringBuilder strb = new SpannableStringBuilder(averageMarkString);
@@ -137,11 +158,19 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 holder1.averageMark.setText(strb);
 
                 // Recyclerview con la lista de respuestas
-
                 if (inputTextCardParent.getInputTextCardChildList().size() == 0) {
                     holder1.expandView.setVisibility(View.GONE);
                 } else {
                     holder1.expandView.setVisibility(View.VISIBLE);
+                    if (inputTextCardDocument.getHasOpenedResponses()) {
+                        holder1.expandableView.setVisibility(View.VISIBLE);
+                        holder1.expandView.setText(R.string.ocultarRespuestas);
+                        holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_24);
+                    } else {
+                        holder1.expandableView.setVisibility(View.GONE);
+                        holder1.expandView.setText(R.string.verRespuestas);
+                        holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_open_24);
+                    }
                 }
 
                 LinearLayoutManager layoutManager = new LinearLayoutManager(holder1.inputTextCardChildRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
@@ -150,35 +179,24 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 InputTextCardsChildAdapter inputTextCardsChildAdapter = new InputTextCardsChildAdapter(inputTextCardParent.getInputTextCardChildList(), inputTextCardDocument.getHasToBeEvaluated(), context);
 
                 RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
-                SparseBooleanArray expandState = new SparseBooleanArray();
-
-                for (int i = 0; i < cardsList.size(); i++) {
-                    expandState.append(i, false);
-                }
 
                 holder1.inputTextCardChildRecyclerView.setLayoutManager(layoutManager);
                 holder1.inputTextCardChildRecyclerView.setAdapter(inputTextCardsChildAdapter);
                 holder1.inputTextCardChildRecyclerView.setRecycledViewPool(viewPool);
 
                 // Button to expand responses
-                holder1.expandView.setText(R.string.verRespuestas);
-                holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_open_24);
-
-                final boolean isExpanded = expandState.get(position); //Check if the view is expanded
-                holder1.expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-
                 holder1.expandView.setOnClickListener(view -> {
-                    if (holder1.expandableView.getVisibility() == View.VISIBLE) {
-                        holder1.expandableView.setVisibility(View.GONE);
-                        holder1.expandView.setText(R.string.verRespuestas);
-                        holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_open_24);
-                        expandState.put(position, false);
+                    DocumentReference documentReference = inputTextCardParent.getDocumentSnapshot().getReference();
+                    if (inputTextCardDocument.getHasOpenedResponses()) {
+                        documentReference.update("hasOpenedResponses", false);
                     } else {
-                        holder1.expandableView.setVisibility(View.VISIBLE);
-                        holder1.expandView.setText(R.string.ocultarRespuestas);
-                        holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_24);
-                        expandState.put(position, true);
+                        documentReference.update("hasOpenedResponses", true);
                     }
+                });
+
+                holder1.setVisibilityOff.setOnClickListener(view -> {
+                    DocumentReference documentReference = inputTextCardParent.getDocumentSnapshot().getReference();
+                    documentReference.update("hasTeacherVisibility", false);
                 });
 
                 break;
@@ -333,6 +351,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
         TextView isEvaluable;
         TextView informativeText;
+        TextView nonEvaluated;
         TextView averageMark;
         MaterialButton expandView;
         MaterialButton setVisibilityOff;
@@ -343,6 +362,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
             super(itemView);
             isEvaluable = itemView.findViewById(R.id.isEvaluable);
             informativeText = itemView.findViewById(R.id.informativeText);
+            nonEvaluated = itemView.findViewById(R.id.nonEvaluated);
             averageMark = itemView.findViewById(R.id.averageMark);
             expandView = itemView.findViewById(R.id.expandView);
             setVisibilityOff = itemView.findViewById(R.id.setVisibilityOff);
