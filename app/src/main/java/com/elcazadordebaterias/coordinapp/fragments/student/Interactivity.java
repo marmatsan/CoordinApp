@@ -116,12 +116,14 @@ public class Interactivity extends Fragment {
                                                     if (inputTextCardDocument.getHasGroupalActivity()) {
                                                         InputTextCardDocument.InputTextCardStudentData studentData = inputTextCardDocument.getStudentsData().get(0);
 
-                                                        if (studentData.getStudentID().equals(spokerID)) {
-                                                            InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), interactivityCardDocumentSnapshot);
-                                                            interactivityCardsList.add(inputTextCard);
-                                                        } else {
-                                                            StandByCard standByCard = new StandByCard(inputTextCardDocument.getTitle(), null, spokerName);
-                                                            interactivityCardsList.add(standByCard);
+                                                        if (studentData.getResponse() == null) {
+                                                            if (fAuth.getUid().equals(spokerID)) {
+                                                                InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), interactivityCardDocumentSnapshot);
+                                                                interactivityCardsList.add(inputTextCard);
+                                                            } else {
+                                                                StandByCard standByCard = new StandByCard(inputTextCardDocument.getTitle(), null, spokerName);
+                                                                interactivityCardsList.add(standByCard);
+                                                            }
                                                         }
                                                     } else {
                                                         for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {

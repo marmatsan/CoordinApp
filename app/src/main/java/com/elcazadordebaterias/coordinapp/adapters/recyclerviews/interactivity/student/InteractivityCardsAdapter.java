@@ -198,6 +198,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 holder3.cardTitle.setText(standbyCard.getCardTitle());
                 String spokerNameAndMessageText = "Debate con tus compañeros la respuesta correcta. Cuando lo tengáis claro, pide a " + standbyCard.getSpokerName() + " que conteste";
                 holder3.spokerNameAndMessage.setText(spokerNameAndMessageText);
+                break;
 
             default: // ReminderCard
                 ReminderCard reminderCard = (ReminderCard) card;
@@ -224,6 +225,8 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
             viewType = InteractivityCardType.TYPE_INPUTTEXT;
         } else if (card instanceof MultichoiceCard) {
             viewType = InteractivityCardType.TYPE_CHOICES;
+        } else if (card instanceof StandByCard) {
+            viewType = InteractivityCardType.TYPE_STANDBY;
         } else { // ReminderCard
             viewType = InteractivityCardType.TYPE_REMINDER;
         }

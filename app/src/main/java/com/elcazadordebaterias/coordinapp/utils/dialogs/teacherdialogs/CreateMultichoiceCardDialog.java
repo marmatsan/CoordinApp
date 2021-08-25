@@ -59,6 +59,7 @@ public class CreateMultichoiceCardDialog extends DialogFragment {
 
     private FloatingActionButton addOption;
     private CheckBox questionIsEvaluable;
+    private CheckBox groupalQuestion;
 
     private LinearLayout questionsTitleContainer;
     private RadioGroup questionsRadioGroup;
@@ -99,6 +100,9 @@ public class CreateMultichoiceCardDialog extends DialogFragment {
 
         questionIsEvaluable = view.findViewById(R.id.questionIsEvaluable);
         questionIsEvaluable.setChecked(false);
+
+        groupalQuestion = view.findViewById(R.id.groupalQuestion);
+        groupalQuestion.setChecked(false);
 
         questionsTitleContainer = view.findViewById(R.id.questionsTitleContainer);
         questionsRadioGroup = view.findViewById(R.id.questionsRadioGroup);
@@ -235,30 +239,49 @@ public class CreateMultichoiceCardDialog extends DialogFragment {
                                         .get()
                                         .addOnSuccessListener(documentSnapshot -> {
                                             CollectiveGroupDocument groupDocument = documentSnapshot.toObject(CollectiveGroupDocument.class);
-                                            ArrayList<Group> groups = groupDocument.getGroups();
 
-                                            for (Group group : groups) {
-                                                if (!group.getHasTeacher()) {
-                                                    ArrayList<String> studentsIDs = group.getParticipantsIds();
+                                            if (groupalQuestion.isChecked()) {
+                                                ArrayList<String> studentsIDs = new ArrayList<String>();
+                                                ArrayList<MultichoiceCardDocument.Question> questionsList = new ArrayList<MultichoiceCardDocument.Question>();
 
-                                                    ArrayList<MultichoiceCardDocument.Question> questionsList = new ArrayList<MultichoiceCardDocument.Question>();
+                                                studentsIDs.add(groupDocument.getSpokesStudentID());
 
-                                                    for (int i = 0; i < questionsRadioGroup.getChildCount(); i++) {
-                                                        RadioButton button = (RadioButton) questionsRadioGroup.getChildAt(i);
-                                                        MultichoiceCardDocument.Question newQuestion = new MultichoiceCardDocument.Question(button.getText().toString(), i);
+                                                for (int i = 0; i < questionsRadioGroup.getChildCount(); i++) {
+                                                    RadioButton button = (RadioButton) questionsRadioGroup.getChildAt(i);
+                                                    MultichoiceCardDocument.Question newQuestion = new MultichoiceCardDocument.Question(button.getText().toString(), i);
 
-                                                        newQuestion.setHasCorrectAnswer(button.getId() == checkedRadioButtonID);
+                                                    newQuestion.setHasCorrectAnswer(button.getId() == checkedRadioButtonID);
 
-                                                        questionsList.add(newQuestion);
+                                                    questionsList.add(newQuestion);
+                                                }
+
+                                                MultichoiceCardDocument multichoiceCardDocument = new MultichoiceCardDocument(cardTitle, true, true, questionsList, studentsIDs);
+                                                groupDocumentRef.collection("InteractivityCards").add(multichoiceCardDocument);
+                                            } else {
+                                                ArrayList<Group> groups = groupDocument.getGroups();
+
+                                                for (Group group : groups) {
+                                                    if (!group.getHasTeacher()) {
+                                                        ArrayList<String> studentsIDs = group.getParticipantsIds();
+
+                                                        ArrayList<MultichoiceCardDocument.Question> questionsList = new ArrayList<MultichoiceCardDocument.Question>();
+
+                                                        for (int i = 0; i < questionsRadioGroup.getChildCount(); i++) {
+                                                            RadioButton button = (RadioButton) questionsRadioGroup.getChildAt(i);
+                                                            MultichoiceCardDocument.Question newQuestion = new MultichoiceCardDocument.Question(button.getText().toString(), i);
+
+                                                            newQuestion.setHasCorrectAnswer(button.getId() == checkedRadioButtonID);
+
+                                                            questionsList.add(newQuestion);
+                                                        }
+
+                                                        MultichoiceCardDocument multichoiceCardDocument = new MultichoiceCardDocument(cardTitle, true, false, questionsList, studentsIDs);
+
+                                                        groupDocumentRef.collection("InteractivityCards").add(multichoiceCardDocument);
+                                                        break;
                                                     }
-
-                                                    MultichoiceCardDocument multichoiceCardDocument = new MultichoiceCardDocument(cardTitle, true, questionsList, studentsIDs);
-
-                                                    groupDocumentRef.collection("InteractivityCards").add(multichoiceCardDocument);
-                                                    break;
                                                 }
                                             }
-
                                         });
 
                                 dialog.dismiss();
@@ -290,7 +313,7 @@ public class CreateMultichoiceCardDialog extends DialogFragment {
                                                     questionsList.add(newQuestion);
                                                 }
 
-                                                MultichoiceCardDocument multichoiceCardDocument = new MultichoiceCardDocument(cardTitle, false, questionsList, studentsIDs);
+                                                MultichoiceCardDocument multichoiceCardDocument = new MultichoiceCardDocument(cardTitle, false, groupalQuestion.isChecked(), questionsList, studentsIDs);
 
                                                 groupDocumentRef.collection("InteractivityCards").add(multichoiceCardDocument);
                                                 break;

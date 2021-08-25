@@ -9,6 +9,7 @@ public class MultichoiceCardDocument {
     private String title;
     private boolean hasToBeEvaluated;
     private boolean hasTeacherVisibility;
+    private boolean hasGroupalActivity;
     private ArrayList<Question> questionsList;
     private ArrayList<MultichoiceCardStudentData> studentsData;
 
@@ -16,9 +17,10 @@ public class MultichoiceCardDocument {
 
     }
 
-    public MultichoiceCardDocument(String title, boolean hasToBeEvaluated, ArrayList<Question> questionsList, ArrayList<String> studentsIDs) {
+    public MultichoiceCardDocument(String title, boolean hasToBeEvaluated, boolean hasGroupalActivity, ArrayList<Question> questionsList, ArrayList<String> studentsIDs) {
         this.title = title;
         this.hasToBeEvaluated = hasToBeEvaluated;
+        this.hasGroupalActivity = hasGroupalActivity;
         this.questionsList = questionsList;
         this.hasTeacherVisibility = true;
 
@@ -54,6 +56,9 @@ public class MultichoiceCardDocument {
         return InteractivityCardType.TYPE_CHOICES;
     }
 
+    public boolean getHasGroupalActivity() {
+        return hasGroupalActivity;
+    }
 
     public static class MultichoiceCardStudentData {
         private String studentID;

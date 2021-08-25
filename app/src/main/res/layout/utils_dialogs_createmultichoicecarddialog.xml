@@ -131,6 +131,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/inputQuestionTitleLayout" />
 
+            <CheckBox
+                android:id="@+id/groupalQuestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/actividad_grupal"
+                app:layout_constraintBottom_toBottomOf="@+id/questionIsEvaluable"
+                app:layout_constraintStart_toEndOf="@+id/questionIsEvaluable"
+                app:layout_constraintTop_toTopOf="@+id/questionIsEvaluable" />
+
             <TextView
                 android:id="@+id/textView5"
                 android:layout_width="0dp"
