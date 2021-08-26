@@ -1,7 +1,6 @@
 package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.teacher;
 
 import android.content.Context;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,23 +13,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.GroupsInteractivityCardsContainer;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCardsContainer;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<GroupsInteractivityCardsAdapter.GroupsInteractivityCardsViewHolder> {
+public class GroupsInteractivityCardsContainerAdapter extends RecyclerView.Adapter<GroupsInteractivityCardsContainerAdapter.GroupsInteractivityCardsViewHolder> {
 
-    private ArrayList<GroupsInteractivityCardsContainer> groupsList;
+    private ArrayList<InteractivityCardsContainer> groupsList;
     private final RecyclerView.RecycledViewPool viewPool;
     private SparseBooleanArray expandState;
     private Context context;
     private QuerySnapshot queryDocumentSnapshots;
 
-    public GroupsInteractivityCardsAdapter(ArrayList<GroupsInteractivityCardsContainer> coursesList, Context context) {
+    public GroupsInteractivityCardsContainerAdapter(ArrayList<InteractivityCardsContainer> coursesList, Context context) {
         this.groupsList = coursesList;
 
         viewPool = new RecyclerView.RecycledViewPool();
@@ -58,7 +56,7 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
     @Override
     public void onBindViewHolder(@NonNull GroupsInteractivityCardsViewHolder holder, int position) {
 
-        GroupsInteractivityCardsContainer groupsContainerCard = groupsList.get(position);
+        InteractivityCardsContainer groupsContainerCard = groupsList.get(position);
 
         holder.groupName.setText(groupsContainerCard.getName());
         holder.showInvisibleCards.setOnClickListener(view -> {
@@ -74,6 +72,12 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
                 notifyDataSetChanged();
             }
         });
+
+        if (groupsContainerCard.getEvaluableGroupalTextCards() != 0) {
+            holder.averageGroupalTextMark.setText(groupsContainerCard.getAverageGroupalTextMark());
+        } else {
+            holder.groupalStatistics.setVisibility(View.GONE);
+        }
 
 
         if (groupsContainerCard.getInteractivityCardsList().size() == 0) {
@@ -124,6 +128,10 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
 
         TextView groupName;
         TextView informativeText;
+
+        ConstraintLayout groupalStatistics;
+        TextView averageGroupalTextMark;
+
         MaterialButton expandActivitiesButton;
         MaterialButton showInvisibleCards;
         ConstraintLayout expandableView;
@@ -134,6 +142,12 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
 
             groupName = itemView.findViewById(R.id.groupName);
             informativeText = itemView.findViewById(R.id.informativeText);
+
+            groupalStatistics = itemView.findViewById(R.id.groupalStatistics);
+            averageGroupalTextMark = itemView.findViewById(R.id.averageGroupalTextMark);
+
+
+
             expandActivitiesButton = itemView.findViewById(R.id.expandActivitiesButton);
             showInvisibleCards = itemView.findViewById(R.id.showInvisibleCards);
             expandableView = itemView.findViewById(R.id.expandableView);

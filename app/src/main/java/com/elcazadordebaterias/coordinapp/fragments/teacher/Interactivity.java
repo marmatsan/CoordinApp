@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.teacher.GroupsInteractivityCardsAdapter;
-import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.GroupsInteractivityCardsContainer;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.interactivity.teacher.GroupsInteractivityCardsContainerAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCardsContainer;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InputTextCardParent;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.MultichoiceCard;
@@ -24,15 +24,15 @@ import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateMul
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateReminderCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
-import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Interactivity extends Fragment {
 
@@ -80,12 +80,14 @@ public class Interactivity extends Fragment {
 
         // InteractivityCardsContainer
         RecyclerView interactivityCardsContainerRecyclerView = view.findViewById(R.id.interactivityCardsContainer);
-        ArrayList<GroupsInteractivityCardsContainer> cardsList = new ArrayList<GroupsInteractivityCardsContainer>();
-        GroupsInteractivityCardsAdapter adapter = new GroupsInteractivityCardsAdapter(cardsList, getContext());
+        ArrayList<InteractivityCardsContainer> interactivityContainerList = new ArrayList<InteractivityCardsContainer>();
+        GroupsInteractivityCardsContainerAdapter adapter = new GroupsInteractivityCardsContainerAdapter(interactivityContainerList, getContext());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         interactivityCardsContainerRecyclerView.setAdapter(adapter);
         interactivityCardsContainerRecyclerView.setLayoutManager(layoutManager);
+
+        HashMap<String,InteractivityCardsContainer> info = new HashMap<String, InteractivityCardsContainer>();
 
         fStore
                 .collection("CoursesOrganization")
@@ -101,6 +103,7 @@ public class Interactivity extends Fragment {
                         return;
                     }
 
+                    info.clear();
                     if (collectiveGroupsDocumentSnapshots.isEmpty()) {
                         hideButtons();
                         warningMessage.setText(R.string.noGroups);
@@ -109,6 +112,9 @@ public class Interactivity extends Fragment {
                         showButtons();
                         for (DocumentSnapshot documentSnapshot : collectiveGroupsDocumentSnapshots) {
                             String groupName = documentSnapshot.toObject(CollectiveGroupDocument.class).getName();
+
+                            info.put(groupName, null);
+
                             warningMessage.setVisibility(View.GONE);
 
                             documentSnapshot
@@ -122,11 +128,13 @@ public class Interactivity extends Fragment {
                                             return;
                                         }
 
-                                        cardsList.clear();
                                         if (interactivityCardsDocumentSnapshots.isEmpty()) {
                                             warningMessage.setText(R.string.noStatistics);
                                             warningMessage.setVisibility(View.VISIBLE);
                                         } else {
+
+                                            ArrayList<Integer> statistics = getCardStatistics(interactivityCardsDocumentSnapshots);
+
                                             adapter.setQueryDocumentSnapshots(interactivityCardsDocumentSnapshots);
 
                                             ArrayList<InteractivityCard> interactivityCardsList = new ArrayList<InteractivityCard>();
@@ -161,9 +169,8 @@ public class Interactivity extends Fragment {
                                             }
 
                                             String groupTitle = "Actividades con el " + groupName;
-                                            GroupsInteractivityCardsContainer newContainer = new GroupsInteractivityCardsContainer(groupTitle, interactivityCardsList);
-                                            cardsList.add(newContainer);
-
+                                            InteractivityCardsContainer newInteractivityCardsContainer = new InteractivityCardsContainer(groupTitle, interactivityCardsList);
+                                            interactivityContainerList.add(newInteractivityCardsContainer);
                                             adapter.notifyDataSetChanged();
                                         }
                                     });
@@ -181,17 +188,23 @@ public class Interactivity extends Fragment {
 
         createInteractivityCard.setOnClickListener(v -> buttonAnimator.onButtonClicked());
 
-        createInputTextCard.setOnClickListener(v -> {
+        createInputTextCard.setOnClickListener(v ->
+
+        {
             CreateInputTextCardDialog dialog = new CreateInputTextCardDialog(selectedCourse, selectedSubject);
             dialog.show(getParentFragmentManager(), "dialog");
         });
 
-        createMultichoiceCard.setOnClickListener(v -> {
+        createMultichoiceCard.setOnClickListener(v ->
+
+        {
             CreateMultichoiceCardDialog dialog = new CreateMultichoiceCardDialog(selectedCourse, selectedSubject);
             dialog.show(getParentFragmentManager(), "dialog");
         });
 
-        createReminderCard.setOnClickListener(v -> {
+        createReminderCard.setOnClickListener(v ->
+
+        {
             CreateReminderCardDialog dialog = new CreateReminderCardDialog();
             dialog.show(getParentFragmentManager(), "dialog");
         });
@@ -208,6 +221,45 @@ public class Interactivity extends Fragment {
 
     private void showButtons() {
         createInteractivityCard.setVisibility(View.VISIBLE);
+    }
+
+    private ArrayList<Integer> getCardStatistics(QuerySnapshot interactivityCardsDocumentSnapshots){
+        ArrayList<Integer> statistics = new ArrayList<Integer>();
+
+        int evaluableGroupalTextCards = 0;
+        int totalGroupalTextMark = 0;
+
+        for (DocumentSnapshot interactivityCardsDocumentSnapshot : interactivityCardsDocumentSnapshots) {
+            Long cardType = interactivityCardsDocumentSnapshot.getLong("cardType");
+
+            if (cardType != null) {
+                if (cardType == InteractivityCardType.TYPE_INPUTTEXT) {
+                    InputTextCardDocument inputTextCardDocument = interactivityCardsDocumentSnapshot.toObject(InputTextCardDocument.class);
+
+                    if (inputTextCardDocument.getHasToBeEvaluated()) {
+                        if (inputTextCardDocument.getHasGroupalActivity()) {
+                            InputTextCardDocument.InputTextCardStudentData groupData = inputTextCardDocument.getStudentsData().get(0);
+                            if (groupData.getHasMarkSet()) {
+                                evaluableGroupalTextCards++;
+                                totalGroupalTextMark += groupData.getMark();
+                            }
+                        }
+
+
+                    } else {
+
+                    }
+
+                } else if (cardType == InteractivityCardType.TYPE_CHOICES) {
+
+                }
+            }
+        }
+
+        statistics.add(evaluableGroupalTextCards);
+        statistics.add(totalGroupalTextMark);
+
+        return statistics;
     }
 
 }
