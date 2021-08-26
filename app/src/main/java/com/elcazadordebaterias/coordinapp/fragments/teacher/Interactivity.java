@@ -25,6 +25,7 @@ import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateRem
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -53,7 +54,11 @@ public class Interactivity extends Fragment {
     ArrayList<InteractivityCardsContainer> interactivityContainerList;
     GroupsInteractivityCardsContainerAdapter adapter;
 
-    HashMap<String, ArrayList<InteractivityCard>> info;
+    HashMap<String, ArrayList<InteractivityCard>> interactivityListsMap;
+    HashMap<String, Boolean> hasDocumentsMap;
+    HashMap<String, QuerySnapshot> allInteractivityDocumentsSnapshotsMap;
+
+    TextView explicativeError;
 
     public Interactivity(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
@@ -72,6 +77,9 @@ public class Interactivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_teacher_interactivity, container, false);
 
+        explicativeError = view.findViewById(R.id.explicativeError);
+        explicativeError.setVisibility(View.GONE);
+
         // Buttons
         createInteractivityCard = view.findViewById(R.id.createInteractivityCard);
         createInputTextCard = view.findViewById(R.id.createInputTextCard);
@@ -87,7 +95,9 @@ public class Interactivity extends Fragment {
         interactivityCardsContainerRecyclerView.setAdapter(adapter);
         interactivityCardsContainerRecyclerView.setLayoutManager(layoutManager);
 
-        info = new HashMap<String, ArrayList<InteractivityCard>>();
+        interactivityListsMap = new HashMap<String, ArrayList<InteractivityCard>>();
+        hasDocumentsMap = new HashMap<String, Boolean>();
+        allInteractivityDocumentsSnapshotsMap = new HashMap<String, QuerySnapshot>();
 
         fStore
                 .collection("CoursesOrganization")
@@ -95,24 +105,21 @@ public class Interactivity extends Fragment {
                 .collection("Subjects")
                 .document(selectedSubject)
                 .collection("CollectiveGroups")
-                .addSnapshotListener((collectiveGroupsDocumentSnapshots, error) -> {
+                .get()
+                .addOnSuccessListener(collectiveGroupsDocumentSnapshots -> {
 
-                    if (error != null) {
-                        return;
-                    } else if (collectiveGroupsDocumentSnapshots == null) {
-                        return;
-                    }
-
-                    info.clear();
                     if (collectiveGroupsDocumentSnapshots.isEmpty()) {
+                        explicativeError.setText(R.string.noGroupsInteractivity);
+                        explicativeError.setVisibility(View.VISIBLE);
                         hideButtons();
                     } else {
                         showButtons();
+                        explicativeError.setVisibility(View.GONE);
                         for (DocumentSnapshot documentSnapshot : collectiveGroupsDocumentSnapshots) {
                             String groupName = documentSnapshot.toObject(CollectiveGroupDocument.class).getName();
 
                             ArrayList<InteractivityCard> interactivityCardsList = new ArrayList<InteractivityCard>();
-                            info.put(groupName, interactivityCardsList);
+                            interactivityListsMap.put(groupName, interactivityCardsList);
 
                             documentSnapshot
                                     .getReference()
@@ -127,9 +134,11 @@ public class Interactivity extends Fragment {
 
                                         ArrayList<Integer> statistics = getCardStatistics(interactivityCardsDocumentSnapshots);
 
-                                        adapter.setQueryDocumentSnapshots(interactivityCardsDocumentSnapshots);
-
                                         interactivityCardsList.clear();
+
+                                        hasDocumentsMap.put(groupName, !interactivityCardsDocumentSnapshots.isEmpty());
+                                        allInteractivityDocumentsSnapshotsMap.put(groupName, interactivityCardsDocumentSnapshots);
+
                                         for (DocumentSnapshot interactivityCardDocumentSnapshot : interactivityCardsDocumentSnapshots) {
 
                                             Long cardType = interactivityCardDocumentSnapshot.getLong("cardType");
@@ -174,23 +183,17 @@ public class Interactivity extends Fragment {
 
         createInteractivityCard.setOnClickListener(v -> buttonAnimator.onButtonClicked());
 
-        createInputTextCard.setOnClickListener(v ->
-
-        {
+        createInputTextCard.setOnClickListener(v -> {
             CreateInputTextCardDialog dialog = new CreateInputTextCardDialog(selectedCourse, selectedSubject);
             dialog.show(getParentFragmentManager(), "dialog");
         });
 
-        createMultichoiceCard.setOnClickListener(v ->
-
-        {
+        createMultichoiceCard.setOnClickListener(v -> {
             CreateMultichoiceCardDialog dialog = new CreateMultichoiceCardDialog(selectedCourse, selectedSubject);
             dialog.show(getParentFragmentManager(), "dialog");
         });
 
-        createReminderCard.setOnClickListener(v ->
-
-        {
+        createReminderCard.setOnClickListener(v -> {
             CreateReminderCardDialog dialog = new CreateReminderCardDialog();
             dialog.show(getParentFragmentManager(), "dialog");
         });
@@ -211,9 +214,22 @@ public class Interactivity extends Fragment {
 
     private void changeList() {
         interactivityContainerList.clear();
-        for (String key : info.keySet()) {
-            interactivityContainerList.add(new InteractivityCardsContainer("Actividades con el " + key, info.get(key)));
+        for (String key : interactivityListsMap.keySet()) {
+            ArrayList<InteractivityCard> interactivitiesList = interactivityListsMap.get(key);
+            Boolean hasDocuments = hasDocumentsMap.get(key);
+            QuerySnapshot allInteractivityDocumentsSnapshots = allInteractivityDocumentsSnapshotsMap.get(key);
+            if (interactivitiesList != null && hasDocuments != null && allInteractivityDocumentsSnapshots != null) {
+                if (hasDocuments) {
+                    interactivityContainerList.add(new InteractivityCardsContainer("Actividades con el " + key, interactivitiesList, allInteractivityDocumentsSnapshots));
+                }
+            }
         }
+
+        if (interactivityContainerList.isEmpty()) {
+            explicativeError.setText(R.string.noInteractivitiesCreated);
+            explicativeError.setVisibility(View.VISIBLE);
+        }
+
         adapter.notifyDataSetChanged();
     }
 

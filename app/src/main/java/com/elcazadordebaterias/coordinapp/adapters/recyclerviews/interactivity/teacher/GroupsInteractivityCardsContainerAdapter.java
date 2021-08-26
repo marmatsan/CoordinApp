@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCardsContainer;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -25,8 +27,8 @@ public class GroupsInteractivityCardsContainerAdapter extends RecyclerView.Adapt
     private ArrayList<InteractivityCardsContainer> groupsList;
     private final RecyclerView.RecycledViewPool viewPool;
     private SparseBooleanArray expandState;
+
     private Context context;
-    private QuerySnapshot queryDocumentSnapshots;
 
     public GroupsInteractivityCardsContainerAdapter(ArrayList<InteractivityCardsContainer> coursesList, Context context) {
         this.groupsList = coursesList;
@@ -34,9 +36,6 @@ public class GroupsInteractivityCardsContainerAdapter extends RecyclerView.Adapt
         viewPool = new RecyclerView.RecycledViewPool();
         expandState = new SparseBooleanArray();
 
-        for (int i = 0; i < coursesList.size(); i++) {
-            expandState.append(i, false);
-        }
         this.context = context;
 
     }
@@ -59,36 +58,54 @@ public class GroupsInteractivityCardsContainerAdapter extends RecyclerView.Adapt
         InteractivityCardsContainer groupsContainerCard = groupsList.get(position);
 
         holder.groupName.setText(groupsContainerCard.getName());
+
         holder.showInvisibleCards.setOnClickListener(view -> {
-            if (queryDocumentSnapshots != null) {
-                for (DocumentSnapshot interactivityDocument : queryDocumentSnapshots) {
+            QuerySnapshot allDocmentsSnapshots = groupsContainerCard.getAllInteractivityDocumentsSnapshots();
+            if (allDocmentsSnapshots != null) {
+                int invisibleCards = 0;
+
+                for (DocumentSnapshot interactivityDocument : allDocmentsSnapshots) {
                     Boolean isVisible = (Boolean) interactivityDocument.get("hasTeacherVisibility");
                     if (isVisible != null) {
                         if (!isVisible) {
+                            invisibleCards++;
                             interactivityDocument.getReference().update("hasTeacherVisibility", true);
                         }
                     }
                 }
+
+                if (invisibleCards == 0) {
+                    Toast.makeText(context, "No hay actividades ocultas", Toast.LENGTH_SHORT).show();
+                }
+
                 notifyDataSetChanged();
             }
         });
 
-        if (groupsContainerCard.getEvaluableGroupalTextCards() != 0) {
-            holder.averageGroupalTextMark.setText(groupsContainerCard.getAverageGroupalTextMark());
-        } else {
-            holder.groupalStatistics.setVisibility(View.GONE);
-        }
+        holder.showStatistics.setOnClickListener(view -> {
 
+        });
 
-        if (groupsContainerCard.getInteractivityCardsList().size() == 0) {
-            holder.informativeText.setVisibility(View.VISIBLE);
-            String information = "No hay actividades que mostrar";
+        if (groupsContainerCard.getInteractivityCardsList().isEmpty()) {
+            String information;
+
+            information = "Todas las actividades están ocultas";
+            holder.showInvisibleCards.setVisibility(View.VISIBLE);
+            holder.showStatistics.setVisibility(View.VISIBLE);
+
             holder.informativeText.setText(information);
+            holder.informativeText.setVisibility(View.VISIBLE);
+
+
+            holder.showStatistics.setVisibility(View.GONE);
             holder.expandActivitiesButton.setVisibility(View.GONE);
             holder.expandableView.setVisibility(View.GONE);
+
         } else {
+            holder.showStatistics.setVisibility(View.VISIBLE);
             holder.informativeText.setVisibility(View.GONE);
             holder.expandActivitiesButton.setVisibility(View.VISIBLE);
+            holder.showInvisibleCards.setVisibility(View.VISIBLE);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(holder.filesRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
 
@@ -115,6 +132,7 @@ public class GroupsInteractivityCardsContainerAdapter extends RecyclerView.Adapt
                     expandState.put(position, true);
                 }
             });
+
         }
 
     }
@@ -129,8 +147,7 @@ public class GroupsInteractivityCardsContainerAdapter extends RecyclerView.Adapt
         TextView groupName;
         TextView informativeText;
 
-        ConstraintLayout groupalStatistics;
-        TextView averageGroupalTextMark;
+        FloatingActionButton showStatistics;
 
         MaterialButton expandActivitiesButton;
         MaterialButton showInvisibleCards;
@@ -142,21 +159,13 @@ public class GroupsInteractivityCardsContainerAdapter extends RecyclerView.Adapt
 
             groupName = itemView.findViewById(R.id.groupName);
             informativeText = itemView.findViewById(R.id.informativeText);
-
-            groupalStatistics = itemView.findViewById(R.id.groupalStatistics);
-            averageGroupalTextMark = itemView.findViewById(R.id.averageGroupalTextMark);
-
-
+            showStatistics = itemView.findViewById(R.id.showStatistics);
 
             expandActivitiesButton = itemView.findViewById(R.id.expandActivitiesButton);
             showInvisibleCards = itemView.findViewById(R.id.showInvisibleCards);
             expandableView = itemView.findViewById(R.id.expandableView);
             filesRecyclerView = itemView.findViewById(R.id.filesRecyclerView);
         }
-    }
-
-    public void setQueryDocumentSnapshots(QuerySnapshot queryDocumentSnapshots) {
-        this.queryDocumentSnapshots = queryDocumentSnapshots;
     }
 
 }

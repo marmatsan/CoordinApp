@@ -232,5 +232,8 @@
     <string name="el_profesor_no_ha_enviado_una_nueva_actividad_por_el_momento">El profesor no ha enviado una nueva actividad por el momento</string>
     <string name="nombre_del_solicitante">Nombre del solicitante</string>
     <string name="selecciona_a_los_participantes_con_los_que_te_gustar_a_estar_en_el_grupo">Selecciona a los participantes con los que te gustaría estar en el grupo</string>
+    <string name="mostrar_estad_sticas">Mostrar estadísticas</string>
+    <string name="noGroupsInteractivity">No tienes creado ningún grupo. Puedes empezar a obtener estadísticas creando un grupo en la pestañá Grupos</string>
+    <string name="noInteractivitiesCreated">Aún no has creado ninguna actividad. Puedes crear una actividad pulsando en el botón +</string>
 
 </resources>

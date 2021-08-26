@@ -1,5 +1,7 @@
 package com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards;
 
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 
 public class InteractivityCardsContainer {
@@ -10,11 +12,12 @@ public class InteractivityCardsContainer {
     private int evaluableGroupalTextCards;
     private int totalGroupalTextMark;
 
+    QuerySnapshot allInteractivityDocumentsSnapshots;
 
-
-    public InteractivityCardsContainer(String name, ArrayList<InteractivityCard> interactivityCardsList) {
+    public InteractivityCardsContainer(String name, ArrayList<InteractivityCard> interactivityCardsList, QuerySnapshot allInteractivityDocumentsSnapshots) {
         this.name = name;
         this.interactivityCardsList = interactivityCardsList;
+        this.allInteractivityDocumentsSnapshots = allInteractivityDocumentsSnapshots;
     }
 
     public String getName() {
@@ -40,11 +43,7 @@ public class InteractivityCardsContainer {
         return averageGroupalTextMark;
     }
 
-    public void setEvaluableGroupalTextCards(int evaluableGroupalTextCards) {
-        this.evaluableGroupalTextCards = evaluableGroupalTextCards;
-    }
-
-    public void setTotalGroupalTextMark(int totalGroupalTextMark) {
-        this.totalGroupalTextMark = totalGroupalTextMark;
+    public QuerySnapshot getAllInteractivityDocumentsSnapshots() {
+        return allInteractivityDocumentsSnapshots;
     }
 }
