@@ -25,15 +25,18 @@ import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firestore.v1.DocumentTransform;
 
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
-/**
- * Adapter to be used by chatactivity to manage the messages
- */
 public class MessagesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int MESSAGE_LEFT = 0;
@@ -78,13 +81,19 @@ public class MessagesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
         ChatMessageCard messageCard = messageList.get(position);
 
+
+
         if (holder.getItemViewType() == MESSAGE_CENTER) {
             MessageWithFileViewHolder messageHolder = (MessageWithFileViewHolder) holder;
             messageHolder.messageTitle.setText(messageCard.getMessageTitle());
-            messageHolder.message.setText(messageCard.getMessage());
+            String uploaderNameStr = "Subido por: "+ messageCard.getSenderName();
+            messageHolder.uploaderName.setText(uploaderNameStr);
 
+            String fileNameStr = "Nombre del archivo: "+ messageCard.getFileName();
+            messageHolder.fileName.setText(fileNameStr);
 
-            messageHolder.date.setText(messageCard.getDate().toString());
+            String dateNameStr = "Fecha de subida: "+ messageCard.getStringRepD();
+            messageHolder.date.setText(dateNameStr);
 
             messageHolder.downloadFile.setOnClickListener(v -> {
                 DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
@@ -99,9 +108,8 @@ public class MessagesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         } else {
             TextMessageViewHolder messageHolder = (TextMessageViewHolder) holder;
-
             messageHolder.messageTitle.setText(messageCard.getMessageTitle());
-            messageHolder.date.setText(messageCard.getDate().toString());
+            messageHolder.date.setText(messageCard.getStringRepD());
 
             if (messageCard.getMessage().startsWith("http")) {
                 SpannableString ss = new SpannableString(messageCard.getMessage());
@@ -158,10 +166,15 @@ public class MessagesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public static class MessageWithFileViewHolder extends TextMessageViewHolder {
 
+        TextView uploaderName;
+        TextView fileName;
+
         FloatingActionButton downloadFile;
 
         public MessageWithFileViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            uploaderName = itemView.findViewById(R.id.uploaderName);
+            fileName = itemView.findViewById(R.id.fileName);
             downloadFile = itemView.findViewById(R.id.downloadFile);
         }
 

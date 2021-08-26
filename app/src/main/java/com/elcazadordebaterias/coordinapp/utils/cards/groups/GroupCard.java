@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Class that represents a group for both the group chat (between students) and single chat (between students and teacher)
- * The layout of this object is {@link com.elcazadordebaterias.coordinapp.R.layout#utils_cards_groupcard}
+ * The layout of this object is {@link com.elcazadordebaterias.coordinapp.R.layout#utils_cards_teachergroupcard}
  *
  * @author Martín Mateos Sánchez
  */

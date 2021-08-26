@@ -1,10 +1,12 @@
 package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.studentgroups;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupCardAdapter;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.teachergroups.GroupTeacherCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupsContainerCard;
 import com.google.android.material.button.MaterialButton;
 
@@ -51,38 +53,58 @@ public class GroupsContainerCardAdapter extends RecyclerView.Adapter<GroupsConta
     @NonNull
     @Override
     public GroupsContainerCardViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.utils_cards_filescontainercard, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.utils_cards_groupsstudentcontainercard, viewGroup, false);
 
         return new GroupsContainerCardViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GroupsContainerCardViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull GroupsContainerCardViewHolder holder, int position) {
 
         GroupsContainerCard groupsContainerCard = groupsList.get(position);
 
-        viewHolder.groupName.setText(groupsContainerCard.getName());
+        holder.groupName.setText(groupsContainerCard.getName());
+        String spoker = "Portavoz: " + groupsContainerCard.getSpokerName();
+        holder.spokerName.setText(spoker);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(viewHolder.filesRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
+        holder.showParticipants.setOnClickListener(view -> {
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
+            builderSingle.setTitle("Participantes");
+
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.utils_participantname, R.id.participantName, groupsContainerCard.getParticipantsNames()) {
+                @Override
+                public boolean isEnabled(int position1) {
+                    return false;
+                }
+            };
+
+            builderSingle.setNegativeButton("Vale", (dialog, which) -> dialog.dismiss());
+            builderSingle.setAdapter(arrayAdapter, null);
+            builderSingle.show();
+        });
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(holder.groupsContainer.getContext(), LinearLayoutManager.VERTICAL, false);
 
         layoutManager.setInitialPrefetchItemCount(groupsContainerCard.getGroupList().size());
-        GroupCardAdapter groupCardAdapter = new GroupCardAdapter(groupsContainerCard.getGroupList(), context, userType);
+        GroupStudentCardAdapter groupTeacherCardAdapter = new GroupStudentCardAdapter(groupsContainerCard.getGroupList(), context, userType);
 
-        viewHolder.filesRecyclerView.setLayoutManager(layoutManager);
-        viewHolder.filesRecyclerView.setAdapter(groupCardAdapter);
-        viewHolder.filesRecyclerView.setRecycledViewPool(viewPool);
+        holder.groupsContainer.setLayoutManager(layoutManager);
+        holder.groupsContainer.setAdapter(groupTeacherCardAdapter);
+        holder.groupsContainer.setRecycledViewPool(viewPool);
 
         final boolean isExpanded = expandState.get(position); //Check if the view is expanded
-        viewHolder.expandableView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+        holder.expandableView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
 
-        viewHolder.expandFilesButton.setOnClickListener(view -> {
-            if (viewHolder.expandableView.getVisibility() == View.VISIBLE){
-                viewHolder.expandableView.setVisibility(View.GONE);
-                viewHolder.expandFilesButton.setText(R.string.expandir);
+        holder.openChats.setOnClickListener(view -> {
+            if (holder.expandableView.getVisibility() == View.VISIBLE){
+                holder.expandableView.setVisibility(View.GONE);
+                holder.openChats.setIconResource(R.drawable.ic_baseline_folder_open_24);
+                holder.openChats.setText(R.string.abrir_grupos_de_chat);
                 expandState.put(position, false);
             }else{
-                viewHolder.expandableView.setVisibility(View.VISIBLE);
-                viewHolder.expandFilesButton.setText(R.string.colapsar);
+                holder.expandableView.setVisibility(View.VISIBLE);
+                holder.openChats.setIconResource(R.drawable.ic_baseline_folder_24);
+                holder.openChats.setText(R.string.cerrar_grupos_de_chat);
                 expandState.put(position, true);
             }
         });
@@ -97,18 +119,21 @@ public class GroupsContainerCardAdapter extends RecyclerView.Adapter<GroupsConta
     static class GroupsContainerCardViewHolder extends RecyclerView.ViewHolder {
 
         TextView groupName;
-        MaterialButton expandFilesButton;
+        TextView spokerName;
+        MaterialButton showParticipants;
+        MaterialButton openChats;
         ConstraintLayout expandableView;
-        RecyclerView filesRecyclerView;
+        RecyclerView groupsContainer;
 
         GroupsContainerCardViewHolder(final View itemView) {
             super(itemView);
 
             groupName = itemView.findViewById(R.id.groupName);
-            expandFilesButton = itemView.findViewById(R.id.expandFilesButton);
+            spokerName = itemView.findViewById(R.id.spokerName);
+            showParticipants = itemView.findViewById(R.id.showParticipants);
+            openChats = itemView.findViewById(R.id.openChats);
             expandableView = itemView.findViewById(R.id.expandableView);
-            filesRecyclerView = itemView.findViewById(R.id.filesRecyclerView);
-
+            groupsContainer = itemView.findViewById(R.id.groupsContainer);
         }
     }
 }

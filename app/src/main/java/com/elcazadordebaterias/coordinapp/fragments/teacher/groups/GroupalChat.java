@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.GroupCardAdapter;
+import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.teachergroups.GroupTeacherCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
@@ -33,7 +33,7 @@ public class GroupalChat extends Fragment {
     private FirebaseAuth fAuth;
 
     private ArrayList<GroupCard> groupsList;
-    private GroupCardAdapter groupsAdapter;
+    private GroupTeacherCardAdapter groupsAdapter;
 
     private int userType;
 
@@ -56,7 +56,7 @@ public class GroupalChat extends Fragment {
         fAuth = FirebaseAuth.getInstance();
 
         groupsList = new ArrayList<GroupCard>();
-        groupsAdapter = new GroupCardAdapter(groupsList, getContext(), userType);
+        groupsAdapter = new GroupTeacherCardAdapter(groupsList, getContext());
     }
 
     @Override

@@ -47,7 +47,7 @@ public class FilesContainerCardAdapter extends RecyclerView.Adapter<FilesContain
     @NonNull
     @Override
     public FilesContainerCardViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.utils_cards_filescontainercard, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.utils_cards_groupsstudentcontainercard, viewGroup, false);
 
         return new FilesContainerCardViewHolder(view);
     }

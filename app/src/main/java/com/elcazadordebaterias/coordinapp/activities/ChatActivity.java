@@ -34,10 +34,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+import com.google.type.DateTime;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -175,15 +180,24 @@ public class ChatActivity extends AppCompatActivity {
                     String messageTitle;
                     String message;
 
+                    String filename;
                     if (fileRef == null) {
                         messageTitle = fullName;
                         message = messageInputText;
+                        filename = null;
                     } else {
                         messageTitle = "Archivo subido";
-                        message = fullName + " ha subido el archivo " + fileRef.getFileName() + ". Puedes encontrarlo en la pestaña Archivos o descargarlo haciendo click en el botón";
+                        message = null;
+                        filename = fileRef.getFileName();
                     }
 
-                    ChatMessageCard messageCard = new ChatMessageCard(messageTitle, fAuth.getUid(), message, Calendar.getInstance().getTime(), fileRef);
+                    Timestamp timestamp = Timestamp.now();
+
+                    Date date = new Date();
+                    DateFormat df = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
+                    df.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
+
+                    ChatMessageCard messageCard = new ChatMessageCard(messageTitle, fAuth.getUid(), message, timestamp, df.format(date), fileRef, fullName, filename);
                     chatroomRef
                             .add(messageCard)
                             .addOnSuccessListener(documentReference -> {

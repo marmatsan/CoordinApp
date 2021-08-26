@@ -237,7 +237,7 @@ public class Group {
                                             .get()
                                             .addOnSuccessListener(documentSnapshot -> {
                                                 String studentName = (String) documentSnapshot.get("FullName");
-                                                studentsAndTeacherGroup.setName("Grupo con " + studentName);
+                                                studentsAndTeacherGroup.setName("Chat con " + studentName);
                                                 IndividualGroupDocument newGroupDocument = new IndividualGroupDocument("Grupo " + identifier, studentsAndTeacherIDs, studentsAndTeacherGroup);
 
                                                 groupsCollRef
@@ -247,7 +247,7 @@ public class Group {
                                                             if (individualGroup != null) {
                                                                 individualGroup
                                                                         .getReference()
-                                                                        .update("visible", true);
+                                                                        .update("hasVisibility", true);
                                                             } else {
                                                                 newGroupDocument.setVisible(true);
                                                                 groupsCollRef.document(studentID).set(newGroupDocument);

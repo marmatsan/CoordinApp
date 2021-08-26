@@ -1,4 +1,4 @@
-package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
+package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.teachergroups;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
@@ -20,8 +21,6 @@ import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.ChangeSpokerDialog;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateReminderCardDialog;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -29,10 +28,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 
-public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.GroupCardViewHolder> {
+public class GroupTeacherCardAdapter extends RecyclerView.Adapter<GroupTeacherCardAdapter.GroupCardViewHolder> {
 
     ArrayList<GroupCard> groupsList;
     Context context;
@@ -40,12 +38,9 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
-    private final int userType;
-
-    public GroupCardAdapter(ArrayList<GroupCard> groupsList, Context context, int userType) {
+    public GroupTeacherCardAdapter(ArrayList<GroupCard> groupsList, Context context) {
         this.groupsList = groupsList;
         this.context = context;
-        this.userType = userType;
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -54,7 +49,7 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
     @NonNull
     @Override
     public GroupCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_groupcard, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_teachergroupcard, parent, false);
         return new GroupCardViewHolder(view);
     }
 
@@ -63,12 +58,6 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
         GroupCard groupCard = groupsList.get(position);
 
         holder.groupName.setText(groupCard.getGroupName());
-
-        // A student can't have permits to delete a group
-        if (userType == UserType.TYPE_STUDENT) {
-            holder.deleteGroup.setVisibility(View.GONE);
-            holder.changeSpoker.setVisibility(View.GONE);
-        }
 
         if (groupCard.getSpokerID() == null) {
             holder.changeSpoker.setVisibility(View.GONE);
@@ -84,6 +73,15 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
             }
         }
 
+        if (groupCard.getCollectionId().equals("IndividualGroups")) {
+            holder.showParticipants.setVisibility(View.GONE);
+            holder.deleteGroup.setIconResource(R.drawable.ic_baseline_visibility_off_24);
+            holder.deleteGroup.setIconTint(ContextCompat.getColorStateList(holder.deleteGroup.getContext(), R.color.black));
+            String hide = "Ocultar";
+            holder.deleteGroup.setText(hide);
+            holder.deleteGroup.setTextColor(ContextCompat.getColorStateList(holder.deleteGroup.getContext(), R.color.black));
+            holder.deleteGroup.setBackgroundTintList(ContextCompat.getColorStateList(holder.deleteGroup.getContext(), R.color.white));
+        }
 
         holder.showParticipants.setOnClickListener(v -> {
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
@@ -101,50 +99,65 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
             builderSingle.show();
         });
 
-        holder.deleteGroup.setOnClickListener(v -> {
-
-            DocumentReference groupRef = fStore
-                    .collection("CoursesOrganization")
-                    .document(groupCard.getCourseName())
-                    .collection("Subjects")
-                    .document(groupCard.getSubjectName())
-                    .collection(groupCard.getCollectionId())
-                    .document(groupCard.getGroupId());
-
-            if (groupCard.getCollectionId().equals("IndividualGroups")) {
+        if (groupCard.getCollectionId().equals("IndividualGroups")) {
+            holder.deleteGroup.setOnClickListener(v -> {
+                DocumentReference groupRef = fStore
+                        .collection("CoursesOrganization")
+                        .document(groupCard.getCourseName())
+                        .collection("Subjects")
+                        .document(groupCard.getSubjectName())
+                        .collection(groupCard.getCollectionId())
+                        .document(groupCard.getGroupId());
                 groupRef.update("hasVisibility", false);
-            } else {
-                groupRef.collection("ChatRoomWithTeacher").get().addOnSuccessListener(queryDocumentSnapshots1 -> {
-                    for (DocumentSnapshot document : queryDocumentSnapshots1) {
-                        document.getReference().delete();
-                    }
+            });
+        } else {
 
-                    groupRef.collection("StorageWithTeacher").get().addOnSuccessListener(queryDocumentSnapshots2 -> {
-                        for (DocumentSnapshot document : queryDocumentSnapshots2) {
+            holder.deleteGroup.setOnClickListener(v -> {
+
+                DocumentReference groupRef = fStore
+                        .collection("CoursesOrganization")
+                        .document(groupCard.getCourseName())
+                        .collection("Subjects")
+                        .document(groupCard.getSubjectName())
+                        .collection(groupCard.getCollectionId())
+                        .document(groupCard.getGroupId());
+
+                if (groupCard.getCollectionId().equals("IndividualGroups")) {
+                    groupRef.update("hasVisibility", false);
+                } else {
+                    groupRef.collection("ChatRoomWithTeacher").get().addOnSuccessListener(queryDocumentSnapshots1 -> {
+                        for (DocumentSnapshot document : queryDocumentSnapshots1) {
                             document.getReference().delete();
                         }
-                        groupRef.collection("ChatRoomWithoutTeacher").get().addOnSuccessListener(queryDocumentSnapshots3 -> {
-                            for (DocumentSnapshot document : queryDocumentSnapshots3) {
+
+                        groupRef.collection("StorageWithTeacher").get().addOnSuccessListener(queryDocumentSnapshots2 -> {
+                            for (DocumentSnapshot document : queryDocumentSnapshots2) {
                                 document.getReference().delete();
                             }
-
-                            groupRef.collection("StorageWithoutTeacher").get().addOnSuccessListener(queryDocumentSnapshots4 -> {
-                                for (DocumentSnapshot document : queryDocumentSnapshots4) {
+                            groupRef.collection("ChatRoomWithoutTeacher").get().addOnSuccessListener(queryDocumentSnapshots3 -> {
+                                for (DocumentSnapshot document : queryDocumentSnapshots3) {
                                     document.getReference().delete();
                                 }
-                                groupRef.collection("InteractivityCards").get().addOnSuccessListener(queryDocumentSnapshots5 -> {
-                                    for (DocumentSnapshot document : queryDocumentSnapshots5) {
+
+                                groupRef.collection("StorageWithoutTeacher").get().addOnSuccessListener(queryDocumentSnapshots4 -> {
+                                    for (DocumentSnapshot document : queryDocumentSnapshots4) {
                                         document.getReference().delete();
                                     }
-                                    groupRef.delete();
+                                    groupRef.collection("InteractivityCards").get().addOnSuccessListener(queryDocumentSnapshots5 -> {
+                                        for (DocumentSnapshot document : queryDocumentSnapshots5) {
+                                            document.getReference().delete();
+                                        }
+                                        groupRef.delete();
+                                    });
                                 });
                             });
                         });
                     });
-                });
-            }
+                }
 
-        });
+            });
+
+        }
 
         holder.changeSpoker.setOnClickListener(v -> {
             ChangeSpokerDialog dialog = new ChangeSpokerDialog(groupCard.getCourseName(), groupCard.getSubjectName(), groupCard.getGroupId(), groupCard.getSpokerID());
@@ -158,7 +171,7 @@ public class GroupCardAdapter extends RecyclerView.Adapter<GroupCardAdapter.Grou
             Gson gson = new Gson();
             String cardAsString = gson.toJson(groupCard);
             intent.putExtra("cardAsString", cardAsString);
-            intent.putExtra("userType", userType);
+            intent.putExtra("userType", UserType.TYPE_TEACHER);
             context.startActivity(intent);
         });
 

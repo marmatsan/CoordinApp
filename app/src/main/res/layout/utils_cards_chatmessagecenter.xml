@@ -51,17 +51,27 @@
                 app:layout_constraintTop_toBottomOf="@+id/messageTitle" />
 
             <TextView
-                android:id="@+id/message"
+                android:id="@+id/uploaderName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                app:layout_constraintBottom_toBottomOf="@+id/downloadFile"
+                android:text="Subido por: "
                 app:layout_constraintEnd_toStartOf="@+id/downloadFile"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view" />
+
+            <TextView
+                android:id="@+id/fileName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="Nombre del archivo: "
+                app:layout_constraintEnd_toStartOf="@+id/downloadFile"
+                app:layout_constraintStart_toStartOf="@+id/uploaderName"
+                app:layout_constraintTop_toBottomOf="@+id/uploaderName" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/downloadFile"
@@ -71,23 +81,26 @@
                 android:clickable="true"
                 android:focusable="true"
                 app:backgroundTint="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/fileName"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/message"
-                app:layout_constraintBottom_toBottomOf="@id/message"
+                app:layout_constraintTop_toTopOf="@+id/fileName"
                 app:srcCompat="@drawable/ic_baseline_cloud_download_24" />
 
             <TextView
                 android:id="@+id/date"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/fecha_y_hora_de_subida"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/downloadFile"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/message" />
+                app:layout_constraintTop_toBottomOf="@+id/fileName" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

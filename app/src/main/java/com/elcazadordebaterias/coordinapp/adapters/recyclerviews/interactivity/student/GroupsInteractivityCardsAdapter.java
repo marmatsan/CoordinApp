@@ -46,7 +46,7 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
         @NonNull
         @Override
         public GroupsInteractivityCardsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.utils_cards_filescontainercard, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.utils_cards_groupsstudentcontainercard, viewGroup, false);
 
             return new GroupsInteractivityCardsViewHolder(view);
         }

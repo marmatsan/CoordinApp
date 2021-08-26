@@ -197,12 +197,15 @@ public class GroupalChat extends Fragment {
                     groupsList.clear();
 
                     for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
-                        CollectiveGroupDocument group = groupDocument.toObject(CollectiveGroupDocument.class);
+                        CollectiveGroupDocument collectiveGroupDocument = groupDocument.toObject(CollectiveGroupDocument.class);
 
-                        String groupName = group.getName();
+                        String groupName = collectiveGroupDocument.getName();
+                        String spokerName = collectiveGroupDocument.getSpokerName();
+
                         ArrayList<GroupCard> groupList = new ArrayList<GroupCard>();
+                        ArrayList<String> participantsNames = new ArrayList<String>();
 
-                        for (Group groupDoc : group.getGroups()) {
+                        for (Group groupDoc : collectiveGroupDocument.getGroups()) {
                             if (groupDoc.getParticipantsIds().contains(fAuth.getUid())) {
                                 GroupCard groupCard = new GroupCard(
                                         groupDoc.getName(),
@@ -212,12 +215,14 @@ public class GroupalChat extends Fragment {
                                         groupDoc.getHasTeacher(),
                                         groupDoc.getParticipantNames(),
                                         groupDoc.getCollectionId(),
-                                        group.getSpokesStudentID(),
-                                        group.getSpokerName());
+                                        collectiveGroupDocument.getSpokesStudentID(),
+                                        collectiveGroupDocument.getSpokerName());
                                 groupList.add(groupCard);
+                                participantsNames.addAll(groupDoc.getParticipantNames());
+
                             }
                         }
-                        groupsList.add(new GroupsContainerCard(groupName, groupList));
+                        groupsList.add(new GroupsContainerCard(groupName, spokerName, participantsNames, groupList));
                     }
                     listChanged();
                 });
