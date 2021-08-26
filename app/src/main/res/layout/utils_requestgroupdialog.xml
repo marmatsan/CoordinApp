@@ -12,7 +12,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
-        android:text="@string/selecciona_a_los_participantes_que_quieres_incluir_en_el_grupo"
+        android:text="@string/selecciona_a_los_participantes_con_los_que_te_gustar_a_estar_en_el_grupo"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

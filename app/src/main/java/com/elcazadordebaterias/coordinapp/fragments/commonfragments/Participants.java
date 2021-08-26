@@ -2,7 +2,6 @@ package com.elcazadordebaterias.coordinapp.fragments.commonfragments;
 
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-public class Courses extends Fragment {
+public class Participants extends Fragment {
 
     // Firestore
     FirebaseAuth fAuth;
@@ -40,7 +39,7 @@ public class Courses extends Fragment {
     private String selectedCourse;
     private String selectedSubject;
 
-    public Courses(int userType, String selectedCourse, String selectedSubject) {
+    public Participants(int userType, String selectedCourse, String selectedSubject) {
         this.userType = userType;
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
@@ -54,7 +53,7 @@ public class Courses extends Fragment {
         fStore = FirebaseFirestore.getInstance();
 
         participants = new ArrayList<CourseParticipantCard>();
-        courseParticipantAdapter = new CourseParticipantAdapter(participants);
+        courseParticipantAdapter = new CourseParticipantAdapter(participants, userType);
 
         // Populate participants list
         if (selectedCourse != null && selectedSubject != null) {
@@ -65,7 +64,7 @@ public class Courses extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_courses, container, false);
+        View view = inflater.inflate(R.layout.fragment_participants, container, false);
 
         TextView noCourseSelected = view.findViewById(R.id.noCourseSelected);
         RecyclerView coursesRecyclerView = view.findViewById(R.id.coursesContainer);
@@ -99,20 +98,24 @@ public class Courses extends Fragment {
                     String teacherId = subject.getTeacherID();
 
                     fStore
-                            .collection("Students")
-                            .whereIn(FieldPath.documentId(), studentIds)
-                            .get()
-                            .addOnSuccessListener(queryDocumentSnapshots -> {
-                                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                    participants.add(new CourseParticipantCard("Estudiante", (String) document.get("FullName"), (String) document.get("UserEmail")));
-                                }
-                                fStore.collection("Teachers").document(teacherId)
-                                        .get().addOnSuccessListener(document2 -> {
-                                    participants.add(new CourseParticipantCard("Profesor", (String) document2.get("FullName"), (String) document2.get("UserEmail")));
-                                    courseParticipantAdapter.notifyDataSetChanged();
+                            .collection("Teachers")
+                            .document(teacherId)
+                            .get().addOnSuccessListener(document2 -> {
+                        if (!teacherId.equals(fAuth.getUid())) {
+                            participants.add(new CourseParticipantCard(R.drawable.ic_teacher_at_the_blackboard, document2.getId(), "Profesor", (String) document2.get("FullName"), (String) document2.get("UserEmail")));
+                        }
+                        fStore
+                                .collection("Students")
+                                .whereIn(FieldPath.documentId(), studentIds)
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                        participants.add(new CourseParticipantCard(R.drawable.ic_reading_book, document.getId(), "Estudiante", (String) document.get("FullName"), (String) document.get("UserEmail")));
+                                        courseParticipantAdapter.notifyDataSetChanged();
+                                    }
                                 });
-                            });
-        });
+                    });
+                });
     }
 
 }

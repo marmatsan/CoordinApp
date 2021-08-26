@@ -75,19 +75,9 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
                 InputTextCardDocument inputTextCardDocument = inputTextCardParent.getInputTextCardDocument();
 
-                String evaluableText;
-
-                if (inputTextCardDocument.getHasToBeEvaluated()) {
-                    evaluableText = "Actividad evaluable";
-                } else {
-                    evaluableText = "Actividad no evaluable";
-                }
-
-                SpannableStringBuilder strb1 = new SpannableStringBuilder(evaluableText);
-                strb1.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, evaluableText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                holder1.isEvaluable.setText(strb1);
-
                 holder1.cardTitle.setText(inputTextCardParent.getCardTitle());
+
+                holder1.evaluableAndGroupal.setText(getEvaluableAndGroupalText(inputTextCardDocument.getHasToBeEvaluated(), inputTextCardDocument.getHasGroupalActivity()));
 
                 // Set information of the card
                 int totalNumberofStudents = inputTextCardDocument.getStudentsData().size();
@@ -109,21 +99,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                     }
                 }
 
-                String inputCardinformativeText;
-
-                if (nonAnsweredStudents == totalNumberofStudents) {
-                    inputCardinformativeText = "A la espera de respuestas";
-                } else if (nonAnsweredStudents == 0) {
-                    inputCardinformativeText = "Todos los estudiantes han contestado";
-                } else {
-                    if (nonAnsweredStudents == 1) {
-                        inputCardinformativeText = "Falta por contestar 1 estudiante";
-                    } else {
-                        inputCardinformativeText = "Faltan por contestar " + nonAnsweredStudents + " estudiantes";
-                    }
-                }
-
-                holder1.informativeText.setText(inputCardinformativeText);
+                holder1.informativeText.setText(getInformativeText(inputTextCardDocument.getHasGroupalActivity(), nonAnsweredStudents, totalNumberofStudents));
 
                 float averageMark = 0;
 
@@ -141,7 +117,11 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                         holder1.nonEvaluated.setVisibility(View.VISIBLE);
                         String nonEvaluatedStudents;
                         if (studentsWithNoMarkSet == 1) {
-                            nonEvaluatedStudents = "Falta 1 respuesta por evaluar";
+                            if (inputTextCardDocument.getHasGroupalActivity()) {
+                                nonEvaluatedStudents = "El grupo ha respondido. Evalúa su respuesta";
+                            } else {
+                                nonEvaluatedStudents = "Falta 1 respuesta por evaluar";
+                            }
                         } else {
                             nonEvaluatedStudents = "Faltan " + studentsWithNoMarkSet + " respuestas por evaluar";
                         }
@@ -151,11 +131,23 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                     }
                 }
 
-                String averageMarkString = "Nota media de las respuestas: " + averageMark + "/10";
+                String averageMarkString;
+                String header;
+                if (inputTextCardDocument.getHasGroupalActivity()) {
+                    header = "Nota de la respuesta: ";
+                    averageMarkString = header + averageMark + " / 10";
+                } else {
+                    header = "Nota media de las respuestas: ";
+                    averageMarkString = "Nota media de las respuestas: " + averageMark + " / 10";
+                }
 
                 SpannableStringBuilder strb = new SpannableStringBuilder(averageMarkString);
-                strb.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Nota media de las respuestas: ".length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                strb.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, header.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 holder1.averageMark.setText(strb);
+
+                holder1.deleteActivity.setOnClickListener(view -> {
+                    inputTextCardParent.getDocumentSnapshot().getReference().delete();
+                });
 
                 // Recyclerview con la lista de respuestas
                 if (inputTextCardParent.getInputTextCardChildList().size() == 0) {
@@ -164,11 +156,19 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                     holder1.expandView.setVisibility(View.VISIBLE);
                     if (inputTextCardDocument.getHasOpenedResponses()) {
                         holder1.expandableView.setVisibility(View.VISIBLE);
-                        holder1.expandView.setText(R.string.ocultarRespuestas);
+                        if (inputTextCardDocument.getHasGroupalActivity()) {
+                            holder1.expandView.setText(R.string.ocultarRespuesta);
+                        } else {
+                            holder1.expandView.setText(R.string.ocultarRespuestas);
+                        }
                         holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_24);
                     } else {
                         holder1.expandableView.setVisibility(View.GONE);
-                        holder1.expandView.setText(R.string.verRespuestas);
+                        if (inputTextCardDocument.getHasGroupalActivity()) {
+                            holder1.expandView.setText(R.string.verRespuesta);
+                        } else {
+                            holder1.expandView.setText(R.string.verRespuestas);
+                        }
                         holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_open_24);
                     }
                 }
@@ -212,6 +212,9 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
                 holder2.listOfAnswers.setVisibility(View.GONE);
 
+                holder2.evaluableAndGroupal.setText(getEvaluableAndGroupalText(multichoiceCardDocument.getHasToBeEvaluated(), multichoiceCardDocument.getHasGroupalActivity()));
+
+
                 // Initialize hashMaps
                 HashMap<Integer, String> identifierTitleMap = new HashMap<Integer, String>();
                 HashMap<Integer, Integer> counterMap = new HashMap<Integer, Integer>();
@@ -235,9 +238,10 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                     }
 
                 } else {
-                    holder2.correctAnswer.setText(R.string.noEvaluable);
+                    holder2.correctAnswer.setVisibility(View.GONE);
                 }
 
+                int totalStudents = multichoiceCardDocument.getStudentsData().size();
                 int nonAnswered = 0;
 
                 for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()) {
@@ -254,25 +258,18 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                     }
                 }
 
-                String multiChoiceCardInformativeText;
-
-                if (nonAnswered == multichoiceCardDocument.getStudentsData().size()) {
-                    multiChoiceCardInformativeText = "A la espera de respuestas";
-                } else if (nonAnswered == 0) {
-                    multiChoiceCardInformativeText = "Todos los estudiantes han contestado";
-                } else {
-                    if (nonAnswered == 1) {
-                        multiChoiceCardInformativeText = "Falta por contestar 1 estudiante";
-                    } else {
-                        multiChoiceCardInformativeText = "Faltan por contestar " + nonAnswered + " estudiantes";
-                    }
-                }
-
-                holder2.informativeText.setText(multiChoiceCardInformativeText);
+                holder2.informativeText.setText(getInformativeText(multichoiceCardDocument.getHasGroupalActivity(), nonAnswered, totalStudents));
 
                 for (Map.Entry<Integer, Integer> entry : counterMap.entrySet()) {
                     if (entry.getValue() != 0) {
                         holder2.listOfAnswers.setVisibility(View.VISIBLE);
+
+                        if (!multichoiceCardDocument.getHasGroupalActivity()) {
+                            String title = "Listado de respuestas";
+                            SpannableStringBuilder str = new SpannableStringBuilder(title);
+                            str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Listado de respuestas".length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            holder2.listOfAnswers.setText(str);
+                        }
 
                         int percentage = 0;
 
@@ -281,19 +278,36 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                         }
 
                         String questionTitle = identifierTitleMap.get(entry.getKey());
-                        String text = questionTitle + ":  Contestada por " + entry.getValue() + " (" + percentage + "%)";
+                        String studentOrStudents;
 
-                        TextView textView = new TextView(holder2.questionsContainer.getContext());
-                        textView.setText(text);
-                        textView.setTextColor(Color.rgb(0, 0, 0));
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(0, 8, 8, 8);
-                        textView.setLayoutParams(params);
+                        if (entry.getValue() > 1) {
+                            studentOrStudents = "estudiantes";
+                        } else {
+                            studentOrStudents = "estudiante";
+                        }
 
-                        holder2.questionsContainer.addView(textView);
+                        if (multichoiceCardDocument.getHasGroupalActivity()) {
+                            String response = "Respuesta del grupo: " + questionTitle;
+                            SpannableStringBuilder str = new SpannableStringBuilder(response);
+                            str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Respuesta del grupo: ".length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            holder2.listOfAnswers.setText(str);
+                        } else {
+                            String text = questionTitle + ":  Contestada por " + entry.getValue() + " " + studentOrStudents + " (" + percentage + "%)";
+                            TextView textView = new TextView(holder2.questionsContainer.getContext());
+                            textView.setText(text);
+                            textView.setTextColor(Color.rgb(0, 0, 0));
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                            params.setMargins(0, 8, 8, 8);
+                            textView.setLayoutParams(params);
 
+                            holder2.questionsContainer.addView(textView);
+                        }
                     }
                 }
+
+                holder2.deleteActivity.setOnClickListener(view -> {
+                    multichoiceCard.getMultichoiceCardDocumentSnapshot().getReference().delete();
+                });
 
                 holder2.setVisibilityOff.setOnClickListener(view -> {
                     multichoiceCard.getMultichoiceCardDocumentSnapshot().getReference().update("hasTeacherVisibility", false);
@@ -349,23 +363,25 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     public static class InputTextCardParentViewHolder extends CardViewHolder {
 
-        TextView isEvaluable;
+        TextView evaluableAndGroupal;
         TextView informativeText;
         TextView nonEvaluated;
         TextView averageMark;
         MaterialButton expandView;
         MaterialButton setVisibilityOff;
+        MaterialButton deleteActivity;
         ConstraintLayout expandableView;
         RecyclerView inputTextCardChildRecyclerView;
 
         public InputTextCardParentViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            isEvaluable = itemView.findViewById(R.id.isEvaluable);
+            evaluableAndGroupal = itemView.findViewById(R.id.evaluableAndGroupal);
             informativeText = itemView.findViewById(R.id.informativeText);
             nonEvaluated = itemView.findViewById(R.id.nonEvaluated);
             averageMark = itemView.findViewById(R.id.averageMark);
             expandView = itemView.findViewById(R.id.expandView);
             setVisibilityOff = itemView.findViewById(R.id.setVisibilityOff);
+            deleteActivity = itemView.findViewById(R.id.deleteActivity);
             expandableView = itemView.findViewById(R.id.expandableView);
             inputTextCardChildRecyclerView = itemView.findViewById(R.id.inputTextCardChildRecyclerView);
         }
@@ -374,18 +390,22 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     public static class MultiChoiceCardViewHolder extends CardViewHolder {
 
+        TextView evaluableAndGroupal;
         TextView correctAnswer;
         TextView informativeText;
         TextView listOfAnswers;
         LinearLayout questionsContainer;
         MaterialButton setVisibilityOff;
+        MaterialButton deleteActivity;
 
         public MultiChoiceCardViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            evaluableAndGroupal = itemView.findViewById(R.id.evaluableAndGroupal);
             correctAnswer = itemView.findViewById(R.id.correctAnswer);
             informativeText = itemView.findViewById(R.id.informativeText);
             listOfAnswers = itemView.findViewById(R.id.listOfAnswers);
             questionsContainer = itemView.findViewById(R.id.questionsContainer);
+            deleteActivity = itemView.findViewById(R.id.deleteActivity);
             setVisibilityOff = itemView.findViewById(R.id.setVisibilityOff);
         }
 
@@ -399,6 +419,49 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
             super(itemView);
             reminderContainer = itemView.findViewById(R.id.reminderContainer);
         }
+    }
+
+    private String getEvaluableAndGroupalText(boolean hasToBeEvaluated, boolean hasGroupalActivity) {
+        String evaluableText;
+        String groupalText;
+
+        if (hasToBeEvaluated) {
+            evaluableText = "Actividad evaluable";
+        } else {
+            evaluableText = "Actividad no evaluable";
+        }
+
+        if (hasGroupalActivity) {
+            groupalText = " grupal";
+        } else {
+            groupalText = " no grupal";
+        }
+
+        return evaluableText + groupalText;
+    }
+
+    private String getInformativeText(boolean isGroupal, int nonAnsweredStudents, int totalNumberofStudents) {
+        String informativeText;
+        if (nonAnsweredStudents == totalNumberofStudents) {
+            if (isGroupal) {
+                informativeText = "Esperando a que el portavoz conteste";
+            } else {
+                informativeText = "Ningún estudiante ha contestado todavía";
+            }
+        } else if (nonAnsweredStudents == 0) {
+            if (isGroupal) {
+                informativeText = "El grupo ha contestado";
+            } else {
+                informativeText = "Todos los estudiantes han contestado";
+            }
+        } else {
+            if (nonAnsweredStudents == 1) {
+                informativeText = "Falta 1 estudiante por contestar ";
+            } else {
+                informativeText = "Faltan " + nonAnsweredStudents + " estudiantes por contestar ";
+            }
+        }
+        return informativeText;
     }
 
 }

@@ -10,6 +10,7 @@ public class MultichoiceCardDocument {
     private boolean hasTeacherVisibility;
     private boolean hasToBeEvaluated;
     private boolean hasGroupalActivity;
+
     private ArrayList<Question> questionsList;
     private ArrayList<MultichoiceCardStudentData> studentsData;
 

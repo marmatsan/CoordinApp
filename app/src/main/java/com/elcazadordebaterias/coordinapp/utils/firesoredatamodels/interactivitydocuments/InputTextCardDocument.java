@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments;
 
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 

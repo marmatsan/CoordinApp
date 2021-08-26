@@ -14,14 +14,26 @@ import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.CourseParticipa
 
 public class CourseParticipantCard {
 
+    private int image;
+    private String participantID;
     private String participantRole;
     private String mParticipantName;
     private String mParticipantEmail;
 
-    public CourseParticipantCard(String participantRole, String participantName, String participantEmail) {
+    public CourseParticipantCard(int image, String participantID, String participantRole, String participantName, String participantEmail) {
+        this.image = image;
+        this.participantID = participantID;
         this.participantRole = participantRole;
         this.mParticipantName = participantName;
         this.mParticipantEmail = participantEmail;
+    }
+
+    public int getImage() {
+        return image;
+    }
+
+    public String getParticipantID() {
+        return participantID;
     }
 
     public String getParticipantRole() {

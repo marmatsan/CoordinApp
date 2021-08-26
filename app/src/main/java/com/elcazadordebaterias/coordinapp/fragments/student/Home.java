@@ -60,8 +60,8 @@ public class Home extends Fragment {
         new TabLayoutMediator(tablayout, viewpager, (tab, position) -> {
             switch (position){
                 case 0:
-                    tab.setText("Cursos");
-                    tab.setIcon(R.drawable.ic_baseline_folder_24);
+                    tab.setText("Participantes");
+                    tab.setIcon(R.drawable.ic_baseline_group_24);
                     break;
                 case 1:
                     tab.setText("Peticiones");

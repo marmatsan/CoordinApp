@@ -43,7 +43,7 @@ public class GroupStudentCardAdapter extends RecyclerView.Adapter<GroupStudentCa
     @NonNull
     @Override
     public GroupStudentCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_studentgroupcard, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.utils_cards_groupcardstudent, parent, false);
         return new GroupStudentCardViewHolder(view);
     }
 

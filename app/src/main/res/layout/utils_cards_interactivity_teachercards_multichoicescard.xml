@@ -72,6 +72,20 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
+            android:id="@+id/evaluableAndGroupal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/actividad_no_evaluable"
+            android:textColor="@color/colorOnSecondary"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardTitleLayout" />
+
+        <TextView
             android:id="@+id/correctAnswer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -82,7 +96,7 @@
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/cardTitleLayout"
-            app:layout_constraintTop_toBottomOf="@+id/cardTitleLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/evaluableAndGroupal" />
 
         <TextView
             android:id="@+id/informativeText"
@@ -105,7 +119,6 @@
             android:layout_marginTop="16dp"
             android:text="@string/listado_de_respuestas"
             android:textColor="@color/black"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/informativeText" />
 
@@ -114,7 +127,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="32dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,6 +149,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/questionsContainer"
             app:strokeColor="@color/colorPrimary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/deleteActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/eliminar"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/red"
+            app:icon="@drawable/ic_baseline_delete_outline_24"
+            app:iconTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/setVisibilityOff"
+            app:layout_constraintStart_toEndOf="@+id/setVisibilityOff"
+            app:layout_constraintTop_toTopOf="@+id/setVisibilityOff" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

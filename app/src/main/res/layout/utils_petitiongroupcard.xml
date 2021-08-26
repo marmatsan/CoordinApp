@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/colorPrimaryVariant"
+    app:cardBackgroundColor="@color/colorPrimary"
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
     android:layout_marginStart="8dp"
@@ -17,28 +17,45 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/requesterName"
-            android:layout_width="wrap_content"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardTitleLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="@string/name_of_the_requester"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="@color/colorOnPrimary"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <View
-            android:id="@+id/view3"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:background="@android:color/darker_gray"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/denyRequest" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/requesterName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/nombre_del_solicitante"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/denyRequest"
@@ -46,32 +63,46 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="50dp"
             android:text="@string/rechazar"
-            app:layout_constraintStart_toEndOf="@+id/acceptRequest"
-            app:layout_constraintTop_toBottomOf="@+id/requesterName" />
+            android:textColor="@color/white"
+            app:backgroundTint="@color/red"
+            app:icon="@drawable/ic_baseline_cancel_24"
+            app:iconTint="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/acceptRequest"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardTitleLayout" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/acceptRequest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             android:text="@string/aceptar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/requesterName" />
-
+            android:textColor="@color/white"
+            app:backgroundTint="@color/green"
+            app:icon="@drawable/ic_baseline_check_circle_outline_24"
+            app:iconTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/denyRequest"
+            app:layout_constraintStart_toEndOf="@+id/denyRequest"
+            app:layout_constraintTop_toTopOf="@+id/denyRequest" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/displayParticipantsList"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/ver_participantes"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/white"
+            app:icon="@drawable/ic_baseline_format_list_bulleted_24"
+            app:iconTint="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view3" />
+            app:layout_constraintTop_toBottomOf="@+id/denyRequest" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -70,7 +70,7 @@ public class IndividualFiles extends Fragment {
                 .collection("Subjects")
                 .document(selectedSubject)
                 .collection("IndividualGroups")
-                .whereArrayContains("participantsIds", fAuth.getUid())
+                .whereArrayContains("allParticipantsIDs", fAuth.getUid())
                 .addSnapshotListener((queryDocumentsSnapshots, error) -> {
 
                     if (error != null) {

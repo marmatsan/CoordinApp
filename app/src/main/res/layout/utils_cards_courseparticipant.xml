@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/colorSecondary"
+    app:cardCornerRadius="8dp"
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
-    app:cardBackgroundColor="#666ad1"
-    app:cardCornerRadius="4dp"
     app:cardElevation="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,6 +41,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/role_of_the_participant"
             android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/courseparticipant_avatar"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,6 +52,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/name_of_the_participant"
+            android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/courseparticipant_avatar"
             app:layout_constraintTop_toBottomOf="@+id/courseparticipant_role" />
 
@@ -62,6 +64,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="@string/email_of_the_participant"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/courseparticipant_avatar"
             app:layout_constraintTop_toBottomOf="@+id/courseparticipant_name" />

@@ -81,14 +81,15 @@ public class PetitionGroupCardAdapter extends RecyclerView.Adapter<PetitionGroup
         if (petitionCard.getRequesterId().equals(fAuth.getUid())) {
             holder.requesterName.setText(R.string.peticion_propia);
         } else {
-            holder.requesterName.setText(petitionCard.getRequesterName());
+            String petitionTitile = "Petición de "+ petitionCard.getRequesterName();
+            holder.requesterName.setText(petitionTitile);
         }
 
         if (userType == UserType.TYPE_TEACHER || petitionCard.getRequesterId().equals(fAuth.getUid())) {
             if (petitionCard.getRequesterId().equals(fAuth.getUid())) {
                 holder.acceptRequest.setVisibility(View.GONE);
             }
-            holder.denyRequest.setText(R.string.eliminar_peticion);
+            holder.denyRequest.setText(R.string.eliminar);
         }
 
         holder.acceptRequest.setOnClickListener(v -> {

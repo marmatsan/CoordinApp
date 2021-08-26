@@ -33,7 +33,6 @@
     <string name="coordinapp">CoordinApp</string>
     <string name="inicio_de_sesi_n">Inicio de sesión</string>
     <string name="e_mail">E-Mail</string>
-    <string name="eliminar_peticion">Eliminar petición</string>
     <string name="contrase_a">Contraseña</string>
     <string name="iniciar_sesi_n">Iniciar sesión</string>
     <string name="crear_una_cuenta"><u>Crear una cuenta</u></string>
@@ -175,6 +174,8 @@
     <string name="ocultar">Ocultar</string>
     <string name="verRespuestas">Ver respuestas</string>
     <string name="ocultarRespuestas">Ocultar respuestas</string>
+    <string name="verRespuesta">Ver respuesta</string>
+    <string name="ocultarRespuesta">Ocultar respuesta</string>
     <string name="lista_de_repsuestas">Lista de repsuestas</string>
     <string name="_3_agrega_las_preguntas_que_quieras_que_tenga_la_actividad">3. Agrega las opciones que quieras que tenga la actividad y marca la correcta</string>
     <string name="a_adir_pregunta">Añadir opción</string>
@@ -229,5 +230,7 @@
     <string name="nombre_del_grupo">Nombre del grupo</string>
     <string name="ver_archivos">Ver archivos</string>
     <string name="el_profesor_no_ha_enviado_una_nueva_actividad_por_el_momento">El profesor no ha enviado una nueva actividad por el momento</string>
+    <string name="nombre_del_solicitante">Nombre del solicitante</string>
+    <string name="selecciona_a_los_participantes_con_los_que_te_gustar_a_estar_en_el_grupo">Selecciona a los participantes con los que te gustaría estar en el grupo</string>
 
 </resources>
