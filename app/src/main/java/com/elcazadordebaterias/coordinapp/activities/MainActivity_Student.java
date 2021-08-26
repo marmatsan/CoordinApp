@@ -100,7 +100,7 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
         if (itemId == R.id.nav_student_interactivity) {
             selectedFragment = new Interactivity(selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_student_groups) {
-            selectedFragment = new GroupalChat(UserType.TYPE_STUDENT, selectedCourse, selectedSubject);
+            selectedFragment = new GroupalChat(selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_student_home) {
             selectedFragment = new Home(selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_student_files) {

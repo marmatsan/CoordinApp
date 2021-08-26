@@ -17,6 +17,7 @@ import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.studentgroups.GroupsContainerCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupsContainerCard;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.studentdialogs.RequestGroupDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateGroupDialog;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
@@ -45,7 +46,6 @@ public class GroupalChat extends Fragment {
     private ArrayList<GroupsContainerCard> groupsList;
     private GroupsContainerCardAdapter groupsAdapter;
 
-    private int userType;
 
     private final String selectedCourse;
     private final String selectedSubject;
@@ -55,8 +55,9 @@ public class GroupalChat extends Fragment {
 
     private TextView noGroups;
 
-    public GroupalChat(int userType, String selectedCourse, String selectedSubject) {
-        this.userType = userType;
+    private CollectionReference individualGroupsCollRef;
+
+    public GroupalChat(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
     }
@@ -69,7 +70,7 @@ public class GroupalChat extends Fragment {
         fAuth = FirebaseAuth.getInstance();
 
         groupsList = new ArrayList<GroupsContainerCard>();
-        groupsAdapter = new GroupsContainerCardAdapter(groupsList, getContext(), userType);
+        groupsAdapter = new GroupsContainerCardAdapter(groupsList, getContext());
     }
 
     @Override
@@ -88,7 +89,7 @@ public class GroupalChat extends Fragment {
                 .document(selectedSubject)
                 .collection("CollectiveGroups");
 
-        CollectionReference individualGroupsCollRef = fStore
+        individualGroupsCollRef = fStore
                 .collection("CoursesOrganization")
                 .document(selectedCourse)
                 .collection("Subjects")
@@ -107,71 +108,9 @@ public class GroupalChat extends Fragment {
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             openChat(documentSnapshot);
-                        } else {
-                            fStore
-                                    .collection("CoursesOrganization")
-                                    .document(selectedCourse)
-                                    .collection("Subjects")
-                                    .document(selectedSubject)
-                                    .get()
-                                    .addOnSuccessListener(documentSnapshot12 -> {
-                                        String teacherID = (String) documentSnapshot12.get("teacherID");
+                        } else { // Create the individualChat and open it
 
-                                        fStore
-                                                .collection("Teachers")
-                                                .document(teacherID)
-                                                .get()
-                                                .addOnSuccessListener(documentSnapshot13 -> {
-                                                    String teacherName = (String) documentSnapshot13.get("FullName");
-
-                                                    fStore
-                                                            .collection("Students")
-                                                            .document(fAuth.getUid())
-                                                            .get()
-                                                            .addOnSuccessListener(documentSnapshot1 -> {
-                                                                String studentName = (String) documentSnapshot1.get("FullName");
-
-                                                                ArrayList<String> participantsIDs = new ArrayList<String>();
-                                                                ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
-
-                                                                GroupParticipant teacher = new GroupParticipant(teacherName, teacherID);
-                                                                GroupParticipant student = new GroupParticipant(studentName, fAuth.getUid());
-
-                                                                participants.add(teacher);
-                                                                participants.add(student);
-
-                                                                participantsIDs.add(teacherID);
-                                                                participantsIDs.add(fAuth.getUid());
-
-
-                                                                Group group = new Group(
-                                                                        "Chat con " + studentName,
-                                                                        selectedCourse,
-                                                                        selectedSubject,
-                                                                        true,
-                                                                        participantsIDs,
-                                                                        participants,
-                                                                        "IndividualGroups"
-                                                                );
-
-                                                                IndividualGroupDocument individualGroup = new IndividualGroupDocument(group.getName(), participantsIDs, group);
-                                                                individualGroupsCollRef
-                                                                        .document(fAuth.getUid())
-                                                                        .set(individualGroup)
-                                                                        .addOnSuccessListener(unused -> {
-                                                                            individualGroupsCollRef
-                                                                                    .document(fAuth.getUid())
-                                                                                    .get()
-                                                                                    .addOnSuccessListener(documentSnapshot2 -> {
-                                                                                        openChat(documentSnapshot2);
-                                                                                    });
-                                                                        });
-
-                                                            });
-
-                                                });
-
-                                    });
+                            createIndividualChat();
 
                         }
                     });
@@ -262,8 +201,75 @@ public class GroupalChat extends Fragment {
         Gson gson = new Gson();
         String cardAsString = gson.toJson(groupCard);
         intent.putExtra("cardAsString", cardAsString);
-        intent.putExtra("userType", userType);
+        intent.putExtra("userType", UserType.TYPE_STUDENT);
         getContext().startActivity(intent);
+    }
+
+    private void createIndividualChat(){
+        fStore
+                .collection("CoursesOrganization")
+                .document(selectedCourse)
+                .collection("Subjects")
+                .document(selectedSubject)
+                .get()
+                .addOnSuccessListener(documentSnapshot12 -> {
+                    String teacherID = (String) documentSnapshot12.get("teacherID");
+
+                    fStore
+                            .collection("Teachers")
+                            .document(teacherID)
+                            .get()
+                            .addOnSuccessListener(documentSnapshot13 -> {
+                                String teacherName = (String) documentSnapshot13.get("FullName");
+
+                                fStore
+                                        .collection("Students")
+                                        .document(fAuth.getUid())
+                                        .get()
+                                        .addOnSuccessListener(documentSnapshot1 -> {
+                                            String studentName = (String) documentSnapshot1.get("FullName");
+
+                                            ArrayList<String> participantsIDs = new ArrayList<String>();
+                                            ArrayList<GroupParticipant> participants = new ArrayList<GroupParticipant>();
+
+                                            GroupParticipant teacher = new GroupParticipant(teacherName, teacherID);
+                                            GroupParticipant student = new GroupParticipant(studentName, fAuth.getUid());
+
+                                            participants.add(teacher);
+                                            participants.add(student);
+
+                                            participantsIDs.add(teacherID);
+                                            participantsIDs.add(fAuth.getUid());
+
+
+                                            Group group = new Group(
+                                                    "Chat con " + studentName,
+                                                    selectedCourse,
+                                                    selectedSubject,
+                                                    true,
+                                                    participantsIDs,
+                                                    participants,
+                                                    "IndividualGroups"
+                                            );
+
+                                            IndividualGroupDocument individualGroup = new IndividualGroupDocument(group.getName(), participantsIDs, group);
+                                            individualGroupsCollRef
+                                                    .document(fAuth.getUid())
+                                                    .set(individualGroup)
+                                                    .addOnSuccessListener(unused -> {
+                                                        individualGroupsCollRef
+                                                                .document(fAuth.getUid())
+                                                                .get()
+                                                                .addOnSuccessListener(documentSnapshot2 -> {
+                                                                    openChat(documentSnapshot2);
+                                                                });
+                                                    });
+
+                                        });
+
+                            });
+
+                });
     }
 
 }

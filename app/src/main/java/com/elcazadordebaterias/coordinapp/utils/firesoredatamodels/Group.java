@@ -170,7 +170,7 @@ public class Group {
                                 studentsAndTeacherParticipants.addAll(onlyStudentsParticipants);
 
                                 Group studentsAndTeacherGroup = new Group(
-                                        "Grupo " + identifier + " - Con profesor",
+                                        "Chat con el profesor",
                                         selectedCourse,
                                         selectedSubject,
                                         true,
@@ -184,7 +184,7 @@ public class Group {
                                     groups.add(studentsAndTeacherGroup);
 
                                     Group onlyStudentsGroup = new Group(
-                                            "Grupo " + identifier + " - Sólo alumnos",
+                                            "Chat con solo alumnos",
                                             selectedCourse,
                                             selectedSubject,
                                             false,

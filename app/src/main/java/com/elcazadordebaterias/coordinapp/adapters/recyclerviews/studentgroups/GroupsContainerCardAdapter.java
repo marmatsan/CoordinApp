@@ -27,11 +27,9 @@ public class GroupsContainerCardAdapter extends RecyclerView.Adapter<GroupsConta
     private final RecyclerView.RecycledViewPool viewPool;
     private SparseBooleanArray expandState;
 
-    private int userType;
-
     private Context context;
 
-    public GroupsContainerCardAdapter(ArrayList<GroupsContainerCard> coursesList, Context context, int userType) {
+    public GroupsContainerCardAdapter(ArrayList<GroupsContainerCard> coursesList, Context context) {
         this.groupsList = coursesList;
 
         viewPool = new RecyclerView.RecycledViewPool();
@@ -40,7 +38,6 @@ public class GroupsContainerCardAdapter extends RecyclerView.Adapter<GroupsConta
         for (int i = 0; i < coursesList.size(); i++) {
             expandState.append(i, false);
         }
-        this.userType = userType;
         this.context = context;
 
     }
@@ -86,7 +83,7 @@ public class GroupsContainerCardAdapter extends RecyclerView.Adapter<GroupsConta
         LinearLayoutManager layoutManager = new LinearLayoutManager(holder.groupsContainer.getContext(), LinearLayoutManager.VERTICAL, false);
 
         layoutManager.setInitialPrefetchItemCount(groupsContainerCard.getGroupList().size());
-        GroupStudentCardAdapter groupTeacherCardAdapter = new GroupStudentCardAdapter(groupsContainerCard.getGroupList(), context, userType);
+        GroupStudentCardAdapter groupTeacherCardAdapter = new GroupStudentCardAdapter(groupsContainerCard.getGroupList(), context);
 
         holder.groupsContainer.setLayoutManager(layoutManager);
         holder.groupsContainer.setAdapter(groupTeacherCardAdapter);

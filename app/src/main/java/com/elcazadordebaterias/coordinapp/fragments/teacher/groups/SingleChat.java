@@ -51,7 +51,7 @@ public class SingleChat extends Fragment {
         fAuth = FirebaseAuth.getInstance();
 
         groupsList = new ArrayList<GroupCard>();
-        groupsAdapter = new GroupTeacherCardAdapter(groupsList, getContext(), userType);
+        groupsAdapter = new GroupTeacherCardAdapter(groupsList, getContext());
     }
 
     @Override

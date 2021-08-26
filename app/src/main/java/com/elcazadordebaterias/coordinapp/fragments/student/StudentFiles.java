@@ -118,11 +118,15 @@ public class StudentFiles extends Fragment {
                                                     storageFile.getDownloadLink());
                                             filesList.add(fileCard);
                                         }
-                                        listChanged();
                                     });
-                            filesContainerList.add(new FilesContainerCard(name, filesList));
+                            if (!filesList.isEmpty()) {
+                                filesContainerList.add(new FilesContainerCard(name, filesList));
+                            }
                         }
-                        groupsList.add(new GroupContainerCard(groupName, filesContainerList));
+                        if (!filesContainerList.isEmpty()) {
+                            groupsList.add(new GroupContainerCard(groupName, filesContainerList));
+                            listChanged();
+                        }
                     }
                 });
 
