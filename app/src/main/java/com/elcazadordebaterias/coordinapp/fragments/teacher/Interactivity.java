@@ -24,6 +24,7 @@ import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateMul
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateReminderCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
+import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.utilities.ButtonAnimator;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -57,6 +58,7 @@ public class Interactivity extends Fragment {
     HashMap<String, ArrayList<InteractivityCard>> interactivityListsMap;
     HashMap<String, Boolean> hasDocumentsMap;
     HashMap<String, QuerySnapshot> allInteractivityDocumentsSnapshotsMap;
+    HashMap<String, ArrayList<Double>> statisticsMap;
 
     TextView explicativeError;
 
@@ -98,6 +100,7 @@ public class Interactivity extends Fragment {
         interactivityListsMap = new HashMap<String, ArrayList<InteractivityCard>>();
         hasDocumentsMap = new HashMap<String, Boolean>();
         allInteractivityDocumentsSnapshotsMap = new HashMap<String, QuerySnapshot>();
+        statisticsMap = new HashMap<String, ArrayList<Double>>();
 
         fStore
                 .collection("CoursesOrganization")
@@ -132,7 +135,7 @@ public class Interactivity extends Fragment {
                                             return;
                                         }
 
-                                        ArrayList<Integer> statistics = getCardStatistics(interactivityCardsDocumentSnapshots);
+                                        statisticsMap.put(groupName, getCardStatistics(interactivityCardsDocumentSnapshots));
 
                                         interactivityCardsList.clear();
 
@@ -218,9 +221,11 @@ public class Interactivity extends Fragment {
             ArrayList<InteractivityCard> interactivitiesList = interactivityListsMap.get(key);
             Boolean hasDocuments = hasDocumentsMap.get(key);
             QuerySnapshot allInteractivityDocumentsSnapshots = allInteractivityDocumentsSnapshotsMap.get(key);
-            if (interactivitiesList != null && hasDocuments != null && allInteractivityDocumentsSnapshots != null) {
+            ArrayList<Double> statistics = statisticsMap.get(key);
+
+            if (interactivitiesList != null && hasDocuments != null && allInteractivityDocumentsSnapshots != null && statistics != null) {
                 if (hasDocuments) {
-                    interactivityContainerList.add(new InteractivityCardsContainer("Actividades con el " + key, interactivitiesList, allInteractivityDocumentsSnapshots));
+                    interactivityContainerList.add(new InteractivityCardsContainer("Actividades con el " + key, interactivitiesList, allInteractivityDocumentsSnapshots, statistics));
                 }
             }
         }
@@ -228,16 +233,27 @@ public class Interactivity extends Fragment {
         if (interactivityContainerList.isEmpty()) {
             explicativeError.setText(R.string.noInteractivitiesCreated);
             explicativeError.setVisibility(View.VISIBLE);
+        } else {
+            explicativeError.setVisibility(View.GONE);
         }
 
         adapter.notifyDataSetChanged();
     }
 
-    private ArrayList<Integer> getCardStatistics(QuerySnapshot interactivityCardsDocumentSnapshots) {
-        ArrayList<Integer> statistics = new ArrayList<Integer>();
+    private ArrayList<Double> getCardStatistics(QuerySnapshot interactivityCardsDocumentSnapshots) {
+        ArrayList<Double> statistics = new ArrayList<Double>();
 
-        int evaluableGroupalTextCards = 0;
-        int totalGroupalTextMark = 0;
+        double evaluableGroupalInputCards = 0;
+        double groupalMarkInputText = 0;
+
+        double evaluableIndividualStudents = 0;
+        double individualMarkInputText = 0;
+
+        double evaluableGroupalMultichoiceCards = 0;
+        double totalGroupalAnsweredCorrected = 0;
+
+        double evaluableIndividualMarks = 0;
+        double totalIndividualAverage = 0;
 
         for (DocumentSnapshot interactivityCardsDocumentSnapshot : interactivityCardsDocumentSnapshots) {
             Long cardType = interactivityCardsDocumentSnapshot.getLong("cardType");
@@ -250,24 +266,76 @@ public class Interactivity extends Fragment {
                         if (inputTextCardDocument.getHasGroupalActivity()) {
                             InputTextCardDocument.InputTextCardStudentData groupData = inputTextCardDocument.getStudentsData().get(0);
                             if (groupData.getHasMarkSet()) {
-                                evaluableGroupalTextCards++;
-                                totalGroupalTextMark += groupData.getMark();
+                                evaluableGroupalInputCards++;
+                                groupalMarkInputText += groupData.getMark();
+                            }
+                        } else {
+                            for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
+                                if (studentData.getHasMarkSet()) {
+                                    evaluableIndividualStudents++;
+                                    individualMarkInputText += studentData.getMark();
+                                }
                             }
                         }
-
-
-                    } else {
-
                     }
 
                 } else if (cardType == InteractivityCardType.TYPE_CHOICES) {
+                    MultichoiceCardDocument multichoiceCardDocument = interactivityCardsDocumentSnapshot.toObject(MultichoiceCardDocument.class);
+
+                    if (multichoiceCardDocument.getHasToBeEvaluated()) {
+
+                        int correctQuestionIdentifier = 0;
+                        for (MultichoiceCardDocument.Question question : multichoiceCardDocument.getQuestionsList()) {
+                            if (question.getHasCorrectAnswer()) {
+                                correctQuestionIdentifier = question.getQuestionIdentifier();
+                                break;
+                            }
+                        }
+
+                        if (multichoiceCardDocument.getHasGroupalActivity()) {
+                            evaluableGroupalMultichoiceCards++;
+                            MultichoiceCardDocument.MultichoiceCardStudentData groupData = multichoiceCardDocument.getStudentsData().get(0);
+
+                            if (groupData.getQuestionRespondedIdentifier() == correctQuestionIdentifier) {
+                                totalGroupalAnsweredCorrected+= totalGroupalAnsweredCorrected;
+                            }
+                        } else {
+                            evaluableIndividualMarks++;
+                            int totalStudents = multichoiceCardDocument.getStudentsData().size();
+                            int answeredCorrectly = 0;
+
+                            for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()) {
+                                if (studentData.getQuestionRespondedIdentifier() == correctQuestionIdentifier) {
+                                    answeredCorrectly+= 1;
+                                }
+                            }
+
+                            totalIndividualAverage += (answeredCorrectly/totalStudents) * 100;
+
+                        }
+                    }
 
                 }
             }
         }
 
-        statistics.add(evaluableGroupalTextCards);
-        statistics.add(totalGroupalTextMark);
+        // InputText Statistics
+            // Groupal InputText mark
+            statistics.add(groupalMarkInputText);
+            statistics.add(evaluableGroupalInputCards);
+
+            // Individual InputText mark
+            statistics.add(evaluableIndividualStudents);
+            statistics.add(individualMarkInputText);
+
+        // Multichoice Statistics
+            // Groupal Multichoice mark
+            statistics.add(evaluableGroupalMultichoiceCards);
+            statistics.add(totalGroupalAnsweredCorrected);
+
+            // Individual Multichoice mark
+            statistics.add(evaluableIndividualMarks);
+            statistics.add(totalIndividualAverage);
 
         return statistics;
     }

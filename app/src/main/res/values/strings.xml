@@ -233,7 +233,9 @@
     <string name="nombre_del_solicitante">Nombre del solicitante</string>
     <string name="selecciona_a_los_participantes_con_los_que_te_gustar_a_estar_en_el_grupo">Selecciona a los participantes con los que te gustaría estar en el grupo</string>
     <string name="mostrar_estad_sticas">Mostrar estadísticas</string>
-    <string name="noGroupsInteractivity">No tienes creado ningún grupo. Puedes empezar a obtener estadísticas creando un grupo en la pestañá Grupos</string>
+    <string name="noGroupsInteractivity">Para mandar actividades tienes que tener al menos un grupo creado. Puedes crear un grupo en la pestaña Grupos</string>
     <string name="noInteractivitiesCreated">Aún no has creado ninguna actividad. Puedes crear una actividad pulsando en el botón +</string>
+    <string name="preguntas_evaluables_de_tipo_entrada_de_texto">Preguntas evaluables de tipo entrada de texto</string>
+    <string name="preguntas_evaluables_de_tipo_multirespuesta">Preguntas evaluables de tipo multirespuesta</string>
 
 </resources>

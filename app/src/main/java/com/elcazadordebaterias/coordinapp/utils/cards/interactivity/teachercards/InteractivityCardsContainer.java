@@ -9,15 +9,15 @@ public class InteractivityCardsContainer {
     private String name;
     private ArrayList<InteractivityCard> interactivityCardsList;
 
-    private int evaluableGroupalTextCards;
-    private int totalGroupalTextMark;
+    private ArrayList<Double> statistics;
 
     QuerySnapshot allInteractivityDocumentsSnapshots;
 
-    public InteractivityCardsContainer(String name, ArrayList<InteractivityCard> interactivityCardsList, QuerySnapshot allInteractivityDocumentsSnapshots) {
+    public InteractivityCardsContainer(String name, ArrayList<InteractivityCard> interactivityCardsList, QuerySnapshot allInteractivityDocumentsSnapshots, ArrayList<Double> statistics) {
         this.name = name;
         this.interactivityCardsList = interactivityCardsList;
         this.allInteractivityDocumentsSnapshots = allInteractivityDocumentsSnapshots;
+        this.statistics = statistics;
     }
 
     public String getName() {
@@ -28,22 +28,12 @@ public class InteractivityCardsContainer {
         return interactivityCardsList;
     }
 
-    public int getEvaluableGroupalTextCards() {
-        return evaluableGroupalTextCards;
-    }
-
-    public int getAverageGroupalTextMark() {
-
-        int averageGroupalTextMark = 0;
-
-        if (evaluableGroupalTextCards != 0){
-            averageGroupalTextMark = totalGroupalTextMark/evaluableGroupalTextCards;
-        }
-
-        return averageGroupalTextMark;
-    }
-
     public QuerySnapshot getAllInteractivityDocumentsSnapshots() {
         return allInteractivityDocumentsSnapshots;
     }
+
+    public ArrayList<Double> getStatistics() {
+        return statistics;
+    }
+
 }

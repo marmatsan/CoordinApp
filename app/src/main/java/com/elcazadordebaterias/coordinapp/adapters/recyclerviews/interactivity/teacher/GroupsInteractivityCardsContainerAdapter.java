@@ -9,12 +9,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCardsContainer;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.DisplayParticipantsListDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.GroupStatisticsDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -83,26 +86,25 @@ public class GroupsInteractivityCardsContainerAdapter extends RecyclerView.Adapt
         });
 
         holder.showStatistics.setOnClickListener(view -> {
-
+            GroupStatisticsDialog dialog = new GroupStatisticsDialog(groupsContainerCard.getStatistics());
+            dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");
         });
+
+        holder.showStatistics.setVisibility(View.VISIBLE);
 
         if (groupsContainerCard.getInteractivityCardsList().isEmpty()) {
             String information;
 
             information = "Todas las actividades están ocultas";
             holder.showInvisibleCards.setVisibility(View.VISIBLE);
-            holder.showStatistics.setVisibility(View.VISIBLE);
 
             holder.informativeText.setText(information);
             holder.informativeText.setVisibility(View.VISIBLE);
 
-
-            holder.showStatistics.setVisibility(View.GONE);
             holder.expandActivitiesButton.setVisibility(View.GONE);
             holder.expandableView.setVisibility(View.GONE);
 
         } else {
-            holder.showStatistics.setVisibility(View.VISIBLE);
             holder.informativeText.setVisibility(View.GONE);
             holder.expandActivitiesButton.setVisibility(View.VISIBLE);
             holder.showInvisibleCards.setVisibility(View.VISIBLE);
