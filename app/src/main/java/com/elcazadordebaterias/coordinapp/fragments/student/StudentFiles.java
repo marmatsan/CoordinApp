@@ -95,8 +95,6 @@ public class StudentFiles extends Fragment {
                         String collectiveGroupName = collectiveGroupDocument.getName();
                         ArrayList<FilesContainerCard> filesContainerList = new ArrayList<FilesContainerCard>();
 
-                        groupsList.add(new GroupContainerCard(collectiveGroupName, filesContainerList));
-
                         for (Group group : collectiveGroupDocument.getGroups()) {
                             ArrayList<FileCard> filesList = new ArrayList<FileCard>();
                             String groupName = group.getName();
@@ -130,6 +128,9 @@ public class StudentFiles extends Fragment {
                                         }
 
                                         if (!filesList.isEmpty()) {
+                                            if (filesContainerList.isEmpty()) {
+                                                groupsList.add(new GroupContainerCard(collectiveGroupName, filesContainerList));
+                                            }
                                             filesContainerList.add(new FilesContainerCard(groupName, filesList));
                                             listChanged();
                                         }
