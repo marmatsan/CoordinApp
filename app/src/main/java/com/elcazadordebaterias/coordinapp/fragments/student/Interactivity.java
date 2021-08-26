@@ -80,8 +80,8 @@ public class Interactivity extends Fragment {
                     } else if (collectiveGroupsDocumentSnapshots == null) {
                         return;
                     }
-                    cardsList.clear();
 
+                    cardsList.clear();
                     for (DocumentSnapshot collectiveGroupDocumentSnapshot : collectiveGroupsDocumentSnapshots) {
                         CollectiveGroupDocument collectiveGroupDocument = collectiveGroupDocumentSnapshot.toObject(CollectiveGroupDocument.class);
 

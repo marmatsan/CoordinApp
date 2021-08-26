@@ -252,8 +252,9 @@ public class ChatActivity extends AppCompatActivity {
                 Toast.makeText(this, "Archivo subido", Toast.LENGTH_SHORT).show();
 
                 fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    Calendar calendar = Calendar.getInstance(); // Returns instance with current date and time set
-                    String uploadedTime = calendar.getTime().toString();
+                    Date date = new Date();
+                    DateFormat df = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
+                    df.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
 
                     if (userType == UserType.TYPE_STUDENT) {
                         fStore
@@ -261,7 +262,7 @@ public class ChatActivity extends AppCompatActivity {
                                 .document(fAuth.getUid())
                                 .get()
                                 .addOnSuccessListener(documentSnapshot -> {
-                                    StorageFile fileReference = new StorageFile((String) documentSnapshot.get("FullName"), fileNameWithExtension, uploadedTime, uri.toString());
+                                    StorageFile fileReference = new StorageFile((String) documentSnapshot.get("FullName"), fileNameWithExtension, df.format(date), uri.toString());
                                     storageRef
                                             .add(fileReference)
                                             .addOnSuccessListener(documentReference -> {
@@ -274,7 +275,7 @@ public class ChatActivity extends AppCompatActivity {
                                 .document(fAuth.getUid())
                                 .get()
                                 .addOnSuccessListener(documentSnapshot -> {
-                                    StorageFile fileReference = new StorageFile((String) documentSnapshot.get("FullName"), fileNameWithExtension, uploadedTime, uri.toString());
+                                    StorageFile fileReference = new StorageFile((String) documentSnapshot.get("FullName"), fileNameWithExtension, df.format(date), uri.toString());
                                     storageRef
                                             .add(fileReference)
                                             .addOnSuccessListener(documentReference -> {

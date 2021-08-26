@@ -140,6 +140,7 @@ public class GroupalChat extends Fragment {
 
                         String groupName = collectiveGroupDocument.getName();
                         String spokerName = collectiveGroupDocument.getSpokerName();
+                        String spokerID = collectiveGroupDocument.getSpokesStudentID();
 
                         ArrayList<GroupCard> groupList = new ArrayList<GroupCard>();
                         ArrayList<String> participantsNames = new ArrayList<String>();
@@ -161,7 +162,7 @@ public class GroupalChat extends Fragment {
 
                             }
                         }
-                        groupsList.add(new GroupsContainerCard(groupName, spokerName, participantsNames, groupList));
+                        groupsList.add(new GroupsContainerCard(groupName, spokerName, spokerID, participantsNames, groupList));
                     }
                     listChanged();
                 });
@@ -205,7 +206,7 @@ public class GroupalChat extends Fragment {
         getContext().startActivity(intent);
     }
 
-    private void createIndividualChat(){
+    private void createIndividualChat() {
         fStore
                 .collection("CoursesOrganization")
                 .document(selectedCourse)

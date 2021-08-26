@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.fragments.student;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,23 +80,26 @@ public class StudentFiles extends Fragment {
 
         collectionRef
                 .whereArrayContains("allParticipantsIDs", fAuth.getUid())
-                .addSnapshotListener((queryDocumentsSnapshots, error) -> {
+                .addSnapshotListener((collectiveGroupsDocumentsSnapshots, error1) -> {
 
-                    if (error != null) {
+                    if (error1 != null) {
                         return;
-                    } else if (queryDocumentsSnapshots == null) {
+                    } else if (collectiveGroupsDocumentsSnapshots == null) {
                         return;
                     }
 
                     groupsList.clear();
-                    for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
-                        ArrayList<FilesContainerCard> filesContainerList = new ArrayList<FilesContainerCard>();
-                        CollectiveGroupDocument groupDoc = groupDocument.toObject(CollectiveGroupDocument.class);
-                        String groupName = groupDoc.getName();
+                    for (DocumentSnapshot collectiveGroupDocumentSnapshot : collectiveGroupsDocumentsSnapshots) {
+                        CollectiveGroupDocument collectiveGroupDocument = collectiveGroupDocumentSnapshot.toObject(CollectiveGroupDocument.class);
 
-                        for (Group group : groupDoc.getGroups()) {
+                        String collectiveGroupName = collectiveGroupDocument.getName();
+                        ArrayList<FilesContainerCard> filesContainerList = new ArrayList<FilesContainerCard>();
+
+                        groupsList.add(new GroupContainerCard(collectiveGroupName, filesContainerList));
+
+                        for (Group group : collectiveGroupDocument.getGroups()) {
                             ArrayList<FileCard> filesList = new ArrayList<FileCard>();
-                            String name = group.getName();
+                            String groupName = group.getName();
                             String storageCollection;
 
                             if (group.getHasTeacher()) {
@@ -105,11 +109,17 @@ public class StudentFiles extends Fragment {
                             }
 
                             collectionRef
-                                    .document(groupDocument.getId())
+                                    .document(collectiveGroupDocumentSnapshot.getId())
                                     .collection(storageCollection)
-                                    .get()
-                                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                                        for (DocumentSnapshot storageFileDoc : queryDocumentSnapshots) {
+                                    .addSnapshotListener((storageFileDocumentSnapshots, error2) -> {
+
+                                        if (error2 != null) {
+                                            return;
+                                        } else if (storageFileDocumentSnapshots == null) {
+                                            return;
+                                        }
+
+                                        for (DocumentSnapshot storageFileDoc : storageFileDocumentSnapshots) {
                                             StorageFile storageFile = storageFileDoc.toObject(StorageFile.class);
                                             FileCard fileCard = new FileCard(
                                                     storageFile.getUploaderName(),
@@ -118,14 +128,13 @@ public class StudentFiles extends Fragment {
                                                     storageFile.getDownloadLink());
                                             filesList.add(fileCard);
                                         }
+
+                                        if (!filesList.isEmpty()) {
+                                            filesContainerList.add(new FilesContainerCard(groupName, filesList));
+                                            listChanged();
+                                        }
+
                                     });
-                            if (!filesList.isEmpty()) {
-                                filesContainerList.add(new FilesContainerCard(name, filesList));
-                            }
-                        }
-                        if (!filesContainerList.isEmpty()) {
-                            groupsList.add(new GroupContainerCard(groupName, filesContainerList));
-                            listChanged();
                         }
                     }
                 });
@@ -135,7 +144,6 @@ public class StudentFiles extends Fragment {
 
     private void listChanged() {
         groupsContainerAdapter.notifyDataSetChanged();
-
         if (groupsList.isEmpty()) {
             noFiles.setVisibility(View.VISIBLE);
         } else {

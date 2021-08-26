@@ -18,6 +18,7 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.teachergroups.GroupTeacherCardAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupsContainerCard;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -61,7 +62,12 @@ public class GroupsContainerCardAdapter extends RecyclerView.Adapter<GroupsConta
         GroupsContainerCard groupsContainerCard = groupsList.get(position);
 
         holder.groupName.setText(groupsContainerCard.getName());
-        String spoker = "Portavoz: " + groupsContainerCard.getSpokerName();
+        String spoker;
+        if (groupsContainerCard.getSpokerID().equals(FirebaseAuth.getInstance().getUid())) {
+            spoker = "Eres el portavoz de este grupo";
+        } else {
+            spoker = "Portavoz: " + groupsContainerCard.getSpokerName();
+        }
         holder.spokerName.setText(spoker);
 
         holder.showParticipants.setOnClickListener(view -> {
@@ -90,15 +96,15 @@ public class GroupsContainerCardAdapter extends RecyclerView.Adapter<GroupsConta
         holder.groupsContainer.setRecycledViewPool(viewPool);
 
         final boolean isExpanded = expandState.get(position); //Check if the view is expanded
-        holder.expandableView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+        holder.expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
 
         holder.openChats.setOnClickListener(view -> {
-            if (holder.expandableView.getVisibility() == View.VISIBLE){
+            if (holder.expandableView.getVisibility() == View.VISIBLE) {
                 holder.expandableView.setVisibility(View.GONE);
                 holder.openChats.setIconResource(R.drawable.ic_baseline_folder_open_24);
                 holder.openChats.setText(R.string.abrir_grupos_de_chat);
                 expandState.put(position, false);
-            }else{
+            } else {
                 holder.expandableView.setVisibility(View.VISIBLE);
                 holder.openChats.setIconResource(R.drawable.ic_baseline_folder_24);
                 holder.openChats.setText(R.string.cerrar_grupos_de_chat);

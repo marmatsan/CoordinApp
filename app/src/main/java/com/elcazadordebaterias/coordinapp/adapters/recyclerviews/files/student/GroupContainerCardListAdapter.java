@@ -66,11 +66,13 @@ public class GroupContainerCardListAdapter extends RecyclerView.Adapter<GroupCon
         viewHolder.expandFilesButton.setOnClickListener(view -> {
             if (viewHolder.expandableView.getVisibility() == View.VISIBLE){
                 viewHolder.expandableView.setVisibility(View.GONE);
-                viewHolder.expandFilesButton.setText(R.string.expandir);
+                viewHolder.expandFilesButton.setIconResource(R.drawable.ic_baseline_folder_open_24);
+                viewHolder.expandFilesButton.setText(R.string.cerrar_grupos_de_archivos);
                 expandState.put(position, false);
             }else{
                 viewHolder.expandableView.setVisibility(View.VISIBLE);
-                viewHolder.expandFilesButton.setText(R.string.colapsar);
+                viewHolder.expandFilesButton.setIconResource(R.drawable.ic_baseline_folder_24);
+                viewHolder.expandFilesButton.setText(R.string.abrir_grupos_de_archivos);
                 expandState.put(position, true);
             }
         });
