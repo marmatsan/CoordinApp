@@ -29,7 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class StudentFiles extends Fragment {
+public class Files extends Fragment {
 
     // Firestore
     FirebaseAuth fAuth;
@@ -43,7 +43,7 @@ public class StudentFiles extends Fragment {
 
     TextView noFiles;
 
-    public StudentFiles(String selectedCourse, String selectedSubject) {
+    public Files(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
     }
@@ -117,6 +117,7 @@ public class StudentFiles extends Fragment {
                                             return;
                                         }
 
+                                        // TODO: When the teacher deletes the group, the files dont dissapear automatically
                                         for (DocumentSnapshot storageFileDoc : storageFileDocumentSnapshots) {
                                             StorageFile storageFile = storageFileDoc.toObject(StorageFile.class);
                                             FileCard fileCard = new FileCard(

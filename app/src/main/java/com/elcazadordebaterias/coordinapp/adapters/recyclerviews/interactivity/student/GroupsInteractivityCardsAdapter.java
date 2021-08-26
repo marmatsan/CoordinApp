@@ -46,7 +46,7 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
         @NonNull
         @Override
         public GroupsInteractivityCardsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.utils_cards_groupsstudentcontainercard, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.utils_cards_interactivity_studentcards_interactivitycardscontainer, viewGroup, false);
 
             return new GroupsInteractivityCardsViewHolder(view);
         }
@@ -58,26 +58,28 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
 
             viewHolder.groupName.setText(groupsContainerCard.getName());
 
-            LinearLayoutManager layoutManager = new LinearLayoutManager(viewHolder.filesRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(viewHolder.interactivitiesRecyclerview.getContext(), LinearLayoutManager.VERTICAL, false);
 
             layoutManager.setInitialPrefetchItemCount(groupsContainerCard.getInteractivityCardsList().size());
             InteractivityCardsAdapter interactivityCardsAdapter = new InteractivityCardsAdapter(groupsContainerCard.getInteractivityCardsList(), context);
 
-            viewHolder.filesRecyclerView.setLayoutManager(layoutManager);
-            viewHolder.filesRecyclerView.setAdapter(interactivityCardsAdapter);
-            viewHolder.filesRecyclerView.setRecycledViewPool(viewPool);
+            viewHolder.interactivitiesRecyclerview.setLayoutManager(layoutManager);
+            viewHolder.interactivitiesRecyclerview.setAdapter(interactivityCardsAdapter);
+            viewHolder.interactivitiesRecyclerview.setRecycledViewPool(viewPool);
 
             final boolean isExpanded = expandState.get(position); //Check if the view is expanded
             viewHolder.expandableView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
 
-            viewHolder.expandFilesButton.setOnClickListener(view -> {
-                if (viewHolder.expandableView.getVisibility() == View.VISIBLE){
+            viewHolder.expandActivitiesButton.setOnClickListener(view -> {
+                if (viewHolder.expandableView.getVisibility() == View.VISIBLE) {
                     viewHolder.expandableView.setVisibility(View.GONE);
-                    viewHolder.expandFilesButton.setText(R.string.expandir);
+                    viewHolder.expandActivitiesButton.setText(R.string.verActividades);
+                    viewHolder.expandActivitiesButton.setIconResource(R.drawable.ic_baseline_folder_open_24);
                     expandState.put(position, false);
-                }else{
+                } else {
                     viewHolder.expandableView.setVisibility(View.VISIBLE);
-                    viewHolder.expandFilesButton.setText(R.string.colapsar);
+                    viewHolder.expandActivitiesButton.setText(R.string.ocultarActividades);
+                    viewHolder.expandActivitiesButton.setIconResource(R.drawable.ic_baseline_folder_24);
                     expandState.put(position, true);
                 }
             });
@@ -92,17 +94,17 @@ public class GroupsInteractivityCardsAdapter extends RecyclerView.Adapter<Groups
         static class GroupsInteractivityCardsViewHolder extends RecyclerView.ViewHolder {
 
             TextView groupName;
-            MaterialButton expandFilesButton;
+            MaterialButton expandActivitiesButton;
             ConstraintLayout expandableView;
-            RecyclerView filesRecyclerView;
+            RecyclerView interactivitiesRecyclerview;
 
             GroupsInteractivityCardsViewHolder(final View itemView) {
                 super(itemView);
 
                 groupName = itemView.findViewById(R.id.groupName);
-                expandFilesButton = itemView.findViewById(R.id.expandFilesButton);
+                expandActivitiesButton = itemView.findViewById(R.id.expandActivitiesButton);
                 expandableView = itemView.findViewById(R.id.expandableView);
-                filesRecyclerView = itemView.findViewById(R.id.filesRecyclerView);
+                interactivitiesRecyclerview = itemView.findViewById(R.id.interactivitiesRecyclerview);
 
             }
         }

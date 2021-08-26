@@ -15,12 +15,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.elcazadordebaterias.coordinapp.R;
-import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
 import com.elcazadordebaterias.coordinapp.fragments.student.GroupalChat;
 import com.elcazadordebaterias.coordinapp.fragments.student.Interactivity;
-import com.elcazadordebaterias.coordinapp.fragments.student.StudentFiles;
+import com.elcazadordebaterias.coordinapp.fragments.student.Files;
 import com.elcazadordebaterias.coordinapp.fragments.student.Home;
-import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.commondialogs.SelectDisplayedCourse;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -104,7 +102,7 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
         } else if (itemId == R.id.nav_student_home) {
             selectedFragment = new Home(selectedCourse, selectedSubject);
         } else if (itemId == R.id.nav_student_files) {
-            selectedFragment = new StudentFiles(selectedCourse, selectedSubject);
+            selectedFragment = new Files(selectedCourse, selectedSubject);
         } else {
             selectedFragment = new Home(selectedCourse, selectedSubject);
         }

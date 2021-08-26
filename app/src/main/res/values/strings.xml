@@ -228,5 +228,6 @@
     <string name="abrir_archivos">Abrir archivos</string>
     <string name="nombre_del_grupo">Nombre del grupo</string>
     <string name="ver_archivos">Ver archivos</string>
+    <string name="el_profesor_no_ha_enviado_una_nueva_actividad_por_el_momento">El profesor no ha enviado una nueva actividad por el momento</string>
 
 </resources>

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,6 +38,11 @@ public class Interactivity extends Fragment {
     private String selectedCourse;
     private String selectedSubject;
 
+    private GroupsInteractivityCardsAdapter adapter;
+    private ArrayList<GroupsInteractivityCardsContainer> cardsList;
+
+    private TextView emptyInteractivities;
+
     public Interactivity(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
@@ -54,17 +60,17 @@ public class Interactivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_student_interactivity, container, false);
 
-        // Container for the interactivity cards
-        RecyclerView interactivityCardsContainerRecyclerView = view.findViewById(R.id.interactivityCardsContainerRecyclerView);
+        emptyInteractivities = view.findViewById(R.id.emptyInteractivities);
 
-        ArrayList<GroupsInteractivityCardsContainer> cardsList = new ArrayList<GroupsInteractivityCardsContainer>();
-        GroupsInteractivityCardsAdapter adapter = new GroupsInteractivityCardsAdapter(cardsList, getContext());
+        // Container for the interactivity cards
+        RecyclerView interactivitiesContainer = view.findViewById(R.id.interactivitiesContainer);
+
+        cardsList = new ArrayList<GroupsInteractivityCardsContainer>();
+        adapter = new GroupsInteractivityCardsAdapter(cardsList, getContext());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        interactivityCardsContainerRecyclerView.setAdapter(adapter);
-        interactivityCardsContainerRecyclerView.setLayoutManager(layoutManager);
-
-        // adapter.notifyDataSetChanged();
+        interactivitiesContainer.setAdapter(adapter);
+        interactivitiesContainer.setLayoutManager(layoutManager);
 
         fStore
                 .collection("CoursesOrganization")
@@ -79,6 +85,14 @@ public class Interactivity extends Fragment {
                         return;
                     } else if (collectiveGroupsDocumentSnapshots == null) {
                         return;
+                    }
+
+                    if (collectiveGroupsDocumentSnapshots.isEmpty()) {
+                        String noGroups = "Todavía no estás en ningún grupo. Cuando se cree un nuevo grupo el profesor podrá enviar actividades";
+                        emptyInteractivities.setText(noGroups);
+                    } else {
+                        String noActivities = "Todavía no estás en ningún grupo. Cuando se cree un nuevo grupo el profesor podrá enviar actividades";
+                        emptyInteractivities.setText(noActivities);
                     }
 
                     cardsList.clear();
@@ -102,7 +116,7 @@ public class Interactivity extends Fragment {
 
                                     cardsList.clear();
                                     ArrayList<InteractivityCard> interactivityCardsList = new ArrayList<InteractivityCard>();
-                                    GroupsInteractivityCardsContainer interactivityCardsContainer = new GroupsInteractivityCardsContainer(groupName, interactivityCardsList);
+                                    GroupsInteractivityCardsContainer interactivityCardsContainer = new GroupsInteractivityCardsContainer("Actividades con el " + groupName, interactivityCardsList);
 
                                     for (DocumentSnapshot interactivityCardDocumentSnapshot : interactivityCardsDocumentSnapshots) {
 
@@ -172,7 +186,7 @@ public class Interactivity extends Fragment {
                                         cardsList.add(interactivityCardsContainer);
                                     }
 
-                                    adapter.notifyDataSetChanged();
+                                    listChanged();
                                 });
 
                     }
@@ -180,4 +194,15 @@ public class Interactivity extends Fragment {
 
         return view;
     }
+
+    private void listChanged() {
+        adapter.notifyDataSetChanged();
+        if (cardsList.isEmpty()) {
+            emptyInteractivities.setVisibility(View.VISIBLE);
+        } else {
+            emptyInteractivities.setVisibility(View.GONE);
+        }
+
+    }
+
 }
