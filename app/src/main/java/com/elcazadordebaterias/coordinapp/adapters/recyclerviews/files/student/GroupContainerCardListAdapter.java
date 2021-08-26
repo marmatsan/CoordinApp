@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.files.student;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,18 +62,18 @@ public class GroupContainerCardListAdapter extends RecyclerView.Adapter<GroupCon
         viewHolder.filesRecyclerView.setRecycledViewPool(viewPool);
 
         final boolean isExpanded = expandState.get(position); //Check if the view is expanded
-        viewHolder.expandableView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+        viewHolder.expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
 
         viewHolder.expandFilesButton.setOnClickListener(view -> {
-            if (viewHolder.expandableView.getVisibility() == View.VISIBLE){
+            if (viewHolder.expandableView.getVisibility() == View.VISIBLE) {
                 viewHolder.expandableView.setVisibility(View.GONE);
                 viewHolder.expandFilesButton.setIconResource(R.drawable.ic_baseline_folder_open_24);
-                viewHolder.expandFilesButton.setText(R.string.cerrar_grupos_de_archivos);
+                viewHolder.expandFilesButton.setText(R.string.abrir_grupos_de_archivos);
                 expandState.put(position, false);
-            }else{
+            } else {
                 viewHolder.expandableView.setVisibility(View.VISIBLE);
                 viewHolder.expandFilesButton.setIconResource(R.drawable.ic_baseline_folder_24);
-                viewHolder.expandFilesButton.setText(R.string.abrir_grupos_de_archivos);
+                viewHolder.expandFilesButton.setText(R.string.cerrar_grupos_de_archivos);
                 expandState.put(position, true);
             }
         });

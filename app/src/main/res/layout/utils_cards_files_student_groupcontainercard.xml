@@ -60,11 +60,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:backgroundTint="@color/white"
             android:text="@string/abrir_grupos_de_archivos"
             android:textColor="@color/black"
             app:icon="@drawable/ic_baseline_folder_open_24"
             app:iconTint="@color/black"
+            app:layout_constraintBottom_toTopOf="@+id/expandableView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardTitleLayout" />
 

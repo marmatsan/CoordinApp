@@ -120,8 +120,8 @@ public class StudentFiles extends Fragment {
                                         for (DocumentSnapshot storageFileDoc : storageFileDocumentSnapshots) {
                                             StorageFile storageFile = storageFileDoc.toObject(StorageFile.class);
                                             FileCard fileCard = new FileCard(
-                                                    storageFile.getUploaderName(),
                                                     storageFile.getFileName(),
+                                                    storageFile.getUploaderName(),
                                                     storageFile.getUploadedDate(),
                                                     storageFile.getDownloadLink());
                                             filesList.add(fileCard);
@@ -129,7 +129,7 @@ public class StudentFiles extends Fragment {
 
                                         if (!filesList.isEmpty()) {
                                             if (filesContainerList.isEmpty()) {
-                                                groupsList.add(new GroupContainerCard(collectiveGroupName, filesContainerList));
+                                                groupsList.add(new GroupContainerCard("Archivos del " + collectiveGroupName, filesContainerList));
                                             }
                                             filesContainerList.add(new FilesContainerCard(groupName, filesList));
                                             listChanged();

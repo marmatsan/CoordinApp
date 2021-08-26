@@ -69,16 +69,18 @@ public class FilesContainerCardAdapter extends RecyclerView.Adapter<FilesContain
         viewHolder.filesRecyclerView.setRecycledViewPool(viewPool);
 
         final boolean isExpanded = expandState.get(position); //Check if the view is expanded
-        viewHolder.expandableView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+        viewHolder.expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
 
         viewHolder.expandFilesButton.setOnClickListener(view -> {
-            if (viewHolder.expandableView.getVisibility() == View.VISIBLE){
+            if (viewHolder.expandableView.getVisibility() == View.VISIBLE) {
                 viewHolder.expandableView.setVisibility(View.GONE);
-                viewHolder.expandFilesButton.setText(R.string.expandir);
+                viewHolder.expandFilesButton.setIconResource(R.drawable.ic_baseline_folder_open_24);
+                viewHolder.expandFilesButton.setText(R.string.ver_archivos);
                 expandState.put(position, false);
-            }else{
+            } else {
                 viewHolder.expandableView.setVisibility(View.VISIBLE);
-                viewHolder.expandFilesButton.setText(R.string.colapsar);
+                viewHolder.expandFilesButton.setIconResource(R.drawable.ic_baseline_folder_24);
+                viewHolder.expandFilesButton.setText(R.string.ocultar_archivos);
                 expandState.put(position, true);
             }
         });
