@@ -73,7 +73,6 @@ public class GroupStatisticsDialog extends DialogFragment {
             averageGroupMarkInputText.setText(text);
         }
 
-
         builder.setTitle("Crear una nueva tarjeta")
                 .setView(view)
                 .setNegativeButton("Cancelar", (dialog, i) -> {
