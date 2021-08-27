@@ -11,7 +11,6 @@ public class InputTextCardDocument {
     private boolean hasToBeEvaluated;
     private boolean hasGroupalActivity;
     private boolean hasTeacherVisibility;
-    private boolean hasOpenedResponses;
 
     private ArrayList<InputTextCardStudentData> studentsData;
 
@@ -31,7 +30,6 @@ public class InputTextCardDocument {
         }
 
         this.hasTeacherVisibility = true;
-        this.hasOpenedResponses = false;
         this.hasGroupalActivity = hasGroupalActivity;
         this.studentsData = studentsData;
     }
@@ -42,10 +40,6 @@ public class InputTextCardDocument {
 
     public boolean getHasToBeEvaluated() {
         return hasToBeEvaluated;
-    }
-
-    public boolean getHasOpenedResponses() {
-        return hasOpenedResponses;
     }
 
     public boolean getHasTeacherVisibility() {

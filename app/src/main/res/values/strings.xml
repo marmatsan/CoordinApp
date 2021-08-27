@@ -239,5 +239,7 @@
     <string name="preguntas_evaluables_de_tipo_multirespuesta">De tipo multirespuesta</string>
     <string name="media_de_las_actividades_grupales">Media de las actividades grupales</string>
     <string name="media_de_las_actividades_individuales">Media de las actividades individuales</string>
+    <string name="tasa_de_acierto_de_las_actividades_grupales">Tasa de acierto de las actividades grupales</string>
+    <string name="tasa_de_acierto_de_las_actividades_individuales">Tasa de acierto de las actividades individuales</string>
 
 </resources>

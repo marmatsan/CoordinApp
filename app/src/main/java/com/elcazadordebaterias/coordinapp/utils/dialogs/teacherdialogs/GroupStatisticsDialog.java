@@ -63,28 +63,7 @@ public class GroupStatisticsDialog extends DialogFragment {
 
         if (groupalMarkInputText != null && evaluableGroupalInputCards != null) {
             if (evaluableGroupalInputCards != 0) {
-
-                double average = groupalMarkInputText / evaluableGroupalInputCards;
-
-                if (average < 5) {
-                    averageGroupMarkInputText.setTextColor(Color.parseColor("#B00020")); // Red
-                } else if (average >= 5 && average < 7) {
-                    averageGroupMarkInputText.setTextColor(Color.parseColor("#C7CB85")); // Yellow
-                } else if (average >= 7 && average < 9) {
-                    averageGroupMarkInputText.setTextColor(Color.parseColor("#7FB800")); // Green 1
-                } else {
-                    averageGroupMarkInputText.setTextColor(Color.parseColor("#5CAB7D")); // Green 2
-                }
-
-                String averageMarkText = "" + average;
-
-                if (averageMarkText.endsWith(".0")) {
-                    averageMarkText = averageMarkText.replace(".0", "");
-                }
-
-                String avg = averageMarkText + "/10";
-
-                averageGroupMarkInputText.setText(avg);
+                setAverageInputTextString(groupalMarkInputText, evaluableGroupalInputCards, averageGroupMarkInputText);
             } else {
                 String text = "No se ha evaluado ninguna actividad grupal";
                 averageGroupMarkInputText.setText(text);
@@ -92,40 +71,44 @@ public class GroupStatisticsDialog extends DialogFragment {
         }
 
         // InputText Individual
-
         Double individualMarkInputText = statistics.get("Individual InputText Mark");
         Double evaluableIndividualStudents = statistics.get("Individual Evaluable Students");
 
         if (individualMarkInputText != null && evaluableIndividualStudents != null) {
             if (evaluableIndividualStudents != 0) {
-
-                double average = individualMarkInputText / evaluableIndividualStudents;
-
-                if (average < 5) {
-                    averageIndividualMarkInputText.setTextColor(Color.parseColor("#B00020")); // Red
-                } else if (average >= 5 && average < 7) {
-                    averageIndividualMarkInputText.setTextColor(Color.parseColor("#C7CB85")); // Yellow
-                } else if (average >= 7 && average < 9) {
-                    averageIndividualMarkInputText.setTextColor(Color.parseColor("#7FB800")); // Green 1
-                } else {
-                    averageIndividualMarkInputText.setTextColor(Color.parseColor("#5CAB7D")); // Green 2
-                }
-
-                String averageMarkText = "" + average;
-
-                if (averageMarkText.endsWith(".0")) {
-                    averageMarkText = averageMarkText.replace(".0", "");
-                }
-
-                String avg = averageMarkText + "/10";
-
-                averageIndividualMarkInputText.setText(avg);
+                setAverageInputTextString(individualMarkInputText, evaluableIndividualStudents, averageIndividualMarkInputText);
             } else {
                 String text = "No se ha evaluado ninguna actividad individual";
                 averageIndividualMarkInputText.setText(text);
             }
         }
 
+        // Multichoice Groupal
+        Double evaluableGroupalMultichoiceCards = statistics.get("Groupal Multichoice Cards");
+        Double totalGroupalPoints = statistics.get("Groupal Multichoice Mark");
+
+        if (evaluableGroupalMultichoiceCards != null && totalGroupalPoints != null) {
+            if (evaluableGroupalMultichoiceCards != 0) {
+                setMultichoiceTextString(totalGroupalPoints, evaluableGroupalMultichoiceCards, groupalPerc);
+            } else {
+                String text = "No se ha evaluado ninguna actividad grupal";
+                groupalPerc.setText(text);
+            }
+        }
+
+        // Multichoice Individual
+
+        Double evaluableIndividuals = statistics.get("Individial Multichoice Evaluable");
+        Double evaluableIndividualMarks = statistics.get("Individual Mulichoice Mark");
+
+        if (evaluableIndividuals != null && evaluableIndividualMarks != null) {
+            if (evaluableIndividuals != 0) {
+                setMultichoiceTextString(evaluableIndividualMarks, evaluableIndividuals, individualPerc);
+            } else {
+                String text = "No se ha evaluado ninguna actividad individual";
+                individualPerc.setText(text);
+            }
+        }
 
         builder.setTitle("Estadísticas del actividades evaluadas")
                 .setView(view)
@@ -134,6 +117,56 @@ public class GroupStatisticsDialog extends DialogFragment {
                 });
 
         return builder.create();
+    }
+
+    private void setAverageInputTextString(double mark1, double mark2, TextView textView) {
+        double average = mark1 / mark2;
+
+        if (average < 5) {
+            textView.setTextColor(Color.parseColor("#B00020")); // Red
+        } else if (average >= 5 && average < 7) {
+            textView.setTextColor(Color.parseColor("#C7CB85")); // Yellow
+        } else if (average >= 7 && average < 9) {
+            textView.setTextColor(Color.parseColor("#7FB800")); // Green 1
+        } else {
+            textView.setTextColor(Color.parseColor("#5CAB7D")); // Green 2
+        }
+
+        String averageMarkText = "" + average;
+
+        if (averageMarkText.endsWith(".0")) {
+            averageMarkText = averageMarkText.replace(".0", "");
+        } else if (averageMarkText.length() > 4) {
+            averageMarkText = averageMarkText.substring(0, 4);
+        }
+
+        String text =  averageMarkText + "/10";
+        textView.setText(text);
+    }
+
+    private void setMultichoiceTextString(double mark1, double mark2, TextView textView) {
+        double rate = mark1 / mark2;
+
+        if (rate < 0.5) {
+            textView.setTextColor(Color.parseColor("#B00020")); // Red
+        } else if (rate >= 0.5 && rate < 0.7) {
+            textView.setTextColor(Color.parseColor("#C7CB85")); // Yellow
+        } else if (rate >= 0.7 && rate < 0.9) {
+            textView.setTextColor(Color.parseColor("#7FB800")); // Green 1
+        } else {
+            textView.setTextColor(Color.parseColor("#5CAB7D")); // Green 2
+        }
+        double ratePerc = rate * 100;
+        String ratePercText = "" + ratePerc;
+
+        if (ratePercText.endsWith(".0")) {
+            ratePercText = ratePercText.replace(".0", "");
+        } else if (ratePercText.length() > 4) {
+            ratePercText = ratePercText.substring(0, 4);
+        }
+
+        String text =  ratePercText + "%";
+        textView.setText(text);
     }
 
 }

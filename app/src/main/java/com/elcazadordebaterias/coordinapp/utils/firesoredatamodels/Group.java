@@ -184,7 +184,7 @@ public class Group {
                                     groups.add(studentsAndTeacherGroup);
 
                                     Group onlyStudentsGroup = new Group(
-                                            "Chat con solo alumnos",
+                                            "Chat de alumnos",
                                             selectedCourse,
                                             selectedSubject,
                                             false,

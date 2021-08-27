@@ -243,17 +243,19 @@ public class Interactivity extends Fragment {
     private HashMap<String, Double> getCardStatistics(QuerySnapshot interactivityCardsDocumentSnapshots) {
         HashMap<String, Double> statistics = new HashMap<String, Double>();
 
+        // InputText
         double evaluableGroupalInputCards = 0;
         double groupalMarkInputText = 0;
 
         double evaluableIndividualStudents = 0;
         double individualMarkInputText = 0;
 
+        // Multichoice
         double evaluableGroupalMultichoiceCards = 0;
-        double totalGroupalAnsweredCorrected = 0;
+        double totalGroupalPoints = 0;
 
+        double evaluableIndividuals = 0;
         double evaluableIndividualMarks = 0;
-        double totalIndividualAverage = 0;
 
         for (DocumentSnapshot interactivityCardsDocumentSnapshot : interactivityCardsDocumentSnapshots) {
             Long cardType = interactivityCardsDocumentSnapshot.getLong("cardType");
@@ -283,37 +285,19 @@ public class Interactivity extends Fragment {
                     MultichoiceCardDocument multichoiceCardDocument = interactivityCardsDocumentSnapshot.toObject(MultichoiceCardDocument.class);
 
                     if (multichoiceCardDocument.getHasToBeEvaluated()) {
-
-                        int correctQuestionIdentifier = 0;
-
-                        for (MultichoiceCardDocument.Question question : multichoiceCardDocument.getQuestionsList()) {
-                            if (question.getHasCorrectAnswer()) {
-                                correctQuestionIdentifier = question.getQuestionIdentifier();
-                                break;
-                            }
-                        }
-
                         if (multichoiceCardDocument.getHasGroupalActivity()) {
-                            evaluableGroupalMultichoiceCards++;
                             MultichoiceCardDocument.MultichoiceCardStudentData groupData = multichoiceCardDocument.getStudentsData().get(0);
-
-                            if (groupData.getQuestionRespondedIdentifier() == correctQuestionIdentifier) {
-                                totalGroupalAnsweredCorrected += totalGroupalAnsweredCorrected;
+                            if (groupData.getQuestionRespondedIdentifier() != -1) {
+                                evaluableGroupalMultichoiceCards++;
+                                totalGroupalPoints += groupData.getMark();
                             }
                         } else {
-
-                            evaluableIndividualMarks++;
-                            int totalStudents = multichoiceCardDocument.getStudentsData().size();
-                            int answeredCorrectly = 0;
-
                             for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()) {
-                                if (studentData.getQuestionRespondedIdentifier() == correctQuestionIdentifier) {
-                                    answeredCorrectly += 1;
+                                if (studentData.getQuestionRespondedIdentifier() != -1) {
+                                    evaluableIndividuals++;
+                                    evaluableIndividualMarks += studentData.getMark();
                                 }
                             }
-
-                            totalIndividualAverage += (answeredCorrectly / totalStudents) * 100;
-
                         }
                     }
 
@@ -332,12 +316,12 @@ public class Interactivity extends Fragment {
 
         // Multichoice Statistics
         // Groupal Multichoice mark
-        statistics.put("Groupal Multichoice Mark", totalGroupalAnsweredCorrected);
         statistics.put("Groupal Multichoice Cards", evaluableGroupalMultichoiceCards);
+        statistics.put("Groupal Multichoice Mark", totalGroupalPoints);
 
         // Individual Multichoice mark
-        statistics.put("Individual Multichoice Mark", evaluableIndividualMarks);
-        statistics.put(" ", totalIndividualAverage);
+        statistics.put("Individial Multichoice Evaluable", evaluableIndividuals);
+        statistics.put("Individual Mulichoice Mark", evaluableIndividualMarks);
 
         return statistics;
     }

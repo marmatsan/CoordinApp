@@ -37,10 +37,15 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
     private ArrayList<InteractivityCard> cardsList;
     private final Context context;
+    private SparseBooleanArray expandState;
+
 
     public InteractivityCardsAdapter(ArrayList<InteractivityCard> cardsList, Context context) {
         this.cardsList = cardsList;
         this.context = context;
+
+        expandState = new SparseBooleanArray();
+
     }
 
     @NonNull
@@ -101,6 +106,12 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
                 holder1.informativeText.setText(getInformativeText(inputTextCardDocument.getHasGroupalActivity(), nonAnsweredStudents, totalNumberofStudents));
 
+                if (nonAnsweredStudents == totalNumberofStudents) {
+                    holder1.expandView.setVisibility(View.GONE);
+                } else {
+                    holder1.expandView.setVisibility(View.VISIBLE);
+                }
+
                 float averageMark = 0;
 
                 if (studentsWithMarkSet != 0) {
@@ -155,30 +166,6 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                     inputTextCardParent.getDocumentSnapshot().getReference().delete();
                 });
 
-                // Recyclerview con la lista de respuestas
-                if (inputTextCardParent.getInputTextCardChildList().size() == 0) {
-                    holder1.expandView.setVisibility(View.GONE);
-                } else {
-                    holder1.expandView.setVisibility(View.VISIBLE);
-                    if (inputTextCardDocument.getHasOpenedResponses()) {
-                        holder1.expandableView.setVisibility(View.VISIBLE);
-                        if (inputTextCardDocument.getHasGroupalActivity()) {
-                            holder1.expandView.setText(R.string.ocultarRespuesta);
-                        } else {
-                            holder1.expandView.setText(R.string.ocultarRespuestas);
-                        }
-                        holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_24);
-                    } else {
-                        holder1.expandableView.setVisibility(View.GONE);
-                        if (inputTextCardDocument.getHasGroupalActivity()) {
-                            holder1.expandView.setText(R.string.verRespuesta);
-                        } else {
-                            holder1.expandView.setText(R.string.verRespuestas);
-                        }
-                        holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_open_24);
-                    }
-                }
-
                 LinearLayoutManager layoutManager = new LinearLayoutManager(holder1.inputTextCardChildRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
 
                 layoutManager.setInitialPrefetchItemCount(inputTextCardParent.getInputTextCardChildList().size());
@@ -190,13 +177,29 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 holder1.inputTextCardChildRecyclerView.setAdapter(inputTextCardsChildAdapter);
                 holder1.inputTextCardChildRecyclerView.setRecycledViewPool(viewPool);
 
-                // Button to expand responses
+
+                final boolean isExpanded = expandState.get(position); //Check if the view is expanded
+                holder1.expandableView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+
                 holder1.expandView.setOnClickListener(view -> {
-                    DocumentReference documentReference = inputTextCardParent.getDocumentSnapshot().getReference();
-                    if (inputTextCardDocument.getHasOpenedResponses()) {
-                        documentReference.update("hasOpenedResponses", false);
+                    if (holder1.expandableView.getVisibility() == View.VISIBLE) {
+                        holder1.expandableView.setVisibility(View.GONE);
+                        if (inputTextCardParent.getInputTextCardChildList().size() < 2) {
+                            holder1.expandView.setText(R.string.verRespuesta);
+                        } else {
+                            holder1.expandView.setText(R.string.verRespuestas);
+                        }
+                        holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_open_24);
+                        expandState.put(position, false);
                     } else {
-                        documentReference.update("hasOpenedResponses", true);
+                        holder1.expandableView.setVisibility(View.VISIBLE);
+                        if (inputTextCardParent.getInputTextCardChildList().size() < 2) {
+                            holder1.expandView.setText(R.string.ocultarRespuesta);
+                        } else {
+                            holder1.expandView.setText(R.string.ocultarRespuestas);
+                        }
+                        holder1.expandView.setIconResource(R.drawable.ic_baseline_folder_24);
+                        expandState.put(position, true);
                     }
                 });
 
