@@ -1,6 +1,8 @@
 package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
 
+import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,24 +10,39 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
 import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.GroupStatisticsDialog;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.IndividualStatisticsDialog;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class CourseParticipantAdapter extends RecyclerView.Adapter<CourseParticipantAdapter.CourseParticipantViewHolder> {
 
     private List<CourseParticipantCard> courseParticipantList;
     private int userType;
+    private Context context;
 
-    public CourseParticipantAdapter(List<CourseParticipantCard> courseParticipantList, int userType) {
+    private String selectedCourse;
+    private String selectedSubject;
+
+    private HashMap<String, HashMap<String, HashMap<String, Double>>> allStudentsStatistics;
+
+
+    public CourseParticipantAdapter(String selectedCourse, String selectedSubject, List<CourseParticipantCard> courseParticipantList, int userType, Context context, HashMap<String, HashMap<String, HashMap<String, Double>>> allStudentsStatistics) {
         this.courseParticipantList = courseParticipantList;
         this.userType = userType;
+        this.context = context;
+        this.selectedCourse = selectedCourse;
+        this.selectedSubject = selectedSubject;
+        this.allStudentsStatistics = allStudentsStatistics;
     }
 
     @NonNull
@@ -49,6 +66,15 @@ public class CourseParticipantAdapter extends RecyclerView.Adapter<CoursePartici
         if (userType == UserType.TYPE_TEACHER) {
             viewHolder.view.setOnClickListener(v -> {
 
+                HashMap<String, HashMap<String, Double>> a =  allStudentsStatistics.get(courseParticipant.getParticipantID());
+
+                for (String key : a.keySet()) {
+                    Log.d("DEBUGGING", courseParticipant.getParticipantName() + " " + key);
+                }
+
+
+                IndividualStatisticsDialog dialog = new IndividualStatisticsDialog(selectedCourse, selectedSubject, courseParticipant.getParticipantName(), courseParticipant.getParticipantID(), allStudentsStatistics.get(courseParticipant.getParticipantID()));
+                dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");
             });
         }
 

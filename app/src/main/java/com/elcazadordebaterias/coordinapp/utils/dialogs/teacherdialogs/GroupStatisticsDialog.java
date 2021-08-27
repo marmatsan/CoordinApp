@@ -53,10 +53,6 @@ public class GroupStatisticsDialog extends DialogFragment {
         groupalPerc = view.findViewById(R.id.groupalPerc);
         individualPerc = view.findViewById(R.id.individualPerc);
 
-        for (String key : statistics.keySet()) {
-            Log.d("DEBUGGING", key + ": " + statistics.get(key));
-        }
-
         // InputText Groupal
         Double groupalMarkInputText = statistics.get("Groupal InputText Mark");
         Double evaluableGroupalInputCards = statistics.get("Groupal InputText Cards");
@@ -97,7 +93,6 @@ public class GroupStatisticsDialog extends DialogFragment {
         }
 
         // Multichoice Individual
-
         Double evaluableIndividuals = statistics.get("Individial Multichoice Evaluable");
         Double evaluableIndividualMarks = statistics.get("Individual Mulichoice Mark");
 

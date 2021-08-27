@@ -267,7 +267,7 @@ public class Group {
 
         for (DocumentSnapshot groupDoc : queryDocumentSnapshots) {
             CollectiveGroupDocument currentCollectiveGroupDocument = groupDoc.toObject(CollectiveGroupDocument.class);
-            if (currentCollectiveGroupDocument.getAllParticipantsIDs().containsAll(allParticipantsIDs)) {
+            if (currentCollectiveGroupDocument.getAllParticipantsIDs().containsAll(allParticipantsIDs) && (allParticipantsIDs.size() == currentCollectiveGroupDocument.getAllParticipantsIDs().size())) {
                 groupExists = true;
                 break;
             }
