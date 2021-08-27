@@ -37,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AdministrateGroupsDialog extends DialogFragment {
@@ -225,14 +226,22 @@ public class AdministrateGroupsDialog extends DialogFragment {
                 Toast.makeText(context, "Los grupos deben de tener al menos 2 personas", Toast.LENGTH_LONG).show();
             } else {
 
-                participantsGroup1List.clear();
-                participantsGroup1List.addAll(updatedList1);
+                boolean duplicateStudentList1 = duplicateStudent(updatedList1);
+                boolean duplicateStudentList2 = duplicateStudent(updatedList2);
 
-                participantsGroup2List.clear();
-                participantsGroup2List.addAll(updatedList2);
+                if (duplicateStudentList1 || duplicateStudentList2) {
+                    Toast.makeText(context, "No puedes incluir a un estudiante en un grupo en el que ya está incluído", Toast.LENGTH_LONG).show();
+                } else {
+                    participantsGroup1List.clear();
+                    participantsGroup1List.addAll(updatedList1);
 
-                group1ParticipantsAdapter.notifyDataSetChanged();
-                group2ParticipantsAdapter.notifyDataSetChanged();
+                    participantsGroup2List.clear();
+                    participantsGroup2List.addAll(updatedList2);
+
+                    group1ParticipantsAdapter.notifyDataSetChanged();
+                    group2ParticipantsAdapter.notifyDataSetChanged();
+                }
+
             }
         });
 
@@ -406,7 +415,7 @@ public class AdministrateGroupsDialog extends DialogFragment {
             }
         }
 
-        if (spokerID != null) { // Can't be null because there's always an spoker, technically
+        if (spokerID != null) { // Can't be null because there's always a spoker, technically
 
             for (SelectParticipantItem selectedParticipantList1 : list1) { // Add non selected items from own list
                 if (!selectedParticipantList1.isSelected()) {
@@ -441,6 +450,40 @@ public class AdministrateGroupsDialog extends DialogFragment {
         }
 
         return updatedList;
+    }
+
+    private boolean duplicateStudent(ArrayList<SelectParticipantItem> updatedList) {
+        boolean duplicated = false;
+
+        ArrayList<String> updatedStudentsIDs = new ArrayList<String>();
+        HashMap<String, Integer> counterMap = new HashMap<String, Integer>();
+
+        for (SelectParticipantItem item : updatedList) {
+            String participantId = item.getParticipantId();
+
+            updatedStudentsIDs.add(participantId);
+            counterMap.put(participantId, 0);
+        }
+
+        for (String studentID : updatedStudentsIDs) {
+            Integer counter = counterMap.get(studentID);
+            if (counter != null) {
+                counter++;
+                counterMap.put(studentID, counter);
+            }
+        }
+
+        for (String entry : counterMap.keySet()) {
+            Integer totalNumber = counterMap.get(entry);
+            if (totalNumber != null) {
+                if (totalNumber > 1) {
+                    duplicated = true;
+                    break;
+                }
+            }
+        }
+
+        return duplicated;
     }
 
 }
