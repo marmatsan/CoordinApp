@@ -58,7 +58,7 @@ public class Interactivity extends Fragment {
     HashMap<String, ArrayList<InteractivityCard>> interactivityListsMap;
     HashMap<String, Boolean> hasDocumentsMap;
     HashMap<String, QuerySnapshot> allInteractivityDocumentsSnapshotsMap;
-    HashMap<String, ArrayList<Double>> statisticsMap;
+    HashMap<String, HashMap<String, Double>> statisticsMap;
 
     TextView explicativeError;
 
@@ -100,7 +100,7 @@ public class Interactivity extends Fragment {
         interactivityListsMap = new HashMap<String, ArrayList<InteractivityCard>>();
         hasDocumentsMap = new HashMap<String, Boolean>();
         allInteractivityDocumentsSnapshotsMap = new HashMap<String, QuerySnapshot>();
-        statisticsMap = new HashMap<String, ArrayList<Double>>();
+        statisticsMap = new HashMap<String, HashMap<String, Double>>();
 
         fStore
                 .collection("CoursesOrganization")
@@ -221,7 +221,7 @@ public class Interactivity extends Fragment {
             ArrayList<InteractivityCard> interactivitiesList = interactivityListsMap.get(key);
             Boolean hasDocuments = hasDocumentsMap.get(key);
             QuerySnapshot allInteractivityDocumentsSnapshots = allInteractivityDocumentsSnapshotsMap.get(key);
-            ArrayList<Double> statistics = statisticsMap.get(key);
+            HashMap<String, Double> statistics = statisticsMap.get(key);
 
             if (interactivitiesList != null && hasDocuments != null && allInteractivityDocumentsSnapshots != null && statistics != null) {
                 if (hasDocuments) {
@@ -240,8 +240,8 @@ public class Interactivity extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private ArrayList<Double> getCardStatistics(QuerySnapshot interactivityCardsDocumentSnapshots) {
-        ArrayList<Double> statistics = new ArrayList<Double>();
+    private HashMap<String, Double> getCardStatistics(QuerySnapshot interactivityCardsDocumentSnapshots) {
+        HashMap<String, Double> statistics = new HashMap<String, Double>();
 
         double evaluableGroupalInputCards = 0;
         double groupalMarkInputText = 0;
@@ -285,6 +285,7 @@ public class Interactivity extends Fragment {
                     if (multichoiceCardDocument.getHasToBeEvaluated()) {
 
                         int correctQuestionIdentifier = 0;
+
                         for (MultichoiceCardDocument.Question question : multichoiceCardDocument.getQuestionsList()) {
                             if (question.getHasCorrectAnswer()) {
                                 correctQuestionIdentifier = question.getQuestionIdentifier();
@@ -297,20 +298,21 @@ public class Interactivity extends Fragment {
                             MultichoiceCardDocument.MultichoiceCardStudentData groupData = multichoiceCardDocument.getStudentsData().get(0);
 
                             if (groupData.getQuestionRespondedIdentifier() == correctQuestionIdentifier) {
-                                totalGroupalAnsweredCorrected+= totalGroupalAnsweredCorrected;
+                                totalGroupalAnsweredCorrected += totalGroupalAnsweredCorrected;
                             }
                         } else {
+
                             evaluableIndividualMarks++;
                             int totalStudents = multichoiceCardDocument.getStudentsData().size();
                             int answeredCorrectly = 0;
 
                             for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()) {
                                 if (studentData.getQuestionRespondedIdentifier() == correctQuestionIdentifier) {
-                                    answeredCorrectly+= 1;
+                                    answeredCorrectly += 1;
                                 }
                             }
 
-                            totalIndividualAverage += (answeredCorrectly/totalStudents) * 100;
+                            totalIndividualAverage += (answeredCorrectly / totalStudents) * 100;
 
                         }
                     }
@@ -320,22 +322,22 @@ public class Interactivity extends Fragment {
         }
 
         // InputText Statistics
-            // Groupal InputText mark
-            statistics.add(groupalMarkInputText);
-            statistics.add(evaluableGroupalInputCards);
+        // Groupal InputText mark
+        statistics.put("Groupal InputText Mark", groupalMarkInputText);
+        statistics.put("Groupal InputText Cards", evaluableGroupalInputCards);
 
-            // Individual InputText mark
-            statistics.add(evaluableIndividualStudents);
-            statistics.add(individualMarkInputText);
+        // Individual InputText mark
+        statistics.put("Individual InputText Mark", individualMarkInputText);
+        statistics.put("Individual Evaluable Students", evaluableIndividualStudents);
 
         // Multichoice Statistics
-            // Groupal Multichoice mark
-            statistics.add(evaluableGroupalMultichoiceCards);
-            statistics.add(totalGroupalAnsweredCorrected);
+        // Groupal Multichoice mark
+        statistics.put("Groupal Multichoice Mark", totalGroupalAnsweredCorrected);
+        statistics.put("Groupal Multichoice Cards", evaluableGroupalMultichoiceCards);
 
-            // Individual Multichoice mark
-            statistics.add(evaluableIndividualMarks);
-            statistics.add(totalIndividualAverage);
+        // Individual Multichoice mark
+        statistics.put("Individual Multichoice Mark", evaluableIndividualMarks);
+        statistics.put(" ", totalIndividualAverage);
 
         return statistics;
     }

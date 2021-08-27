@@ -9,9 +9,9 @@
         android:id="@+id/headerInputText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="24dp"
         android:text="@string/preguntas_evaluables_de_tipo_entrada_de_texto"
         android:textColor="@color/black"
         android:textSize="16sp"
@@ -24,9 +24,10 @@
         android:id="@+id/textView7"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="Grupales"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:text="@string/media_de_las_actividades_grupales"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/headerInputText"
         app:layout_constraintStart_toStartOf="@+id/headerInputText"
         app:layout_constraintTop_toBottomOf="@+id/headerInputText" />
 
@@ -34,9 +35,9 @@
         android:id="@+id/averageGroupMarkInputText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView7"
         app:layout_constraintStart_toStartOf="@+id/textView7"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
@@ -44,9 +45,10 @@
         android:id="@+id/textView10"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="Individuales"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:text="@string/media_de_las_actividades_individuales"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/averageGroupMarkInputText"
         app:layout_constraintStart_toStartOf="@+id/averageGroupMarkInputText"
         app:layout_constraintTop_toBottomOf="@+id/averageGroupMarkInputText" />
 
@@ -54,9 +56,9 @@
         android:id="@+id/averageIndividualMarkInputText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView10"
         app:layout_constraintStart_toStartOf="@+id/textView10"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
@@ -64,24 +66,25 @@
         android:id="@+id/headerMultichoice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
         android:text="@string/preguntas_evaluables_de_tipo_multirespuesta"
         android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+        app:layout_constraintTop_toBottomOf="@+id/averageIndividualMarkInputText" />
 
     <TextView
         android:id="@+id/textView12"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="Grupales"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:text="@string/media_de_las_actividades_grupales"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/headerMultichoice"
         app:layout_constraintStart_toStartOf="@+id/headerMultichoice"
         app:layout_constraintTop_toBottomOf="@+id/headerMultichoice" />
 
@@ -89,9 +92,9 @@
         android:id="@+id/groupalPerc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView12"
         app:layout_constraintStart_toStartOf="@+id/textView12"
         app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
@@ -99,22 +102,22 @@
         android:id="@+id/textView14"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="Individuales"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"
+        android:text="@string/media_de_las_actividades_individuales"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/groupalPerc"
+        app:layout_constraintStart_toStartOf="@+id/groupalPerc"
         app:layout_constraintTop_toBottomOf="@+id/groupalPerc" />
 
     <TextView
         android:id="@+id/individualPerc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView14"
         app:layout_constraintStart_toStartOf="@+id/textView14"
         app:layout_constraintTop_toBottomOf="@+id/textView14" />
 

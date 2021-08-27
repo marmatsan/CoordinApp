@@ -118,7 +118,7 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                         String nonEvaluatedStudents;
                         if (studentsWithNoMarkSet == 1) {
                             if (inputTextCardDocument.getHasGroupalActivity()) {
-                                nonEvaluatedStudents = "El grupo ha respondido. Evalúa su respuesta";
+                                nonEvaluatedStudents = "Evalúa la respuesta del grupo";
                             } else {
                                 nonEvaluatedStudents = "Falta 1 respuesta por evaluar";
                             }
@@ -133,12 +133,18 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
 
                 String averageMarkString;
                 String header;
+
+                String averageMarkText = "" + averageMark;
+                if (averageMarkText.endsWith(".0")) {
+                    averageMarkText = averageMarkText.replace(".0", "");
+                }
+
                 if (inputTextCardDocument.getHasGroupalActivity()) {
                     header = "Nota de la respuesta: ";
-                    averageMarkString = header + averageMark + " / 10";
+                    averageMarkString = header + averageMarkText + "/10";
                 } else {
                     header = "Nota media de las respuestas: ";
-                    averageMarkString = "Nota media de las respuestas: " + averageMark + " / 10";
+                    averageMarkString = "Nota media de las respuestas: " + averageMarkText + " / 10";
                 }
 
                 SpannableStringBuilder strb = new SpannableStringBuilder(averageMarkString);

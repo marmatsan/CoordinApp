@@ -235,7 +235,9 @@
     <string name="mostrar_estad_sticas">Mostrar estadísticas</string>
     <string name="noGroupsInteractivity">Para mandar actividades tienes que tener al menos un grupo creado. Puedes crear un grupo en la pestaña Grupos</string>
     <string name="noInteractivitiesCreated">Aún no has creado ninguna actividad. Puedes crear una actividad pulsando en el botón +</string>
-    <string name="preguntas_evaluables_de_tipo_entrada_de_texto">Preguntas evaluables de tipo entrada de texto</string>
-    <string name="preguntas_evaluables_de_tipo_multirespuesta">Preguntas evaluables de tipo multirespuesta</string>
+    <string name="preguntas_evaluables_de_tipo_entrada_de_texto">De tipo entrada de texto</string>
+    <string name="preguntas_evaluables_de_tipo_multirespuesta">De tipo multirespuesta</string>
+    <string name="media_de_las_actividades_grupales">Media de las actividades grupales</string>
+    <string name="media_de_las_actividades_individuales">Media de las actividades individuales</string>
 
 </resources>

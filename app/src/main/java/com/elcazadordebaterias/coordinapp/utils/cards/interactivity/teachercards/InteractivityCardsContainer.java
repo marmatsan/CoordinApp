@@ -3,17 +3,18 @@ package com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercard
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class InteractivityCardsContainer {
 
     private String name;
     private ArrayList<InteractivityCard> interactivityCardsList;
 
-    private ArrayList<Double> statistics;
+    private HashMap<String, Double> statistics;
 
     QuerySnapshot allInteractivityDocumentsSnapshots;
 
-    public InteractivityCardsContainer(String name, ArrayList<InteractivityCard> interactivityCardsList, QuerySnapshot allInteractivityDocumentsSnapshots, ArrayList<Double> statistics) {
+    public InteractivityCardsContainer(String name, ArrayList<InteractivityCard> interactivityCardsList, QuerySnapshot allInteractivityDocumentsSnapshots, HashMap<String, Double> statistics) {
         this.name = name;
         this.interactivityCardsList = interactivityCardsList;
         this.allInteractivityDocumentsSnapshots = allInteractivityDocumentsSnapshots;
@@ -32,7 +33,7 @@ public class InteractivityCardsContainer {
         return allInteractivityDocumentsSnapshots;
     }
 
-    public ArrayList<Double> getStatistics() {
+    public HashMap<String, Double> getStatistics() {
         return statistics;
     }
 
