@@ -100,7 +100,7 @@ public class Interactivity extends Fragment {
                         CollectiveGroupDocument collectiveGroupDocument = collectiveGroupDocumentSnapshot.toObject(CollectiveGroupDocument.class);
 
                         String groupName = collectiveGroupDocument.getName();
-                        String spokerID = collectiveGroupDocument.getSpokesStudentID();
+                        String spokerID = collectiveGroupDocument.getSpokerID();
                         String spokerName = collectiveGroupDocument.getSpokerName();
 
                         collectiveGroupDocumentSnapshot

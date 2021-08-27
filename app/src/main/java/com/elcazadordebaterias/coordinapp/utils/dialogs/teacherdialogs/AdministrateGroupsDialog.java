@@ -3,6 +3,7 @@ package com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,6 +24,7 @@ import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -35,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class AdministrateGroupsDialog extends DialogFragment {
 
@@ -105,11 +108,8 @@ public class AdministrateGroupsDialog extends DialogFragment {
         separator = view.findViewById(R.id.separator);
         errorMessage = view.findViewById(R.id.errorMessage);
 
-        separator.setVisibility(View.GONE);
-        errorMessage.setVisibility(View.GONE);
-
-        participantsGroup1ListView = view.findViewById(R.id.participantsGroup1ListView);
-        participantsGroup2ListView = view.findViewById(R.id.participantsGroup2ListView);
+        participantsGroup1ListView = view.findViewById(R.id.participantsGroup1List);
+        participantsGroup2ListView = view.findViewById(R.id.participantsGroup2List);
 
         participantsGroup1ListView.setAdapter(group1ParticipantsAdapter);
         participantsGroup2ListView.setAdapter(group2ParticipantsAdapter);
@@ -128,54 +128,6 @@ public class AdministrateGroupsDialog extends DialogFragment {
                 .document(selectedCourse)
                 .collection("Subjects")
                 .document(selectedSubject);
-
-        interchangeButton.setOnClickListener(v -> {
-
-            ArrayList<SelectParticipantItem> updatedList1 = new ArrayList<SelectParticipantItem>();
-
-            for (SelectParticipantItem selectedParticipantList1 : participantsGroup1List) { // Add non selected items from list 1
-                if (!selectedParticipantList1.isSelected()) {
-                    SelectParticipantItem newItem = new SelectParticipantItem(selectedParticipantList1.getParticipantName(), selectedParticipantList1.getParticipantId());
-                    updatedList1.add(newItem);
-                }
-            }
-
-            for (SelectParticipantItem selectedParticipantList2 : participantsGroup2List) { // Add selected items from list 2
-                if (selectedParticipantList2.isSelected()) {
-                    SelectParticipantItem newItem = new SelectParticipantItem(selectedParticipantList2.getParticipantName(), selectedParticipantList2.getParticipantId());
-                    updatedList1.add(newItem);
-                }
-            }
-
-            ArrayList<SelectParticipantItem> updatedList2 = new ArrayList<SelectParticipantItem>();
-
-            for (SelectParticipantItem selectedParticipantList2 : participantsGroup2List) { // Add non selected items from list 2
-                if (!selectedParticipantList2.isSelected()) {
-                    SelectParticipantItem newItem = new SelectParticipantItem(selectedParticipantList2.getParticipantName(), selectedParticipantList2.getParticipantId());
-                    updatedList2.add(newItem);
-                }
-            }
-
-            for (SelectParticipantItem selectedParticipantList1 : participantsGroup1List) { // Add selected items from list 1
-                if (selectedParticipantList1.isSelected()) {
-                    SelectParticipantItem newItem = new SelectParticipantItem(selectedParticipantList1.getParticipantName(), selectedParticipantList1.getParticipantId());
-                    updatedList2.add(newItem);
-                }
-            }
-
-            if (updatedList1.size() < 2 || updatedList2.size() < 2) { // TODO: Check for more errors
-                Toast.makeText(context, "Los grupos deben de tener al menos 2 personas", Toast.LENGTH_LONG).show();
-            } else {
-                participantsGroup1List.clear();
-                participantsGroup1List.addAll(updatedList1);
-
-                participantsGroup2List.clear();
-                participantsGroup2List.addAll(updatedList2);
-
-                group1ParticipantsAdapter.notifyDataSetChanged();
-                group2ParticipantsAdapter.notifyDataSetChanged();
-            }
-        });
 
         ArrayList<String> groupSpinner1Names = new ArrayList<String>();
         ArrayList<String> groupSpinner2Names = new ArrayList<String>();
@@ -264,6 +216,26 @@ public class AdministrateGroupsDialog extends DialogFragment {
             }
         });
 
+        interchangeButton.setOnClickListener(v -> {
+
+            ArrayList<SelectParticipantItem> updatedList1 = getUpdatedList(participantsGroup1List, participantsGroup2List);
+            ArrayList<SelectParticipantItem> updatedList2 = getUpdatedList(participantsGroup2List, participantsGroup1List);
+
+            if (updatedList1.size() < 2 || updatedList2.size() < 2) { // TODO: Check for more errors
+                Toast.makeText(context, "Los grupos deben de tener al menos 2 personas", Toast.LENGTH_LONG).show();
+            } else {
+
+                participantsGroup1List.clear();
+                participantsGroup1List.addAll(updatedList1);
+
+                participantsGroup2List.clear();
+                participantsGroup2List.addAll(updatedList2);
+
+                group1ParticipantsAdapter.notifyDataSetChanged();
+                group2ParticipantsAdapter.notifyDataSetChanged();
+            }
+        });
+
         builder.setTitle("Administrador de grupos")
                 .setView(view)
                 .setNegativeButton("Cancelar", (dialog, i) -> {
@@ -280,23 +252,23 @@ public class AdministrateGroupsDialog extends DialogFragment {
                     groupCollRef
                             .document(group1ID)
                             .get()
-                            .addOnSuccessListener(documentSnapshot -> {
-                                updateGroup(documentSnapshot, participantsGroup1List);
+                            .addOnSuccessListener(group1DocumentSnapshot -> {
+                                updateGroup(group1DocumentSnapshot, participantsGroup1List);
                             });
 
                     // Update second group selected
                     groupCollRef
                             .document(group2ID)
                             .get()
-                            .addOnSuccessListener(documentSnapshot -> {
-                                updateGroup(documentSnapshot, participantsGroup2List);
+                            .addOnSuccessListener(group2DocumentSnapshot -> {
+                                updateGroup(group2DocumentSnapshot, participantsGroup2List);
                             });
                 });
 
         return builder.create();
     }
 
-    private void updateGroup(DocumentSnapshot documentSnapshot, ArrayList<SelectParticipantItem> participantsGroupList) {
+    private void updateGroup(DocumentSnapshot groupDocumentSnapshot, ArrayList<SelectParticipantItem> participantsGroupList) {
 
         subjectDocRef
                 .get()
@@ -312,7 +284,7 @@ public class AdministrateGroupsDialog extends DialogFragment {
                                 String teacherName = (String) teacherDataDocument.get("FullName");
 
                                 // Update groups
-                                CollectiveGroupDocument collectiveGroupDocument = documentSnapshot.toObject(CollectiveGroupDocument.class);
+                                CollectiveGroupDocument collectiveGroupDocument = groupDocumentSnapshot.toObject(CollectiveGroupDocument.class);
                                 ArrayList<Group> updatedGroups = new ArrayList<Group>();
 
                                 for (Group group : collectiveGroupDocument.getGroups()) {
@@ -348,9 +320,24 @@ public class AdministrateGroupsDialog extends DialogFragment {
                                     }
                                 }
 
-                                documentSnapshot.getReference().update("allParticipantsIDs", updatedAllParticipantsIDs);
-                                documentSnapshot.getReference().update("groups", updatedGroups);
+                                String spokerID = getSpokerID(participantsGroupList);
 
+                                if (spokerID != null && updatedAllParticipantsIDs != null) {
+                                    ArrayList<String> newAllParticipantsIDs = new ArrayList<String>(updatedAllParticipantsIDs);
+                                    fStore
+                                            .collection("Students")
+                                            .document(spokerID)
+                                            .get()
+                                            .addOnSuccessListener(documentSnapshot -> {
+                                                String spokerName = (String) documentSnapshot.get("FullName");
+
+                                                groupDocumentSnapshot.getReference().update("groups", updatedGroups);
+                                                groupDocumentSnapshot.getReference().update("allParticipantsIDs", newAllParticipantsIDs);
+                                                groupDocumentSnapshot.getReference().update("spokerID", spokerID);
+                                                groupDocumentSnapshot.getReference().update("spokerName", spokerName);
+
+                                            });
+                                }
                             });
                 });
 
@@ -360,6 +347,7 @@ public class AdministrateGroupsDialog extends DialogFragment {
         participantsGroupList.clear();
         CollectiveGroupDocument collectiveGroupDocument = documentSnapshot.toObject(CollectiveGroupDocument.class);
         ArrayList<Group> groupsList = collectiveGroupDocument.getGroups();
+        String spokerID = collectiveGroupDocument.getSpokerID();
 
         for (Group group : groupsList) {
             if (!group.getHasTeacher()) {
@@ -367,6 +355,9 @@ public class AdministrateGroupsDialog extends DialogFragment {
 
                 for (GroupParticipant participant : participants) {
                     SelectParticipantItem participantItem = new SelectParticipantItem(participant.getParticipantFullName(), participant.getParticipantId());
+                    if (participant.getParticipantId().equals(spokerID)) {
+                        participantItem.setSpoker(true);
+                    }
                     participantsGroupList.add(participantItem);
                 }
                 groupParticipantsAdapter.notifyDataSetChanged();
@@ -375,21 +366,81 @@ public class AdministrateGroupsDialog extends DialogFragment {
     }
 
     private void dismissError() {
-            separator.setVisibility(View.GONE);
-            errorMessage.setVisibility(View.GONE);
-            textView3.setVisibility(View.VISIBLE);
-            participantsGroup1ListView.setVisibility(View.VISIBLE);
-            interchangeButton.setVisibility(View.VISIBLE);
-            participantsGroup2ListView.setVisibility(View.VISIBLE);
+        separator.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.GONE);
+        textView3.setVisibility(View.VISIBLE);
+        participantsGroup1ListView.setVisibility(View.VISIBLE);
+        interchangeButton.setVisibility(View.VISIBLE);
+        participantsGroup2ListView.setVisibility(View.VISIBLE);
     }
 
-    private void showError(){
+    private void showError() {
         separator.setVisibility(View.VISIBLE);
         errorMessage.setVisibility(View.VISIBLE);
         textView3.setVisibility(View.GONE);
         participantsGroup1ListView.setVisibility(View.GONE);
         interchangeButton.setVisibility(View.GONE);
         participantsGroup2ListView.setVisibility(View.GONE);
+    }
+
+    private String getSpokerID(ArrayList<SelectParticipantItem> participantsList) {
+        String spokerID = null;
+
+        for (SelectParticipantItem item : participantsList) {
+            if (item.isSpoker()) {
+                spokerID = item.getParticipantId();
+                break;
+            }
+        }
+
+        return spokerID;
+    }
+
+    private ArrayList<SelectParticipantItem> getUpdatedList(ArrayList<SelectParticipantItem> list1, ArrayList<SelectParticipantItem> list2) {
+        ArrayList<SelectParticipantItem> updatedList = new ArrayList<SelectParticipantItem>();
+
+        String spokerID = null;
+        for (SelectParticipantItem item : list1) {
+            if (item.isSpoker()) {
+                spokerID = item.getParticipantId();
+            }
+        }
+
+        if (spokerID != null) { // Can't be null because there's always an spoker, technically
+
+            for (SelectParticipantItem selectedParticipantList1 : list1) { // Add non selected items from own list
+                if (!selectedParticipantList1.isSelected()) {
+                    SelectParticipantItem newItem = new SelectParticipantItem(selectedParticipantList1.getParticipantName(), selectedParticipantList1.getParticipantId());
+                    updatedList.add(newItem);
+                }
+            }
+
+            for (SelectParticipantItem selectedParticipantList2 : list2) { // Add selected items from external list
+                if (selectedParticipantList2.isSelected()) {
+                    SelectParticipantItem newItem = new SelectParticipantItem(selectedParticipantList2.getParticipantName(), selectedParticipantList2.getParticipantId());
+                    updatedList.add(newItem);
+                }
+            }
+
+            SelectParticipantItem oldSpoker = null;
+
+            for (SelectParticipantItem item : updatedList) {
+                if (item.getParticipantId().equals(spokerID)) {
+                    oldSpoker = item;
+                    break;
+                }
+            }
+
+            if (oldSpoker != null) {
+                oldSpoker.setSpoker(true);
+            } else {
+                int randomNum = ThreadLocalRandom.current().nextInt(updatedList.size());
+                updatedList.get(randomNum).setSpoker(true);
+            }
+
+        }
+
+        return updatedList;
     }
 
 }

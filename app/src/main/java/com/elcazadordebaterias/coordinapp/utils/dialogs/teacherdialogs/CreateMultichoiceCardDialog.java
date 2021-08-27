@@ -259,7 +259,7 @@ public class CreateMultichoiceCardDialog extends DialogFragment {
 
                                     if (isGroupalQuestion) {
                                         studentsIDs = new ArrayList<String>();
-                                        studentsIDs.add(groupDocument.getSpokesStudentID());
+                                        studentsIDs.add(groupDocument.getSpokerID());
                                     } else {
                                         groupDocument.getAllParticipantsIDs().remove(fAuth.getUid());
                                         studentsIDs = groupDocument.getAllParticipantsIDs();

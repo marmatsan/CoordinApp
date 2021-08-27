@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -52,6 +54,12 @@ public class GroupStudentCardAdapter extends RecyclerView.Adapter<GroupStudentCa
         GroupCard groupCard = groupsList.get(position);
         holder.groupName.setText(groupCard.getGroupName());
 
+        if(groupCard.getHasTeacher()){
+            holder.image.setImageResource(R.drawable.ic_presentation);
+        } else {
+            holder.image.setImageResource(R.drawable.ic_groupchat);
+        }
+
         holder.view.setOnClickListener(view -> {
             Intent intent = new Intent(context, ChatActivity.class);
 
@@ -72,11 +80,13 @@ public class GroupStudentCardAdapter extends RecyclerView.Adapter<GroupStudentCa
 
     static class GroupStudentCardViewHolder extends RecyclerView.ViewHolder {
         View view;
+        ShapeableImageView image;
         TextView groupName;
 
         GroupStudentCardViewHolder(View view) {
             super(view);
             this.view = view;
+            image = view.findViewById(R.id.image);
             groupName = view.findViewById(R.id.groupName);
         }
     }

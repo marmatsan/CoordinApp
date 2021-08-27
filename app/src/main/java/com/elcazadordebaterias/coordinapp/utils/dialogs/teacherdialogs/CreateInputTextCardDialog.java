@@ -142,7 +142,7 @@ public class CreateInputTextCardDialog extends DialogFragment {
 
                                 if (groupalQuestion.isChecked()) { // TODO: Make cleaner
                                     ArrayList<String> studentsIDs = new ArrayList<String>();
-                                    studentsIDs.add(groupDocument.getSpokesStudentID());
+                                    studentsIDs.add(groupDocument.getSpokerID());
                                     InputTextCardDocument textCardDocument = new InputTextCardDocument(cardTitle, questionIsEvaluable.isChecked(), true, studentsIDs);
                                     groupDocumentRef.collection("InteractivityCards").add(textCardDocument);
                                 } else {

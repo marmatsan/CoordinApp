@@ -7,18 +7,18 @@ public class CollectiveGroupDocument {
     private String name;
     private ArrayList<String> allParticipantsIDs;
     private ArrayList<Group> groups;
-    private String spokesStudentID;
+    private String spokerID;
     private String spokerName;
 
     public CollectiveGroupDocument(){
 
     }
 
-    public CollectiveGroupDocument(String name, ArrayList<String> allParticipantsIDs, ArrayList<Group> groups, String spokesStudentID, String spokerName){
+    public CollectiveGroupDocument(String name, ArrayList<String> allParticipantsIDs, ArrayList<Group> groups, String spokerID, String spokerName){
         this.name = name;
         this.allParticipantsIDs = allParticipantsIDs;
         this.groups = groups;
-        this.spokesStudentID = spokesStudentID;
+        this.spokerID = spokerID;
         this.spokerName = spokerName;
     }
 
@@ -34,15 +34,19 @@ public class CollectiveGroupDocument {
         return groups;
     }
 
-    public String getSpokesStudentID() {
-        return spokesStudentID;
+    public String getSpokerID() {
+        return spokerID;
     }
 
-    public void setSpokesStudentID(String spokesStudentID) {
-        this.spokesStudentID = spokesStudentID;
+    public void setSpokerID(String spokerID) {
+        this.spokerID = spokerID;
     }
 
     public String getSpokerName() {
         return spokerName;
+    }
+
+    public void setSpokerName(String spokerName) {
+        this.spokerName = spokerName;
     }
 }

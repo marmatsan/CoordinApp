@@ -140,7 +140,7 @@ public class GroupalChat extends Fragment {
 
                         String groupName = collectiveGroupDocument.getName();
                         String spokerName = collectiveGroupDocument.getSpokerName();
-                        String spokerID = collectiveGroupDocument.getSpokesStudentID();
+                        String spokerID = collectiveGroupDocument.getSpokerID();
 
                         ArrayList<GroupCard> groupList = new ArrayList<GroupCard>();
                         ArrayList<String> participantsNames = new ArrayList<String>();
@@ -155,7 +155,7 @@ public class GroupalChat extends Fragment {
                                         groupDoc.getHasTeacher(),
                                         groupDoc.getParticipantNames(),
                                         groupDoc.getCollectionId(),
-                                        collectiveGroupDocument.getSpokesStudentID(),
+                                        collectiveGroupDocument.getSpokerID(),
                                         collectiveGroupDocument.getSpokerName());
                                 groupList.add(groupCard);
                                 participantsNames.addAll(groupDoc.getParticipantNames());

@@ -9,11 +9,13 @@ public class SelectParticipantItem {
     private final String participantName;
     private final String participantId;
     private boolean isSelected;
+    private boolean isSpoker;
 
     public SelectParticipantItem(String participantName, String participantId) {
         this.participantName = participantName;
         this.participantId = participantId;
         this.isSelected = false;
+        this.isSpoker = false;
     }
 
     public String getParticipantName() {
@@ -30,5 +32,13 @@ public class SelectParticipantItem {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public boolean isSpoker() {
+        return isSpoker;
+    }
+
+    public void setSpoker(boolean spoker) {
+        isSpoker = spoker;
     }
 }
