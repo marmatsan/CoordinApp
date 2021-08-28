@@ -105,10 +105,10 @@ public class CreateEventDialog extends DialogFragment {
         TextInputEditText eventPlace = view.findViewById(R.id.eventPlace);
 
         builder.setView(view)
-                .setTitle("Menú de creación de grupos")
+                .setTitle("Crear evento")
                 .setNegativeButton("Cancelar", (dialogInterface, i) -> {
                     // Just closes the dialog
-                }).setPositiveButton("Crear grupos", null);
+                }).setPositiveButton("Crear evento", null);
 
         AlertDialog dialog = builder.create();
         dialog.setOnShowListener(dialogInterface -> {
@@ -123,7 +123,7 @@ public class CreateEventDialog extends DialogFragment {
                 if (eventTitleText.isEmpty() || eventDescriptionText.isEmpty() || eventPlaceText.isEmpty()) {
                     Toast.makeText(context, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
                 } else {
-                    
+
                     ArrayList<String> selectedGroupsIDs = new ArrayList<String>();
 
                     for (SelectGroupItem item : groupItems) {
@@ -133,12 +133,13 @@ public class CreateEventDialog extends DialogFragment {
                     }
 
                     collectiveGroupsCollRef
-                            .whereIn(FieldPath.documentId(), selectedGroupsIDs)
                             .get()
                             .addOnSuccessListener(queryDocumentSnapshots -> {
                                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                    EventCardDocument eventCardDocument = new EventCardDocument(eventTitleText, eventDescriptionText, eventPlaceText, false, fAuth.getUid());
-                                    documentSnapshot.getReference().collection("StudentEvents").add(eventCardDocument);
+                                    if (selectedGroupsIDs.contains(documentSnapshot.getId())) {
+                                        EventCardDocument eventCardDocument = new EventCardDocument(eventTitleText, eventDescriptionText, eventPlaceText, false, fAuth.getUid());
+                                        documentSnapshot.getReference().collection("StudentEvents").add(eventCardDocument);
+                                    }
                                 }
                             });
 

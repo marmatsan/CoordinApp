@@ -127,7 +127,7 @@ public class CreateEventDialog extends DialogFragment {
                 if (eventTitleText.isEmpty() || eventDescriptionText.isEmpty() || eventPlaceText.isEmpty()) {
                     Toast.makeText(context, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
                 } else {
-                    
+
                     ArrayList<String> selectedGroupsIDs = new ArrayList<String>();
 
                     for (SelectGroupItem item : groupItems) {
@@ -141,12 +141,13 @@ public class CreateEventDialog extends DialogFragment {
                     } else {
 
                         collectiveGroupsCollRef
-                                .whereIn(FieldPath.documentId(), selectedGroupsIDs)
                                 .get()
                                 .addOnSuccessListener(queryDocumentSnapshots -> {
                                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                        EventCardDocument eventCardDocument = new EventCardDocument(eventTitleText, eventDescriptionText, eventPlaceText, true, fAuth.getUid());
-                                        documentSnapshot.getReference().collection("TeacherEvents").add(eventCardDocument);
+                                        if (selectedGroupsIDs.contains(documentSnapshot.getId())) {
+                                            EventCardDocument eventCardDocument = new EventCardDocument(eventTitleText, eventDescriptionText, eventPlaceText, true, fAuth.getUid());
+                                            documentSnapshot.getReference().collection("TeacherEvents").add(eventCardDocument);
+                                        }
                                     }
                                 });
                         dialog.dismiss();

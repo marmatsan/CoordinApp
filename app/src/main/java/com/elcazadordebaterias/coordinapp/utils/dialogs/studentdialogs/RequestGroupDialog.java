@@ -3,6 +3,7 @@ package com.elcazadordebaterias.coordinapp.utils.dialogs.studentdialogs;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
@@ -24,7 +25,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -70,10 +70,10 @@ public class RequestGroupDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.utils_requestgroupdialog, null);
+        View view = inflater.inflate(R.layout.utils_dialogs_requestgroupdialog, null);
 
         // List of participants
-        participantsListView = view.findViewById(R.id.participantsList);
+        participantsListView = view.findViewById(R.id.participantsListView);
         participantsListView.setAdapter(participantsAdapter);
 
         populateParticipants();
@@ -215,11 +215,17 @@ public class RequestGroupDialog extends DialogFragment {
 
                     fStore
                             .collection("Students")
-                            .whereIn(FieldPath.documentId(), studentsIDs)
                             .get()
                             .addOnSuccessListener(queryDocumentSnapshots -> {
+                                Log.d("DEBUGGING", ""+queryDocumentSnapshots.size());
+
                                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                    participantsList.add(new SelectParticipantItem((String) document.get("FullName"), document.getId()));
+                                    Log.d("DEBUGGING", (String) document.get("FullName"));
+
+                                    if (studentsIDs.contains(document.getId())) {
+                                        Log.d("DEBUGGING", "IN");
+                                        participantsList.add(new SelectParticipantItem((String) document.get("FullName"), document.getId()));
+                                    }
                                 }
                                 participantsAdapter.notifyDataSetChanged();
                             });

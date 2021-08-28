@@ -158,15 +158,14 @@ public class Group {
 
                     fStore
                             .collection("Students")
-                            .whereIn(FieldPath.documentId(), onlyStudentsIDs)
                             .get()
                             .addOnSuccessListener(studentsDocuments -> {
                                 ArrayList<GroupParticipant> onlyStudentsParticipants = new ArrayList<GroupParticipant>();
-
                                 for (QueryDocumentSnapshot document : studentsDocuments) {
-                                    onlyStudentsParticipants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
+                                    if(onlyStudentsIDs.contains(document.getId())) {
+                                        onlyStudentsParticipants.add(new GroupParticipant((String) document.get("FullName"), document.getId()));
+                                    }
                                 }
-
                                 studentsAndTeacherParticipants.addAll(onlyStudentsParticipants);
 
                                 Group studentsAndTeacherGroup = new Group(
@@ -257,6 +256,9 @@ public class Group {
                                             });
 
                                 }
+
+
+
 
                             });
                 });

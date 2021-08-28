@@ -149,26 +149,29 @@ public class CreateInputTextCardDialog extends DialogFragment {
                     } else {
 
                         collectiveGroupsCollRef
-                                .whereIn(FieldPath.documentId(), selectedGroupsIDs)
                                 .get()
                                 .addOnSuccessListener(queryDocumentSnapshots -> {
                                     for (DocumentSnapshot collectiveGroupDocumentSnapshot : queryDocumentSnapshots) {
-                                        CollectiveGroupDocument collectiveGroupDocument = collectiveGroupDocumentSnapshot.toObject(CollectiveGroupDocument.class);
+                                        if (selectedGroupsIDs.contains(collectiveGroupDocumentSnapshot.getId())) {
+                                            if (selectedGroupsIDs.contains(collectiveGroupDocumentSnapshot.getId())) {
+                                                CollectiveGroupDocument collectiveGroupDocument = collectiveGroupDocumentSnapshot.toObject(CollectiveGroupDocument.class);
 
-                                        if (groupalQuestion.isChecked()) {
-                                            ArrayList<String> studentsIDs = new ArrayList<String>();
-                                            studentsIDs.add(collectiveGroupDocument.getSpokerID());
-                                            InputTextCardDocument textCardDocument = new InputTextCardDocument(cardTitle, questionIsEvaluable.isChecked(), true, studentsIDs);
-                                            collectiveGroupDocumentSnapshot.getReference().collection("InteractivityCards").add(textCardDocument);
-                                        } else {
-                                            ArrayList<Group> groups = collectiveGroupDocument.getGroups();
-
-                                            for (Group group : groups) {
-                                                if (!group.getHasTeacher()) {
-                                                    ArrayList<String> studentsIDs = group.getParticipantsIds();
-                                                    InputTextCardDocument textCardDocument = new InputTextCardDocument(cardTitle, questionIsEvaluable.isChecked(), false, studentsIDs);
+                                                if (groupalQuestion.isChecked()) {
+                                                    ArrayList<String> studentsIDs = new ArrayList<String>();
+                                                    studentsIDs.add(collectiveGroupDocument.getSpokerID());
+                                                    InputTextCardDocument textCardDocument = new InputTextCardDocument(cardTitle, questionIsEvaluable.isChecked(), true, studentsIDs);
                                                     collectiveGroupDocumentSnapshot.getReference().collection("InteractivityCards").add(textCardDocument);
-                                                    break;
+                                                } else {
+                                                    ArrayList<Group> groups = collectiveGroupDocument.getGroups();
+
+                                                    for (Group group : groups) {
+                                                        if (!group.getHasTeacher()) {
+                                                            ArrayList<String> studentsIDs = group.getParticipantsIds();
+                                                            InputTextCardDocument textCardDocument = new InputTextCardDocument(cardTitle, questionIsEvaluable.isChecked(), false, studentsIDs);
+                                                            collectiveGroupDocumentSnapshot.getReference().collection("InteractivityCards").add(textCardDocument);
+                                                            break;
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }

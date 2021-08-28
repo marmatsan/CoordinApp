@@ -128,13 +128,14 @@ public class Participants extends Fragment {
                         }
                         fStore
                                 .collection("Students")
-                                .whereIn(FieldPath.documentId(), studentIds)
                                 .get()
                                 .addOnSuccessListener(queryDocumentSnapshots -> {
                                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                        participants.add(new CourseParticipantCard(R.drawable.ic_reading_book, document.getId(), "Estudiante", (String) document.get("FullName"), (String) document.get("UserEmail")));
-                                        allStudentsStatistics.put(document.getId(), new HashMap<String, HashMap<String, Double>>());
-                                        courseParticipantAdapter.notifyDataSetChanged();
+                                        if (studentIds.contains(document.getId())) {
+                                            participants.add(new CourseParticipantCard(R.drawable.ic_reading_book, document.getId(), "Estudiante", (String) document.get("FullName"), (String) document.get("UserEmail")));
+                                            allStudentsStatistics.put(document.getId(), new HashMap<String, HashMap<String, Double>>());
+                                            courseParticipantAdapter.notifyDataSetChanged();
+                                        }
                                     }
                                     populateStatistics();
                                 });

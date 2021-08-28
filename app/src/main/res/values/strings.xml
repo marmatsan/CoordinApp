@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CoordinApp</string>
+    <string name="app_name">CoordinAppCarlos</string>
     <string name="Test_String">Test_String</string>
     <string name="Interactividad">Interactividad</string>
     <string name="Perfil">Perfil</string>
@@ -255,4 +255,6 @@
     <string name="ocultarEventos">Ocultar eventos</string>
     <string name="ning_n_portavoz_ha_enviado_un_evento_todav_a">Ningún portavoz ha enviado un evento todavía</string>
     <string name="busca_a_un_estudiante">Busca a un estudiante</string>
+    <string name="select">Selecciona a los participantes con los que te gustaría estar en el grupo</string>
+
 </resources>

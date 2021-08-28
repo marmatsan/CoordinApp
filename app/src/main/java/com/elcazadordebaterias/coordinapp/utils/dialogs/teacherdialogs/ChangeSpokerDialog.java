@@ -143,28 +143,28 @@ public class ChangeSpokerDialog extends DialogFragment {
 
                     fStore
                             .collection("Students")
-                            .whereIn(FieldPath.documentId(), studentsIDs)
                             .get()
                             .addOnSuccessListener(queryDocumentSnapshots -> {
 
                                 int buttonID = 0;
 
                                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                    String studentName = (String) document.get("FullName");
-                                    studentsIDsMap.put(buttonID, document.getId());
-                                    studentsNamesMap.put(buttonID, studentName);
+                                    if (studentsIDs.contains(document.getId())) {
+                                        String studentName = (String) document.get("FullName");
+                                        studentsIDsMap.put(buttonID, document.getId());
+                                        studentsNamesMap.put(buttonID, studentName);
 
-                                    RadioButton button = new RadioButton(participantsContainer.getContext());
-                                    button.setText(studentName);
+                                        RadioButton button = new RadioButton(participantsContainer.getContext());
+                                        button.setText(studentName);
 
-                                    int textColor = Color.parseColor("#1976d2");
-                                    button.setButtonTintList(ColorStateList.valueOf(textColor));
+                                        int textColor = Color.parseColor("#1976d2");
+                                        button.setButtonTintList(ColorStateList.valueOf(textColor));
 
-                                    button.setId(buttonID);
-                                    participantsContainer.addView(button);
+                                        button.setId(buttonID);
+                                        participantsContainer.addView(button);
 
-                                    buttonID++;
-
+                                        buttonID++;
+                                    }
                                 }
 
                             });

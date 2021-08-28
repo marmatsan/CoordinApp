@@ -140,11 +140,12 @@ public class CreateGroupDialog extends DialogFragment {
 
                     fStore
                             .collection("Students")
-                            .whereIn(FieldPath.documentId(), studentsIDs)
                             .get()
                             .addOnSuccessListener(queryDocumentSnapshots -> {
                                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                    participantsList.add(new SelectParticipantItemWithSpoker((String) document.get("FullName"), document.getId()));
+                                    if (studentsIDs.contains(document.getId())) {
+                                        participantsList.add(new SelectParticipantItemWithSpoker((String) document.get("FullName"), document.getId()));
+                                    }
                                 }
                                 participantsAdapter.notifyDataSetChanged();
                             });
