@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.cards.EventCard;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
@@ -17,7 +18,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsCard
 
     private ArrayList<EventCard> cardsList;
 
-    public EventsAdapter(ArrayList<EventCard> cardsList){
+    public EventsAdapter(ArrayList<EventCard> cardsList) {
         this.cardsList = cardsList;
     }
 
@@ -31,6 +32,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsCard
     @Override
     public void onBindViewHolder(@NonNull EventsCardViewHolder holder, int position) {
         EventCard eventCard = cardsList.get(position);
+
+        holder.eventTitle.setText(eventCard.getEventName());
+        holder.eventMessage.setText(eventCard.getEventName());
+        holder.eventPlace.setText(eventCard.getEventName());
+
+        holder.deleteEvent.setOnClickListener(view -> {
+            eventCard.getDocumentSnapshot().getReference().delete();
+        });
+
     }
 
     @Override
@@ -44,13 +54,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsCard
         TextView eventTitle;
         TextView eventMessage;
         TextView eventPlace;
+        MaterialButton deleteEvent;
 
         public EventsCardViewHolder(@NonNull View itemView) {
             super(itemView);
             eventTitle = itemView.findViewById(R.id.eventTitle);
             eventMessage = itemView.findViewById(R.id.eventMessage);
             eventPlace = itemView.findViewById(R.id.eventPlace);
-
+            deleteEvent = itemView.findViewById(R.id.deleteEvent);
         }
     }
 

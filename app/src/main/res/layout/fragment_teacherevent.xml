@@ -6,11 +6,11 @@
 
     <TextView
         android:id="@+id/noEvents"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:text="@string/ning_n_portavoz_ha_enviado_un_evento_todav_a"
+        android:text="@string/el_profesor_no_ha_enviado_ning_n_evento"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

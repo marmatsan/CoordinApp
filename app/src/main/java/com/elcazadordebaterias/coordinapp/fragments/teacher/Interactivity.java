@@ -57,6 +57,7 @@ public class Interactivity extends Fragment {
 
     HashMap<String, ArrayList<InteractivityCard>> interactivityListsMap;
     HashMap<String, Boolean> hasDocumentsMap;
+
     HashMap<String, QuerySnapshot> allInteractivityDocumentsSnapshotsMap;
     HashMap<String, HashMap<String, Double>> statisticsMap;
 

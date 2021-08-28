@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +17,8 @@ import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.EventsContainer
 import com.elcazadordebaterias.coordinapp.adapters.tablayouts.teacher.AdministrationFragmentTeacherAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.EventCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.EventContainerCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCardsContainer;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.EventCardDocument;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,8 +43,11 @@ public class TeacherEvents extends Fragment {
     private EventsContainerAdapter adapter;
 
     private HashMap<String, ArrayList<EventCard>> eventContainerMap;
+    HashMap<String, Boolean> hasDocumentsMap;
 
-    public TeacherEvents(String selectedCourse, String selectedSubject){
+    TextView noEvents;
+
+    public TeacherEvents(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
 
@@ -52,6 +58,7 @@ public class TeacherEvents extends Fragment {
         fAuth = FirebaseAuth.getInstance();
 
         eventContainerMap = new HashMap<String, ArrayList<EventCard>>();
+        hasDocumentsMap = new HashMap<String, Boolean>();
     }
 
     @Override
@@ -69,6 +76,9 @@ public class TeacherEvents extends Fragment {
         eventsContainer.setAdapter(adapter);
         eventsContainer.setLayoutManager(layoutManager);
 
+        noEvents = view.findViewById(R.id.noEvents);
+        noEvents.setVisibility(View.GONE);
+
         fStore
                 .collection("CoursesOrganization")
                 .document(selectedCourse)
@@ -82,7 +92,6 @@ public class TeacherEvents extends Fragment {
                         String groupName = collectiveGroupDocument.getName();
 
                         ArrayList<EventCard> eventsList = new ArrayList<EventCard>();
-                        eventContainerList.add(new EventContainerCard(groupName, eventsList));
                         eventContainerMap.put(groupName, eventsList);
 
                         documentSnapshot
@@ -96,23 +105,44 @@ public class TeacherEvents extends Fragment {
                                         return;
                                     }
 
-                                    ArrayList<EventCard> eventList = eventContainerMap.get(groupName);
-                                    eventList.clear();
+                                    eventsList.clear();
+
+                                    hasDocumentsMap.put(groupName, !chatDocumentsSnapshots.isEmpty());
 
                                     for (DocumentSnapshot documentSnapshot1 : chatDocumentsSnapshots) {
                                         EventCardDocument eventCardDocument = documentSnapshot1.toObject(EventCardDocument.class);
 
-                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace());
-                                        eventList.add(eventCard);
-
+                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace(), documentSnapshot1);
+                                        eventsList.add(eventCard);
                                     }
 
-                                    adapter.notifyDataSetChanged();
+                                    changeList();
                                 });
                     }
                 });
 
         return view;
+    }
+
+    private void changeList() {
+        eventContainerList.clear();
+        for (String key : eventContainerMap.keySet()) {
+            ArrayList<EventCard> interactivitiesList = eventContainerMap.get(key);
+            Boolean hasDocuments = hasDocumentsMap.get(key);
+            if (interactivitiesList != null && hasDocuments != null) {
+                if (hasDocuments) {
+                    eventContainerList.add(new EventContainerCard(key, interactivitiesList));
+                }
+            }
+        }
+
+        if (eventContainerList.isEmpty()) {
+            noEvents.setVisibility(View.VISIBLE);
+        } else {
+            noEvents.setVisibility(View.GONE);
+        }
+
+        adapter.notifyDataSetChanged();
     }
 
 }

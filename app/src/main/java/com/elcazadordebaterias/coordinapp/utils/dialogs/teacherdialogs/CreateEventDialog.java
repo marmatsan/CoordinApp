@@ -135,17 +135,21 @@ public class CreateEventDialog extends DialogFragment {
                         }
                     }
 
-                    collectiveGroupsCollRef
-                            .whereIn(FieldPath.documentId(), selectedGroupsIDs)
-                            .get()
-                            .addOnSuccessListener(queryDocumentSnapshots -> {
-                                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                    EventCardDocument eventCardDocument = new EventCardDocument(eventTitleText, eventDescriptionText, eventPlaceText);
-                                    documentSnapshot.getReference().collection("TeacherEvents").add(eventCardDocument);
-                                }
-                            });
+                    if (selectedGroupsIDs.isEmpty()) {
+                        Toast.makeText(context, "Selecciona al menos un grupo", Toast.LENGTH_SHORT).show();
+                    } else {
 
-                    dialog.dismiss();
+                        collectiveGroupsCollRef
+                                .whereIn(FieldPath.documentId(), selectedGroupsIDs)
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                        EventCardDocument eventCardDocument = new EventCardDocument(eventTitleText, eventDescriptionText, eventPlaceText);
+                                        documentSnapshot.getReference().collection("TeacherEvents").add(eventCardDocument);
+                                    }
+                                });
+                        dialog.dismiss();
+                    }
                 }
 
             });

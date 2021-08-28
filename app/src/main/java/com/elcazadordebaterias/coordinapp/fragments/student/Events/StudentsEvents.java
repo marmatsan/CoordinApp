@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +41,9 @@ public class StudentsEvents extends Fragment {
     private EventsContainerAdapter adapter;
 
     private HashMap<String, ArrayList<EventCard>> eventContainerMap;
+    HashMap<String, Boolean> hasDocumentsMap;
+
+    TextView noEvents;
 
     public StudentsEvents(String selectedCourse, String selectedSubject){
         this.selectedCourse = selectedCourse;
@@ -52,6 +56,7 @@ public class StudentsEvents extends Fragment {
         adapter = new EventsContainerAdapter(eventContainerList);
 
         eventContainerMap = new HashMap<String, ArrayList<EventCard>>();
+        hasDocumentsMap = new HashMap<String, Boolean>();
 
     }
 
@@ -70,12 +75,16 @@ public class StudentsEvents extends Fragment {
         eventsContainer.setAdapter(adapter);
         eventsContainer.setLayoutManager(layoutManager);
 
+        noEvents = view.findViewById(R.id.noEvents);
+        noEvents.setVisibility(View.GONE);
+
         fStore
                 .collection("CoursesOrganization")
                 .document(selectedCourse)
                 .collection("Subjects")
                 .document(selectedSubject)
                 .collection("CollectiveGroups")
+                .whereArrayContains("allParticipantsIDs", fAuth.getUid())
                 .addSnapshotListener((queryDocumentSnapshots, error) -> {
 
                     if (error != null) {
@@ -109,23 +118,42 @@ public class StudentsEvents extends Fragment {
                                     ArrayList<EventCard> eventList = eventContainerMap.get(groupName);
                                     eventList.clear();
 
+                                    hasDocumentsMap.put(groupName, !chatDocumentsSnapshots.isEmpty());
+
                                     for (DocumentSnapshot documentSnapshot1 : chatDocumentsSnapshots) {
                                         EventCardDocument eventCardDocument = documentSnapshot1.toObject(EventCardDocument.class);
 
-                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace());
+                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace(), documentSnapshot1);
                                         eventList.add(eventCard);
 
                                     }
 
-                                    adapter.notifyDataSetChanged();
+                                    changeList();
                                 });
                     }
                 });
         return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    private void changeList() {
+        eventContainerList.clear();
+        for (String key : eventContainerMap.keySet()) {
+            ArrayList<EventCard> interactivitiesList = eventContainerMap.get(key);
+            Boolean hasDocuments = hasDocumentsMap.get(key);
+            if (interactivitiesList != null && hasDocuments != null) {
+                if (hasDocuments) {
+                    eventContainerList.add(new EventContainerCard(key, interactivitiesList));
+                }
+            }
+        }
+
+        if (eventContainerList.isEmpty()) {
+            noEvents.setVisibility(View.VISIBLE);
+        } else {
+            noEvents.setVisibility(View.GONE);
+        }
+
+        adapter.notifyDataSetChanged();
     }
 
 }

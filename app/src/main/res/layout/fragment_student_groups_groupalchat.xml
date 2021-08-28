@@ -40,6 +40,7 @@
         app:layout_constraintEnd_toEndOf="@+id/requestGroup"
         app:layout_constraintStart_toStartOf="@+id/requestGroup"
         app:srcCompat="@drawable/ic_conversation"
+        app:tint="@color/white"
         android:focusable="true" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -62,6 +63,7 @@
         android:layout_marginBottom="16dp"
         android:clickable="true"
         android:focusable="true"
+        app:tint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/openIndividualChat"
         app:layout_constraintEnd_toEndOf="@+id/openIndividualChat"
         app:layout_constraintStart_toStartOf="@+id/openIndividualChat"

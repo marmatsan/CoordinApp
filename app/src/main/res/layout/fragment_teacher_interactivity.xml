@@ -70,7 +70,7 @@
         app:layout_constraintBottom_toTopOf="@+id/createInteractivityCard"
         app:layout_constraintEnd_toEndOf="@+id/createInteractivityCard"
         app:layout_constraintStart_toStartOf="@+id/createInteractivityCard"
-        app:srcCompat="@drawable/ic_reminder"
+        app:srcCompat="@drawable/ic_baseline_event_24"
         app:tint="@color/white" />
 
     <androidx.recyclerview.widget.RecyclerView
