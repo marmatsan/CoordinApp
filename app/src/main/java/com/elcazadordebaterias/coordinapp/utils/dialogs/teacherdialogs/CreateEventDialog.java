@@ -99,6 +99,7 @@ public class CreateEventDialog extends DialogFragment {
                     adapter.notifyDataSetChanged();
                 });
 
+        // Do something with this layoyts?
         TextInputLayout eventTitleLayout = view.findViewById(R.id.eventTitleLayout);
         TextInputLayout eventDescriptionLayout = view.findViewById(R.id.eventDescriptionLayout);
         TextInputLayout eventPlaceLayout = view.findViewById(R.id.eventPlaceLayout);
@@ -108,10 +109,10 @@ public class CreateEventDialog extends DialogFragment {
         TextInputEditText eventPlace = view.findViewById(R.id.eventPlace);
 
         builder.setView(view)
-                .setTitle("Menú de creación de grupos")
+                .setTitle("Crear evento")
                 .setNegativeButton("Cancelar", (dialogInterface, i) -> {
                     // Just closes the dialog
-                }).setPositiveButton("Crear grupos", null);
+                }).setPositiveButton("Crear evento", null);
 
         AlertDialog dialog = builder.create();
         dialog.setOnShowListener(dialogInterface -> {

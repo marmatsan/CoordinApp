@@ -3,10 +3,13 @@ package com.elcazadordebaterias.coordinapp.fragments.student;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticip
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.IndividualGroupDocument;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -63,6 +67,9 @@ public class GroupalChat extends Fragment {
 
     private CollectionReference individualGroupsCollRef;
 
+    private TextInputLayout searchLayout;
+    private EditText search;
+
     public GroupalChat(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
@@ -87,6 +94,27 @@ public class GroupalChat extends Fragment {
         RecyclerView recyclerviewGroups = view.findViewById(R.id.groupalFilesContainer);
         requestGroup = view.findViewById(R.id.requestGroup);
         openIndividualChat = view.findViewById(R.id.openIndividualChat);
+
+        noGroups = view.findViewById(R.id.noGroups);
+        searchLayout = view.findViewById(R.id.searchLayout);
+
+        search = view.findViewById(R.id.searchText);
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+            }
+        });
 
         CollectionReference collectiveGroupsCollRef = fStore
                 .collection("CoursesOrganization")
@@ -206,8 +234,10 @@ public class GroupalChat extends Fragment {
 
         if (groupsList.isEmpty()) {
             noGroups.setVisibility(View.VISIBLE);
+            searchLayout.setVisibility(View.GONE);
         } else {
             noGroups.setVisibility(View.GONE);
+            searchLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -233,6 +263,30 @@ public class GroupalChat extends Fragment {
         intent.putExtra("cardAsString", cardAsString);
         intent.putExtra("userType", UserType.TYPE_STUDENT);
         getContext().startActivity(intent);
+    }
+
+    private void filter(String inputText) {
+
+        if (inputText.isEmpty()) {
+            groupsAdapter.filteredList(groupsList);
+        } else {
+            fStore
+                    .collection("Teachers")
+                    .document(fAuth.getUid())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        String teacherName = (String) documentSnapshot.get("FullName");
+                        if (teacherName != null) {
+                            ArrayList<GroupsContainerCard> filteredList = new ArrayList<GroupsContainerCard>();
+                            for (GroupsContainerCard card : groupsList) {
+                                if (card.getParticipantsNames().contains(inputText.toLowerCase()) && !inputText.equalsIgnoreCase(teacherName)) {
+                                    filteredList.add(card);
+                                }
+                            }
+                            groupsAdapter.filteredList(filteredList);
+                        }
+                    });
+        }
     }
 
     private void createIndividualChat() {

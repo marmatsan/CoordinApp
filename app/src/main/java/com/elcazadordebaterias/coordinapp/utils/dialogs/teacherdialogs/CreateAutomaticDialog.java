@@ -126,14 +126,15 @@ public class CreateAutomaticDialog extends DialogFragment {
                 modeTitle.setText(R.string._2_introduce_el_n_mero_de_alumnos_por_grupo);
                 separator.setVisibility(View.GONE);
                 errorMessageView.setVisibility(View.GONE);
+                checkBox.setVisibility(View.VISIBLE);
             } else if (checkedId == R.id.radio_button_2) {
                 modeTitle.setText(R.string._2_introduce_el_n_mero_de_grupos);
                 separator.setVisibility(View.GONE);
                 errorMessageView.setVisibility(View.GONE);
+                checkBox.setVisibility(View.GONE);
             }
             modeTitle.setVisibility(View.VISIBLE);
             numberInput.setVisibility(View.VISIBLE);
-            checkBox.setVisibility(View.VISIBLE);
         });
 
         builder.setView(view)
@@ -237,26 +238,35 @@ public class CreateAutomaticDialog extends DialogFragment {
         }
 
         if (remainder != 0) {
-            if (checkBox.isChecked()) { // Add the remainder students to a group greater than the specified group
-                List<String> lastList = new ArrayList<String>(subLists.get(subLists.size() - 1)); // Copy the last list
+
+            boolean isChecked;
+            SELECTED_MODE mode = getSelectedMode();
+
+            if (mode == SELECTED_MODE.NUMBER_OF_GROUPS) {
+                isChecked = true;
+            } else {
+                isChecked = checkBox.isChecked();
+            }
+
+            List<String> lastList;
+            if (isChecked) { // Add the remainder students to a group greater than the specified group
+                lastList = new ArrayList<String>(subLists.get(subLists.size() - 1));
                 subLists.remove(subLists.size() - 1);
 
                 for (int i = 0; i < remainder; i++) {
                     lastList.add(studentIDs.get(studentIDs.size() - i - 1));
                 }
 
-                subLists.add(lastList);
-
             } else { // Add the remainder students to a separate group
-                List<String> lastList = new ArrayList<String>();
+                lastList = new ArrayList<String>();
 
                 for (int i = 0; i < remainder; i++) {
                     lastList.add(studentIDs.get(studentIDs.size() - i - 1));
                 }
 
-                subLists.add(lastList);
-
             }
+            subLists.add(lastList);
+
         }
 
         groupsCollRef

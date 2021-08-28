@@ -254,4 +254,5 @@
     <string name="verEventos">Ver eventos</string>
     <string name="ocultarEventos">Ocultar eventos</string>
     <string name="ning_n_portavoz_ha_enviado_un_evento_todav_a">Ningún portavoz ha enviado un evento todavía</string>
+    <string name="busca_a_un_estudiante">Busca a un estudiante</string>
 </resources>

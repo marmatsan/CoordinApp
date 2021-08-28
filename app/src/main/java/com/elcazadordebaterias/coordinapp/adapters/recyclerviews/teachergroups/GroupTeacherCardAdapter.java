@@ -71,6 +71,10 @@ public class GroupTeacherCardAdapter extends RecyclerView.Adapter<GroupTeacherCa
             holder.spokerName.setText(strb);
         }
 
+        if (groupCard.getCollectionId().equals("IndividualGroups")) {
+            holder.sentStudentsGroupMessages.setVisibility(View.GONE);
+        }
+
         String text;
         if (groupCard.getNumMessages() == 0) {
             text = "Los alumnos aún no han hablado entre ellos";
@@ -211,6 +215,11 @@ public class GroupTeacherCardAdapter extends RecyclerView.Adapter<GroupTeacherCa
                 });
             });
         });
+    }
+
+    public void filteredList(ArrayList<GroupCard> filteredList) {
+        groupsList = filteredList;
+        notifyDataSetChanged();
     }
 
 }
