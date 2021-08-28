@@ -113,7 +113,7 @@ public class ChangeSpokerDialog extends DialogFragment {
                             .document(groupID);
 
                     grouDocRef
-                            .update("spokesStudentID", newSpokerID)
+                            .update("spokerID", newSpokerID)
                             .addOnSuccessListener(unused -> {
                                 grouDocRef.update("spokerName", newSpokerName);
                             });

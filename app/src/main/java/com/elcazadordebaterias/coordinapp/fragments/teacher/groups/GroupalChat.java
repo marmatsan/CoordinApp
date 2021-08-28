@@ -17,10 +17,12 @@ import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +44,8 @@ public class GroupalChat extends Fragment {
 
     private TextView noGroups;
 
+    private HashMap<String, GroupCard> groupsListMap;
+
     public GroupalChat(int userType, String selectedCourse, String selectedSubject) {
         this.userType = userType;
         this.selectedCourse = selectedCourse;
@@ -57,6 +61,7 @@ public class GroupalChat extends Fragment {
 
         groupsList = new ArrayList<GroupCard>();
         groupsAdapter = new GroupTeacherCardAdapter(groupsList, getContext());
+        groupsListMap = new HashMap<String, GroupCard>();
     }
 
     @Override
@@ -72,12 +77,14 @@ public class GroupalChat extends Fragment {
         recyclerviewGroups.setAdapter(groupsAdapter);
         recyclerviewGroups.setLayoutManager(layoutManager);
 
-        fStore
+        CollectionReference collectiveGroupsCollRef = fStore
                 .collection("CoursesOrganization")
                 .document(selectedCourse)
                 .collection("Subjects")
                 .document(selectedSubject)
-                .collection("CollectiveGroups")
+                .collection("CollectiveGroups");
+
+        collectiveGroupsCollRef
                 .addSnapshotListener((queryDocumentsSnapshots, error) -> {
 
                     if (error != null) {
@@ -87,12 +94,13 @@ public class GroupalChat extends Fragment {
                     }
 
                     groupsList.clear();
+                    listChanged();
 
                     for (DocumentSnapshot groupDocument : queryDocumentsSnapshots) {
                         CollectiveGroupDocument group = groupDocument.toObject(CollectiveGroupDocument.class);
 
                         for (Group groupDoc : group.getGroups()) {
-                            if (groupDoc.getParticipantsIds().contains(fAuth.getUid())) {
+                            if (groupDoc.getHasTeacher()) {
                                 GroupCard groupCard = new GroupCard(
                                         group.getName(),
                                         groupDocument.getId(),
@@ -104,11 +112,32 @@ public class GroupalChat extends Fragment {
                                         group.getSpokerID(),
                                         group.getSpokerName());
                                 groupsList.add(groupCard);
+                                groupsListMap.put(group.getName(), groupCard);
                             }
                         }
 
+                        groupDocument
+                                .getReference()
+                                .collection("ChatRoomWithoutTeacher")
+                                .addSnapshotListener((chatDocumentsSnapshots, error2) -> {
+
+                                    if (error2 != null) {
+                                        return;
+                                    } else if (chatDocumentsSnapshots == null) {
+                                        return;
+                                    }
+
+                                    int numMessages = chatDocumentsSnapshots.size();
+                                    GroupCard groupCard = groupsListMap.get(group.getName());
+
+                                    if (groupCard != null) {
+                                        groupCard.setNumMessages(numMessages);
+                                    }
+
+                                    groupsAdapter.notifyDataSetChanged();
+                                });
+
                     }
-                    listChanged();
                 });
 
         return view;

@@ -7,20 +7,19 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/emptyInteractivities"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/el_profesor_no_ha_enviado_una_nueva_actividad_por_el_momento"
-        android:textAlignment="center"
-        android:textSize="16sp"
+        android:text="@string/no_has_evniado_ning_n_evento_a_los_alumnos_puedes_enviar_eventos_en_la_pesta_a_interactividad"
         android:textStyle="bold"
+        android:textSize="16sp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/interactivitiesContainer"
+        android:id="@+id/eventsContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

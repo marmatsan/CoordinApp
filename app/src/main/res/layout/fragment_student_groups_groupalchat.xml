@@ -54,4 +54,18 @@
         app:srcCompat="@drawable/ic_baseline_add_24"
         android:focusable="true" />
 
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/createEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toTopOf="@+id/openIndividualChat"
+        app:layout_constraintEnd_toEndOf="@+id/openIndividualChat"
+        app:layout_constraintStart_toStartOf="@+id/openIndividualChat"
+        app:srcCompat="@drawable/ic_baseline_event_24" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

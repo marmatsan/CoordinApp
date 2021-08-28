@@ -8,6 +8,7 @@ import com.elcazadordebaterias.coordinapp.fragments.EmptyFragment;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Participants;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.Administration;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Petitions;
+import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.TeacherEvents;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 
 /**
@@ -35,7 +36,7 @@ public class AdministrationFragmentTeacherAdapter extends FragmentStateAdapter {
             case 1:
                 return new Petitions(UserType.TYPE_TEACHER, selectedCourse, selectedSubject);
             case 2:
-                return new EmptyFragment();
+                return new TeacherEvents(selectedCourse, selectedSubject);
             default:
                 return new Participants(UserType.TYPE_TEACHER, selectedCourse, selectedSubject);
         }

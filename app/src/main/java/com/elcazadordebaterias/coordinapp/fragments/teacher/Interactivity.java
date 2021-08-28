@@ -19,9 +19,9 @@ import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.InteractivityCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.teachercards.MultichoiceCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateEventDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateInputTextCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateMultichoiceCardDialog;
-import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateReminderCardDialog;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
@@ -102,6 +102,31 @@ public class Interactivity extends Fragment {
         allInteractivityDocumentsSnapshotsMap = new HashMap<String, QuerySnapshot>();
         statisticsMap = new HashMap<String, HashMap<String, Double>>();
 
+        // Buttons configuration
+        ArrayList<FloatingActionButton> buttons = new ArrayList<FloatingActionButton>();
+        buttons.add(createInputTextCard);
+        buttons.add(createMultichoiceCard);
+        buttons.add(createReminderCard);
+
+        ButtonAnimator buttonAnimator = new ButtonAnimator(getContext(), createInteractivityCard, buttons);
+
+        createInteractivityCard.setOnClickListener(v -> buttonAnimator.onButtonClicked());
+
+        createInputTextCard.setOnClickListener(v -> {
+            CreateInputTextCardDialog dialog = new CreateInputTextCardDialog(selectedCourse, selectedSubject);
+            dialog.show(getParentFragmentManager(), "dialog");
+        });
+
+        createMultichoiceCard.setOnClickListener(v -> {
+            CreateMultichoiceCardDialog dialog = new CreateMultichoiceCardDialog(selectedCourse, selectedSubject);
+            dialog.show(getParentFragmentManager(), "dialog");
+        });
+
+        createReminderCard.setOnClickListener(v -> {
+            CreateEventDialog dialog = new CreateEventDialog(selectedCourse, selectedSubject);
+            dialog.show(getParentFragmentManager(), "dialog");
+        });
+
         fStore
                 .collection("CoursesOrganization")
                 .document(selectedCourse)
@@ -175,31 +200,6 @@ public class Interactivity extends Fragment {
                         }
                     }
                 });
-
-        // Buttons configuration
-        ArrayList<FloatingActionButton> buttons = new ArrayList<FloatingActionButton>();
-        buttons.add(createInputTextCard);
-        buttons.add(createMultichoiceCard);
-        buttons.add(createReminderCard);
-
-        ButtonAnimator buttonAnimator = new ButtonAnimator(getContext(), createInteractivityCard, buttons);
-
-        createInteractivityCard.setOnClickListener(v -> buttonAnimator.onButtonClicked());
-
-        createInputTextCard.setOnClickListener(v -> {
-            CreateInputTextCardDialog dialog = new CreateInputTextCardDialog(selectedCourse, selectedSubject);
-            dialog.show(getParentFragmentManager(), "dialog");
-        });
-
-        createMultichoiceCard.setOnClickListener(v -> {
-            CreateMultichoiceCardDialog dialog = new CreateMultichoiceCardDialog(selectedCourse, selectedSubject);
-            dialog.show(getParentFragmentManager(), "dialog");
-        });
-
-        createReminderCard.setOnClickListener(v -> {
-            CreateReminderCardDialog dialog = new CreateReminderCardDialog();
-            dialog.show(getParentFragmentManager(), "dialog");
-        });
 
         return view;
     }

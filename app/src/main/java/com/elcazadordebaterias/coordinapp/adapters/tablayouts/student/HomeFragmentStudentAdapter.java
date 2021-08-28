@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Petitions;
+import com.elcazadordebaterias.coordinapp.fragments.student.Events.StudentEvents;
 import com.elcazadordebaterias.coordinapp.fragments.student.Home;
 import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Participants;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
@@ -33,14 +34,16 @@ public class HomeFragmentStudentAdapter extends FragmentStateAdapter {
         switch (position){
             case 1:
                 return new Petitions(UserType.TYPE_STUDENT, selectedCourse, selectedSubject);
+            case 2:
+                return new StudentEvents(selectedCourse, selectedSubject);
             default:
-                return new Participants(UserType.TYPE_STUDENT, selectedCourse, selectedSubject); // TODO: Change
+                return new Participants(UserType.TYPE_STUDENT, selectedCourse, selectedSubject);
         }
     }
 
     @Override
     public int getItemCount() {
-        return 2; // To be changed if the number of tabs increases
+        return 3; // To be changed if the number of tabs increases
     }
 
 }

@@ -28,6 +28,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class GroupTeacherCardAdapter extends RecyclerView.Adapter<GroupTeacherCardAdapter.GroupCardViewHolder> {
@@ -68,6 +70,14 @@ public class GroupTeacherCardAdapter extends RecyclerView.Adapter<GroupTeacherCa
             strb.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Portavoz del grupo: ".length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             holder.spokerName.setText(strb);
         }
+
+        String text;
+        if (groupCard.getNumMessages() == 0) {
+            text = "Los alumnos aún no han hablado entre ellos";
+        } else {
+            text = "Mensajes enviados entre alumnos: " + groupCard.getNumMessages();
+        }
+        holder.sentStudentsGroupMessages.setText(text);
 
         if (groupCard.getCollectionId().equals("IndividualGroups")) {
             holder.showParticipants.setVisibility(View.GONE);
@@ -154,6 +164,8 @@ public class GroupTeacherCardAdapter extends RecyclerView.Adapter<GroupTeacherCa
         View view;
         TextView groupName;
         TextView spokerName;
+        TextView sentStudentsGroupMessages;
+
         MaterialButton showParticipants;
         MaterialButton deleteGroup;
         MaterialButton changeSpoker;
@@ -164,6 +176,7 @@ public class GroupTeacherCardAdapter extends RecyclerView.Adapter<GroupTeacherCa
             groupName = view.findViewById(R.id.groupName);
             showParticipants = view.findViewById(R.id.showParticipants);
             spokerName = view.findViewById(R.id.spokerName);
+            sentStudentsGroupMessages = view.findViewById(R.id.sentStudentsGroupMessages);
             deleteGroup = view.findViewById(R.id.deleteGroup);
             changeSpoker = view.findViewById(R.id.changeSpoker);
         }

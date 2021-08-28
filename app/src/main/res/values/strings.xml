@@ -241,5 +241,16 @@
     <string name="media_de_las_actividades_individuales">Media de las actividades individuales</string>
     <string name="tasa_de_acierto_de_las_actividades_grupales">Tasa de acierto de las actividades grupales</string>
     <string name="tasa_de_acierto_de_las_actividades_individuales">Tasa de acierto de las actividades individuales</string>
-
+    <string name="mensajes_enviados_por_los_alumnos">Mensajes enviados por los alumnos</string>
+    <string name="no_has_evniado_ning_n_evento_a_los_alumnos_puedes_enviar_eventos_en_la_pesta_a_interactividad">No has enviado ningún evento a los alumnos. Puedes enviar eventos en la pestaña Interactividad</string>
+    <string name="t_tulo_del_evento">Título del evento</string>
+    <string name="ver_eventos">Ver eventos</string>
+    <string name="ning_n_portavoz_ha_enviado_un_evento">Ningún portavoz ha enviado un evento</string>
+    <string name="el_profesor_no_ha_enviado_ning_n_evento">El profesor no ha enviado ningún evento</string>
+    <string name="selecciona_el_grupo_o_grupos_a_los_que_deseas_enviar_el_evento">1. Selecciona el grupo o grupos a los que deseas enviar el evento</string>
+    <string name="agrega_el_t_tulo_del_evento">2. Agrega el título del evento</string>
+    <string name="agrega_la_descripci_n_del_evento">3. Agrega la descripción del evento</string>
+    <string name="_4_agrega_d_nde_ser_el_evento">4. Agrega dónde será el evento</string>
+    <string name="verEventos">Ver eventos</string>
+    <string name="ocultarEventos">Ocultar eventos</string>
 </resources>

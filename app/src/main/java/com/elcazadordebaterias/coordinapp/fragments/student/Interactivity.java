@@ -1,11 +1,13 @@
 package com.elcazadordebaterias.coordinapp.fragments.student;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,13 +21,16 @@ import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.MultichoiceCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.interactivity.studentcards.StandByCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.studentdialogs.CreateEventDialog;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -91,7 +96,7 @@ public class Interactivity extends Fragment {
                         String noGroups = "Todavía no estás en ningún grupo. Cuando se cree un nuevo grupo el profesor podrá enviar actividades";
                         emptyInteractivities.setText(noGroups);
                     } else {
-                        String noActivities = "Todavía no estás en ningún grupo. Cuando se cree un nuevo grupo el profesor podrá enviar actividades";
+                        String noActivities = "El profesor no ha enviado ninguna actividad todavía. Las actividades aparecerán aquí";
                         emptyInteractivities.setText(noActivities);
                     }
 

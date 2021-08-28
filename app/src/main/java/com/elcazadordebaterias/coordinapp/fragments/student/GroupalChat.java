@@ -1,11 +1,13 @@
 package com.elcazadordebaterias.coordinapp.fragments.student;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -18,17 +20,20 @@ import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.studentgroups.G
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupsContainerCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.utils.dialogs.studentdialogs.CreateEventDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.studentdialogs.RequestGroupDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.CreateGroupDialog;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.IndividualGroupDocument;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -96,6 +101,31 @@ public class GroupalChat extends Fragment {
                 .document(selectedSubject)
                 .collection("IndividualGroups");
 
+        FloatingActionButton createEvent = view.findViewById(R.id.createEvent);
+
+        createEvent.setOnClickListener(view1 -> {
+            fStore
+                    .collection("CoursesOrganization")
+                    .document(selectedCourse)
+                    .collection("Subjects")
+                    .document(selectedSubject)
+                    .collection("CollectiveGroups")
+                    .whereArrayContains("allParticipantsIDs", fAuth.getUid())
+                    .whereEqualTo("spokerID", fAuth.getUid())
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (queryDocumentSnapshots.isEmpty()) {
+                            Context context = getContext();
+                            if (context != null) {
+                                Toast.makeText(getContext(), "Para enviar eventos tienes que ser el portavoz de al menos un grupo", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            CreateEventDialog dialog = new CreateEventDialog(selectedCourse, selectedSubject);
+                            dialog.show(getParentFragmentManager(), "dialog");
+                        }
+                    });
+        });
+
         requestGroup.setOnClickListener(v -> {
             RequestGroupDialog dialog = new RequestGroupDialog(selectedCourse, selectedSubject);
             dialog.show(getParentFragmentManager(), "dialog");
@@ -109,9 +139,7 @@ public class GroupalChat extends Fragment {
                         if (documentSnapshot.exists()) {
                             openChat(documentSnapshot);
                         } else { // Create the individualChat and open it
-
                             createIndividualChat();
-
                         }
                     });
         });
@@ -191,9 +219,7 @@ public class GroupalChat extends Fragment {
                 selectedSubject,
                 group.getHasTeacher(),
                 group.getParticipantNames(),
-                group.getCollectionId(),
-                null,
-                null
+                group.getCollectionId()
         );
 
         Intent intent = new Intent(getContext(), ChatActivity.class);

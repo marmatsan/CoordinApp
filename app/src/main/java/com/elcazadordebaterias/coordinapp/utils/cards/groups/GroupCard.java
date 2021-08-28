@@ -17,11 +17,35 @@ public class GroupCard {
     private String spokerName;
     private String courseName;
     private String subjectName;
+    private int numMessages;
 
     private boolean hasTeacher;
 
     private ArrayList<String> participantNames;
     private String collectionId;
+
+    public GroupCard(String groupName, String groupId, String courseName, String subjectName, boolean hasTeacher, ArrayList<String> participantNames, String collectionId, String spokerID, String spokerName, int numMessages) {
+        this.groupName = groupName;
+        this.groupId = groupId;
+        this.courseName = courseName;
+        this.subjectName = subjectName;
+        this.hasTeacher = hasTeacher;
+        this.participantNames = participantNames;
+        this.collectionId = collectionId;
+        this.spokerID = spokerID;
+        this.spokerName = spokerName;
+        this.numMessages = numMessages;
+    }
+
+    public GroupCard(String groupName, String groupId, String courseName, String subjectName, boolean hasTeacher, ArrayList<String> participantNames, String collectionId) {
+        this.groupName = groupName;
+        this.groupId = groupId;
+        this.courseName = courseName;
+        this.subjectName = subjectName;
+        this.hasTeacher = hasTeacher;
+        this.participantNames = participantNames;
+        this.collectionId = collectionId;
+    }
 
     public GroupCard(String groupName, String groupId, String courseName, String subjectName, boolean hasTeacher, ArrayList<String> participantNames, String collectionId, String spokerID, String spokerName) {
         this.groupName = groupName;
@@ -79,4 +103,11 @@ public class GroupCard {
         return spokerName;
     }
 
+    public int getNumMessages() {
+        return numMessages;
+    }
+
+    public void setNumMessages(int numMessages) {
+        this.numMessages = numMessages;
+    }
 }

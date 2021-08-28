@@ -67,6 +67,10 @@ public class Home extends Fragment {
                     tab.setText("Peticiones");
                     tab.setIcon(R.drawable.ic_baseline_notifications_none_24);
                     break;
+                case 2:
+                    tab.setText("Eventos");
+                    tab.setIcon(R.drawable.ic_baseline_event_24);
+                    break;
             }
         }).attach();
     }
