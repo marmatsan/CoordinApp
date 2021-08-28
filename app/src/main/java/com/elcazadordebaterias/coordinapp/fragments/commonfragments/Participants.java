@@ -1,5 +1,6 @@
 package com.elcazadordebaterias.coordinapp.fragments.commonfragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -80,6 +82,7 @@ public class Participants extends Fragment {
         TextView noCourseSelected = view.findViewById(R.id.noCourseSelected);
         RecyclerView coursesRecyclerView = view.findViewById(R.id.coursesContainer);
 
+
         if (selectedCourse == null || selectedSubject == null) {
             noCourseSelected.setVisibility(View.VISIBLE);
             coursesRecyclerView.setVisibility(View.GONE);
@@ -90,6 +93,12 @@ public class Participants extends Fragment {
 
         LinearLayoutManager coursesLayoutManager = new LinearLayoutManager(getContext());
 
+        Context context = getContext();
+        if (context != null) {
+            DividerItemDecoration divider = new DividerItemDecoration(context, coursesLayoutManager.getOrientation());
+            coursesRecyclerView.addItemDecoration(divider);
+
+        }
         coursesRecyclerView.setAdapter(courseParticipantAdapter);
         coursesRecyclerView.setLayoutManager(coursesLayoutManager);
 

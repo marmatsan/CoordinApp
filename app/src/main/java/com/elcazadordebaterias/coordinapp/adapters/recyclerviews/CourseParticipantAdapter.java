@@ -65,14 +65,7 @@ public class CourseParticipantAdapter extends RecyclerView.Adapter<CoursePartici
 
         if (userType == UserType.TYPE_TEACHER) {
             viewHolder.view.setOnClickListener(v -> {
-
                 HashMap<String, HashMap<String, Double>> a =  allStudentsStatistics.get(courseParticipant.getParticipantID());
-
-                for (String key : a.keySet()) {
-                    Log.d("DEBUGGING", courseParticipant.getParticipantName() + " " + key);
-                }
-
-
                 IndividualStatisticsDialog dialog = new IndividualStatisticsDialog(selectedCourse, selectedSubject, courseParticipant.getParticipantName(), courseParticipant.getParticipantID(), allStudentsStatistics.get(courseParticipant.getParticipantID()));
                 dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");
             });
