@@ -2,6 +2,7 @@ package com.elcazadordebaterias.coordinapp.adapters.recyclerviews.studentgroups;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;

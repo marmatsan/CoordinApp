@@ -8,8 +8,10 @@
 
     <TextView
         android:id="@+id/noGroups"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:text="@string/a_n_no_tienes_creado_ning_n_grupo_puedes_pulsar_el_bot_n_para_crear_un_grupo"
         android:textAlignment="center"
         android:textSize="16sp"

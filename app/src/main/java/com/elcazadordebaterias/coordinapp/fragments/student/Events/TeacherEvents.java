@@ -43,7 +43,7 @@ public class TeacherEvents extends Fragment {
     private HashMap<String, ArrayList<EventCard>> eventContainerMap;
     HashMap<String, Boolean> hasDocumentsMap;
 
-    TextView noEvents;
+    private TextView noEvents;
 
     public TeacherEvents(String selectedCourse, String selectedSubject){
         this.selectedCourse = selectedCourse;
@@ -67,7 +67,7 @@ public class TeacherEvents extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_studentsevent, container, false);
+        View view = inflater.inflate(R.layout.fragment_teacherevent, container, false);
         RecyclerView eventsContainer = view.findViewById(R.id.eventsContainer);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -76,8 +76,6 @@ public class TeacherEvents extends Fragment {
         eventsContainer.setLayoutManager(layoutManager);
 
         noEvents = view.findViewById(R.id.noEvents);
-        noEvents.setVisibility(View.GONE);
-
 
         fStore
                 .collection("CoursesOrganization")
@@ -125,7 +123,7 @@ public class TeacherEvents extends Fragment {
                                     for (DocumentSnapshot documentSnapshot1 : chatDocumentsSnapshots) {
                                         EventCardDocument eventCardDocument = documentSnapshot1.toObject(EventCardDocument.class);
 
-                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace(), documentSnapshot1);
+                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace(), documentSnapshot1,  eventCardDocument.getSenderID(), eventCardDocument.getSentByTeacher());
                                         eventList.add(eventCard);
 
                                     }

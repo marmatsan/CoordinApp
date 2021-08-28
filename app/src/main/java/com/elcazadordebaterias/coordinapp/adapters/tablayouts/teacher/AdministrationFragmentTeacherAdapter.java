@@ -1,5 +1,7 @@
 package com.elcazadordebaterias.coordinapp.adapters.tablayouts.teacher;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -11,13 +13,7 @@ import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Petitions;
 import com.elcazadordebaterias.coordinapp.fragments.teacher.administration.TeacherEvents;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 
-/**
- * Adapter to handle the pages of the viewpager attached at the
- * {@link Administration} fragment.
- *
- *
- * @author Martín Mateos Sánchez
- */
+
 public class AdministrationFragmentTeacherAdapter extends FragmentStateAdapter {
 
     private String selectedCourse;

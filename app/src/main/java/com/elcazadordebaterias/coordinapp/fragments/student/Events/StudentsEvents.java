@@ -43,7 +43,7 @@ public class StudentsEvents extends Fragment {
     private HashMap<String, ArrayList<EventCard>> eventContainerMap;
     HashMap<String, Boolean> hasDocumentsMap;
 
-    TextView noEvents;
+    private TextView noEvents;
 
     public StudentsEvents(String selectedCourse, String selectedSubject){
         this.selectedCourse = selectedCourse;
@@ -76,7 +76,6 @@ public class StudentsEvents extends Fragment {
         eventsContainer.setLayoutManager(layoutManager);
 
         noEvents = view.findViewById(R.id.noEvents);
-        noEvents.setVisibility(View.GONE);
 
         fStore
                 .collection("CoursesOrganization")
@@ -123,7 +122,7 @@ public class StudentsEvents extends Fragment {
                                     for (DocumentSnapshot documentSnapshot1 : chatDocumentsSnapshots) {
                                         EventCardDocument eventCardDocument = documentSnapshot1.toObject(EventCardDocument.class);
 
-                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace(), documentSnapshot1);
+                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace(), documentSnapshot1, eventCardDocument.getSenderID(), eventCardDocument.getSentByTeacher());
                                         eventList.add(eventCard);
 
                                     }

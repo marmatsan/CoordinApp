@@ -137,7 +137,7 @@ public class CreateEventDialog extends DialogFragment {
                             .get()
                             .addOnSuccessListener(queryDocumentSnapshots -> {
                                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                    EventCardDocument eventCardDocument = new EventCardDocument(eventTitleText, eventDescriptionText, eventPlaceText);
+                                    EventCardDocument eventCardDocument = new EventCardDocument(eventTitleText, eventDescriptionText, eventPlaceText, false, fAuth.getUid());
                                     documentSnapshot.getReference().collection("StudentEvents").add(eventCardDocument);
                                 }
                             });

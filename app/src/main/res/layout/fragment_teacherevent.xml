@@ -13,6 +13,7 @@
         android:text="@string/el_profesor_no_ha_enviado_ning_n_evento"
         android:textSize="16sp"
         android:textStyle="bold"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

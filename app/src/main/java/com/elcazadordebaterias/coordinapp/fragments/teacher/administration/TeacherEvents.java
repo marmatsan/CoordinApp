@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.fragments.teacher.administration;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,11 +46,14 @@ public class TeacherEvents extends Fragment {
     private HashMap<String, ArrayList<EventCard>> eventContainerMap;
     HashMap<String, Boolean> hasDocumentsMap;
 
-    TextView noEvents;
+    private TextView warningMessage;
 
     public TeacherEvents(String selectedCourse, String selectedSubject) {
+        Log.d("DEBUGGING", "TeacherEvents");
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
+        Log.d("DEBUGGING", selectedCourse);
+        Log.d("DEBUGGING", selectedSubject);
 
         eventContainerList = new ArrayList<EventContainerCard>();
         adapter = new EventsContainerAdapter(eventContainerList);
@@ -70,14 +74,14 @@ public class TeacherEvents extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_teacher_events, container, false);
 
+
         RecyclerView eventsContainer = view.findViewById(R.id.eventsContainer);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
         eventsContainer.setAdapter(adapter);
         eventsContainer.setLayoutManager(layoutManager);
 
-        noEvents = view.findViewById(R.id.noEvents);
-        noEvents.setVisibility(View.GONE);
+        warningMessage = view.findViewById(R.id.warningMessage);
 
         fStore
                 .collection("CoursesOrganization")
@@ -112,7 +116,7 @@ public class TeacherEvents extends Fragment {
                                     for (DocumentSnapshot documentSnapshot1 : chatDocumentsSnapshots) {
                                         EventCardDocument eventCardDocument = documentSnapshot1.toObject(EventCardDocument.class);
 
-                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace(), documentSnapshot1);
+                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace(), documentSnapshot1,  eventCardDocument.getSenderID(), eventCardDocument.getSentByTeacher());
                                         eventsList.add(eventCard);
                                     }
 
@@ -137,12 +141,11 @@ public class TeacherEvents extends Fragment {
         }
 
         if (eventContainerList.isEmpty()) {
-            noEvents.setVisibility(View.VISIBLE);
+            warningMessage.setVisibility(View.VISIBLE);
         } else {
-            noEvents.setVisibility(View.GONE);
+            warningMessage.setVisibility(View.GONE);
         }
 
         adapter.notifyDataSetChanged();
     }
-
 }

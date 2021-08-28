@@ -11,15 +11,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.utils.cards.EventCard;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsCardViewHolder> {
 
     private ArrayList<EventCard> cardsList;
+    private FirebaseAuth fAuth;
+
 
     public EventsAdapter(ArrayList<EventCard> cardsList) {
         this.cardsList = cardsList;
+        fAuth = FirebaseAuth.getInstance();
     }
 
     @NonNull
@@ -36,6 +40,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsCard
         holder.eventTitle.setText(eventCard.getEventName());
         holder.eventMessage.setText(eventCard.getEventName());
         holder.eventPlace.setText(eventCard.getEventName());
+
+
+        if (!eventCard.getSenderID().equals(fAuth.getUid())) {
+            holder.deleteEvent.setVisibility(View.GONE);
+        }
 
         holder.deleteEvent.setOnClickListener(view -> {
             eventCard.getDocumentSnapshot().getReference().delete();

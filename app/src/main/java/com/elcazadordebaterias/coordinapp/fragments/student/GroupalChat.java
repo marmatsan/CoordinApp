@@ -3,6 +3,7 @@ package com.elcazadordebaterias.coordinapp.fragments.student;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -174,22 +175,24 @@ public class GroupalChat extends Fragment {
                         ArrayList<String> participantsNames = new ArrayList<String>();
 
                         for (Group groupDoc : collectiveGroupDocument.getGroups()) {
-                            if (groupDoc.getParticipantsIds().contains(fAuth.getUid())) {
-                                GroupCard groupCard = new GroupCard(
-                                        groupDoc.getName(),
-                                        groupDocument.getId(),
-                                        selectedCourse,
-                                        selectedSubject,
-                                        groupDoc.getHasTeacher(),
-                                        groupDoc.getParticipantNames(),
-                                        groupDoc.getCollectionId(),
-                                        collectiveGroupDocument.getSpokerID(),
-                                        collectiveGroupDocument.getSpokerName());
-                                groupList.add(groupCard);
-                                participantsNames.addAll(groupDoc.getParticipantNames());
+                            GroupCard groupCard = new GroupCard(
+                                    groupDoc.getName(),
+                                    groupDocument.getId(),
+                                    selectedCourse,
+                                    selectedSubject,
+                                    groupDoc.getHasTeacher(),
+                                    groupDoc.getParticipantNames(),
+                                    groupDoc.getCollectionId(),
+                                    collectiveGroupDocument.getSpokerID(),
+                                    collectiveGroupDocument.getSpokerName());
+                            groupList.add(groupCard);
+                            Log.d("DEBUGGING", "" + participantsNames);
 
+                            if (groupDoc.getHasTeacher()) {
+                                participantsNames.addAll(groupDoc.getParticipantNames());
                             }
                         }
+                        Log.d("DEBUGGING", "" + participantsNames);
                         groupsList.add(new GroupsContainerCard(groupName, spokerName, spokerID, participantsNames, groupList));
                     }
                     listChanged();

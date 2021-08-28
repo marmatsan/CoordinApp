@@ -46,8 +46,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
             android:text="Lugar del evento"
             android:textStyle="italic"
+            app:layout_constraintBottom_toTopOf="@+id/deleteEvent"
             app:layout_constraintEnd_toEndOf="@+id/eventMessage"
             app:layout_constraintStart_toStartOf="@+id/eventMessage"
             app:layout_constraintTop_toBottomOf="@id/eventMessage" />
@@ -56,7 +58,6 @@
             android:id="@+id/deleteEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             android:text="@string/eliminar"
             android:textColor="@color/white"
