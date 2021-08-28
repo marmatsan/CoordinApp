@@ -40,8 +40,8 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
     FirebaseFirestore fStore;
 
     // Selected course and subject
-    private String selectedCourse = "4ºESO B";
-    private String selectedSubject = "Matemáticas";
+    private String selectedCourse;
+    private String selectedSubject;
 
     private MenuItem menuItem;
 
@@ -76,11 +76,7 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
             bottomNavigationView.setVisibility(View.GONE);
         }
 
-        fStore.collection("Students").document(fAuth.getUid()).get().addOnSuccessListener(documentSnapshot -> { // TODO: Maybe setting the title in asynchronous way may lead to error
-            name = (String) documentSnapshot.getData().get("FullName");
-            toolbar.setTitle((String) documentSnapshot.getData().get("FullName")+ " | " + selectedCourse +"/"+ selectedSubject);
-        });
-
+        toolbar.setTitle("CoordinApp");
         setSupportActionBar(toolbar);
 
         // Bottom navigation management
@@ -144,7 +140,6 @@ public class MainActivity_Student extends AppCompatActivity implements SelectDis
         fragmentContainer.setVisibility(View.VISIBLE);
         bottomNavigationView.setVisibility(View.VISIBLE);
 
-        toolbar.setTitle((String) name+ " | " + selectedCourse +"/"+ selectedSubject);
         navListener.onNavigationItemSelected(menuItem); // Update fragments with the new info
     }
 
