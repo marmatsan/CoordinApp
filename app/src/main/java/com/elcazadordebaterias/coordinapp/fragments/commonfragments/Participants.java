@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.CourseParticipantAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
@@ -25,6 +26,7 @@ import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivity
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -147,17 +149,23 @@ public class Participants extends Fragment {
             String studentID = key;
             HashMap<String, HashMap<String, Double>> oneStudentsStatistics = allStudentsStatistics.get(key);
 
-            fStore
+            CollectionReference collectiveGroupsRef = fStore
                     .collection("CoursesOrganization")
                     .document(selectedCourse)
                     .collection("Subjects")
                     .document(selectedSubject)
-                    .collection("CollectiveGroups")
+                    .collection("CollectiveGroups");
+
+            collectiveGroupsRef
                     .whereArrayContains("allParticipantsIDs", studentID)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
 
                         for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+
+
+
+
                             CollectiveGroupDocument collectiveGroupDocument = documentSnapshot.toObject(CollectiveGroupDocument.class);
                             String groupName = collectiveGroupDocument.getName();
                             oneStudentsStatistics.put(groupName, new HashMap<String, Double>());
@@ -165,62 +173,87 @@ public class Participants extends Fragment {
 
                             documentSnapshot
                                     .getReference()
-                                    .collection("InteractivityCards")
+                                    .collection("ChatRoomWithoutTeacher")
                                     .get()
-                                    .addOnSuccessListener(queryDocumentSnapshots1 -> {
+                                    .addOnSuccessListener(queryDocumentSnapshots12 -> {
 
-                                        double evaluableInputTextDocuments = 0;
-                                        double cumulativeInputTextMark = 0;
+                                        double totalMessages = queryDocumentSnapshots12.size();
+                                        double sentByUser = 0;
 
-                                        double totalPoints = 0;
-                                        double evaluableMultichoiceDocuments = 0;
-
-                                        for (DocumentSnapshot documentSnapshot1 : queryDocumentSnapshots1) {
-
-                                            Long cardType = documentSnapshot1.getLong("cardType");
-
-                                            if (cardType != null) {
-                                                switch (cardType.intValue()) {
-                                                    case InteractivityCardType.TYPE_INPUTTEXT:
-                                                        InputTextCardDocument inputTextCardDocument = documentSnapshot1.toObject(InputTextCardDocument.class);
-
-                                                        for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
-                                                            if (studentData.getStudentID().equals(studentID)) {
-                                                                if (studentData.getHasMarkSet()) {
-                                                                    evaluableInputTextDocuments++;
-                                                                    cumulativeInputTextMark += studentData.getMark();
-                                                                }
-                                                            }
-                                                        }
-
-
-                                                        break;
-                                                    case InteractivityCardType.TYPE_CHOICES:
-                                                        MultichoiceCardDocument multichoiceCardDocument = documentSnapshot1.toObject(MultichoiceCardDocument.class);
-
-                                                        for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()) {
-                                                            if (studentData.getStudentID().equals(studentID)) {
-                                                                if (studentData.getQuestionRespondedIdentifier() != -1) {
-                                                                    evaluableMultichoiceDocuments++;
-                                                                    totalPoints += studentData.getMark();
-                                                                }
-                                                            }
-                                                        }
-
-                                                        break;
-                                                }
+                                        for (DocumentSnapshot documentSnapshot1 : queryDocumentSnapshots12) {
+                                            ChatMessageCard messageCard = documentSnapshot1.toObject(ChatMessageCard.class);
+                                            if (messageCard.getSenderId().equals(studentID)) {
+                                                sentByUser++;
                                             }
                                         }
 
-                                        HashMap<String, Double> groupStatistics = oneStudentsStatistics.get(groupName);
+                                        double finalSentByUser = sentByUser;
+                                        documentSnapshot
+                                                .getReference()
+                                                .collection("InteractivityCards")
+                                                .get()
+                                                .addOnSuccessListener(queryDocumentSnapshots1 -> {
 
-                                        // InputText Statistics
-                                        groupStatistics.put("Evaluable InputTextDocuments", evaluableInputTextDocuments);
-                                        groupStatistics.put("Cumulative InputTextMark", cumulativeInputTextMark);
+                                                    double evaluableInputTextDocuments = 0;
+                                                    double cumulativeInputTextMark = 0;
 
-                                        // Multichoice Statistics
-                                        groupStatistics.put("Evaluable MultichoiceDocuments", evaluableMultichoiceDocuments);
-                                        groupStatistics.put("Total points", totalPoints);
+                                                    double totalPoints = 0;
+                                                    double evaluableMultichoiceDocuments = 0;
+
+                                                    for (DocumentSnapshot documentSnapshot1 : queryDocumentSnapshots1) {
+
+                                                        Long cardType = documentSnapshot1.getLong("cardType");
+
+                                                        if (cardType != null) {
+                                                            switch (cardType.intValue()) {
+                                                                case InteractivityCardType.TYPE_INPUTTEXT:
+                                                                    InputTextCardDocument inputTextCardDocument = documentSnapshot1.toObject(InputTextCardDocument.class);
+
+                                                                    for (InputTextCardDocument.InputTextCardStudentData studentData : inputTextCardDocument.getStudentsData()) {
+                                                                        if (studentData.getStudentID().equals(studentID)) {
+                                                                            if (studentData.getHasMarkSet()) {
+                                                                                evaluableInputTextDocuments++;
+                                                                                cumulativeInputTextMark += studentData.getMark();
+                                                                            }
+                                                                        }
+                                                                    }
+
+
+                                                                    break;
+                                                                case InteractivityCardType.TYPE_CHOICES:
+                                                                    MultichoiceCardDocument multichoiceCardDocument = documentSnapshot1.toObject(MultichoiceCardDocument.class);
+
+                                                                    for (MultichoiceCardDocument.MultichoiceCardStudentData studentData : multichoiceCardDocument.getStudentsData()) {
+                                                                        if (studentData.getStudentID().equals(studentID)) {
+                                                                            if (studentData.getQuestionRespondedIdentifier() != -1) {
+                                                                                evaluableMultichoiceDocuments++;
+                                                                                totalPoints += studentData.getMark();
+                                                                            }
+                                                                        }
+                                                                    }
+
+                                                                    break;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    HashMap<String, Double> groupStatistics = oneStudentsStatistics.get(groupName);
+
+                                                    // Chat messages
+                                                    groupStatistics.put("Total Chat Messages", totalMessages);
+                                                    groupStatistics.put("Messages By User", finalSentByUser);
+
+                                                    // InputText Statistics
+                                                    groupStatistics.put("Evaluable InputTextDocuments", evaluableInputTextDocuments);
+                                                    groupStatistics.put("Cumulative InputTextMark", cumulativeInputTextMark);
+
+                                                    // Multichoice Statistics
+                                                    groupStatistics.put("Evaluable MultichoiceDocuments", evaluableMultichoiceDocuments);
+                                                    groupStatistics.put("Total points", totalPoints);
+                                                });
+
+
+
                                     });
 
                         }

@@ -169,6 +169,51 @@ public class IndividualStatisticsDialog extends DialogFragment {
                 }
             }
 
+            // Sent messages
+            addTextView("Contribución al grupo", 24, 24, 8, 0, Typeface.BOLD, 16, R.color.black);
+            addTextView("Mensajes enviados por el chat entre alumnos", 24, 24, 8, 0, Typeface.NORMAL, 14, R.color.defaultColor);
+
+
+            Double totalChatMessages = groupStatistics.get("Total Chat Messages");
+            Double sentByUser = groupStatistics.get("Messages By User");
+
+            if (totalChatMessages != null && sentByUser != null) {
+                if (totalChatMessages != 0) {
+
+                    double rate = sentByUser / totalChatMessages;
+
+                    if (rate < 0.5) {
+                        color = R.color.red;
+                    } else if (rate >= 0.5 && rate < 0.7) {
+                        color = R.color.yellow;
+                    } else if (rate >= 0.7 && rate < 0.9) {
+                        color = R.color.green1;
+                    } else {
+                        color = R.color.green2;
+                    }
+
+                    int sentByUserInt = (int) Math.round(sentByUser);
+                    int totalChatMessagesInt = (int) Math.round(totalChatMessages);
+
+                    double percentage = (sentByUser / totalChatMessages) * 100;
+                    String ratePercText = "" + percentage;
+
+                    if (ratePercText.endsWith(".0")) {
+                        ratePercText = ratePercText.replace(".0", "");
+                    } else if (ratePercText.length() > 4) {
+                        ratePercText = ratePercText.substring(0, 4);
+                    }
+
+                    String text = sentByUserInt + "/" + totalChatMessagesInt + " (" +(ratePercText) + "%)";
+
+                    addTextView(text, 24, 24, 8, 8, Typeface.NORMAL, 14, color);
+                } else {
+                    inputActivitiesText = "Ningún alumno del grupo ha enviado mensajes";
+                    color = R.color.orange;
+                    addTextView(inputActivitiesText, 24, 24, 8, 8, Typeface.NORMAL, 14, color);
+                }
+            }
+
         }
 
         builder.setTitle("Estadísticas individuales de " + studentName)
