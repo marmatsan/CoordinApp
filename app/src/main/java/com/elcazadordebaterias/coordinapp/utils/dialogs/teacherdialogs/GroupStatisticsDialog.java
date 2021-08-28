@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
@@ -31,6 +32,8 @@ public class GroupStatisticsDialog extends DialogFragment {
 
     HashMap<String, Double> statistics;
 
+    Context context;
+
     public GroupStatisticsDialog(HashMap<String, Double> statistics) {
         this.statistics = statistics;
     }
@@ -38,6 +41,7 @@ public class GroupStatisticsDialog extends DialogFragment {
     @Override
     public void onAttach(@NonNull @NotNull Context context) {
         super.onAttach(context);
+        this.context = context;
     }
 
     @NonNull
@@ -62,6 +66,7 @@ public class GroupStatisticsDialog extends DialogFragment {
                 setAverageInputTextString(groupalMarkInputText, evaluableGroupalInputCards, averageGroupMarkInputText);
             } else {
                 String text = "No se ha evaluado ninguna actividad grupal";
+                averageGroupMarkInputText.setTextColor(ContextCompat.getColor(context, R.color.orange));
                 averageGroupMarkInputText.setText(text);
             }
         }
@@ -75,6 +80,7 @@ public class GroupStatisticsDialog extends DialogFragment {
                 setAverageInputTextString(individualMarkInputText, evaluableIndividualStudents, averageIndividualMarkInputText);
             } else {
                 String text = "No se ha evaluado ninguna actividad individual";
+                averageIndividualMarkInputText.setTextColor(ContextCompat.getColor(context, R.color.orange));
                 averageIndividualMarkInputText.setText(text);
             }
         }
@@ -88,6 +94,7 @@ public class GroupStatisticsDialog extends DialogFragment {
                 setMultichoiceTextString(totalGroupalPoints, evaluableGroupalMultichoiceCards, groupalPerc);
             } else {
                 String text = "No se ha evaluado ninguna actividad grupal";
+                groupalPerc.setTextColor(ContextCompat.getColor(context, R.color.orange));
                 groupalPerc.setText(text);
             }
         }
@@ -101,6 +108,7 @@ public class GroupStatisticsDialog extends DialogFragment {
                 setMultichoiceTextString(evaluableIndividualMarks, evaluableIndividuals, individualPerc);
             } else {
                 String text = "No se ha evaluado ninguna actividad individual";
+                individualPerc.setTextColor(ContextCompat.getColor(context, R.color.orange));
                 individualPerc.setText(text);
             }
         }
@@ -118,13 +126,13 @@ public class GroupStatisticsDialog extends DialogFragment {
         double average = mark1 / mark2;
 
         if (average < 5) {
-            textView.setTextColor(Color.parseColor("#B00020")); // Red
+            textView.setTextColor(ContextCompat.getColor(context, R.color.red)); // Red
         } else if (average >= 5 && average < 7) {
-            textView.setTextColor(Color.parseColor("#C7CB85")); // Yellow
+            textView.setTextColor(ContextCompat.getColor(context, R.color.yellow)); // Yellow
         } else if (average >= 7 && average < 9) {
-            textView.setTextColor(Color.parseColor("#7FB800")); // Green 1
+            textView.setTextColor(ContextCompat.getColor(context, R.color.green1)); // Green 1
         } else {
-            textView.setTextColor(Color.parseColor("#5CAB7D")); // Green 2
+            textView.setTextColor(ContextCompat.getColor(context, R.color.green2)); // Green 2
         }
 
         String averageMarkText = "" + average;
@@ -143,13 +151,13 @@ public class GroupStatisticsDialog extends DialogFragment {
         double rate = mark1 / mark2;
 
         if (rate < 0.5) {
-            textView.setTextColor(Color.parseColor("#B00020")); // Red
+            textView.setTextColor(ContextCompat.getColor(context, R.color.red)); // Red
         } else if (rate >= 0.5 && rate < 0.7) {
-            textView.setTextColor(Color.parseColor("#C7CB85")); // Yellow
+            textView.setTextColor(ContextCompat.getColor(context, R.color.yellow)); // Yellow
         } else if (rate >= 0.7 && rate < 0.9) {
-            textView.setTextColor(Color.parseColor("#7FB800")); // Green 1
+            textView.setTextColor(ContextCompat.getColor(context, R.color.green1)); // Green 1
         } else {
-            textView.setTextColor(Color.parseColor("#5CAB7D")); // Green 2
+            textView.setTextColor(ContextCompat.getColor(context, R.color.green2)); // Green 2
         }
         double ratePerc = rate * 100;
         String ratePercText = "" + ratePerc;

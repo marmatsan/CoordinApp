@@ -2,8 +2,11 @@ package com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
@@ -43,7 +47,11 @@ public class IndividualStatisticsDialog extends DialogFragment {
     private String studentName;
 
     private HashMap<String, HashMap<String, Double>> statisticsMap;
-    
+
+    Context context;
+
+    LinearLayout container;
+
     public IndividualStatisticsDialog(String selectedCourse, String selectedSubject, String studentName, String studentID, HashMap<String, HashMap<String, Double>> statisticsMap) {
         fStore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
@@ -57,6 +65,7 @@ public class IndividualStatisticsDialog extends DialogFragment {
     @Override
     public void onAttach(@NonNull @NotNull Context context) {
         super.onAttach(context);
+        this.context = context;
     }
 
     @NonNull
@@ -67,85 +76,136 @@ public class IndividualStatisticsDialog extends DialogFragment {
 
         View view = getActivity().getLayoutInflater().inflate(R.layout.utils_dialogs_individualuserstatistics, null);
 
-        LinearLayout container = view.findViewById(R.id.container);
+        container = view.findViewById(R.id.container);
 
-        for (int i = 0; i < 10 ; i++) {
-            TextView valueTV = new TextView(getContext());
-            String t = "Actividades de tipo entrada de texto";
-            valueTV.setText(t);
-            valueTV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-            container.addView(valueTV);
-        }
-
-        /*
         for (String key : statisticsMap.keySet()) {
-            Log.d("DEBUGGING", key);
+            addTextView(key, 24, 24, 8, 2, Typeface.BOLD, 16, R.color.black);
+
+            View v = new View(context);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 5);
+            setMarginsDp(params, 24, 0, 24, 8);
+            v.setLayoutParams(params);
+            v.setBackgroundColor(ContextCompat.getColor(container.getContext(), R.color.black));
+            container.addView(v);
 
             HashMap<String, Double> groupStatistics = statisticsMap.get(key);
 
             Double evaluableInputTextDocuments = groupStatistics.get("Evaluable InputTextDocuments");
             Double cumulativeInputTextMark = groupStatistics.get("Cumulative InputTextMark");
 
-            Double totalPoints =  groupStatistics.get("Evaluable MultichoiceDocuments");
+            addTextView("De tipo entrada de texto", 24, 24, 8, 0, Typeface.BOLD, 16, R.color.black);
+            addTextView("Media de las actividades", 24, 24, 8, 0, Typeface.NORMAL, 14, R.color.defaultColor);
+
+            String inputActivitiesText;
+            int color;
+
+            if (evaluableInputTextDocuments != null && cumulativeInputTextMark != null) {
+                if (evaluableInputTextDocuments != 0) {
+                    double average = cumulativeInputTextMark / evaluableInputTextDocuments;
+
+                    if (average < 5) {
+                        color = R.color.red;
+                    } else if (average >= 5 && average < 7) {
+                        color = R.color.yellow;
+                    } else if (average >= 7 && average < 9) {
+                        color = R.color.green1;
+                    } else {
+                        color = R.color.green2;
+                    }
+
+                    String averageMarkText = "" + average;
+
+                    if (averageMarkText.endsWith(".0")) {
+                        averageMarkText = averageMarkText.replace(".0", "");
+                    } else if (averageMarkText.length() > 4) {
+                        averageMarkText = averageMarkText.substring(0, 4);
+                    }
+
+                    String text = averageMarkText + "/10";
+                    addTextView(text, 24, 24, 8, 8, Typeface.NORMAL, 14, color);
+
+                } else {
+                    inputActivitiesText = "No se ha evaluado ninguna actividad individual";
+                    color = R.color.orange;
+                    addTextView(inputActivitiesText, 24, 24, 8, 8, Typeface.NORMAL, 14, color);
+                }
+            }
+
             Double evaluableMultichoiceDocuments = groupStatistics.get("Total points");
+            Double totalPoints = groupStatistics.get("Evaluable MultichoiceDocuments");
 
-            TextView valueTV = new TextView(getContext());
-            String t = "Actividades de tipo entrada de texto";
-            valueTV.setText(t);
-            valueTV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            addTextView("De tipo multirespuesta", 24, 24, 8, 0, Typeface.BOLD, 16, R.color.black);
+            addTextView("Tasa de acierto de las actividades", 24, 24, 8, 0, Typeface.NORMAL, 14, R.color.defaultColor);
 
-            container.addView(valueTV);
+            if (evaluableMultichoiceDocuments != null && totalPoints != null) {
+                if (evaluableMultichoiceDocuments != 0) {
+                    double rate = totalPoints / evaluableMultichoiceDocuments;
 
-            if (evaluableInputTextDocuments != null &&  cumulativeInputTextMark != null) {
-                if (evaluableInputTextDocuments != 0){
-                    double averageMark = cumulativeInputTextMark / evaluableInputTextDocuments;
-                    String av = "" +averageMark;
-                    valueTV.setText(av);
-                } else {
-                    String te = "No hay actividades tipo entrada de texto evaluables";
-                    valueTV.setText(te);
-                }
+                    if (rate < 0.5) {
+                        color = R.color.red;
+                    } else if (rate >= 0.5 && rate < 0.7) {
+                        color = R.color.yellow;
+                    } else if (rate >= 0.7 && rate < 0.9) {
+                        color = R.color.green1;
+                    } else {
+                        color = R.color.green2;
+                    }
 
-                valueTV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-                if(valueTV.getParent() != null) {
-                    ((ViewGroup)valueTV.getParent()).removeView(valueTV); // <- fix
-                }
-
-                container.addView(valueTV);
-            }
-
-            if (evaluableMultichoiceDocuments != null &&  totalPoints != null) {
-                if (evaluableMultichoiceDocuments != 0){
-                    double rate = totalPoints /evaluableMultichoiceDocuments;
                     double ratePerc = rate * 100;
-                    String av = "" +ratePerc + "%";
-                    valueTV.setText(av);
+                    String ratePercText = "" + ratePerc;
+
+                    if (ratePercText.endsWith(".0")) {
+                        ratePercText = ratePercText.replace(".0", "");
+                    } else if (ratePercText.length() > 4) {
+                        ratePercText = ratePercText.substring(0, 4);
+                    }
+
+                    String text =  ratePercText + "%";
+                    addTextView(text, 24, 24, 8, 8, Typeface.NORMAL, 14, color);
                 } else {
-                    String te = "No hay actividades tipo multirespuesta evaluables";
-                    valueTV.setText(te);
+                    inputActivitiesText = "No se ha evaluado ninguna actividad individual";
+                    color = R.color.orange;
+                    addTextView(inputActivitiesText, 24, 24, 8, 8, Typeface.NORMAL, 14, color);
                 }
-
-                valueTV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                if(valueTV.getParent() != null) {
-                    ((ViewGroup)valueTV.getParent()).removeView(valueTV); // <- fix
-                }
-                container.addView(valueTV);
             }
-
 
         }
 
-        */
-
-        builder.setTitle("Estadísticas de " + studentName)
+        builder.setTitle("Estadísticas individuales de " + studentName)
                 .setView(view)
                 .setNegativeButton("Ocultar", (dialog, i) -> {
                     // Just closes the dialog
                 });
 
         return builder.create();
+    }
+
+    private int dpToPx(int dps) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dps * scale + 0.5f);
+    }
+
+    private void setMarginsDp(LinearLayout.LayoutParams params, int leftDp, int topDp, int rightDp, int bottomDp) {
+        int leftPx = dpToPx(leftDp);
+        int topPx = dpToPx(topDp);
+        int rightPx = dpToPx(rightDp);
+        int bottomPx = dpToPx(bottomDp);
+
+        params.setMargins(leftPx, topPx, rightPx, bottomPx);
+    }
+
+    private void addTextView(String text, int leftDp, int rightDp, int topDp, int bottomDp, int typeFace, int textSizeSp, int color) {
+        TextView textView = new TextView(container.getContext());
+        textView.setText(text);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        setMarginsDp(params, leftDp, topDp, rightDp, bottomDp);
+        textView.setLayoutParams(params);
+        textView.setTypeface(textView.getTypeface(), typeFace);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeSp);
+        textView.setTextColor(ContextCompat.getColor(container.getContext(), color));
+
+        container.addView(textView);
     }
 
 }

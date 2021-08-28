@@ -17,7 +17,12 @@
     <color name="orange">#F18313</color>
 
     <color name="grey">#D9D9D9</color>
-    <color name="red">#B00020</color>
     <color name="warning"> 	#c45f00</color>
+
+    <color name="red">#B00020</color>
+    <color name="yellow">#C7CB85</color>
+    <color name="green1">#7FB800</color>
+    <color name="green2">#5CAB7D</color>
+    <color name="defaultColor">#808080</color>
 
 </resources>

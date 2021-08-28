@@ -149,7 +149,7 @@ public class GroupsInteractivityCardsContainerAdapter extends RecyclerView.Adapt
         TextView groupName;
         TextView informativeText;
 
-        FloatingActionButton showStatistics;
+        MaterialButton showStatistics;
 
         MaterialButton expandActivitiesButton;
         MaterialButton showInvisibleCards;
