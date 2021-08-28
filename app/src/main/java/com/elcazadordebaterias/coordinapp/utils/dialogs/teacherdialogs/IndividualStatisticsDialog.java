@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -75,14 +76,13 @@ public class IndividualStatisticsDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         View view = getActivity().getLayoutInflater().inflate(R.layout.utils_dialogs_individualuserstatistics, null);
-
         container = view.findViewById(R.id.container);
 
         for (String key : statisticsMap.keySet()) {
             addTextView(key, 24, 24, 8, 2, Typeface.BOLD, 16, R.color.black);
 
             View v = new View(context);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 5);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 3);
             setMarginsDp(params, 24, 0, 24, 8);
             v.setLayoutParams(params);
             v.setBackgroundColor(ContextCompat.getColor(container.getContext(), R.color.black));
@@ -160,7 +160,7 @@ public class IndividualStatisticsDialog extends DialogFragment {
                         ratePercText = ratePercText.substring(0, 4);
                     }
 
-                    String text =  ratePercText + "%";
+                    String text = ratePercText + "%";
                     addTextView(text, 24, 24, 8, 8, Typeface.NORMAL, 14, color);
                 } else {
                     inputActivitiesText = "No se ha evaluado ninguna actividad individual";

@@ -216,16 +216,11 @@ public class Participants extends Fragment {
 
                                         // InputText Statistics
                                         groupStatistics.put("Evaluable InputTextDocuments", evaluableInputTextDocuments);
-                                        //Log.d("DEBUGGING", "Evaluable InputTextDocuments "+evaluableInputTextDocuments);
                                         groupStatistics.put("Cumulative InputTextMark", cumulativeInputTextMark);
-                                        //Log.d("DEBUGGING", "Cumulative InputTextMark  "+cumulativeInputTextMark);
 
                                         // Multichoice Statistics
                                         groupStatistics.put("Evaluable MultichoiceDocuments", evaluableMultichoiceDocuments);
-                                        //Log.d("DEBUGGING", "Evaluable MultichoiceDocument "+evaluableMultichoiceDocuments);
                                         groupStatistics.put("Total points", totalPoints);
-                                        //Log.d("DEBUGGING", "Total points "+cumulativeInputTextMark);
-
                                     });
 
                         }

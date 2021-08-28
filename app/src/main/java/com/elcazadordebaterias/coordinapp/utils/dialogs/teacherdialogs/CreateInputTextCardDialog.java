@@ -15,6 +15,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
+import com.elcazadordebaterias.coordinapp.adapters.listviews.SelectGroupsItemAdapter;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.SelectGroupItem;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.SelectParticipantItem;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
@@ -46,6 +49,9 @@ public class CreateInputTextCardDialog extends DialogFragment {
     private CheckBox questionIsEvaluable;
     private CheckBox groupalQuestion;
 
+    private ArrayList<SelectGroupItem> groupItems;
+    private SelectGroupsItemAdapter adapter;
+
     public CreateInputTextCardDialog(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
@@ -57,6 +63,9 @@ public class CreateInputTextCardDialog extends DialogFragment {
 
         fStore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
+
+        groupItems = new ArrayList<SelectGroupItem>();
+        adapter = new SelectGroupsItemAdapter(context, groupItems);
 
     }
 

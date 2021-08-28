@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -65,9 +66,13 @@ public class CourseParticipantAdapter extends RecyclerView.Adapter<CoursePartici
 
         if (userType == UserType.TYPE_TEACHER) {
             viewHolder.view.setOnClickListener(v -> {
-                HashMap<String, HashMap<String, Double>> a =  allStudentsStatistics.get(courseParticipant.getParticipantID());
-                IndividualStatisticsDialog dialog = new IndividualStatisticsDialog(selectedCourse, selectedSubject, courseParticipant.getParticipantName(), courseParticipant.getParticipantID(), allStudentsStatistics.get(courseParticipant.getParticipantID()));
-                dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");
+                HashMap<String, HashMap<String, Double>> studentsStatistics = allStudentsStatistics.get(courseParticipant.getParticipantID());
+                if (studentsStatistics.keySet().size() == 0) {
+                        Toast.makeText(context, "Este estudiante no está en ningún grupo", Toast.LENGTH_SHORT).show();
+                } else {
+                    IndividualStatisticsDialog dialog = new IndividualStatisticsDialog(selectedCourse, selectedSubject, courseParticipant.getParticipantName(), courseParticipant.getParticipantID(), allStudentsStatistics.get(courseParticipant.getParticipantID()));
+                    dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");
+                }
             });
         }
 
