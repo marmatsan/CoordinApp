@@ -19,13 +19,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
-        android:id="@+id/groupNamesSpinner"
+    <ListView
+        android:id="@+id/groupList"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="@+id/textView1"
-        app:layout_constraintStart_toStartOf="@+id/textView1"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/roundedlistview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView1" />
 
     <TextView
@@ -36,9 +39,9 @@
         android:text="@string/_2_agrega_el_t_tulo_de_la_pregunta"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/groupNamesSpinner"
-        app:layout_constraintStart_toStartOf="@+id/groupNamesSpinner"
-        app:layout_constraintTop_toBottomOf="@+id/groupNamesSpinner" />
+        app:layout_constraintEnd_toEndOf="@+id/groupList"
+        app:layout_constraintStart_toStartOf="@+id/groupList"
+        app:layout_constraintTop_toBottomOf="@+id/groupList" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputCardNameLayout"

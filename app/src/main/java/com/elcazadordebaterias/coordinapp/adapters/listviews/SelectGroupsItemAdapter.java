@@ -19,7 +19,7 @@ public class SelectGroupsItemAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<SelectGroupItem> groupsList;
 
-    public SelectGroupsItemAdapter(Context context, ArrayList<SelectGroupItem> participantsList) {
+    public SelectGroupsItemAdapter(Context context, ArrayList<SelectGroupItem> groupsList) {
         this.context = context;
         this.groupsList = groupsList;
     }
