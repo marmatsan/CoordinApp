@@ -31,6 +31,7 @@ import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.GroupParticipant;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.IndividualGroupDocument;
+import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
@@ -70,17 +71,41 @@ public class GroupalChat extends Fragment {
     private TextInputLayout searchLayout;
     private EditText search;
 
+    private String teacherName = null;
+
     public GroupalChat(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
+
+        fStore = FirebaseFirestore.getInstance();
+        fAuth = FirebaseAuth.getInstance();
+
+        fStore
+                .collection("CoursesOrganization")
+                .document(selectedCourse)
+                .collection("Subjects")
+                .document(selectedSubject)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Subject subject = documentSnapshot.toObject(Subject.class);
+                    String teacherID = subject.getTeacherID();
+
+                    if (teacherID != null) {
+                        fStore
+                                .collection("Teachers")
+                                .document(teacherID)
+                                .get()
+                                .addOnSuccessListener(documentSnapshot1 -> {
+                                    this.teacherName = (String) documentSnapshot1.get("FullName");
+                                });
+                    }
+                });
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fStore = FirebaseFirestore.getInstance();
-        fAuth = FirebaseAuth.getInstance();
 
         groupsList = new ArrayList<GroupsContainerCard>();
         groupsAdapter = new GroupsContainerCardAdapter(groupsList, getContext());
@@ -214,13 +239,11 @@ public class GroupalChat extends Fragment {
                                     collectiveGroupDocument.getSpokerID(),
                                     collectiveGroupDocument.getSpokerName());
                             groupList.add(groupCard);
-                            Log.d("DEBUGGING", "" + participantsNames);
 
                             if (groupDoc.getHasTeacher()) {
                                 participantsNames.addAll(groupDoc.getParticipantNames());
                             }
                         }
-                        Log.d("DEBUGGING", "" + participantsNames);
                         groupsList.add(new GroupsContainerCard(groupName, spokerName, spokerID, participantsNames, groupList));
                     }
                     listChanged();
@@ -262,30 +285,25 @@ public class GroupalChat extends Fragment {
         String cardAsString = gson.toJson(groupCard);
         intent.putExtra("cardAsString", cardAsString);
         intent.putExtra("userType", UserType.TYPE_STUDENT);
-        getContext().startActivity(intent);
+        Context context = getContext();
+        if (context != null) {
+            getContext().startActivity(intent);
+        }
     }
 
     private void filter(String inputText) {
-
         if (inputText.isEmpty()) {
             groupsAdapter.filteredList(groupsList);
         } else {
-            fStore
-                    .collection("Teachers")
-                    .document(fAuth.getUid())
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        String teacherName = (String) documentSnapshot.get("FullName");
-                        if (teacherName != null) {
-                            ArrayList<GroupsContainerCard> filteredList = new ArrayList<GroupsContainerCard>();
-                            for (GroupsContainerCard card : groupsList) {
-                                if (card.getParticipantsNames().contains(inputText.toLowerCase()) && !inputText.equalsIgnoreCase(teacherName)) {
-                                    filteredList.add(card);
-                                }
-                            }
-                            groupsAdapter.filteredList(filteredList);
-                        }
-                    });
+            if (teacherName != null) {
+                ArrayList<GroupsContainerCard> filteredList = new ArrayList<GroupsContainerCard>();
+                for (GroupsContainerCard card : groupsList) {
+                    if (card.getParticipantsNames().contains(inputText.toLowerCase()) && !inputText.equalsIgnoreCase(teacherName)) {
+                        filteredList.add(card);
+                    }
+                }
+                groupsAdapter.filteredList(filteredList);
+            }
         }
     }
 

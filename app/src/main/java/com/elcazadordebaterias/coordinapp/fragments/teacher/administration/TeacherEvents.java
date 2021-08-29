@@ -49,11 +49,9 @@ public class TeacherEvents extends Fragment {
     private TextView warningMessage;
 
     public TeacherEvents(String selectedCourse, String selectedSubject) {
-        Log.d("DEBUGGING", "TeacherEvents");
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
-        Log.d("DEBUGGING", selectedCourse);
-        Log.d("DEBUGGING", selectedSubject);
+
 
         eventContainerList = new ArrayList<EventContainerCard>();
         adapter = new EventsContainerAdapter(eventContainerList);

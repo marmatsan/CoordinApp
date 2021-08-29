@@ -3,10 +3,13 @@ package com.elcazadordebaterias.coordinapp.fragments.commonfragments;
 import android.content.Context;
 import android.os.Bundle;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,12 +22,15 @@ import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.CourseParticipantAdapter;
 import com.elcazadordebaterias.coordinapp.utils.cards.ChatMessageCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.InteractivityCardType;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.InputTextCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,6 +39,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class Participants extends Fragment {
@@ -52,6 +60,9 @@ public class Participants extends Fragment {
     private String selectedSubject;
 
     private HashMap<String, HashMap<String, HashMap<String, Double>>> allStudentsStatistics;
+
+    private TextInputLayout searchLayout;
+    private EditText searchText;
 
     public Participants(int userType, String selectedCourse, String selectedSubject) {
         this.userType = userType;
@@ -84,13 +95,41 @@ public class Participants extends Fragment {
         TextView noCourseSelected = view.findViewById(R.id.noCourseSelected);
         RecyclerView coursesRecyclerView = view.findViewById(R.id.coursesContainer);
 
+        searchLayout = view.findViewById(R.id.searchLayout);
+        searchText = view.findViewById(R.id.searchText);
+        searchLayout.setVisibility(View.GONE);
+        searchText.setVisibility(View.GONE);
+
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+            }
+        });
 
         if (selectedCourse == null || selectedSubject == null) {
             noCourseSelected.setVisibility(View.VISIBLE);
             coursesRecyclerView.setVisibility(View.GONE);
+            searchLayout.setVisibility(View.GONE);
+            searchText.setVisibility(View.GONE);
+
         } else {
             noCourseSelected.setVisibility(View.GONE);
             coursesRecyclerView.setVisibility(View.VISIBLE);
+            if (!(userType == UserType.TYPE_STUDENT)) {
+                searchLayout.setVisibility(View.VISIBLE);
+                searchText.setVisibility(View.VISIBLE);
+            }
         }
 
         LinearLayoutManager coursesLayoutManager = new LinearLayoutManager(getContext());
@@ -134,9 +173,12 @@ public class Participants extends Fragment {
                                         if (studentIds.contains(document.getId())) {
                                             participants.add(new CourseParticipantCard(R.drawable.ic_reading_book, document.getId(), "Estudiante", (String) document.get("FullName"), (String) document.get("UserEmail")));
                                             allStudentsStatistics.put(document.getId(), new HashMap<String, HashMap<String, Double>>());
-                                            courseParticipantAdapter.notifyDataSetChanged();
                                         }
                                     }
+
+                                    Collections.sort(participants, (courseParticipantCard1, courseParticipantCard2) -> courseParticipantCard1.getParticipantName().compareTo(courseParticipantCard2.getParticipantName()));
+
+                                    courseParticipantAdapter.notifyDataSetChanged();
                                     populateStatistics();
                                 });
                     });
@@ -144,7 +186,7 @@ public class Participants extends Fragment {
     }
 
 
-    private void populateStatistics(){
+    private void populateStatistics() {
 
         for (String key : allStudentsStatistics.keySet()) {
             String studentID = key;
@@ -163,8 +205,6 @@ public class Participants extends Fragment {
                     .addOnSuccessListener(queryDocumentSnapshots -> {
 
                         for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-
-
 
 
                             CollectiveGroupDocument collectiveGroupDocument = documentSnapshot.toObject(CollectiveGroupDocument.class);
@@ -254,12 +294,25 @@ public class Participants extends Fragment {
                                                 });
 
 
-
                                     });
 
                         }
 
                     });
+        }
+    }
+
+    private void filter(String inputText) {
+        if (inputText.isEmpty()) {
+            courseParticipantAdapter.filteredList(participants);
+        } else {
+            ArrayList<CourseParticipantCard> filteredList = new ArrayList<CourseParticipantCard>();
+            for (CourseParticipantCard card : participants) {
+                if (card.getParticipantName().contains(inputText.toLowerCase())) {
+                    filteredList.add(card);
+                }
+            }
+            courseParticipantAdapter.filteredList(filteredList);
         }
     }
 

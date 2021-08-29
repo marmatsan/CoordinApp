@@ -17,11 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.activities.ChatActivity;
 import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;
+import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.GroupStatisticsDialog;
 import com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs.IndividualStatisticsDialog;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -99,5 +101,13 @@ public class CourseParticipantAdapter extends RecyclerView.Adapter<CoursePartici
             participantEmail = itemView.findViewById(R.id.courseparticipant_email);
         }
     }
+
+
+    public void filteredList(ArrayList<CourseParticipantCard> filteredList) {
+        courseParticipantList = filteredList;
+        notifyDataSetChanged();
+    }
+
+
 }
 

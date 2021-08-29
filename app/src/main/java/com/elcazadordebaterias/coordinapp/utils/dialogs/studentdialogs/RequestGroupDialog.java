@@ -217,13 +217,10 @@ public class RequestGroupDialog extends DialogFragment {
                             .collection("Students")
                             .get()
                             .addOnSuccessListener(queryDocumentSnapshots -> {
-                                Log.d("DEBUGGING", ""+queryDocumentSnapshots.size());
 
                                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                    Log.d("DEBUGGING", (String) document.get("FullName"));
 
                                     if (studentsIDs.contains(document.getId())) {
-                                        Log.d("DEBUGGING", "IN");
                                         participantsList.add(new SelectParticipantItem((String) document.get("FullName"), document.getId()));
                                     }
                                 }
