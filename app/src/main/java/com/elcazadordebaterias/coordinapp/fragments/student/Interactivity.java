@@ -108,6 +108,7 @@ public class Interactivity extends Fragment {
                         String spokerID = collectiveGroupDocument.getSpokerID();
                         String spokerName = collectiveGroupDocument.getSpokerName();
 
+                        cardsList.clear();
                         collectiveGroupDocumentSnapshot
                                 .getReference()
                                 .collection("InteractivityCards")
@@ -119,8 +120,8 @@ public class Interactivity extends Fragment {
                                         return;
                                     }
 
-                                    cardsList.clear();
                                     ArrayList<InteractivityCard> interactivityCardsList = new ArrayList<InteractivityCard>();
+
                                     GroupsInteractivityCardsContainer interactivityCardsContainer = new GroupsInteractivityCardsContainer("Actividades con el " + groupName, interactivityCardsList);
 
                                     for (DocumentSnapshot interactivityCardDocumentSnapshot : interactivityCardsDocumentSnapshots) {
@@ -134,7 +135,6 @@ public class Interactivity extends Fragment {
 
                                                     if (inputTextCardDocument.getHasGroupalActivity()) {
                                                         InputTextCardDocument.InputTextCardStudentData studentData = inputTextCardDocument.getStudentsData().get(0);
-
                                                         if (studentData.getResponse() == null) {
                                                             if (fAuth.getUid().equals(spokerID)) {
                                                                 InputTextCard inputTextCard = new InputTextCard(inputTextCardDocument.getTitle(), studentData.getStudentID(), interactivityCardDocumentSnapshot);
@@ -188,6 +188,7 @@ public class Interactivity extends Fragment {
                                     }
 
                                     if (!interactivityCardsList.isEmpty()) {
+                                        Log.d("DEBUGGING", "ADDED, " + interactivityCardsList.size());
                                         cardsList.add(interactivityCardsContainer);
                                     }
 
