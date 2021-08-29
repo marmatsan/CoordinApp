@@ -38,9 +38,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsCard
         EventCard eventCard = cardsList.get(position);
 
         holder.eventTitle.setText(eventCard.getEventName());
-        holder.eventMessage.setText(eventCard.getEventName());
-        holder.eventPlace.setText(eventCard.getEventName());
-
+        holder.eventMessage.setText(eventCard.getEventMessage());
+        holder.eventPlace.setText(eventCard.getEventPlace());
 
         if (!eventCard.getSenderID().equals(fAuth.getUid())) {
             holder.deleteEvent.setVisibility(View.GONE);
