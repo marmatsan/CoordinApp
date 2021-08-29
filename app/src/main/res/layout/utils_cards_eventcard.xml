@@ -16,48 +16,77 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/eventTitle"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardTitleLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:text="@string/t_tulo_del_evento"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/eventTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/t_tulo_del_evento"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/eventMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:text="Mensaje del evento"
-            app:layout_constraintEnd_toEndOf="@+id/eventTitle"
-            app:layout_constraintStart_toStartOf="@+id/eventTitle"
-            app:layout_constraintTop_toBottomOf="@id/eventTitle" />
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardTitleLayout" />
 
         <TextView
             android:id="@+id/eventPlace"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
             android:text="Lugar del evento"
+            android:textColor="@color/black"
             android:textStyle="italic"
-            app:layout_constraintBottom_toTopOf="@+id/deleteEvent"
-            app:layout_constraintEnd_toEndOf="@+id/eventMessage"
-            app:layout_constraintStart_toStartOf="@+id/eventMessage"
-            app:layout_constraintTop_toBottomOf="@id/eventMessage" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/eventMessage" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/deleteEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             android:text="@string/eliminar"
             android:textColor="@color/white"
@@ -65,7 +94,7 @@
             app:icon="@drawable/ic_baseline_delete_outline_24"
             app:iconTint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/eventPlace"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/eventPlace" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
