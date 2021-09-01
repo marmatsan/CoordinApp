@@ -43,10 +43,10 @@
     <string name="iniciar_sesi_n_underline"><u>Iniciar sesión</u></string>
     <string name="registro">Registro</string>
     <string name="rellena_estos_campos_si_eres_alumno">Rellena estos campos si eres alumno</string>
-    <string name="nombre_y_apellidos_del_profesor_a">Nombre y apellidos del profesor/a</string>
+    <string name="nombre_y_apellidos_del_profesor_a">Nombre y apellidos del/la docente</string>
     <string name="curso_en_el_que_se_imparte_la_asignatura">Curso en el que se imparte la asignatura</string>
-    <string name="nombre_completo_del_profesor">Nombre completo del profesor</string>
-    <string name="nombre_completo_del_la_profesor_a">Nombre completo del/la profesor/a</string>
+    <string name="nombre_completo_del_profesor">Nombre completo del/la docente</string>
+    <string name="nombre_completo_del_la_profesor_a">Nombre completo del/la docente/a</string>
     <string name="cursos">Cursos</string>
     <string name="fechas">Fechas</string>
     <string name="title_activity_main">MainActivity</string>
@@ -86,7 +86,7 @@
     <string name="pulsa_el_bot_n_para_enviar_una_solicitud_de_creaci_n_de_grupo">Pulsa el botón + para enviar una solicitud de creación de grupo</string>
     <string name="peticiones">Peticiones</string>
     <string name="chats_grupales">Chats grupales</string>
-    <string name="chats_con_el_profesor">Chats con el profesor</string>
+    <string name="chats_con_el_profesor">Chats con el/la docente</string>
     <string name="coursename">CourseName</string>
     <string name="participantes">Participantes</string>
     <string name="subjectname">SubjectName</string>
@@ -96,7 +96,7 @@
     <string name="email_of_the_participant">Email of the participant</string>
     <string name="cerrar_sesi_n">Cerrar sesión</string>
     <string name="no_tienes_ning_n_grupo_creado_o_no_est_s_en_ning_n_grupo_puedes_crear_un_nuevo_grupo_pulsando_el_bot_n">No tienes ningún grupo creado o no estás en ningún grupo. Puedes crear un nuevo grupo pulsando el botón +</string>
-    <string name="profesor_a">Profesor/a</string>
+    <string name="profesor_a">Docente</string>
     <string name="individuales">Individuales</string>
     <string name="name_of_the_subject">Name of the subject</string>
     <string name="sender_message">Sender message</string>
@@ -154,7 +154,7 @@
     <string name="introducir_a_los_alumnos_restantes_debido_al_reparto_si_los_hay_en_un_grupo_de_un_tama_o_m_s_grande">Introducir a los alumnos restantes debido al reparto (si los hay) en un grupo de un tamaño más grande</string>
     <string name="errormessage">ErrorMessage</string>
     <string name="si_el_reparto_es_desigual_introducir_a_los_alumnos_restantes_en_un_grupo_de_un_tama_o_m_s_grande">Si el reparto es desigual, introducir a los alumnos restantes en un grupo de un tamaño más grande</string>
-    <string name="todav_a_no_hay_ning_n_grupo_creado_puedes_pedirle_al_profesor_que_cree_un_grupo_con_el_bot_n">Todavía no hay ningún grupo creado. Puedes pedirle al profesor que cree un grupo con el botón +</string>
+    <string name="todav_a_no_hay_ning_n_grupo_creado_puedes_pedirle_al_profesor_que_cree_un_grupo_con_el_bot_n">Todavía no hay ningún grupo creado. Puedes pedirle a tu docente que cree un grupo con el botón +</string>
     <string name="por_ahora_no_tienes_ninguna_petici_n_puedes_crear_una_petici_n_para_formar_un_grupo_en_la_pesta_a_grupos">Por ahora no tienes ninguna petición. Puedes crear una petición para formar un grupo en la pestaña Grupos</string>
     <string name="no_petition_teacher">Por ahora no tienes ninguna petición de creación de grupo por parte de los alumnos</string>
     <string name="selecciona_dos_grupos_distintos">Selecciona dos grupos distintos</string>
@@ -229,7 +229,7 @@
     <string name="abrir_archivos">Abrir archivos</string>
     <string name="nombre_del_grupo">Nombre del grupo</string>
     <string name="ver_archivos">Ver archivos</string>
-    <string name="el_profesor_no_ha_enviado_una_nueva_actividad_por_el_momento">El profesor no ha enviado una nueva actividad por el momento</string>
+    <string name="el_profesor_no_ha_enviado_una_nueva_actividad_por_el_momento">Tu docente no ha enviado una nueva actividad por el momento</string>
     <string name="nombre_del_solicitante">Nombre del solicitante</string>
     <string name="selecciona_a_los_participantes_con_los_que_te_gustar_a_estar_en_el_grupo">Selecciona a los participantes con los que te gustaría estar en el grupo</string>
     <string name="mostrar_estad_sticas">Mostrar estadísticas</string>
@@ -246,7 +246,7 @@
     <string name="t_tulo_del_evento">Título del evento</string>
     <string name="ver_eventos">Ver eventos</string>
     <string name="ning_n_portavoz_ha_enviado_un_evento">Ningún portavoz ha enviado un evento</string>
-    <string name="el_profesor_no_ha_enviado_ning_n_evento">El profesor no ha enviado ningún evento todavía</string>
+    <string name="el_profesor_no_ha_enviado_ning_n_evento">Tu docente no ha enviado ningún evento todavía</string>
     <string name="selecciona_el_grupo_o_grupos_a_los_que_deseas_enviar_el_evento">1. Selecciona el grupo o grupos a los que deseas enviar el evento</string>
     <string name="agrega_el_t_tulo_del_evento">2. Agrega el título del evento</string>
     <string name="agrega_la_descripci_n_del_evento">3. Agrega la descripción del evento</string>

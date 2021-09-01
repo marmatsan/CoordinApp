@@ -163,7 +163,14 @@ public class Participants extends Fragment {
                             .document(teacherId)
                             .get().addOnSuccessListener(document2 -> {
                         if (!teacherId.equals(fAuth.getUid())) {
-                            participants.add(new CourseParticipantCard(R.drawable.ic_teacher_at_the_blackboard, document2.getId(), "Profesor", (String) document2.get("FullName"), (String) document2.get("UserEmail")));
+                            String teacherName = (String) document2.get("FullName");
+                            int image;
+                            if (teacherName.equals("Docente1") || teacherName.equals("Docente3")) {
+                                image = R.drawable.teacher1;
+                            } else {
+                                image = R.drawable.teacher2;
+                            }
+                            participants.add(new CourseParticipantCard(image, document2.getId(), "Docente", teacherName, (String) document2.get("UserEmail")));
                         }
                         fStore
                                 .collection("Students")
@@ -171,12 +178,43 @@ public class Participants extends Fragment {
                                 .addOnSuccessListener(queryDocumentSnapshots -> {
                                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                                         if (studentIds.contains(document.getId())) {
-                                            participants.add(new CourseParticipantCard(R.drawable.ic_reading_book, document.getId(), "Estudiante", (String) document.get("FullName"), (String) document.get("UserEmail")));
+                                            String studentName = (String) document.get("FullName");
+                                            String numberOnly = studentName.replaceAll("[^0-9]", "");
+                                            int studentID = Integer.parseInt(numberOnly);
+                                            int image;
+
+                                            if (studentID % 2 == 0) {
+                                                image = R.drawable.student1;
+                                            } else {
+                                                image = R.drawable.student2;
+                                            }
+
+                                            participants.add(new CourseParticipantCard(image, document.getId(), "Estudiante", (String) document.get("FullName"), (String) document.get("UserEmail")));
                                             allStudentsStatistics.put(document.getId(), new HashMap<String, HashMap<String, Double>>());
                                         }
                                     }
 
-                                    Collections.sort(participants, (courseParticipantCard1, courseParticipantCard2) -> courseParticipantCard1.getParticipantName().compareTo(courseParticipantCard2.getParticipantName()));
+                                    Collections.sort(participants, new Comparator<CourseParticipantCard>() {
+                                        @Override
+                                        public int compare(CourseParticipantCard courseParticipantCard1, CourseParticipantCard courseParticipantCard2) {
+                                            String participantName1 = courseParticipantCard1.getParticipantName();
+                                            String participantName2 = courseParticipantCard2.getParticipantName();
+
+
+                                            return extractInt(participantName1) - extractInt(participantName2);
+                                        }
+
+                                        @Override
+                                        public boolean equals(Object o) {
+                                            return false;
+                                        }
+
+                                        int extractInt(String s) {
+                                            String num = s.replaceAll("\\D", "");
+                                            return num.isEmpty() ? 0 : Integer.parseInt(num);
+                                        }
+
+                                    });
 
                                     courseParticipantAdapter.notifyDataSetChanged();
                                     populateStatistics();
@@ -308,7 +346,7 @@ public class Participants extends Fragment {
         } else {
             ArrayList<CourseParticipantCard> filteredList = new ArrayList<CourseParticipantCard>();
             for (CourseParticipantCard card : participants) {
-                if (card.getParticipantName().contains(inputText.toLowerCase())) {
+                if (card.getParticipantName().contains(inputText)) {
                     filteredList.add(card);
                 }
             }
