@@ -141,7 +141,7 @@ public class RequestGroupDialog extends DialogFragment {
 
                                                             for (DocumentSnapshot groupDoc : groupDocuments) {
                                                                 CollectiveGroupDocument collectiveGroupDocument = groupDoc.toObject(CollectiveGroupDocument.class);
-                                                                if (collectiveGroupDocument.getAllParticipantsIDs().containsAll(allParticipantsIDs)) {
+                                                                if (collectiveGroupDocument.getAllParticipantsIDs().containsAll(allParticipantsIDs) && collectiveGroupDocument.getAllParticipantsIDs().size() == allParticipantsIDs.size()) {
                                                                     groupExists = true;
                                                                     break;
                                                                 }

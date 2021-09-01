@@ -22,6 +22,8 @@ import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGro
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.EventCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.interactivitydocuments.MultichoiceCardDocument;
 import com.elcazadordebaterias.coordinapp.utils.restmodel.Subject;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,6 +49,8 @@ public class CreateEventDialog extends DialogFragment {
     private SelectGroupsItemAdapter adapter;
 
     private Context context;
+
+    private FloatingActionButton selectDate;
 
     public CreateEventDialog(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
@@ -99,7 +103,7 @@ public class CreateEventDialog extends DialogFragment {
                     adapter.notifyDataSetChanged();
                 });
 
-        // Do something with this layoyts?
+        // Do something with this layouts?
         TextInputLayout eventTitleLayout = view.findViewById(R.id.eventTitleLayout);
         TextInputLayout eventDescriptionLayout = view.findViewById(R.id.eventDescriptionLayout);
         TextInputLayout eventPlaceLayout = view.findViewById(R.id.eventPlaceLayout);
@@ -107,6 +111,13 @@ public class CreateEventDialog extends DialogFragment {
         TextInputEditText eventTitle = view.findViewById(R.id.eventTitle);
         TextInputEditText eventDescription = view.findViewById(R.id.eventDescription);
         TextInputEditText eventPlace = view.findViewById(R.id.eventPlace);
+        selectDate = view.findViewById(R.id.selectDate);
+
+        selectDate.setOnClickListener(v -> {
+            MaterialDatePicker.Builder<Long> datePickerBuilder = MaterialDatePicker.Builder.datePicker();
+            MaterialDatePicker<Long> picker = datePickerBuilder.build();
+            picker.show(getParentFragmentManager(), picker.toString());
+        });
 
         builder.setView(view)
                 .setTitle("Crear evento")
