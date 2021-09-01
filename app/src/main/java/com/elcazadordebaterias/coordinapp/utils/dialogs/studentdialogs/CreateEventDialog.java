@@ -19,6 +19,8 @@ import com.elcazadordebaterias.coordinapp.adapters.listviews.SelectGroupsItemAda
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.SelectGroupItem;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.EventCardDocument;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,7 +29,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class CreateEventDialog extends DialogFragment {
 
@@ -43,6 +49,10 @@ public class CreateEventDialog extends DialogFragment {
     private SelectGroupsItemAdapter adapter;
 
     private Context context;
+
+    private FloatingActionButton selectDate;
+
+    private String selectedDate;
 
     public CreateEventDialog(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
@@ -103,6 +113,20 @@ public class CreateEventDialog extends DialogFragment {
         TextInputEditText eventTitle = view.findViewById(R.id.eventTitle);
         TextInputEditText eventDescription = view.findViewById(R.id.eventDescription);
         TextInputEditText eventPlace = view.findViewById(R.id.eventPlace);
+        selectDate = view.findViewById(R.id.selectDate);
+
+        selectDate.setOnClickListener(v -> {
+            MaterialDatePicker.Builder<Long> datePickerBuilder = MaterialDatePicker.Builder.datePicker();
+            MaterialDatePicker<Long> picker = datePickerBuilder.build();
+            picker.show(getParentFragmentManager(), picker.toString());
+            picker.addOnPositiveButtonClickListener(selection -> {
+                Date date = new Date();
+                date.setTime(selection);
+                DateFormat df = new SimpleDateFormat("dd-MM-yy");
+                df.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
+                selectedDate = df.format(date);
+            });
+        });
 
         builder.setView(view)
                 .setTitle("Crear evento")
@@ -120,7 +144,7 @@ public class CreateEventDialog extends DialogFragment {
                 String eventDescriptionText = eventDescription.getText().toString();
                 String eventPlaceText = eventPlace.getText().toString();
 
-                if (eventTitleText.isEmpty() || eventDescriptionText.isEmpty() || eventPlaceText.isEmpty()) {
+                if (eventTitleText.isEmpty() || eventDescriptionText.isEmpty() || eventPlaceText.isEmpty() || selectedDate == null) {
                     Toast.makeText(context, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
                 } else {
 
@@ -137,7 +161,7 @@ public class CreateEventDialog extends DialogFragment {
                             .addOnSuccessListener(queryDocumentSnapshots -> {
                                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                     if (selectedGroupsIDs.contains(documentSnapshot.getId())) {
-                                        EventCardDocument eventCardDocument = new EventCardDocument(eventTitleText, eventDescriptionText, eventPlaceText, false, fAuth.getUid());
+                                        EventCardDocument eventCardDocument = new EventCardDocument(eventTitleText, eventDescriptionText, eventPlaceText, selectedDate, false, fAuth.getUid());
                                         documentSnapshot.getReference().collection("StudentEvents").add(eventCardDocument);
                                     }
                                 }

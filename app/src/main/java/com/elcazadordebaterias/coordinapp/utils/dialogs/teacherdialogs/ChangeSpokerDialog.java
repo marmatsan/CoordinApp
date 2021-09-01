@@ -47,10 +47,10 @@ public class ChangeSpokerDialog extends DialogFragment {
 
     private String groupID;
 
-    HashMap<Integer, String> studentsIDsMap;
-    HashMap<Integer, String> studentsNamesMap;
+    private HashMap<Integer, String> studentsIDsMap;
+    private HashMap<Integer, String> studentsNamesMap;
 
-    String spokerID;
+    private String spokerID;
 
     public ChangeSpokerDialog(String selectedCourse, String selectedSubject, String groupID, String spokerID) {
         this.selectedCourse = selectedCourse;

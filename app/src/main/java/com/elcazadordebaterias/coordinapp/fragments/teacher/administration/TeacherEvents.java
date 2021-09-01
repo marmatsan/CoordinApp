@@ -114,7 +114,7 @@ public class TeacherEvents extends Fragment {
                                     for (DocumentSnapshot documentSnapshot1 : chatDocumentsSnapshots) {
                                         EventCardDocument eventCardDocument = documentSnapshot1.toObject(EventCardDocument.class);
 
-                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace(), documentSnapshot1,  eventCardDocument.getSenderID(), eventCardDocument.getSentByTeacher());
+                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace(), eventCardDocument.getEventDate() ,documentSnapshot1,  eventCardDocument.getSenderID(), eventCardDocument.getSentByTeacher());
                                         eventsList.add(eventCard);
                                     }
 

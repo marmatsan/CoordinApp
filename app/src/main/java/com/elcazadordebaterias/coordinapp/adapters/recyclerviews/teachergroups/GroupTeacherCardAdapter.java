@@ -97,6 +97,7 @@ public class GroupTeacherCardAdapter extends RecyclerView.Adapter<GroupTeacherCa
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
             builderSingle.setTitle("Participantes");
 
+
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.utils_participantname, R.id.participantName, groupCard.getParticipantNames()) {
                 @Override
                 public boolean isEnabled(int position1) {

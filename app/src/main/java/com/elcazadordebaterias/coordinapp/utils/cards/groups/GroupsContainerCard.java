@@ -1,6 +1,7 @@
 package com.elcazadordebaterias.coordinapp.utils.cards.groups;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class GroupsContainerCard {
 
@@ -36,6 +37,7 @@ public class GroupsContainerCard {
     }
 
     public ArrayList<String> getParticipantsNames() {
+        Collections.sort(participantsNames);
         return participantsNames;
     }
 }

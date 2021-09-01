@@ -1,5 +1,7 @@
 package com.elcazadordebaterias.coordinapp.adapters.recyclerviews;
 
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +42,16 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsCard
         holder.eventTitle.setText(eventCard.getEventName());
         holder.eventMessage.setText(eventCard.getEventMessage());
         String eventPlace = "Lugar del evento: " + eventCard.getEventPlace();
-        holder.eventPlace.setText(eventPlace);
+
+        SpannableStringBuilder str = new SpannableStringBuilder(eventPlace);
+        str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Lugar del evento: ".length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        holder.eventPlace.setText(str);
+
+        String eventDate = "Fecha del evento: " + eventCard.getEventDate();
+
+        SpannableStringBuilder str1 = new SpannableStringBuilder(eventDate);
+        str1.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Fecha del evento: ".length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        holder.eventDate.setText(str1);
 
         if (!eventCard.getSenderID().equals(fAuth.getUid())) {
             holder.deleteEvent.setVisibility(View.GONE);
@@ -63,6 +74,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsCard
         TextView eventTitle;
         TextView eventMessage;
         TextView eventPlace;
+        TextView eventDate;
         MaterialButton deleteEvent;
 
         public EventsCardViewHolder(@NonNull View itemView) {
@@ -70,6 +82,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventsCard
             eventTitle = itemView.findViewById(R.id.eventTitle);
             eventMessage = itemView.findViewById(R.id.eventMessage);
             eventPlace = itemView.findViewById(R.id.eventPlace);
+            eventDate = itemView.findViewById(R.id.eventDate);
             deleteEvent = itemView.findViewById(R.id.deleteEvent);
         }
     }

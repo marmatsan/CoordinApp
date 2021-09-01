@@ -1,6 +1,8 @@
 package com.elcazadordebaterias.coordinapp.utils.cards.groups;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Class that represents a group for both the group chat (between students) and single chat (between students and teacher)
@@ -88,6 +90,7 @@ public class GroupCard {
     }
 
     public ArrayList<String> getParticipantNames() {
+        Collections.sort(participantNames);
         return participantNames;
     }
 

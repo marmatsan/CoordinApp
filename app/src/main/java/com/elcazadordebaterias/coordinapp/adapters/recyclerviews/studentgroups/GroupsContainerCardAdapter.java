@@ -66,7 +66,7 @@ public class GroupsContainerCardAdapter extends RecyclerView.Adapter<GroupsConta
         holder.groupName.setText(groupsContainerCard.getName());
         String spoker;
         if (groupsContainerCard.getSpokerID().equals(FirebaseAuth.getInstance().getUid())) {
-            spoker = "Eres el portavoz de este grupo";
+            spoker = "Eres portavoz de este grupo";
         } else {
             spoker = "Portavoz: " + groupsContainerCard.getSpokerName();
         }

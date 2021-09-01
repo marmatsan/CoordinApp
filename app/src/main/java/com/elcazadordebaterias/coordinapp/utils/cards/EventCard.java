@@ -7,14 +7,16 @@ public class EventCard {
     private String eventName;
     private String eventMessage;
     private String eventPlace;
+    private String eventDate;
     private DocumentSnapshot documentSnapshot;
     private String senderID;
     private boolean sentByTeacher;
 
-    public EventCard(String eventName, String eventMessage, String eventPlace, DocumentSnapshot documentSnapshot, String senderID, boolean sentByTeacher) {
+    public EventCard(String eventName, String eventMessage, String eventPlace, String eventDate, DocumentSnapshot documentSnapshot, String senderID, boolean sentByTeacher) {
         this.eventName = eventName;
         this.eventMessage = eventMessage;
         this.eventPlace = eventPlace;
+        this.eventDate = eventDate;
         this.documentSnapshot = documentSnapshot;
         this.senderID = senderID;
         this.sentByTeacher = sentByTeacher;
@@ -30,6 +32,10 @@ public class EventCard {
 
     public String getEventPlace() {
         return eventPlace;
+    }
+
+    public String getEventDate() {
+        return eventDate;
     }
 
     public DocumentSnapshot getDocumentSnapshot() {

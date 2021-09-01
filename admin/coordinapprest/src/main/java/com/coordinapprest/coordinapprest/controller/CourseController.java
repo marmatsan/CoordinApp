@@ -20,24 +20,9 @@ public class CourseController {
     @Autowired
     FirebaseService firebaseService;
 
-    @GetMapping("/getCourse") // Get course
-    public String getCourse(@RequestHeader()String courseName){ 
-        return "Hello from get";
-    }
-
-    @PostMapping("/postCourse") // Create course
+    @PostMapping("/postCourse")
     public String postCourse(@RequestBody Course course) throws InterruptedException, ExecutionException{ 
         return firebaseService.postCourse(course);
     }
-
-    @PutMapping("/putCourse") // Update course
-    public String putCourse(){ 
-        return "Hello from get";
-    } 
-
-    @DeleteMapping("/deleteCourse") // Delete course
-    public String deleteCourse(){ 
-        return "Hello from get";
-    } 
 
 }
