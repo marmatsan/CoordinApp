@@ -56,9 +56,8 @@ public class IndividualFiles extends Fragment {
         View view = inflater.inflate(R.layout.fragment_teacher_files_groupalfiles, container, false);
 
         noFiles = view.findViewById(R.id.noFiles);
+        noFiles.setText(R.string.noIndividualFiles);
         RecyclerView filesContainer = view.findViewById(R.id.groupalFilesContainer);
-
-
 
         LinearLayoutManager coursesLayoutManager = new LinearLayoutManager(getContext());
 

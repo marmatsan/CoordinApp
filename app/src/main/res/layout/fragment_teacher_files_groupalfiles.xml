@@ -16,9 +16,11 @@
 
     <TextView
         android:id="@+id/noFiles"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/todav_a_no_se_ha_enviado_ning_n_archivo_los_archivos_aparecer_n_aqu"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/noGroupalFiles"
         android:textAlignment="center"
         android:textSize="16sp"
         android:textStyle="bold"

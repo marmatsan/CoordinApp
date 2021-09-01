@@ -143,7 +143,8 @@
     <string name="uploaded_date">Uploaded date</string>
     <string name="descargar">Descargar</string>
     <string name="file_name">File name</string>
-    <string name="todav_a_no_se_ha_enviado_ning_n_archivo_los_archivos_aparecer_n_aqu">Todavía no se ha enviado ningún archivo. Los archivos aparecerán aquí</string>
+    <string name="noGroupalFiles">Todavía no se ha enviado ningún archivo por los chats grupales. Los archivos aparecerán aquí</string>
+    <string name="noIndividualFiles">Todavía no se ha enviado ningún archivo por los chats individuales. Los archivos aparecerán aquí</string>
     <string name="noStatistics">Aún no hay estadísticas de ningún grupo. Puedes empezar a obtener estadísticas creando una nueva actividad con el botón +</string>
     <string name="noGroups">Aún no hay ningún grupo creado. Puedes crear un nuevo grupo para empezar a mandar actividades en la pestaña Grupos</string>
     <string name="_1_selecciona_el_primer_grupo">1. Selecciona el primer grupo</string>
@@ -257,5 +258,6 @@
     <string name="busca_a_un_estudiante">Busca a un estudiante</string>
     <string name="select">Selecciona a los participantes con los que te gustaría estar en el grupo</string>
     <string name="when">4. ¿Dónde y cuándo se realizará el evento?</string>
+    <string name="seleccionar_todos">Seleccionar todos</string>
 
 </resources>

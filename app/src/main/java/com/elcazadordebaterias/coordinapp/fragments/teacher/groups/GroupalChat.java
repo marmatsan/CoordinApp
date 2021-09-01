@@ -30,11 +30,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link GroupalChat} factory method to
- * create an instance of this fragment.
- */
 public class GroupalChat extends Fragment {
 
     private FirebaseFirestore fStore;
