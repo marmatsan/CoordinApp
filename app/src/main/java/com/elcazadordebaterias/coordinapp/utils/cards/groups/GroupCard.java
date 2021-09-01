@@ -90,7 +90,6 @@ public class GroupCard {
     }
 
     public ArrayList<String> getParticipantNames() {
-        Collections.sort(participantNames);
         return participantNames;
     }
 

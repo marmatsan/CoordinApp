@@ -5,16 +5,14 @@
 
     <!--Header aligned to top -->
     <LinearLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/header"
-        android:gravity="center"
         android:orientation="vertical"
         android:layout_marginBottom="8dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/Drive_Number"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:layout_marginTop="8dp"
@@ -24,10 +22,10 @@
             android:textStyle="bold"/>
         <CheckBox
             android:id="@+id/selectAll"
-            android:gravity="start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/seleccionar_todos" />
+            android:text="@string/seleccionar_todos"
+            android:layout_marginStart="24dp"/>
 
     </LinearLayout>
     <RelativeLayout

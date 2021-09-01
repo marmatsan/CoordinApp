@@ -27,29 +27,33 @@ public class PendingParticipantsListAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<PetitionGroupParticipant> items;
 
-    public PendingParticipantsListAdapter(Context context, ArrayList<PetitionGroupParticipant> items){
+    public PendingParticipantsListAdapter(Context context, ArrayList<PetitionGroupParticipant> items) {
         this.context = context;
         this.items = items;
     }
+
     @Override
     public int getCount() {
         return this.items.size();
     }
+
     @Override
     public Object getItem(int position) {
         return this.items.get(position);
     }
+
     @Override
     public long getItemId(int position) {
         return position;
     }
+
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
         View v;
 
-        if (view == null){
+        if (view == null) {
             LayoutInflater inflater = LayoutInflater.from(this.context);
-            v = inflater.inflate(R.layout.utils_petitiongroupparticipant,null);
+            v = inflater.inflate(R.layout.utils_petitiongroupparticipant, null);
         } else {
             v = view;
         }
@@ -61,11 +65,11 @@ public class PendingParticipantsListAdapter extends BaseAdapter {
 
         participantName.setText(participant.getParticipantName());
 
-        if(participant.getPetitionStatusImage() == PetitionUser.STATUS_PENDING){
+        if (participant.getPetitionStatusImage() == PetitionUser.STATUS_PENDING) {
             participantStatus.setImageResource(R.drawable.ic_petitionpending);
-        }else if(participant.getPetitionStatusImage() == PetitionUser.STATUS_ACCEPTED){
+        } else if (participant.getPetitionStatusImage() == PetitionUser.STATUS_ACCEPTED) {
             participantStatus.setImageResource(R.drawable.ic_petitionaccepted);
-        }else if(participant.getPetitionStatusImage() == PetitionUser.STATUS_REJECTED){
+        } else if (participant.getPetitionStatusImage() == PetitionUser.STATUS_REJECTED) {
             participantStatus.setImageResource(R.drawable.ic_petitioncanceled);
         }
         return v;

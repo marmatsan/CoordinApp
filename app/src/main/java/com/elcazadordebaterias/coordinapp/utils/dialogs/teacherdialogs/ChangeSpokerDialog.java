@@ -162,7 +162,6 @@ public class ChangeSpokerDialog extends DialogFragment {
 
                                         button.setId(buttonID);
                                         participantsContainer.addView(button);
-
                                         buttonID++;
                                     }
                                 }

@@ -204,11 +204,6 @@ public class Participants extends Fragment {
                                             return extractInt(participantName1) - extractInt(participantName2);
                                         }
 
-                                        @Override
-                                        public boolean equals(Object o) {
-                                            return false;
-                                        }
-
                                         int extractInt(String s) {
                                             String num = s.replaceAll("\\D", "");
                                             return num.isEmpty() ? 0 : Integer.parseInt(num);

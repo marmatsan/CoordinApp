@@ -23,6 +23,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class GroupsContainerCardAdapter extends RecyclerView.Adapter<GroupsContainerCardAdapter.GroupsContainerCardViewHolder> {
 
@@ -75,6 +77,19 @@ public class GroupsContainerCardAdapter extends RecyclerView.Adapter<GroupsConta
         holder.showParticipants.setOnClickListener(view -> {
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
             builderSingle.setTitle("Participantes");
+
+            Collections.sort(groupsContainerCard.getParticipantsNames(), new Comparator<String>() {
+                @Override
+                public int compare(String name1, String name2) {
+                    return extractInt(name1) - extractInt(name2);
+                }
+
+                int extractInt(String s) {
+                    String num = s.replaceAll("\\D", "");
+                    return num.isEmpty() ? 0 : Integer.parseInt(num);
+                }
+
+            });
 
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.utils_participantname, R.id.participantName, groupsContainerCard.getParticipantsNames()) {
                 @Override
