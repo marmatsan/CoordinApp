@@ -98,7 +98,7 @@ public class TeacherEvents extends Fragment {
 
                         documentSnapshot
                                 .getReference()
-                                .collection("TeacherEvents")
+                                .collection("TeachersEvents")
                                 .addSnapshotListener((chatDocumentsSnapshots, error2) -> {
 
                                     if (error2 != null) {

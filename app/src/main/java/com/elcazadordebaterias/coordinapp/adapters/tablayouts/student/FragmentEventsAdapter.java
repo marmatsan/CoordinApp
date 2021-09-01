@@ -4,11 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Participants;
-import com.elcazadordebaterias.coordinapp.fragments.commonfragments.Petitions;
-import com.elcazadordebaterias.coordinapp.fragments.student.Events.StudentsEvents;
-import com.elcazadordebaterias.coordinapp.fragments.student.Events.TeacherEvents;
-import com.elcazadordebaterias.coordinapp.utils.customdatamodels.UserType;
+import com.elcazadordebaterias.coordinapp.fragments.student.Events.SpokersEvents;
+import com.elcazadordebaterias.coordinapp.fragments.student.Events.TeachersEvents;
 
 public class FragmentEventsAdapter extends FragmentStateAdapter {
 
@@ -26,9 +23,9 @@ public class FragmentEventsAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 1:
-                return new TeacherEvents(selectedCourse, selectedSubject);
+                return new TeachersEvents(selectedCourse, selectedSubject);
             default:
-                return new StudentsEvents(selectedCourse, selectedSubject);
+                return new SpokersEvents(selectedCourse, selectedSubject);
         }
     }
 

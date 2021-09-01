@@ -54,7 +54,7 @@ public class StudentEvents extends Fragment {
         new TabLayoutMediator(tablayout, viewpager, (tab, position) -> {
             switch (position){
                 case 0:
-                    tab.setText("De alumnos");
+                    tab.setText("De portavoces");
                     tab.setIcon(R.drawable.ic_baseline_group_24);
                     break;
                 case 1:

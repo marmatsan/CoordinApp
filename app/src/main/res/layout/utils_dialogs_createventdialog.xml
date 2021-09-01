@@ -115,7 +115,7 @@
                 android:id="@+id/textView5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/_4_agrega_d_nde_ser_el_evento"
+                android:text="@string/when"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/eventDescriptionLayout"

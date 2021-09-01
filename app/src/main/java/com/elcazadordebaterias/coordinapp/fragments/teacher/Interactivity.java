@@ -47,21 +47,21 @@ public class Interactivity extends Fragment {
     private String selectedSubject;
 
     // Buttons
-    FloatingActionButton createInteractivityCard;
-    FloatingActionButton createInputTextCard;
-    FloatingActionButton createMultichoiceCard;
-    FloatingActionButton createReminderCard;
+    private FloatingActionButton createInteractivityCard;
+    private FloatingActionButton createInputTextCard;
+    private FloatingActionButton createMultichoiceCard;
+    private FloatingActionButton createReminderCard;
 
-    ArrayList<InteractivityCardsContainer> interactivityContainerList;
-    GroupsInteractivityCardsContainerAdapter adapter;
+    private ArrayList<InteractivityCardsContainer> interactivityContainerList;
+    private GroupsInteractivityCardsContainerAdapter adapter;
 
-    HashMap<String, ArrayList<InteractivityCard>> interactivityListsMap;
-    HashMap<String, Boolean> hasDocumentsMap;
+    private HashMap<String, ArrayList<InteractivityCard>> interactivityListsMap;
+    private HashMap<String, Boolean> hasDocumentsMap;
 
-    HashMap<String, QuerySnapshot> allInteractivityDocumentsSnapshotsMap;
-    HashMap<String, HashMap<String, Double>> statisticsMap;
+    private HashMap<String, QuerySnapshot> allInteractivityDocumentsSnapshotsMap;
+    private HashMap<String, HashMap<String, Double>> statisticsMap;
 
-    TextView explicativeError;
+    private TextView explicativeError;
 
     public Interactivity(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
@@ -69,6 +69,11 @@ public class Interactivity extends Fragment {
 
         fStore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
+
+        interactivityListsMap = new HashMap<String, ArrayList<InteractivityCard>>();
+        hasDocumentsMap = new HashMap<String, Boolean>();
+        allInteractivityDocumentsSnapshotsMap = new HashMap<String, QuerySnapshot>();
+        statisticsMap = new HashMap<String, HashMap<String, Double>>();
     }
 
     @Override
@@ -97,11 +102,6 @@ public class Interactivity extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         interactivityCardsContainerRecyclerView.setAdapter(adapter);
         interactivityCardsContainerRecyclerView.setLayoutManager(layoutManager);
-
-        interactivityListsMap = new HashMap<String, ArrayList<InteractivityCard>>();
-        hasDocumentsMap = new HashMap<String, Boolean>();
-        allInteractivityDocumentsSnapshotsMap = new HashMap<String, QuerySnapshot>();
-        statisticsMap = new HashMap<String, HashMap<String, Double>>();
 
         // Buttons configuration
         ArrayList<FloatingActionButton> buttons = new ArrayList<FloatingActionButton>();

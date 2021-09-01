@@ -29,7 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class StudentsEvents extends Fragment {
+public class TeachersEvents extends Fragment {
 
     private String selectedCourse;
     private String selectedSubject;
@@ -45,7 +45,7 @@ public class StudentsEvents extends Fragment {
 
     private TextView noEvents;
 
-    public StudentsEvents(String selectedCourse, String selectedSubject){
+    public TeachersEvents(String selectedCourse, String selectedSubject){
         this.selectedCourse = selectedCourse;
         this.selectedSubject = selectedSubject;
 
@@ -67,7 +67,7 @@ public class StudentsEvents extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_studentsevent, container, false);
+        View view = inflater.inflate(R.layout.fragment_teacherevent, container, false);
         RecyclerView eventsContainer = view.findViewById(R.id.eventsContainer);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -105,7 +105,7 @@ public class StudentsEvents extends Fragment {
 
                         documentSnapshot
                                 .getReference()
-                                .collection("StudentEvents")
+                                .collection("TeachersEvents")
                                 .addSnapshotListener((chatDocumentsSnapshots, error2) -> {
 
                                     if (error2 != null) {
@@ -119,10 +119,11 @@ public class StudentsEvents extends Fragment {
 
                                     hasDocumentsMap.put(groupName, !chatDocumentsSnapshots.isEmpty());
 
+
                                     for (DocumentSnapshot documentSnapshot1 : chatDocumentsSnapshots) {
                                         EventCardDocument eventCardDocument = documentSnapshot1.toObject(EventCardDocument.class);
 
-                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace(), documentSnapshot1, eventCardDocument.getSenderID(), eventCardDocument.getSentByTeacher());
+                                        EventCard eventCard = new EventCard(eventCardDocument.getEventTile(), eventCardDocument.getEventDescription(), eventCardDocument.getEventPlace(), documentSnapshot1,  eventCardDocument.getSenderID(), eventCardDocument.getSentByTeacher());
                                         eventList.add(eventCard);
 
                                     }
@@ -131,6 +132,7 @@ public class StudentsEvents extends Fragment {
                                 });
                     }
                 });
+
         return view;
     }
 
