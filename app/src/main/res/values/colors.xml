@@ -18,6 +18,7 @@
 
     <color name="grey">#D9D9D9</color>
     <color name="warning"> 	#c45f00</color>
+    <color name="darkOrange">#8B4000</color>
 
     <color name="red">#B00020</color>
     <color name="yellow">#C7CB85</color>

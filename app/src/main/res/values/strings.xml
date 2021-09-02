@@ -162,7 +162,7 @@
     <string name="_1_selecciona_el_grupo_al_que_enviar_la_tarjeta">1. Selecciona el grupo al que enviar la tarjeta</string>
     <string name="_2_agrega_el_nombre_de_la_pregunta">2. Agrega el nombre de la pregunta</string>
     <string name="_1_selecciona_el_grupo_al_que_deseas_enviar_la_actividad">1. Selecciona el grupo o grupos a los que deseas enviar la actividad</string>
-    <string name="_2_agrega_el_t_tulo_de_la_pregunta">2. Agrega el título de la pregunta</string>
+    <string name="_2_agrega_el_t_tulo_de_la_pregunta">2. Agrega el título de la actividad</string>
     <string name="title">Título de la pregunta</string>
     <string name="poner_nota">Poner nota</string>
     <string name="answer_of_the_student">Answer of the student</string>

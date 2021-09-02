@@ -237,7 +237,7 @@ public class Group {
                                             .addOnSuccessListener(documentSnapshot -> {
                                                 String studentName = (String) documentSnapshot.get("FullName");
                                                 studentsAndTeacherGroup.setName("Chat con " + studentName);
-                                                IndividualGroupDocument newGroupDocument = new IndividualGroupDocument("Grupo " + identifier, studentsAndTeacherIDs, studentsAndTeacherGroup);
+                                                IndividualGroupDocument newGroupDocument = new IndividualGroupDocument("Chat con " + studentName, studentsAndTeacherIDs, studentsAndTeacherGroup);
 
                                                 groupsCollRef
                                                         .get()

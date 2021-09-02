@@ -354,7 +354,7 @@ public class GroupalChat extends Fragment {
                                                     "IndividualGroups"
                                             );
 
-                                            IndividualGroupDocument individualGroup = new IndividualGroupDocument(group.getName(), participantsIDs, group);
+                                            IndividualGroupDocument individualGroup = new IndividualGroupDocument("Chat con " + studentName, participantsIDs, group);
                                             individualGroupsCollRef
                                                     .document(fAuth.getUid())
                                                     .set(individualGroup)
