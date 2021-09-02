@@ -138,7 +138,6 @@ public class Participants extends Fragment {
         if (context != null) {
             DividerItemDecoration divider = new DividerItemDecoration(context, coursesLayoutManager.getOrientation());
             coursesRecyclerView.addItemDecoration(divider);
-
         }
         coursesRecyclerView.setAdapter(courseParticipantAdapter);
         coursesRecyclerView.setLayoutManager(coursesLayoutManager);

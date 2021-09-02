@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.recyclerviews.teachergroups.GroupTeacherCardAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.CourseParticipantCard;
 import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
@@ -28,6 +29,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class GroupalChat extends Fragment {
@@ -73,7 +76,6 @@ public class GroupalChat extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         groupsList = new ArrayList<GroupCard>();
         groupsAdapter = new GroupTeacherCardAdapter(groupsList, getContext());
@@ -152,6 +154,23 @@ public class GroupalChat extends Fragment {
                                 groupsListMap.put(group.getName(), groupCard);
                             }
                         }
+
+                        Collections.sort(groupsList, new Comparator<GroupCard>() {
+                            @Override
+                            public int compare(GroupCard groupCard1, GroupCard groupCard2) {
+                                String groupName1 = groupCard1.getGroupName();
+                                String groupName2 = groupCard2.getGroupName();
+
+                                return extractInt(groupName1) - extractInt(groupName2);
+                            }
+
+                            int extractInt(String s) {
+                                String num = s.replaceAll("\\D", "");
+                                return num.isEmpty() ? 0 : Integer.parseInt(num);
+                            }
+
+                        });
+
                         listChanged();
 
                         groupDocument
@@ -200,7 +219,7 @@ public class GroupalChat extends Fragment {
             if (teacherName != null) {
                 ArrayList<GroupCard> filteredList = new ArrayList<GroupCard>();
                 for (GroupCard card : groupsList) {
-                    if (card.getParticipantNames().contains(inputText.toLowerCase()) && !inputText.equalsIgnoreCase(teacherName)) {
+                    if (card.getParticipantNames().contains(inputText) && !inputText.equalsIgnoreCase(teacherName)) {
                         filteredList.add(card);
                     }
                 }

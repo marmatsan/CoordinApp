@@ -88,7 +88,7 @@ public class ChangeSpokerDialog extends DialogFragment {
                 .setNegativeButton("Cancelar", (dialogInterface, i) -> {
                     // Just closes the dialog
                 })
-                .setPositiveButton("Crear", null);
+                .setPositiveButton("Cambiar", null);
 
 
         AlertDialog dialog = builder.create();

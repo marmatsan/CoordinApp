@@ -242,7 +242,7 @@ public class CreateAutomaticDialog extends DialogFragment {
             boolean isChecked;
             SELECTED_MODE mode = getSelectedMode();
 
-            if (mode == SELECTED_MODE.NUMBER_OF_GROUPS) {
+            if (mode == SELECTED_MODE.NUMBER_OF_GROUPS || (mode == SELECTED_MODE.STUDENTS_PER_GROUP && remainder == 1)) {
                 isChecked = true;
             } else {
                 isChecked = checkBox.isChecked();

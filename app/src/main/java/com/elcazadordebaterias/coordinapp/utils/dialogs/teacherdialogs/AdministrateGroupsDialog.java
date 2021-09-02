@@ -19,6 +19,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.listviews.SelectParticipantsListAdapter;
+import com.elcazadordebaterias.coordinapp.utils.cards.groups.GroupCard;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.SelectParticipantItem;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.Group;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
@@ -36,6 +37,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
@@ -369,6 +372,23 @@ public class AdministrateGroupsDialog extends DialogFragment {
                     }
                     participantsGroupList.add(participantItem);
                 }
+
+                Collections.sort(participantsGroupList, new Comparator<SelectParticipantItem>() {
+                    @Override
+                    public int compare(SelectParticipantItem item1, SelectParticipantItem item2) {
+                        String name1 = item1.getParticipantName();
+                        String name2 = item2.getParticipantName();
+
+                        return extractInt(name1) - extractInt(name2);
+                    }
+
+                    int extractInt(String s) {
+                        String num = s.replaceAll("\\D", "");
+                        return num.isEmpty() ? 0 : Integer.parseInt(num);
+                    }
+
+                });
+
                 groupParticipantsAdapter.notifyDataSetChanged();
             }
         }

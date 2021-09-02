@@ -50,7 +50,7 @@
                     android:paddingEnd="8dp"
                     android:paddingBottom="8dp"
                     android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     />
 
                 <TextView
