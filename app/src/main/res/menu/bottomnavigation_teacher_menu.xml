@@ -21,6 +21,6 @@
     <item
         android:id="@+id/nav_teacher_administration"
         android:enabled="true"
-        android:icon="@drawable/ic_baseline_settings_applications_24"
-        android:title="@string/administraci_n" />
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/Inicio" />
 </menu>
