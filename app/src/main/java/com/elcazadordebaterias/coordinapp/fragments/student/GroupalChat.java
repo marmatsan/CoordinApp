@@ -298,7 +298,7 @@ public class GroupalChat extends Fragment {
             if (teacherName != null) {
                 ArrayList<GroupsContainerCard> filteredList = new ArrayList<GroupsContainerCard>();
                 for (GroupsContainerCard card : groupsList) {
-                    if (card.getParticipantsNames().contains(inputText.toLowerCase()) && !inputText.equalsIgnoreCase(teacherName)) {
+                    if (card.getParticipantsNames().contains(inputText) && !inputText.equalsIgnoreCase(teacherName)) {
                         filteredList.add(card);
                     }
                 }

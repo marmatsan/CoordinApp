@@ -60,7 +60,7 @@ public class Home extends Fragment {
         new TabLayoutMediator(tablayout, viewpager, (tab, position) -> {
             switch (position){
                 case 0:
-                    tab.setText("Participantes");
+                    tab.setText("Clase");
                     tab.setIcon(R.drawable.ic_baseline_group_24);
                     break;
                 case 1:

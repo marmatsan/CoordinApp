@@ -17,6 +17,7 @@ import androidx.fragment.app.DialogFragment;
 import com.elcazadordebaterias.coordinapp.R;
 import com.elcazadordebaterias.coordinapp.adapters.listviews.SelectParticipantsListAdapter;
 import com.elcazadordebaterias.coordinapp.utils.customdatamodels.SelectParticipantItem;
+import com.elcazadordebaterias.coordinapp.utils.customdatamodels.SelectParticipantItemWithSpoker;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.CollectiveGroupDocument;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionRequest;
 import com.elcazadordebaterias.coordinapp.utils.firesoredatamodels.PetitionUser;
@@ -29,6 +30,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class RequestGroupDialog extends DialogFragment {
 
@@ -224,6 +227,23 @@ public class RequestGroupDialog extends DialogFragment {
                                         participantsList.add(new SelectParticipantItem((String) document.get("FullName"), document.getId()));
                                     }
                                 }
+
+                                Collections.sort(participantsList, new Comparator<SelectParticipantItem>() {
+                                    @Override
+                                    public int compare(SelectParticipantItem selectParticipantItem1, SelectParticipantItem selectParticipantItem2) {
+                                        String participantName1 = selectParticipantItem1.getParticipantName();
+                                        String participantName2 = selectParticipantItem2.getParticipantName();
+
+                                        return extractInt(participantName1) - extractInt(participantName2);
+                                    }
+
+                                    int extractInt(String s) {
+                                        String num = s.replaceAll("\\D", "");
+                                        return num.isEmpty() ? 0 : Integer.parseInt(num);
+                                    }
+
+                                });
+
                                 participantsAdapter.notifyDataSetChanged();
                             });
 

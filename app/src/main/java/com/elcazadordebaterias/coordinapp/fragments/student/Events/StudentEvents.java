@@ -58,7 +58,7 @@ public class StudentEvents extends Fragment {
                     tab.setIcon(R.drawable.ic_baseline_group_24);
                     break;
                 case 1:
-                    tab.setText("Del profesor");
+                    tab.setText("Del docente");
                     tab.setIcon(R.drawable.ic_baseline_person_24);
                     break;
             }
