@@ -80,6 +80,7 @@ public class GroupalChat extends Fragment {
         groupsList = new ArrayList<GroupCard>();
         groupsAdapter = new GroupTeacherCardAdapter(groupsList, getContext());
         groupsListMap = new HashMap<String, GroupCard>();
+
     }
 
     @Override

@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -88,6 +90,7 @@ public class ChatActivity extends AppCompatActivity {
 
         // Views
         messageInput = findViewById(R.id.messageInput);
+
         sendMessage = findViewById(R.id.sendMessage);
         sendFile = findViewById(R.id.sendFile);
 
