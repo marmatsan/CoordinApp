@@ -1,5 +1,3 @@
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/31454029/105595117-a3865e80-5d93-11eb-9acb-97fdb1892987.png" alt="Sublime's custom image" width=450px/>
+  <img src="https://user-images.githubusercontent.com/31454029/132770699-ed66b2e3-ee47-470c-a8cb-162f4d37eeb1.png" alt="Sublime's custom image" width=450px/>
 </p>
-
-(Description to be made)
