@@ -50,7 +50,6 @@ public class DisplayParticipantsListDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.utils_participantspetitionlist, null);
 
         ListView listView = view.findViewById(R.id.participantsList);
-
         PendingParticipantsListAdapter adapter = new PendingParticipantsListAdapter(context, participantsList);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();

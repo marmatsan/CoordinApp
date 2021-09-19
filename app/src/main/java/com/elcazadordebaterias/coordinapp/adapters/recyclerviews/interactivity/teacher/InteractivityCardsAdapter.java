@@ -148,6 +148,8 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                 String averageMarkText = "" + averageMark;
                 if (averageMarkText.endsWith(".0")) {
                     averageMarkText = averageMarkText.replace(".0", "");
+                } else if (averageMarkText.length() > 4) {
+                    averageMarkText = averageMarkText.substring(0, 4);
                 }
 
                 if (inputTextCardDocument.getHasGroupalActivity()) {
@@ -301,7 +303,15 @@ public class InteractivityCardsAdapter extends RecyclerView.Adapter<RecyclerView
                             str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, "Respuesta del grupo: ".length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                             holder2.listOfAnswers.setText(str);
                         } else {
-                            String text = questionTitle + ":  Contestada por " + entry.getValue() + " " + studentOrStudents + " (" + percentage + "%)";
+                            String percentageText = "" + percentage;
+
+                            if (percentageText.endsWith(".0")) {
+                                percentageText = percentageText.replace(".0", "");
+                            } else if (percentageText.length() > 4) {
+                                percentageText = percentageText.substring(0, 4);
+                            }
+
+                            String text = questionTitle + ":  Contestada por " + entry.getValue() + " " + studentOrStudents + " (" + percentageText + "%)";
                             TextView textView = new TextView(holder2.questionsContainer.getContext());
                             textView.setText(text);
                             textView.setTextColor(Color.rgb(0, 0, 0));

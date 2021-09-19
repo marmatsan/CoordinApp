@@ -257,19 +257,10 @@ public class AdministrateGroupsDialog extends DialogFragment {
                 .setNegativeButton("Cancelar", (dialog, i) -> {
                     // Just closes the dialog
                 })
-                .setPositiveButton("Modificar grupos", null);
+                .setPositiveButton("Modificar grupos", (dialog, i) -> {
+                    String group1Name = (String) groupSpinner1.getSelectedItem();
+                    String group2Name = (String) groupSpinner2.getSelectedItem();
 
-        AlertDialog dialog = builder.create();
-        dialog.setOnShowListener(dialogInterface -> {
-            positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-
-            positiveButton.setOnClickListener(view1 -> {
-                String group1Name = (String) groupSpinner1.getSelectedItem();
-                String group2Name = (String) groupSpinner2.getSelectedItem();
-
-                if (group1Name.equals(group2Name)) {
-                    Toast.makeText(context, "Selecciona dos grupos distintos", Toast.LENGTH_LONG).show();
-                } else {
                     String group1ID = group1SpinnerIDs.get(group1Name);
                     String group2ID = group2SpinnerIDs.get(group2Name);
 
@@ -288,9 +279,7 @@ public class AdministrateGroupsDialog extends DialogFragment {
                             .addOnSuccessListener(group2DocumentSnapshot -> {
                                 updateGroup(group2DocumentSnapshot, participantsGroup2List);
                             });
-                }
-            });
-        });
+                });
 
         return builder.create();
     }
