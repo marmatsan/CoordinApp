@@ -162,7 +162,7 @@ public class SingleChat extends Fragment {
                         if (teacherName != null) {
                             ArrayList<GroupCard> filteredList = new ArrayList<GroupCard>();
                             for (GroupCard card : groupsList) {
-                                if (card.getParticipantNames().contains(inputText.toLowerCase()) && !inputText.equalsIgnoreCase(teacherName)) {
+                                if (card.getParticipantNames().contains(inputText) && !inputText.equalsIgnoreCase(teacherName)) {
                                     filteredList.add(card);
                                 }
                             }

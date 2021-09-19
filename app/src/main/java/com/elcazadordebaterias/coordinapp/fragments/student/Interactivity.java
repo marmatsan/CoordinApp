@@ -100,7 +100,6 @@ public class Interactivity extends Fragment {
                 .whereArrayContains("allParticipantsIDs", fAuth.getUid())
                 .addSnapshotListener((collectiveGroupsDocumentSnapshots, error) -> {
 
-                    Log.d("DEBUGGING", "Called");
                     if (error != null) {
                         return;
                     } else if (collectiveGroupsDocumentSnapshots == null) {

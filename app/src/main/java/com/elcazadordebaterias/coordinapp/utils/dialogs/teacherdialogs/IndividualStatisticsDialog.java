@@ -52,6 +52,7 @@ public class IndividualStatisticsDialog extends DialogFragment {
     Context context;
 
     LinearLayout container;
+    private double average;
 
     public IndividualStatisticsDialog(String selectedCourse, String selectedSubject, String studentName, String studentID, HashMap<String, HashMap<String, Double>> statisticsMap) {
         fStore = FirebaseFirestore.getInstance();
@@ -131,8 +132,8 @@ public class IndividualStatisticsDialog extends DialogFragment {
                 }
             }
 
-            Double evaluableMultichoiceDocuments = groupStatistics.get("Total points");
-            Double totalPoints = groupStatistics.get("Evaluable MultichoiceDocuments");
+            Double totalPoints = groupStatistics.get("Total points");
+            Double evaluableMultichoiceDocuments = groupStatistics.get("Evaluable MultichoiceDocuments");
 
             addTextView("De tipo multirespuesta", 24, 24, 8, 0, Typeface.BOLD, 16, R.color.black);
             addTextView("Tasa de acierto de las actividades", 24, 24, 8, 0, Typeface.NORMAL, 14, R.color.defaultColor);
@@ -213,7 +214,6 @@ public class IndividualStatisticsDialog extends DialogFragment {
                     addTextView(inputActivitiesText, 24, 24, 8, 8, Typeface.NORMAL, 14, color);
                 }
             }
-
         }
 
         builder.setTitle("Estadísticas individuales de " + studentName)

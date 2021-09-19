@@ -238,7 +238,6 @@ public class Participants extends Fragment {
 
                         for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
 
-
                             CollectiveGroupDocument collectiveGroupDocument = documentSnapshot.toObject(CollectiveGroupDocument.class);
                             String groupName = collectiveGroupDocument.getName();
                             oneStudentsStatistics.put(groupName, new HashMap<String, Double>());
@@ -309,7 +308,6 @@ public class Participants extends Fragment {
                                                             }
                                                         }
                                                     }
-
                                                     HashMap<String, Double> groupStatistics = oneStudentsStatistics.get(groupName);
 
                                                     // Chat messages

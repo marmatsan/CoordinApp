@@ -2,11 +2,13 @@ package com.elcazadordebaterias.coordinapp.utils.dialogs.teacherdialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -71,6 +73,8 @@ public class AdministrateGroupsDialog extends DialogFragment {
 
     // Reference to the current subject
     DocumentReference subjectDocRef;
+
+    private Button positiveButton;
 
     public AdministrateGroupsDialog(String selectedCourse, String selectedSubject) {
         this.selectedCourse = selectedCourse;
@@ -200,7 +204,7 @@ public class AdministrateGroupsDialog extends DialogFragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedGroupName = parent.getItemAtPosition(position).toString();
 
-                if (selectedGroupName.equals((String) groupSpinner1.getSelectedItem())) {
+                if (selectedGroupName.equals(groupSpinner1.getSelectedItem())) {
                     showError();
                 } else {
                     dismissError();
@@ -225,7 +229,7 @@ public class AdministrateGroupsDialog extends DialogFragment {
             ArrayList<SelectParticipantItem> updatedList1 = getUpdatedList(participantsGroup1List, participantsGroup2List);
             ArrayList<SelectParticipantItem> updatedList2 = getUpdatedList(participantsGroup2List, participantsGroup1List);
 
-            if (updatedList1.size() < 2 || updatedList2.size() < 2) { // TODO: Check for more errors
+            if (updatedList1.size() < 2 || updatedList2.size() < 2) {
                 Toast.makeText(context, "Los grupos deben de tener al menos 2 personas", Toast.LENGTH_LONG).show();
             } else {
 
@@ -253,10 +257,19 @@ public class AdministrateGroupsDialog extends DialogFragment {
                 .setNegativeButton("Cancelar", (dialog, i) -> {
                     // Just closes the dialog
                 })
-                .setPositiveButton("Modificar grupos", (dialog, i) -> {
-                    String group1Name = (String) groupSpinner1.getSelectedItem();
-                    String group2Name = (String) groupSpinner2.getSelectedItem();
+                .setPositiveButton("Modificar grupos", null);
 
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(dialogInterface -> {
+            positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+            positiveButton.setOnClickListener(view1 -> {
+                String group1Name = (String) groupSpinner1.getSelectedItem();
+                String group2Name = (String) groupSpinner2.getSelectedItem();
+
+                if (group1Name.equals(group2Name)) {
+                    Toast.makeText(context, "Selecciona dos grupos distintos", Toast.LENGTH_LONG).show();
+                } else {
                     String group1ID = group1SpinnerIDs.get(group1Name);
                     String group2ID = group2SpinnerIDs.get(group2Name);
 
@@ -275,7 +288,9 @@ public class AdministrateGroupsDialog extends DialogFragment {
                             .addOnSuccessListener(group2DocumentSnapshot -> {
                                 updateGroup(group2DocumentSnapshot, participantsGroup2List);
                             });
-                });
+                }
+            });
+        });
 
         return builder.create();
     }
@@ -463,8 +478,10 @@ public class AdministrateGroupsDialog extends DialogFragment {
             if (oldSpoker != null) {
                 oldSpoker.setSpoker(true);
             } else {
-                int randomNum = ThreadLocalRandom.current().nextInt(updatedList.size());
-                updatedList.get(randomNum).setSpoker(true);
+                if (updatedList.size() != 0) {
+                    int randomNum = ThreadLocalRandom.current().nextInt(updatedList.size());
+                    updatedList.get(randomNum).setSpoker(true);
+                }
             }
 
         }
