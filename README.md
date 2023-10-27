@@ -17,10 +17,10 @@ CoordinApp is the outcome of in-depth academic research put into practice as an 
 <img width="200" src="docs/imagenes/3010.jpg"> <img width="200" src="docs/imagenes/3013.jpg"> <img width="200" src="docs/imagenes/3091.jpg"> <img width="200" src="docs/imagenes/3032.jpg">  
 </p>  
 <p align="center">  
-<img width="200" src="docs/imagenes/3026.jpg"> <img width="200" src="docs/imagenes/3013.jpg"> <img width="200" src="docs/imagenes/3030.jpg"> <img width="200" src="docs/imagenes/3077.jpg">  
+<img width="200" src="docs/imagenes/3026.jpg"> <img width="200" src="docs/imagenes/3030.jpg"> <img width="200" src="docs/imagenes/3077.jpg">  
 </p>
 <p align="center">  
-<img width="200" src="docs/imagenes/3079.jpg"> <img width="200" src="docs/imagenes/3085.jpg"> <img width="200" src="docs/imagenes/3085.jpg"> <img width="200" src="docs/imagenes/3092.jpg">  
+<img width="200" src="docs/imagenes/3079.jpg"> <img width="200" src="docs/imagenes/3085.jpg"> <img width="200" src="docs/imagenes/3092.jpg">  
 </p>  
   
 ### Student app
